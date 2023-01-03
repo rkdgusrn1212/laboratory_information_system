@@ -2,3 +2,7 @@
 /CODEOWNERS @rkdgusrn1212
 # 메인 README 마크다운 소유
 /README.md @rkdgusrn1212
+# Front 앱 설정 파일 및 기본 스크립트 소유
+/front/* @rkdgusrn1212
+# 메인 설정 파일 소유
+/* @rkdgusrn1212
