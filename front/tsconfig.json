@@ -1,14 +1,20 @@
 {
   "compilerOptions": {
+    "target": "ES6",
+    "lib": ["dom", "dom.iterable", "ES2016"],
     "allowJs": true,
-    "target": "ES2015",
-    "rootDir": "src",
-    "outDir": "build",
-    "baseUrl": "src",
-    "moduleResolution": "Node",
-    "lib": ["ES2015", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx" //JSX 컴파일에 react v17의 _jsx transform를 사용.
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "ES6",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
   },
-  "include": ["./src/**/*"],
-  "exclude": ["node_modules", "build"]
+  "include": ["src"]
 }
