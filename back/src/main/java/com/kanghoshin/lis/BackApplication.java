@@ -23,9 +23,9 @@ public class BackApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println(authService.signUp(new SignInDto("CB",
-				"abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabddd")));
+				"iseoulu123!@#", "DOC")));
 		System.out.println(authService.signIn(new SignInDto("CB",
-				"abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabddd")).toString());
+				"iseoulu123!@#", "DOC")).toString());
 	}
 
 }
