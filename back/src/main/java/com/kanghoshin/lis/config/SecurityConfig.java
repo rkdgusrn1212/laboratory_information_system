@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import com.kanghoshin.lis.config.jwt.JwtAuthenticationFilter;
@@ -32,18 +34,22 @@ public class SecurityConfig{
 				.and()
 				.formLogin().disable()
 				.httpBasic().disable()
-
 				.addFilter(new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild()))
 				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild(), authMapper))
 				.authorizeRequests()
 				.antMatchers("/api/user/**")
-				.access("hasRole('DOC') or hasRole('NUR')")
+				.access("hasRole('ROLE_DOC') or hasRole('ROLE_NUR')")
 				.antMatchers("/api/doc/**")
-				.access("hasRole('DOC')")
+				.access("hasRole('ROLE_DOC')")
 				.antMatchers("/api/nur/**")
-				.access("hasRole('NUR')")
+				.access("hasRole('ROLE_NUR')")
 				.anyRequest().permitAll()
 				.and()
 				.build();
+	}
+	
+	@Bean
+	public PasswordEncoder getPasswordEncoder(){
+		return new BCryptPasswordEncoder();
 	}
 }

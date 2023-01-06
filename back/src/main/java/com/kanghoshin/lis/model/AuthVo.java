@@ -21,6 +21,6 @@ public class AuthVo {
 	private String pwd;
 	
 	@NotNull
-	@Pattern(regexp="DOC|NUR")
+	@Pattern(regexp="ROLE_DOC|ROLE_NUR")
 	private String role;
 }

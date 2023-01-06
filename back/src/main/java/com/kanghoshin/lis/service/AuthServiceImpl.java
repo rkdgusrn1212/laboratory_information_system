@@ -2,7 +2,6 @@ package com.kanghoshin.lis.service;
 
 
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.kanghoshin.lis.dao.AuthMapper;
@@ -16,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 
 	private final AuthMapper authMapper;
-	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private final PasswordEncoder passwordEncoder;
 
 	@Override
 	public JwtVo signIn(SignInDto SignInDto) {

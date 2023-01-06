@@ -7,8 +7,10 @@ import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class SignInDto {
 	@NotBlank(message="아이디가 비어있습니다.")
@@ -21,6 +23,6 @@ public class SignInDto {
 	private String pwd;
 	
 	@NotNull(message="직군이 비어있습니다.")
-	@Pattern(regexp = "DOC|NUR", message="DOC 또는 NUR을 직군으로 선택해야합니다.")
+	@Pattern(regexp = "ROLE_DOC|ROLE_NUR", message="ROLE_DOC 또는 ROLE_NUR을 직군으로 선택해야합니다.")
 	private String role;
 }

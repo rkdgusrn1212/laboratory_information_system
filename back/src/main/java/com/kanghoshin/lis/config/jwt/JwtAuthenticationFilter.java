@@ -3,7 +3,6 @@ package com.kanghoshin.lis.config.jwt;
 import java.io.IOException;
 import java.util.Date;
 
-import javax.naming.AuthenticationException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +54,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		Authentication authentication = 
 				authenticationManager.authenticate(authenticationToken);
 		
-		PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
 		return authentication;
 	}
 
