@@ -21,15 +21,11 @@ USE `kanghoshin_lis`;
 CREATE TABLE IF NOT EXISTS `auth` (
   `ID` varchar(60) NOT NULL,
   `PWD` char(60) NOT NULL DEFAULT '',
+  `ROLE` char(8) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.auth:~1 rows (대략적) 내보내기
-/*!40000 ALTER TABLE `auth` DISABLE KEYS */;
-INSERT INTO `auth` (`ID`, `PWD`) VALUES
-	('CA', 'abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcde'),
-	('CB', 'abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabddd');
-/*!40000 ALTER TABLE `auth` ENABLE KEYS */;
+-- 내보낼 데이터가 선택되어 있지 않습니다.
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
