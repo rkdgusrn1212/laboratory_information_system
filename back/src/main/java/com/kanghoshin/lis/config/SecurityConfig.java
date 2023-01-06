@@ -20,11 +20,11 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
 @RequiredArgsConstructor
 public class SecurityConfig{	
-	
+
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final CorsConfig corsConfig;
 	private final AuthMapper authMapper;
-	
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http
@@ -34,7 +34,7 @@ public class SecurityConfig{
 				.and()
 				.formLogin().disable()
 				.httpBasic().disable()
-				.addFilter(new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild()))
+				.addFilter(createJwtAuthenticationFilter())
 				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild(), authMapper))
 				.authorizeRequests()
 				.antMatchers("/api/user/**")
@@ -48,6 +48,12 @@ public class SecurityConfig{
 				.build();
 	}
 	
+	private JwtAuthenticationFilter createJwtAuthenticationFilter() {
+		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild());	
+		jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/signin");
+		return jwtAuthenticationFilter;
+	}
+
 	@Bean
 	public PasswordEncoder getPasswordEncoder(){
 		return new BCryptPasswordEncoder();
