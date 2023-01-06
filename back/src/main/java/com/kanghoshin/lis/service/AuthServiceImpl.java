@@ -18,17 +18,6 @@ public class AuthServiceImpl implements AuthService {
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public JwtVo signIn(SignInDto SignInDto) {
-		AuthVo authVo = authMapper.findById(SignInDto.getId());
-		if(authVo==null) return null;
-		if(!passwordEncoder.matches(SignInDto.getPwd(),
-				authVo.getPwd())) {
-			return null;
-		}
-		return new JwtVo(authVo);
-	}
-
-	@Override
 	public boolean signUp(SignInDto signInDto) {
 		try {
 			return authMapper.insert(signInDto.getId(), passwordEncoder.encode(signInDto.getPwd()), signInDto.getRole())>0;

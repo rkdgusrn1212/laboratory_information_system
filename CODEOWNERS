@@ -1,8 +1,28 @@
 # 코드오너 소유
 /CODEOWNERS @rkdgusrn1212
+
 # 메인 README 마크다운 소유
 /README.md @rkdgusrn1212
+
 # Front 앱 설정 파일 및 기본 스크립트 소유
 /front/* @rkdgusrn1212
+
 # 메인 설정 파일 소유
 /* @rkdgusrn1212
+
+# 백엔드 설정 파일 소유
+/back/* @rkdgusrn1212
+/back/src/main/resources/application.properties @rkdgusrn1212
+
+# 백엔드 인증 관련 파일 소유
+/back/src/main/java/com/kanghoshin/lis/config/CorsConfig.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/config/SecurityConfig.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/config/jwt/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/config/principal/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/model/AuthVo.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/model/SignInDto.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
+/sql/auth.sql @rkdgusrn1212
