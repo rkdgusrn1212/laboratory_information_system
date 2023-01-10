@@ -22,7 +22,13 @@ KOSA 더존 3기, Final 프로젝트
   </tr>
 </table>
 
-## 핵심 기술
+
+
+# 프로젝트 설계
+
+## 기술 기반 설계
+
+![핵심기술](https://user-images.githubusercontent.com/18836863/210029513-ba13f53a-9a6b-40c6-bc6f-62776ad841d6.jpg)
 
 | 분류 | 소분류 | 기술 | 기술 상세 |
 | -- | -- | -- | -- |
@@ -39,3 +45,12 @@ KOSA 더존 3기, Final 프로젝트
 | | 개발환경 | Eclipse+STS | STS 3.9.18, Eclipse 4.21.0
 데이터베이스 | 주요기술 | MariaDB | MariaDB 10.5.18
 형상관리 | 주요기술 | Git | Git 2.37.1
+
+
+## 화면 설계
+
+- OVEN 링크
+https://ovenapp.io/view/D7LPazdFls7PxlePZHrjrR8rsEjlP2a8/
+
+- 화면설계서
+[화면설계서.pdf](https://github.com/rkdgusrn1212/laboratory_information_system/files/10378222/default.pdf)
