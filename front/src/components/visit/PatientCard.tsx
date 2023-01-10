@@ -4,6 +4,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import { red } from '@mui/material/colors';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useGetTokenByAuthQuery } from '../../services/authApi';
 
 type PatientCardProps = {
   name: string;
@@ -12,6 +13,10 @@ type PatientCardProps = {
 };
 
 const PatientCard: React.FC<PatientCardProps> = ({ name, age, rrn }) => {
+  const { data } = useGetTokenByAuthQuery({
+    id: 'abcde',
+    pwd: 'abcde12345!@#',
+  });
   return (
     <Card sx={{ minWidth: 275 }}>
       <CardHeader
@@ -23,7 +28,7 @@ const PatientCard: React.FC<PatientCardProps> = ({ name, age, rrn }) => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={`${name} (${age}세)`}
+        title={`${data?.accessToken} (${age}세)`}
         subheader={rrn}
       />
     </Card>

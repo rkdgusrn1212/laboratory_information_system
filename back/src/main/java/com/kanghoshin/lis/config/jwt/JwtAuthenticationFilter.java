@@ -2,6 +2,8 @@ package com.kanghoshin.lis.config.jwt;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -69,6 +71,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 		
-		response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
+		response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+        Map<String, String> payload = new HashMap<>();
+        payload.put("accessToken", JwtProperties.TOKEN_PREFIX+jwtToken);
+		response.getWriter().print(new ObjectMapper().writeValueAsString(payload));
 	}
 }

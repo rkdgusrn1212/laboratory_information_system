@@ -9,7 +9,9 @@
     "allowJs": true,
     "removeComments": true,
     "jsx": "react-jsx",
-    "outDir": "build"
+    "outDir": "build",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": ["src/"],
   "exclude": ["node_modules/", "build/"]

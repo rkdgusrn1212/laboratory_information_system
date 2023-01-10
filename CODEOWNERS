@@ -4,9 +4,6 @@
 # 메인 README 마크다운 소유
 /README.md @rkdgusrn1212
 
-# Front 앱 설정 파일 및 기본 스크립트 소유
-/front/* @rkdgusrn1212
-
 # 메인 설정 파일 소유
 /* @rkdgusrn1212
 
@@ -26,3 +23,15 @@
 /back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
 /sql/auth.sql @rkdgusrn1212
+
+# Front 앱 설정 파일 및 기본 스크립트 소유
+/front/* @rkdgusrn1212
+
+# 프론트 index, 라우팅(app)파일등의 루트파일
+
+/front/src/* @rkdgusrn1212
+
+# 프론트 인증 API
+
+/front/src/services/authApi.ts @rkdgusrn1212
+/front/src/services/types.ts @rkdgusrn1212

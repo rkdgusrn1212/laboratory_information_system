@@ -19,5 +19,4 @@ public class BackApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		//여기다 테스트
 	}
-
 }
