@@ -12,7 +12,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.kanghoshin.lis.config.jwt.JwtAuthenticationFilter;
 import com.kanghoshin.lis.config.jwt.JwtAuthorizationFilter;
-import com.kanghoshin.lis.dao.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 
