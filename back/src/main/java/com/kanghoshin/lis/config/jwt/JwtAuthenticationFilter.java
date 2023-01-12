@@ -79,8 +79,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
-		Map<String, String> payload = new HashMap<>();
+
+		Map<String, Object> principalMap = new HashMap<>();
+
+		principalMap.put("name", principalDetails.getName());
+		principalMap.put("birth", principalDetails.getPhone());
+		principalMap.put("male", principalDetails.isMale());
+		principalMap.put("phone", principalDetails.getPhone());
+		principalMap.put("email",principalDetails.getEmail());
+		principalMap.put("image",principalDetails.getImage());
+		principalMap.put("type",principalDetails.getType());
+
+		Map<String, Object> payload = new HashMap<>();
 		payload.put("accessToken", JwtProperties.TOKEN_PREFIX+jwtToken);
+		payload.put("principal", principalMap);
+
 		response.getWriter().print(new ObjectMapper().writeValueAsString(payload));
 	}
 }
