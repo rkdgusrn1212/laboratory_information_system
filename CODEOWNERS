@@ -35,4 +35,4 @@
 # 프론트 인증 API
 
 /front/src/services/authApi.ts @rkdgusrn1212
-/front/src/services/types.ts @rkdgusrn1212
+/front/src/services/authSlice.ts @rkdgusrn1212
