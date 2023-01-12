@@ -23,7 +23,6 @@ public class SecurityConfig{
 
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final CorsConfig corsConfig;
-	private final MemberMapper memberMapper;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +34,7 @@ public class SecurityConfig{
 				.formLogin().disable()
 				.httpBasic().disable()
 				.addFilter(createJwtAuthenticationFilter())
-				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild(), memberMapper))
+				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild()))
 				.authorizeRequests()
 				.antMatchers("/api/user/**")
 				.access("hasRole('ROLE_DOC') or hasRole('ROLE_NUR')")

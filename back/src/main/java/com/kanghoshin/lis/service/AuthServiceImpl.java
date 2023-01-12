@@ -19,8 +19,8 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public boolean signUp(SignUpDto signUpDto) {
 		try {
-			return memberMapper.insert(signUpDto.getMemberId(), passwordEncoder.encode(signUpDto.getMemberPassword()), signUpDto.getMemberName(), signUpDto.getMemberBirth(),
-					signUpDto.getMemberSex(), signUpDto.getMemberPhone(), signUpDto.getMemberEmail(), signUpDto.getMemberImage(),signUpDto.getMemberType())>0;
+			return memberMapper.insert(signUpDto.getId(), passwordEncoder.encode(signUpDto.getPassword()), signUpDto.getName(), signUpDto.getBirth(),
+					signUpDto.isMale(), signUpDto.getPhone(), signUpDto.getEmail(), signUpDto.getImage(),signUpDto.getType())>0;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
