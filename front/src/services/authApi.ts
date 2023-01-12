@@ -6,13 +6,16 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${server.host}/api/auth/` }),
   reducerPath: 'authApi',
   endpoints: (builder) => ({
-    getTokenByAuth: builder.query<JWT, Auth>({
+    signin: builder.query<JWT, Auth>({
       query: (auth) => ({
         body: auth,
         method: 'Post',
         url: 'signin',
       }),
     }),
+    signout: builder.query<void, void>({
+      query: () => ({}),
+    }),
   }),
 });
-export const { useGetTokenByAuthQuery } = authApi;
+export const { useSigninQuery } = authApi;

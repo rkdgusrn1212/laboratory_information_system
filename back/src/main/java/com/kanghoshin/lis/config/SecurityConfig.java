@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.kanghoshin.lis.config.jwt.JwtAuthenticationFilter;
 import com.kanghoshin.lis.config.jwt.JwtAuthorizationFilter;
-import com.kanghoshin.lis.dao.AuthMapper;
+import com.kanghoshin.lis.dao.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +23,7 @@ public class SecurityConfig{
 
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final CorsConfig corsConfig;
-	private final AuthMapper authMapper;
+	private final MemberMapper memberMapper;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +35,7 @@ public class SecurityConfig{
 				.formLogin().disable()
 				.httpBasic().disable()
 				.addFilter(createJwtAuthenticationFilter())
-				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild(), authMapper))
+				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild(), memberMapper))
 				.authorizeRequests()
 				.antMatchers("/api/user/**")
 				.access("hasRole('ROLE_DOC') or hasRole('ROLE_NUR')")
@@ -47,7 +47,7 @@ public class SecurityConfig{
 				.and()
 				.build();
 	}
-	
+
 	private JwtAuthenticationFilter createJwtAuthenticationFilter() {
 		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild());	
 		jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/signin");

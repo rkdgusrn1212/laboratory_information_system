@@ -13,17 +13,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
-import com.kanghoshin.lis.dao.AuthMapper;
-import com.kanghoshin.lis.model.AuthVo;
+import com.kanghoshin.lis.dao.MemberMapper;
+import com.kanghoshin.lis.model.MemberVo;
 
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 
-	private AuthMapper authMapper;
+	private MemberMapper memberMapper;
 
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, AuthMapper authMapper) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberMapper memberMapper) {
 		super(authenticationManager);
-		this.authMapper = authMapper;
+		this.memberMapper = memberMapper;
 	}
 
 	@Override
@@ -41,9 +41,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
 				.getSubject();
 		if(username != null) {	
-			AuthVo autoVo = authMapper.findById(username);
+			MemberVo memberVo = memberMapper.findById(username);
 
-			PrincipalDetails principalDetails = new PrincipalDetails(autoVo);
+			PrincipalDetails principalDetails = new PrincipalDetails(memberVo);
 			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(
 							principalDetails, //나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편함.
