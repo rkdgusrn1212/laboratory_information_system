@@ -12,7 +12,7 @@ import com.kanghoshin.lis.model.MemberVo;
 public interface MemberMapper {
 
 	@Select("SELECT member_id as id, member_password as password,"
-			+ "member_name as name, member_birth as birth, member_sex as sex, member_phone as phone,"
+			+ "member_name as name, member_birth as birth, member_male as male, member_phone as phone,"
 			+ "member_email as email, member_image as image,"
 			+ "member_type as type  FROM member WHERE member_id = #{member_id}")
 	MemberVo findById(@Param("member_id") String memberId);
@@ -22,20 +22,20 @@ public interface MemberMapper {
 			+ " #{member_password},"
 			+ " #{member_name},"
 			+ " #{member_birth},"
-			+ " #{member_sex},"
+			+ " #{member_male},"
 			+ " #{member_phone},"
 			+ " #{member_email},"
 			+ " #{member_image},"
 			+ " #{member_type})")
 	int insert(
-			@Param("member_id") String memberId,
-			@Param("member_password") String memberPassword,
-			@Param("member_name") String memberName,
-			@Param("member_birth") Date memberBirth,
-			@Param("member_sex") int memberSex,
-			@Param("member_phone") String memberPhone,
-			@Param("member_email") String mamberEmail,
-			@Param("member_image") String memberImage,
-			@Param("member_type") int memberType);
+			@Param("member_id") String id,
+			@Param("member_password") String password,
+			@Param("member_name") String name,
+			@Param("member_birth") Date birth,
+			@Param("member_male") boolean male,
+			@Param("member_phone") String phone,
+			@Param("member_email") String email,
+			@Param("member_image") String image,
+			@Param("member_type") int type);
 
 }

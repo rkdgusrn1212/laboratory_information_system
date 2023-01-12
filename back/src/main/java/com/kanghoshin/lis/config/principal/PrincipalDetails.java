@@ -50,4 +50,28 @@ public class PrincipalDetails implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
+	
+	public String getEmail() {
+		return memberVo.getEmail();
+	}
+
+	public String getPhone() {
+		return memberVo.getPhone();
+	}
+	
+	public String getName() {
+		return memberVo.getName();
+	}
+	
+	public String getImage() {
+		return memberVo.getImage();
+	}
+	
+	public int getType() {
+		return memberVo.getType();
+	}
+	
+	public boolean isMale() {
+		return memberVo.isMale();
+	}
 }

@@ -22,9 +22,8 @@ public class MemberVo {
 	@Size(min = 1, max = 40)
 	private String id;
 
-	@NotNull
 	@Size(min=60, max=60)
-	private String password;
+	private String password;//null은 인증 불가상태
 
 	@NotBlank(message="이름이 비어있음")
 	@Size(max=40, message="이름은 40글자 이하")
@@ -33,7 +32,7 @@ public class MemberVo {
 	@NotNull(message="생일이 비어있음")
 	private Date birth;
 
-	private boolean sex;
+	private boolean male;
 
 	@NotNull(message="전화번호가 비어있음")
 	@Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 안맞음")

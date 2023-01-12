@@ -12,18 +12,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
-import com.kanghoshin.lis.dao.MemberMapper;
 import com.kanghoshin.lis.model.MemberVo;
 
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 
-	private MemberMapper memberMapper;
-
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, MemberMapper memberMapper) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
-		this.memberMapper = memberMapper;
 	}
 
 	@Override
@@ -38,12 +35,23 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 				.replace(JwtProperties.TOKEN_PREFIX, "");
 		// 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
 		// 내가 SecurityContext에 집적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는 loadByUsername이 호출됨.
-		String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
-				.getSubject();
-		if(username != null) {	
-			MemberVo memberVo = memberMapper.findById(username);
+		DecodedJWT decodedJwt = null;
+		try {
+			decodedJwt = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token);
+		}catch(Exception e) {
 
-			PrincipalDetails principalDetails = new PrincipalDetails(memberVo);
+		}
+		if(decodedJwt != null) {
+			PrincipalDetails principalDetails = new PrincipalDetails(new MemberVo(
+					decodedJwt.getSubject(), null,
+					decodedJwt.getClaim("name").asString(),
+					decodedJwt.getClaim("birth").asDate(),
+					decodedJwt.getClaim("male").asBoolean(),
+					decodedJwt.getClaim("phone").asString(),
+					decodedJwt.getClaim("email").asString(),
+					decodedJwt.getClaim("image").asString(),
+					decodedJwt.getClaim("type").asInt()
+					));
 			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(
 							principalDetails, //나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편함.
