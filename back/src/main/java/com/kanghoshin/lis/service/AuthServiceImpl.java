@@ -1,12 +1,11 @@
 package com.kanghoshin.lis.service;
 
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.kanghoshin.lis.dao.AuthMapper;
-import com.kanghoshin.lis.model.AuthVo;
-import com.kanghoshin.lis.model.SignInDto;
+
+import com.kanghoshin.lis.dao.MemberMapper;
+import com.kanghoshin.lis.model.SignUpDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,20 +13,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-	private final AuthMapper authMapper;
+	private final MemberMapper memberMapper;
 	private final PasswordEncoder passwordEncoder;
 
 	@Override
-	public boolean signUp(SignInDto signInDto) {
+	public boolean signUp(SignUpDto signUpDto) {
 		try {
-			return authMapper.insert(signInDto.getId(), passwordEncoder.encode(signInDto.getPwd()), signInDto.getRole())>0;
-		}catch(DataIntegrityViolationException e){
+			memberMapper.insert(signUpDto.getMemberId(), passwordEncoder.encode(signUpDto.getMemberPassword()), signUpDto.getMemberName(), signUpDto.getMemberBirth(),
+					signUpDto.getMemberSex(), signUpDto.getMemberPhone(), signUpDto.getMemberEmail(), signUpDto.getMemberImage(),signUpDto.getMemberType());
+		}catch(Exception e){
+			e.printStackTrace();
 			return false;
 		}
+		return true;
 	}
+	
 	
 	@Override
 	public boolean isDuplicatedId(String id) {
-		return authMapper.findById(id)!=null;
+		return memberMapper.findByMemberId(id)!=null;
 	}
 }
