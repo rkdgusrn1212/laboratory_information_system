@@ -41,7 +41,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
 				.getSubject();
 		if(username != null) {	
-			MemberVo memberVo = memberMapper.findByMemberId(username);
+			MemberVo memberVo = memberMapper.findById(username);
 
 			PrincipalDetails principalDetails = new PrincipalDetails(memberVo);
 			Authentication authentication =

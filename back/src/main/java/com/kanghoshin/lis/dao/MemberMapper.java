@@ -6,14 +6,16 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
 import com.kanghoshin.lis.model.MemberVo;
 
 @Mapper
 public interface MemberMapper {
 
-	@Select("SELECT * FROM member WHERE member_id = #{member_id}")
-	MemberVo findByMemberId(@Param("member_id") String memberId);
+	@Select("SELECT member_id as id, member_password as password,"
+			+ "member_name as name, member_birth as birth, member_sex as sex, member_phone as phone,"
+			+ "member_email as email, member_image as image,"
+			+ "member_type as type  FROM member WHERE member_id = #{member_id}")
+	MemberVo findById(@Param("member_id") String memberId);
 
 	@Insert("INSERT INTO member VALUES("
 			+ "#{member_id},"

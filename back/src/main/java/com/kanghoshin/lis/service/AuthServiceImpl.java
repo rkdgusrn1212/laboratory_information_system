@@ -19,18 +19,17 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public boolean signUp(SignUpDto signUpDto) {
 		try {
-			memberMapper.insert(signUpDto.getMemberId(), passwordEncoder.encode(signUpDto.getMemberPassword()), signUpDto.getMemberName(), signUpDto.getMemberBirth(),
-					signUpDto.getMemberSex(), signUpDto.getMemberPhone(), signUpDto.getMemberEmail(), signUpDto.getMemberImage(),signUpDto.getMemberType());
+			return memberMapper.insert(signUpDto.getMemberId(), passwordEncoder.encode(signUpDto.getMemberPassword()), signUpDto.getMemberName(), signUpDto.getMemberBirth(),
+					signUpDto.getMemberSex(), signUpDto.getMemberPhone(), signUpDto.getMemberEmail(), signUpDto.getMemberImage(),signUpDto.getMemberType())>0;
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
 		}
-		return true;
 	}
 	
 	
 	@Override
 	public boolean isDuplicatedId(String id) {
-		return memberMapper.findByMemberId(id)!=null;
+		return memberMapper.findById(id)!=null;
 	}
 }

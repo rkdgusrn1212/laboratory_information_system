@@ -18,7 +18,7 @@ public class PrincipalDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		System.out.println("PrincipalDetailsService : 진입");
-		MemberVo authVo = memberMapper.findByMemberId(username);
-		return new PrincipalDetails(authVo);
+		MemberVo memberVo = memberMapper.findById(username);
+		return new PrincipalDetails(memberVo);
 	}
 }
