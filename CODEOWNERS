@@ -17,9 +17,10 @@
 /back/src/main/java/com/kanghoshin/lis/config/jwt/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/principal/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/model/AuthVo.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/MemberMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/model/MemberVo.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/model/SignInDto.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/model/SignUpDto.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
 /sql/auth.sql @rkdgusrn1212
