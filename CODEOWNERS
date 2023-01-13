@@ -36,3 +36,7 @@
 
 /front/src/services/authApi.ts @rkdgusrn1212
 /front/src/services/authSlice.ts @rkdgusrn1212
+
+# 로그인 페이지
+/front/src/components/signin/SigninForm.tsx @rkdgusrn1212
+/front/src/pages/SigninPage.tsx @rkdgusrn1212
