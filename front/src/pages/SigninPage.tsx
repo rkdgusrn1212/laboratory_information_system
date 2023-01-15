@@ -1,7 +1,26 @@
+import { CssBaseline } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material';
 import styled from '@emotion/styled';
-import { Typography } from '@mui/material';
-import { Stack } from '@mui/system';
+import Typography from '@mui/material/Typography';
 import SigninForm from '../components/signin/SigninForm';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      light: '#69dbff',
+      main: '#00aaff',
+      dark: '#007bcb',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#33ab9f',
+      main: '#009688',
+      dark: '#00695f',
+      contrastText: '#fff',
+    },
+  },
+});
 
 const SigninContainer = styled.div`
   background-image: url('/images/main_bg.jpg');
@@ -23,17 +42,31 @@ const SigninInnerContainer = styled.div`
 
 const SigninPage = () => {
   return (
-    <SigninContainer>
-      <SigninInnerContainer>
-        <Typography fontFamily="fantasy" textAlign="center" variant="h2">
-          <i>KHS</i>
-        </Typography>
-        <Typography mb={3} fontFamily="fantasy" textAlign="center" variant="h5">
-          Laboratory Information System
-        </Typography>
-        <SigninForm />
-      </SigninInnerContainer>
-    </SigninContainer>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <SigninContainer>
+        <SigninInnerContainer>
+          <Typography
+            color="white"
+            fontFamily="fantasy"
+            textAlign="center"
+            variant="h2"
+          >
+            <i>KHS</i>
+          </Typography>
+          <Typography
+            color="white"
+            mb={3}
+            fontFamily="fantasy"
+            textAlign="center"
+            variant="h5"
+          >
+            Laboratory Information System
+          </Typography>
+          <SigninForm />
+        </SigninInnerContainer>
+      </SigninContainer>
+    </ThemeProvider>
   );
 };
 export default SigninPage;
