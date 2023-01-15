@@ -10,19 +10,21 @@ import MemberDetailForm from './MemberDetailForm';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
+import ValidationForm from './ValidationForm';
 
-const steps = ['직책 선택', '필수정보 입력', '계정 생성'];
+const steps = ['본인인증', '직책 선택', '필수정보 입력', '가입완료'];
 
 const InnerForm: React.FC<{ activeStep: number }> = ({ activeStep }) => {
   switch (activeStep) {
     case 0:
-      return <MemberTypeForm />;
+      return <ValidationForm />;
     case 1:
-      return <MemberDetailForm />;
+      return <MemberTypeForm />;
     case 2:
-      return <></>;
+      return <MemberDetailForm />;
     default:
       return null;
   }
@@ -30,27 +32,13 @@ const InnerForm: React.FC<{ activeStep: number }> = ({ activeStep }) => {
 
 const SignupForm: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [skipped, setSkipped] = useState(new Set<number>());
-
-  const isStepSkipped = (step: number) => {
-    return skipped.has(step);
-  };
+  const navigate = useNavigate();
 
   const handleNext = () => {
-    let newSkipped = skipped;
-    if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
-    }
-
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
   };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-  const handleReset = () => {
-    setActiveStep(0);
   };
 
   return (
@@ -58,61 +46,71 @@ const SignupForm: React.FC = () => {
       <Logo size={30} sx={{ mt: 3 }} />
       <Box sx={{ mt: 3, display: 'inline-flex', alignItems: 'center', gap: 1 }}>
         <AssignmentIndIcon fontSize="large" />
-        <Typography variant="h5">회원가입</Typography>
+        <Typography variant="h5">가입신청</Typography>
       </Box>
       <Divider />
       <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3 }}>
-        {steps.map((label, index) => {
+        {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
-          const labelProps: {
-            optional?: React.ReactNode;
-          } = {};
-          if (isStepSkipped(index)) {
-            stepProps.completed = false;
-          }
           return (
             <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps}>{label}</StepLabel>
+              <StepLabel>{label}</StepLabel>
             </Step>
           );
         })}
       </Stepper>
-      {activeStep === steps.length ? (
-        <>
-          <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleReset}>Reset</Button>
-          </Box>
-        </>
-      ) : (
-        <>
-          <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-          <InnerForm activeStep={activeStep} />
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
-              color="inherit"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: '1 1 auto' }} />
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
-        </>
-      )}
-      <Box sx={{ mt: 3, mb: 3, display: 'inline-flex', gap: 1 }}>
-        <Typography variant="body2">이미 계정이 있으신가요?</Typography>
-        <Link href="/" variant="body2">
-          로그인하기
-        </Link>
+      <Box sx={{ mt: 5 }}>
+        {activeStep === steps.length ? (
+          <>
+            <Typography sx={{ mt: 2, mb: 1 }}>
+              <b>KHS 진단검사시스템</b> 가입이 신청되었습니다. 관리자의 최종
+              승인 후 사용 가능합니다.
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
+              <Box sx={{ flex: '1 1 auto' }} />
+              <Button
+                onClick={() => {
+                  navigate('/', { replace: true });
+                }}
+                fullWidth
+                variant="contained"
+              >
+                <b>로그인 화면</b>으로 돌아가기
+              </Button>
+            </Box>
+          </>
+        ) : (
+          <>
+            <InnerForm activeStep={activeStep} />
+            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
+              <Button
+                color="inherit"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                이전
+              </Button>
+              <Box sx={{ flex: '1 1 auto' }} />
+              <Button variant="contained" onClick={handleNext}>
+                {activeStep === steps.length - 1 ? '가입하기' : '다음'}
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
+      {activeStep === steps.length || (
+        <Box sx={{ mt: 3, mb: 3, display: 'inline-flex', gap: 1 }}>
+          <Typography variant="body2">이미 계정이 있으신가요?</Typography>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => navigate('/', { replace: true })}
+          >
+            로그인하기
+          </Link>
+        </Box>
+      )}
     </Paper>
   );
 };
