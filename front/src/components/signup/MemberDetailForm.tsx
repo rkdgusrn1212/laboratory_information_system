@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const MemberDetailForm = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -16,35 +17,32 @@ const MemberDetailForm = () => {
   return (
     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            autoComplete="given-name"
-            name="firstName"
-            required
-            fullWidth
-            id="firstName"
-            label="First Name"
-            autoFocus
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid
+          item
+          xs={12}
+          sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}
+        >
           <TextField
             required
             fullWidth
-            id="lastName"
-            label="Last Name"
-            name="lastName"
-            autoComplete="family-name"
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            id="id"
+            label="아이디"
+            name="id"
+            autoComplete="username"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    size="small"
+                    sx={{ whiteSpace: 'nowrap' }}
+                    variant="text"
+                    color="secondary"
+                  >
+                    중복확인
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
           />
         </Grid>
         <Grid item xs={12}>
@@ -52,16 +50,45 @@ const MemberDetailForm = () => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="비밀번호"
             type="password"
             id="password"
             autoComplete="new-password"
           />
         </Grid>
+        <Grid item xs={12}>
+          <TextField
+            required
+            fullWidth
+            name="password2"
+            label="비밀번호 확인"
+            type="password"
+            id="password2"
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            autoComplete="name"
+            name="name"
+            required
+            fullWidth
+            id="name"
+            label="성명"
+            autoFocus
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            autoComplete="tel"
+            name="tel"
+            required
+            fullWidth
+            id="tel"
+            label="전화번호"
+            autoFocus
+          />
+        </Grid>
       </Grid>
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Sign Up
-      </Button>
     </Box>
   );
 };
