@@ -1,9 +1,7 @@
-import { CssBaseline } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material';
-import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
 import SignupForm from '../components/signup/SignupForm';
 
 const theme = createTheme({
@@ -28,15 +26,29 @@ const SignupPage = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container component="main" maxWidth="xs">
-        <SignupForm />
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Typography variant="body2">이미 계정이 있으신가요?</Typography>
-          <Link href="/signup" variant="body2">
-            로그인하기
-          </Link>
-        </Box>
-      </Container>
+      <Box
+        sx={{
+          width: '100%',
+          height: '100vh',
+          backgroundPosition: 'center',
+          backgroundSize: 'cover',
+        }}
+      >
+        <Container
+          component="main"
+          maxWidth="sm"
+          sx={{
+            width: '100%',
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: '80px',
+          }}
+        >
+          <SignupForm />
+        </Container>
+      </Box>
     </ThemeProvider>
   );
 };

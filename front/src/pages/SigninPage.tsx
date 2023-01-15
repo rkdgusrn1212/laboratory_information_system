@@ -1,8 +1,8 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material';
 import styled from '@emotion/styled';
-import Typography from '@mui/material/Typography';
 import SigninForm from '../components/signin/SigninForm';
+import Logo from '../components/common/Logo';
 
 const theme = createTheme({
   palette: {
@@ -46,23 +46,7 @@ const SigninPage = () => {
       <CssBaseline />
       <SigninContainer>
         <SigninInnerContainer>
-          <Typography
-            color="white"
-            fontFamily="fantasy"
-            textAlign="center"
-            variant="h2"
-          >
-            <i>KHS</i>
-          </Typography>
-          <Typography
-            color="white"
-            mb={3}
-            fontFamily="fantasy"
-            textAlign="center"
-            variant="h5"
-          >
-            Laboratory Information System
-          </Typography>
+          <Logo darkMode={true} size={60} />
           <SigninForm />
         </SigninInnerContainer>
       </SigninContainer>
