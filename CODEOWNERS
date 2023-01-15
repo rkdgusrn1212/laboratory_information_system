@@ -38,5 +38,13 @@
 /front/src/services/authSlice.ts @rkdgusrn1212
 
 # 로그인 페이지
-/front/src/components/signin/SigninForm.tsx @rkdgusrn1212
+/front/src/components/signin/* @rkdgusrn1212
 /front/src/pages/SigninPage.tsx @rkdgusrn1212
+
+# 로고
+/front/src/components/common/Logo.tsx @rkdgusrn1212
+
+# 회원가입 페이지
+/front/src/pages/SignupPage.tsx @rkdgusrn1212
+/front/src/components/signup/* @rkdgusrn1212
+
