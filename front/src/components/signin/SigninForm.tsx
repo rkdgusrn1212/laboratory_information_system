@@ -20,7 +20,7 @@ const theme = createTheme({
       light: '#69dbff',
       main: '#00aaff',
       dark: '#007bcb',
-      contrastText: '#000',
+      contrastText: '#fff',
     },
     secondary: {
       light: '#33ab9f',
@@ -53,9 +53,6 @@ const SigninForm = () => {
           }}
         >
           <LockPersonOutlined fontSize="large" color="warning" sx={{ mb: 2 }} />
-          <Typography component="h1" variant="h5">
-            로그인
-          </Typography>
           <Box
             component="form"
             onSubmit={handleSubmit}
