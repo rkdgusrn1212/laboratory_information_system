@@ -7,7 +7,6 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
   const data = new FormData(event.currentTarget);
   console.log({
     email: data.get('email'),
-    password: data.get('password'),
   });
 };
 
@@ -18,12 +17,18 @@ const ValidationForm: React.FC = () => {
         required
         fullWidth
         id="email"
-        label="Email Address"
+        label="이메일"
         name="email"
         autoComplete="email"
       />
-      <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-        Sign Up
+      <Button
+        type="submit"
+        fullWidth
+        color="secondary"
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+      >
+        인증번호 발송
       </Button>
     </Box>
   );
