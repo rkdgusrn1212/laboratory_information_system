@@ -3,6 +3,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import PrescriptionForm from '../components/order/PrescriptionForm';
+import { useState } from 'react';
+import { Patient } from '../services/types';
 
 const theme = createTheme({
   palette: {
@@ -26,18 +28,21 @@ const theme = createTheme({
 });
 
 const OrderPage: React.FC = () => {
+  const [selected, setSelected] = useState<Patient | null>(null);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container gap={1} sx={{ p: 1, height: '100vh' }}>
-        <Grid item sx={{ height: '100%' }}>
+      <Grid container height={'100vh'} spacing={1} sx={{ p: 1 }}>
+        <Grid item xs={12} md={6} xl={3} sx={{ height: '100%' }}>
           <PatientPicker
             onSelected={(item) => {
-              alert(JSON.stringify(item));
+              setSelected(item);
             }}
           />
         </Grid>
-        <Grid item>{/* <PrescriptionForm patient={null} /> */}</Grid>
+        <Grid item xs={12} md={6} xl={9}>
+          <PrescriptionForm patient={selected} />
+        </Grid>
       </Grid>
     </ThemeProvider>
   );

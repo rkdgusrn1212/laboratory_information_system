@@ -4,7 +4,6 @@ import PatientPickerInput from './PatientPickerInput';
 import PatientPickerList from './PatientPickerList';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import { ReactEventHandler } from 'react';
 import { Patient } from '../../services/types';
 
 const dummyPatient = [
