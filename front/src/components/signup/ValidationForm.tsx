@@ -29,16 +29,7 @@ const ValidationForm: React.FC = () => {
         name="email"
         autoComplete="email"
       />
-      <Button
-        type="submit"
-        fullWidth
-        color="secondary"
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-      >
-        인증번호 발송
-      </Button>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex', mt: 2 }}>
         <Grow in={validating}>
           <TextField
             required
@@ -50,6 +41,15 @@ const ValidationForm: React.FC = () => {
           />
         </Grow>
       </Box>
+      <Button
+        type="submit"
+        fullWidth
+        color="secondary"
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+      >
+        {validating ? '이메일 인증' : '인증번호 발송'}
+      </Button>
     </Box>
   );
 };

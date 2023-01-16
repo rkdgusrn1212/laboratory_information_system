@@ -15,16 +15,16 @@ import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
 import ValidationForm from './ValidationForm';
 
-const steps = ['이메일 인증', '직책 선택', '필수정보 입력', '가입완료'];
+const steps = ['직책 선택', '필수정보 입력', '계정 인증'];
 
 const InnerForm: React.FC<{ activeStep: number }> = ({ activeStep }) => {
   switch (activeStep) {
     case 0:
-      return <ValidationForm />;
-    case 1:
       return <MemberTypeForm />;
-    case 2:
+    case 1:
       return <MemberDetailForm />;
+    case 2:
+      return <ValidationForm />;
     default:
       return null;
   }
