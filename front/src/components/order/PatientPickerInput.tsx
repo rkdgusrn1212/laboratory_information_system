@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 
 const PatientPickerInput: React.FC = () => {
-  const [condition, setCondition] = useState('');
+  const [condition, setCondition] = useState('name');
 
   const handleChange = (event: SelectChangeEvent) => {
     setCondition(event.target.value as string);
@@ -34,8 +34,8 @@ const PatientPickerInput: React.FC = () => {
           label="검색조건"
           onChange={handleChange}
         >
-          <MenuItem value={'no'}>환자번호</MenuItem>
           <MenuItem value={'name'}>성명</MenuItem>
+          <MenuItem value={'no'}>환자번호</MenuItem>
           <MenuItem value={'rnn'}>주민번호</MenuItem>
         </Select>
       </FormControl>

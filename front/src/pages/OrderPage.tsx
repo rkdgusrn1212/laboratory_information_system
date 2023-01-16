@@ -1,6 +1,8 @@
 import PatientPicker from '../components/order/PatientPicker';
-import { CssBaseline } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import PrescriptionForm from '../components/order/PrescriptionForm';
 
 const theme = createTheme({
   palette: {
@@ -27,7 +29,16 @@ const OrderPage: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <PatientPicker />
+      <Grid container gap={1} sx={{ p: 1, height: '100vh' }}>
+        <Grid item sx={{ height: '100%' }}>
+          <PatientPicker
+            onSelected={(item) => {
+              alert(JSON.stringify(item));
+            }}
+          />
+        </Grid>
+        <Grid item>{/* <PrescriptionForm patient={null} /> */}</Grid>
+      </Grid>
     </ThemeProvider>
   );
 };

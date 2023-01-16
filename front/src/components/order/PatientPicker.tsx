@@ -4,6 +4,8 @@ import PatientPickerInput from './PatientPickerInput';
 import PatientPickerList from './PatientPickerList';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import { ReactEventHandler } from 'react';
+import { Patient } from '../../services/types';
 
 const dummyPatient = [
   {
@@ -32,16 +34,17 @@ const dummyPatient = [
   },
 ];
 
-const PatientPicker = () => {
+const PatientPicker: React.FC<{
+  onSelected: (patient: Patient) => void;
+}> = ({ onSelected }) => {
   return (
-    <Paper sx={{ p: 3, m: 1 }}>
+    <Paper sx={{ p: 3, height: '100%' }}>
       <Typography variant="h5">환자 선택</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <PatientPickerInput />
       </Box>
-
       <Divider sx={{ mb: 2 }} />
-      <PatientPickerList data={dummyPatient} />
+      <PatientPickerList onSelected={onSelected} data={dummyPatient} />
     </Paper>
   );
 };
