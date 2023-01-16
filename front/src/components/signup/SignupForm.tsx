@@ -15,7 +15,7 @@ import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
 import ValidationForm from './ValidationForm';
 
-const steps = ['본인인증', '직책 선택', '필수정보 입력', '가입완료'];
+const steps = ['이메일 인증', '직책 선택', '필수정보 입력', '가입완료'];
 
 const InnerForm: React.FC<{ activeStep: number }> = ({ activeStep }) => {
   switch (activeStep) {
