@@ -1,5 +1,10 @@
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
 import PatientPickerInput from './PatientPickerInput';
 import PatientPickerList from './PatientPickerList';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+
 const dummyPatient = [
   {
     no: 'P0001',
@@ -29,10 +34,15 @@ const dummyPatient = [
 
 const PatientPicker = () => {
   return (
-    <>
-      <PatientPickerInput />
+    <Paper sx={{ p: 3, m: 1 }}>
+      <Typography variant="h5">환자 선택</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <PatientPickerInput />
+      </Box>
+
+      <Divider sx={{ mb: 2 }} />
       <PatientPickerList data={dummyPatient} />
-    </>
+    </Paper>
   );
 };
 export default PatientPicker;
