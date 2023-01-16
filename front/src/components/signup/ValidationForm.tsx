@@ -51,7 +51,7 @@ const ValidationForm: React.FC = () => {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          '인증번호 발송'
+          인증번호 발송
         </Button>
       )}
     </Box>
