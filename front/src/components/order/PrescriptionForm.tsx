@@ -31,8 +31,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
           <Grid item xs={12}>
             <Typography variant="h6">처방 환자</Typography>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={3} xl={1}>
             <TextField
+              fullWidth
               size="small"
               type="text"
               label="환자번호"
@@ -40,8 +41,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               value={patient?.no}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={9} xl={3.5}>
             <TextField
+              fullWidth
               size="small"
               type="text"
               label="성명"
@@ -49,8 +51,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               value={patient?.name}
             />
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={4} xl={1.5}>
             <TextField
+              fullWidth
               type="number"
               size="small"
               disabled
@@ -66,8 +69,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               value={age}
             />
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={2} xl={1}>
             <TextField
+              fullWidth
               type="text"
               size="small"
               label="성별"
@@ -75,8 +79,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               value={patient?.male ? '남' : '여'}
             />
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={6} xl={5}>
             <TextField
+              fullWidth
               type="text"
               size="small"
               label="주민번호"
