@@ -14,7 +14,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
-import com.kanghoshin.lis.model.MemberVo;
+import com.kanghoshin.lis.vo.AuthVo;
+import com.kanghoshin.lis.vo.StaffVo;
+import com.kanghoshin.lis.vo.ValidationVo;
 
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
@@ -42,15 +44,24 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 
 		}
 		if(decodedJwt != null) {
-			PrincipalDetails principalDetails = new PrincipalDetails(new MemberVo(
-					decodedJwt.getSubject(), null,
-					decodedJwt.getClaim("name").asString(),
-					decodedJwt.getClaim("birth").asDate(),
-					decodedJwt.getClaim("male").asBoolean(),
-					decodedJwt.getClaim("phone").asString(),
-					decodedJwt.getClaim("email").asString(),
-					decodedJwt.getClaim("image").asString(),
-					decodedJwt.getClaim("type").asInt()
+			String authId = decodedJwt.getClaim("auth_id").asString();
+			int staffNo = decodedJwt.getClaim("staff_no").asInt();
+			PrincipalDetails principalDetails = new PrincipalDetails(
+					new ValidationVo(decodedJwt.getSubject(), null, authId),
+					new AuthVo(
+							decodedJwt.getClaim("auth_id").asString(), null,
+							decodedJwt.getClaim("auth_refresh").asString(), staffNo
+							),
+					new StaffVo(
+							staffNo,
+							decodedJwt.getClaim("staff_name").asString(),
+							decodedJwt.getClaim("staff_birth").asDate(),
+							decodedJwt.getClaim("staff_male").asBoolean(),
+							decodedJwt.getClaim("staff_phone").asString(),
+							decodedJwt.getClaim("staff_image").asString(),
+							decodedJwt.getClaim("staff_rrn").asString(),
+							decodedJwt.getClaim("staff_admitted").asBoolean(),
+							decodedJwt.getClaim("staff_type").asInt()
 					));
 			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(

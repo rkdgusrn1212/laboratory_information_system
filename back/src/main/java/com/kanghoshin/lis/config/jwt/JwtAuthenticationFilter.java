@@ -19,7 +19,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
-import com.kanghoshin.lis.model.SignInDto;
+import com.kanghoshin.lis.dto.auth.SignInDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,16 +64,20 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-
+		
 		String jwtToken = JWT.create()
-				.withSubject(principalDetails.getUsername())
-				.withClaim("name", principalDetails.getName())
-				.withClaim("birth", principalDetails.getPhone())
-				.withClaim("male", principalDetails.isMale())
-				.withClaim("phone", principalDetails.getPhone())
-				.withClaim("email",principalDetails.getEmail())
-				.withClaim("image",principalDetails.getImage())
-				.withClaim("type",principalDetails.getType())		
+				.withSubject(principalDetails.getEmail())
+				.withClaim("auth_id", principalDetails.getUsername())
+				.withClaim("auth_refresh", principalDetails.getRefresh())
+				.withClaim("staff_no", principalDetails.getStaffNo())
+				.withClaim("staff_name", principalDetails.getName())
+				.withClaim("staff_birth", principalDetails.getBirth())
+				.withClaim("staff_male", principalDetails.isMale())
+				.withClaim("staff_phone", principalDetails.getPhone())
+				.withClaim("staff_image",principalDetails.getImage())
+				.withClaim("staff_rrn",principalDetails.getRrn())
+				.withClaim("staff_admitted", principalDetails.getAdmitted())
+				.withClaim("staff_type",principalDetails.getType())		
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
