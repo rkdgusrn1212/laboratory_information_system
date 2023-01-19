@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.model;
+package com.kanghoshin.lis.dto.auth;
 
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

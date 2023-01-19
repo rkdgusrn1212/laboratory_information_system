@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.validation.annotation.Validated;
 
-import com.kanghoshin.lis.model.SignUpDto;
+import com.kanghoshin.lis.dto.auth.SignUpDto;
 
 @Validated
 public interface AuthService {
