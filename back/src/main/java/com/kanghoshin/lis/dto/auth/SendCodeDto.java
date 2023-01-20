@@ -1,6 +1,5 @@
 package com.kanghoshin.lis.dto.auth;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -13,10 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SendCodeDto {
-	
-	@NotBlank
-	@Size(min = 1, max = 40)
-	private String id;
 	
 	@NotNull(message="이메일이 비어있음")
 	@Size(max=350, message="이메일은 최대 350자")

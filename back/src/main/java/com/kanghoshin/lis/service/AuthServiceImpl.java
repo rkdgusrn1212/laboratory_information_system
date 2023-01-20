@@ -16,8 +16,6 @@ import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
 import com.kanghoshin.lis.dto.auth.SendCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
-import com.kanghoshin.lis.vo.ValidationVo;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -60,9 +58,6 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public boolean sendValidationCode(@Valid SendCodeDto sendCodeDto) {
 		try {
-			ValidationVo validationVo = validationMapper.findByEmail(sendCodeDto.getEmail());
-			if(!validationVo.getAuthId().equals(sendCodeDto.getId())) return false;
-
 			String code = UUID.randomUUID().toString();
 			validationMapper.updateCode(sendCodeDto.getEmail(), passwordEncoder.encode(code));
 			sendEmail(sendCodeDto.getEmail(), "[KHS] 이메일 인증번호 입니다.", code);
