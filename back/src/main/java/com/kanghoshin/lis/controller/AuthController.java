@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kanghoshin.lis.dto.auth.SendCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
 import com.kanghoshin.lis.service.AuthService;
 
@@ -22,5 +23,10 @@ public class AuthController {
 	@PostMapping("signup")
 	public boolean signup(@Valid @RequestBody SignUpDto signUpDto) {
 		return authService.signUp(signUpDto);
+	}
+	
+	@PostMapping("refresh-validation-code")
+	public boolean refreshValidationCode(@Valid @RequestBody SendCodeDto sendCodeDto) {
+		return authService.sendValidationCode(sendCodeDto);
 	}
 }
