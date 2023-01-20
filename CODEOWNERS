@@ -17,13 +17,18 @@
 /back/src/main/java/com/kanghoshin/lis/config/jwt/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/principal/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dao/MemberMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/model/MemberVo.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/model/SignInDto.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/model/SignUpDto.java @rkdgusrn1212
+
+/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/StaffMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/ValidationMapper.java @rkdgusrn1212
+
+/back/src/main/java/com/kanghoshin/lis/dto/auth/ @rkdgusrn1212
+
 /back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
-/sql/auth.sql @rkdgusrn1212
+
+# sql 파일 소유
+/sql/ @rkdgusrn1212
 
 # Front 앱 설정 파일 및 기본 스크립트 소유
 /front/* @rkdgusrn1212
