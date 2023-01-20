@@ -36,13 +36,14 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	public boolean signUp(SignUpDto signUpDto) {
 		try {
-			staffMapper.insert(signUpDto.getStaff());
-			authMapper.insert(signUpDto.getId(), passwordEncoder.encode(signUpDto.getPassword()), UUID.randomUUID().toString(), signUpDto.getStaff().getNo());
+			staffMapper.insertBySignUpDto(signUpDto);
+			authMapper.insert(signUpDto.getAuthId(), passwordEncoder.encode(signUpDto.getAuthPassword()),
+					UUID.randomUUID().toString(), signUpDto.getStaffNo());
 
 			String code = UUID.randomUUID().toString();
-			validationMapper.insert(signUpDto.getEmail(), passwordEncoder.encode(code), signUpDto.getId());
+			validationMapper.insert(signUpDto.getValidationEmail(), passwordEncoder.encode(code), signUpDto.getAuthId());
 			//성공적으로 삽입된 경우에만 발송
-			sendEmail(signUpDto.getEmail(), "[KHS] 이메일 인증번호 입니다.", code);
+			sendEmail(signUpDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
 
 			return true;
 		}catch(Exception e){

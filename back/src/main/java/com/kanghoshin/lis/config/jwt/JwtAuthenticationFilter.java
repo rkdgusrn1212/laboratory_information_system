@@ -46,8 +46,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		// 유저네임패스워드 토큰 생성
 		UsernamePasswordAuthenticationToken authenticationToken = 
 				new UsernamePasswordAuthenticationToken(
-						signInDto.getId(), 
-						signInDto.getPassword());
+						signInDto.getAuthId(), 
+						signInDto.getAuthPassword());
 
 		System.out.println("JwtAuthenticationFilter : 토큰생성완료");
 
