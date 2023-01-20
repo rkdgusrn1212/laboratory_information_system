@@ -53,8 +53,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
 DROP TABLE IF EXISTS `validation`;
 CREATE TABLE IF NOT EXISTS `validation` (
   `validation_email` varchar(320) NOT NULL,
-  `validation_code` char(60) NOT NULL,
-  `validation_success` bit(1) NOT NULL DEFAULT b'0',
+  `validation_code` char(60),
   `auth_id` varchar(40) NOT NULL,
   PRIMARY KEY (`validation_email`),
   KEY `FK_validation_auth` (`auth_id`),

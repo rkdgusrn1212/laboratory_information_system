@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kanghoshin.lis.dto.auth.SendCodeDto;
+import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
+import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
 import com.kanghoshin.lis.service.AuthService;
 
@@ -26,7 +27,12 @@ public class AuthController {
 	}
 	
 	@PostMapping("refresh-validation-code")
-	public boolean refreshValidationCode(@Valid @RequestBody SendCodeDto sendCodeDto) {
-		return authService.sendValidationCode(sendCodeDto);
+	public boolean refreshValidationCode(@Valid @RequestBody RefreshValidaitonCodeDto sendCodeDto) {
+		return authService.refreshValidationCode(sendCodeDto);
+	}
+	
+	@PostMapping("verify-validation-code")
+	public boolean verifyValidationCode(@Valid @RequestBody VerifyValidationCodeDto receiveCodeDto) {
+		return authService.verifyValidationCode(receiveCodeDto);
 	}
 }

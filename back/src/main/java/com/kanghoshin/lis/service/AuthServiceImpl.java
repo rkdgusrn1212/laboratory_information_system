@@ -14,8 +14,11 @@ import org.springframework.stereotype.Service;
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
-import com.kanghoshin.lis.dto.auth.SendCodeDto;
+import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
+import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
+import com.kanghoshin.lis.vo.ValidationVo;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -56,10 +59,10 @@ public class AuthServiceImpl implements AuthService {
 
 
 	@Override
-	public boolean sendValidationCode(@Valid SendCodeDto sendCodeDto) {
+	public boolean refreshValidationCode(@Valid RefreshValidaitonCodeDto sendCodeDto) {
 		try {
 			String code = UUID.randomUUID().toString();
-			validationMapper.updateCode(sendCodeDto.getEmail(), passwordEncoder.encode(code));
+			if(validationMapper.updateCode(sendCodeDto.getEmail(), passwordEncoder.encode(code))<1)return false;
 			sendEmail(sendCodeDto.getEmail(), "[KHS] 이메일 인증번호 입니다.", code);
 			return true;
 		}catch(Exception e) {
@@ -74,5 +77,17 @@ public class AuthServiceImpl implements AuthService {
 		message.setSubject(title);
 		message.setText(content);
 		emailSender.send(message);
+	}
+
+
+	@Override
+	public boolean verifyValidationCode(@Valid VerifyValidationCodeDto receiveCodeDto) {
+		try {
+			ValidationVo validationVo = validationMapper.findByEmail(receiveCodeDto.getEmail());
+			if(!passwordEncoder.matches(receiveCodeDto.getCode(), validationVo.getCode())) return false;
+			return validationMapper.updateCode(validationVo.getEmail(), null) > 0;
+		}catch(Exception e) {
+			return false;
+		}
 	}
 }

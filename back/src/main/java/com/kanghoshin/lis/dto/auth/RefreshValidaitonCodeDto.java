@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SendCodeDto {
+public class RefreshValidaitonCodeDto {
 	
 	@NotNull(message="이메일이 비어있음")
 	@Size(max=350, message="이메일은 최대 350자")
