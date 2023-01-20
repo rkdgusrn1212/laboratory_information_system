@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
 			validationMapper.insert(signUpDto.getEmail(), passwordEncoder.encode(code), signUpDto.getId());
 			//성공적으로 삽입된 경우에만 발송
 			sendEmail(signUpDto.getEmail(), "[KHS] 이메일 인증번호 입니다.", code);
-			
+
 			return true;
 		}catch(Exception e){
 			e.printStackTrace();
@@ -59,15 +59,19 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public boolean sendValidationCode(@Valid SendCodeDto sendCodeDto) {
-		ValidationVo validationVo = validationMapper.findByEmail(sendCodeDto.getEmail());
-		if(!validationVo.getAuthId().equals(sendCodeDto.getId())) return false;
-		
-		String code = UUID.randomUUID().toString();
-		validationMapper.updateCode(sendCodeDto.getEmail(), passwordEncoder.encode(code));
-		sendEmail(sendCodeDto.getEmail(), "[KHS] 이메일 인증번호 입니다.", code);
-		return false;
+		try {
+			ValidationVo validationVo = validationMapper.findByEmail(sendCodeDto.getEmail());
+			if(!validationVo.getAuthId().equals(sendCodeDto.getId())) return false;
+
+			String code = UUID.randomUUID().toString();
+			validationMapper.updateCode(sendCodeDto.getEmail(), passwordEncoder.encode(code));
+			sendEmail(sendCodeDto.getEmail(), "[KHS] 이메일 인증번호 입니다.", code);
+			return true;
+		}catch(Exception e) {
+			return false;
+		}
 	}
-	
+
 	private void sendEmail(String to, String title, String content) {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom(adminEmail);
