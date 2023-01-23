@@ -12,6 +12,18 @@ export interface SignInRequest {
   password: string;
 }
 
+export interface SignUpRequest {
+  authId: string;
+  authPassword: string;
+  validationEmail: string;
+  staffName: string;
+  staffBirth: Date;
+  staffPhone: string;
+  staffImage: string | null;
+  staffRrn: string;
+  staffType: number;
+}
+
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/auth/`,
@@ -33,7 +45,14 @@ export const authApi = createApi({
         url: 'signin',
       }),
     }),
+    signup: builder.mutation<boolean, SignUpRequest>({
+      query: (signUpResponse) => ({
+        body: signUpResponse,
+        method: 'Post',
+        url: 'signup',
+      }),
+    }),
   }),
 });
 export default authApi;
-export const { useSigninMutation } = authApi;
+export const { useSigninMutation, useSignupMutation } = authApi;

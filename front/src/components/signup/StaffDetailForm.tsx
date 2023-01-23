@@ -1,4 +1,11 @@
-import { useState, useCallback } from 'react';
+import {
+  useState,
+  useCallback,
+  forwardRef,
+  ForwardRefRenderFunction,
+  useImperativeHandle,
+  ChangeEventHandler,
+} from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
@@ -12,8 +19,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-const MemberDetailForm = () => {
-  const [birth, setBirth] = useState<Dayjs | null>(dayjs('1990-01-01'));
+const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
+  props,
+  ref,
+) => {
+  const [staffBirth, setStaffBirth] = useState<Dayjs | null>(
+    dayjs('1990-01-01'),
+  );
+  const [staffName, setStaffName] = useState<string>('');
+  const [authId, setAuthId] = useState<string>('');
+  const [authPassword, setAuthPassword] = useState<string>('');
+  const [staffPhone, setStaffPhone] = useState<string>('');
+  const [staffRrn, setStaffRrn] = useState<string>('');
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
 
   const handleMouseUpAndLeaveVisibility = useCallback(
@@ -23,6 +40,47 @@ const MemberDetailForm = () => {
 
   const handleMouseDownVisibility = useCallback(
     () => setPasswordVisibility(true),
+    [],
+  );
+
+  useImperativeHandle(ref, () => ({
+    authId,
+    authPassword,
+    staffName,
+    staffBirth: staffBirth?.toString(),
+    staffPhone,
+    staffRrn,
+  }));
+
+  const handleIdChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      setAuthId(event.target.value);
+    },
+    [],
+  );
+
+  const handlePasswordChange = useCallback<
+    ChangeEventHandler<HTMLInputElement>
+  >((event) => {
+    setAuthPassword(event.target.value);
+  }, []);
+
+  const handleNameChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      setStaffName(event.target.value);
+    },
+    [],
+  );
+  const handlePhoneChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      setStaffPhone(event.target.value);
+    },
+    [],
+  );
+  const handleRrnChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      setStaffRrn(event.target.value);
+    },
     [],
   );
 
@@ -40,6 +98,7 @@ const MemberDetailForm = () => {
             id="id"
             label="아이디"
             name="id"
+            onChange={handleIdChange}
             autoComplete="username"
             InputProps={{
               endAdornment: (
@@ -63,6 +122,7 @@ const MemberDetailForm = () => {
             fullWidth
             name="password"
             label="비밀번호"
+            onChange={handlePasswordChange}
             type={passwordVisiblity ? 'text' : 'password'}
             id="password"
             autoComplete="new-password"
@@ -91,12 +151,12 @@ const MemberDetailForm = () => {
               disableFuture
               label="생년월일"
               openTo="year"
-              value={birth}
+              value={staffBirth}
               views={['year', 'month', 'day']}
               onChange={(
                 newValue: React.SetStateAction<dayjs.Dayjs | null>,
               ) => {
-                setBirth(newValue);
+                setStaffBirth(newValue);
               }}
               renderInput={(params: TextFieldProps) => (
                 <TextField fullWidth {...params} />
@@ -110,6 +170,7 @@ const MemberDetailForm = () => {
             name="name"
             required
             fullWidth
+            onChange={handleNameChange}
             id="name"
             label="성명"
             autoFocus
@@ -123,6 +184,18 @@ const MemberDetailForm = () => {
             fullWidth
             id="tel"
             label="전화번호"
+            onChange={handlePhoneChange}
+            autoFocus
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="rrn"
+            required
+            fullWidth
+            onChange={handleRrnChange}
+            id="rrn"
+            label="주민번호"
             autoFocus
           />
         </Grid>
@@ -130,4 +203,4 @@ const MemberDetailForm = () => {
     </Box>
   );
 };
-export default MemberDetailForm;
+export default forwardRef(StaffDetailForm);

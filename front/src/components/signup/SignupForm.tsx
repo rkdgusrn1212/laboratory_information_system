@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback, FormEventHandler } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import MemberTypeForm from './MemberTypeForm';
-import MemberDetailForm from './MemberDetailForm';
+import StaffTypeForm from './StaffTypeForm';
+import StaffDetailForm from './StaffDetailForm';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
@@ -14,32 +15,65 @@ import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
 import ValidationForm from './ValidationForm';
+import { RootState, AppDispatch } from '../../store';
+import {
+  cancelDetails,
+  cancelEmail,
+  completeDetails,
+  completeEmail,
+  completeType,
+  DetailsForm,
+  reset,
+  SignupFormState,
+} from '../../services/signupFormSlice';
 
 const steps = ['직책 선택', '필수정보 입력', '이메일 인증'];
-
-const InnerForm: React.FC<{ activeStep: number }> = ({ activeStep }) => {
-  switch (activeStep) {
-    case 0:
-      return <MemberTypeForm />;
-    case 1:
-      return <MemberDetailForm />;
-    case 2:
-      return <ValidationForm />;
-    default:
-      return null;
-  }
-};
 
 const SignupForm: React.FC = () => {
   const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
+  const typeRef = useRef<number>(null);
+  const detailsRef = useRef<DetailsForm>(null);
+  const validationRef = useRef<string>(null);
+  const signupFormState: SignupFormState = useSelector(
+    (state: RootState) => state.signupForm,
+  );
+  const useAppDispatch = useDispatch<AppDispatch>();
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    console.log(signupFormState.status);
+    switch (signupFormState.status) {
+      case 'uninitialized':
+        useAppDispatch(completeType(typeRef.current as number));
+        break;
+      case 'typeCompleted':
+        useAppDispatch(completeDetails(detailsRef.current as DetailsForm));
+        break;
+      case 'detailsCompleted':
+        useAppDispatch(completeEmail(validationRef.current as string));
+        break;
+    }
   };
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    switch (signupFormState.status) {
+      case 'typeCompleted':
+        useAppDispatch(reset);
+        break;
+      case 'detailsCompleted':
+        useAppDispatch(cancelDetails);
+        break;
+      case 'emailCompleted':
+        useAppDispatch(cancelEmail);
+        break;
+    }
   };
+
+  const handleSubmitSignupForm = useCallback<FormEventHandler<HTMLFormElement>>(
+    (event) => {
+      event.preventDefault;
+    },
+    [],
+  );
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
@@ -81,7 +115,24 @@ const SignupForm: React.FC = () => {
           </>
         ) : (
           <>
-            <InnerForm activeStep={activeStep} />
+            {(() => {
+              switch (signupFormState.status) {
+                case 'uninitialized':
+                  return <StaffTypeForm ref={typeRef} />;
+                case 'typeCompleted':
+                  return <StaffDetailForm ref={detailsRef} />;
+                case 'detailsCompleted':
+                case 'emailCompleted':
+                  return (
+                    <ValidationForm
+                      ref={validationRef}
+                      handleSubmit={handleSubmitSignupForm}
+                    />
+                  );
+                default:
+                  return null;
+              }
+            })()}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
               <Button
                 color="inherit"

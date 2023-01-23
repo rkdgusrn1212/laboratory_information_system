@@ -1,11 +1,19 @@
-import { useState, useCallback } from 'react';
+import {
+  useState,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+  ForwardRefRenderFunction,
+} from 'react';
 import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { Avatar } from '@mui/material';
 
-const MemberTypeForm = () => {
+const StaffTypeForm: ForwardRefRenderFunction<unknown, any> = (props, ref) => {
   const [selectedType, setSelectedType] = useState(0);
+
+  useImperativeHandle(ref, () => selectedType);
 
   const handleChange = useCallback(
     (event: React.MouseEvent<HTMLElement>, newType: number) => {
@@ -56,4 +64,4 @@ const MemberTypeForm = () => {
     </ToggleButtonGroup>
   );
 };
-export default MemberTypeForm;
+export default forwardRef(StaffTypeForm);
