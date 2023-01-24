@@ -21,7 +21,8 @@ export interface SignupFormState {
     | 'uninitialized'
     | 'typeCompleted'
     | 'detailsCompleted'
-    | 'emailCompleted';
+    | 'emailCompleted'
+    | 'finished';
 }
 
 const initialState: SignupFormState = {
@@ -37,19 +38,16 @@ const signupFormSlice = createSlice({
       if (state.status !== 'uninitialized') {
         return;
       }
-      console.log('do completeType');
       state.form['staffType'] = action.payload;
       state.status = 'typeCompleted';
     },
     completeDetails: (state, action: PayloadAction<DetailsForm>) => {
       if (state.status !== 'typeCompleted') return;
-      console.log('do completeDetails');
       state.form = { ...action.payload, ...state.form };
       state.status = 'detailsCompleted';
     },
     completeEmail: (state, action: PayloadAction<string>) => {
       if (state.status !== 'detailsCompleted') return;
-      console.log('do completeEmail');
       state.form['validationEmail'] = action.payload;
       state.status = 'emailCompleted';
     },
