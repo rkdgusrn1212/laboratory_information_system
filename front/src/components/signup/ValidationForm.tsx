@@ -12,6 +12,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grow from '@mui/material/Grow';
 import { useSignupMutation } from '../../services/authApi';
+import { RootState } from '../../store';
+import { SignupFormState } from '../../services/signupFormSlice';
+import { useSelector } from 'react-redux';
 
 const ValidationForm: ForwardRefRenderFunction<
   unknown,
@@ -20,6 +23,7 @@ const ValidationForm: ForwardRefRenderFunction<
   const [validating, setValidating] = useState(false);
   const [signup, signupState] = useSignupMutation();
   const [email, setEmail] = useState<string>('');
+  const signupFormstate = useSelector((state: RootState) => state.signupForm);
 
   const handleEmailChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
@@ -43,7 +47,7 @@ const ValidationForm: ForwardRefRenderFunction<
         disabled={validating}
       />
       <>
-        {signupState.isUninitialized || (
+        {signupFormstate.status === 'validating' && (
           <Box sx={{ display: 'flex', mt: 2 }}>
             <Grow in={validating}>
               <TextField
@@ -57,7 +61,7 @@ const ValidationForm: ForwardRefRenderFunction<
             </Grow>
           </Box>
         )}
-        {signupState.isUninitialized ? (
+        {signupFormstate.status === 'detailsCompleted' && (
           <Button
             type="submit"
             fullWidth
@@ -67,7 +71,8 @@ const ValidationForm: ForwardRefRenderFunction<
           >
             인증번호 발급
           </Button>
-        ) : (
+        )}
+        {signupFormstate.status === 'validating' && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
               color="warning"
