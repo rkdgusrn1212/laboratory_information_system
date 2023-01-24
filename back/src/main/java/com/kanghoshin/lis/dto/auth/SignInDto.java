@@ -12,8 +12,8 @@ import lombok.ToString;
 @ToString
 public class SignInDto {
 	@NotBlank(message="아이디가 비어있습니다.")
-	private String id;
+	private String authId;
 
 	@NotBlank(message="비밀번호가 비어있습니다.")
-	private String password;
+	private String authPassword;
 }

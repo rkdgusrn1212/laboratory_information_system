@@ -6,8 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-
-import com.kanghoshin.lis.dto.auth.InsertStaffDto;
+import com.kanghoshin.lis.dto.auth.SignUpDto;
 import com.kanghoshin.lis.vo.StaffVo;
 
 @Mapper
@@ -23,13 +22,13 @@ public interface StaffMapper {
 			+ "staff_birth, staff_male, "
 			+ "staff_phone, staff_image, "
 			+ "staff_rrn, staff_type) VALUES("
-			+ " #{staff.name},"
-			+ " #{staff.birth},"
-			+ " #{staff.male},"
-			+ " #{staff.phone},"
-			+ " #{staff.image},"
-			+ " #{staff.rrn},"
-			+ " #{staff.type})")
-	@Options(useGeneratedKeys=true,  keyProperty="staff.no")
-	int insert(@Param("staff") InsertStaffDto signUpDto);
+			+ " #{signUpDto.staffName},"
+			+ " #{signUpDto.staffBirth},"
+			+ " #{signUpDto.staffMale},"
+			+ " #{signUpDto.staffPhone},"
+			+ " #{signUpDto.staffImage},"
+			+ " #{signUpDto.staffRrn},"
+			+ " #{signUpDto.staffType})")
+	@Options(useGeneratedKeys=true,  keyProperty="signUpDto.staffNo")
+	int insertBySignUpDto(@Param("signUpDto") SignUpDto signUpDto);
 }

@@ -7,9 +7,21 @@ export interface SignInResponse {
   accessToken: string;
   principal: Principal;
 }
-export interface SignInRequest {
+export interface SigninRequest {
   id: string;
   password: string;
+}
+
+export interface SignupRequest {
+  authId: string;
+  authPassword: string;
+  validationEmail: string;
+  staffName: string;
+  staffBirth: string;
+  staffPhone: string;
+  staffImage: string | null;
+  staffRrn: string;
+  staffType: number;
 }
 
 export const authApi = createApi({
@@ -26,14 +38,21 @@ export const authApi = createApi({
   }),
   reducerPath: 'authApi',
   endpoints: (builder) => ({
-    signin: builder.mutation<SignInResponse, SignInRequest>({
+    signin: builder.mutation<SignInResponse, SigninRequest>({
       query: (auth) => ({
         body: auth,
         method: 'Post',
         url: 'signin',
       }),
     }),
+    signup: builder.mutation<boolean, SignupRequest>({
+      query: (signUpResponse) => ({
+        body: signUpResponse,
+        method: 'Post',
+        url: 'signup',
+      }),
+    }),
   }),
 });
 export default authApi;
-export const { useSigninMutation } = authApi;
+export const { useSigninMutation, useSignupMutation } = authApi;

@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import MemberTypeForm from './MemberTypeForm';
-import MemberDetailForm from './MemberDetailForm';
+import StaffTypeForm from './StaffTypeForm';
+import StaffDetailForm from './StaffDetailForm';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
@@ -14,31 +14,51 @@ import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
 import ValidationForm from './ValidationForm';
+import {
+  cancelDetails,
+  cancelValidation,
+  completeDetails,
+  completeType,
+  completeValidation,
+  DetailsForm,
+  SignupFormState,
+} from '../../services/signupFormSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 const steps = ['직책 선택', '필수정보 입력', '이메일 인증'];
 
-const InnerForm: React.FC<{ activeStep: number }> = ({ activeStep }) => {
-  switch (activeStep) {
-    case 0:
-      return <MemberTypeForm />;
-    case 1:
-      return <MemberDetailForm />;
-    case 2:
-      return <ValidationForm />;
-    default:
-      return null;
-  }
-};
-
 const SignupForm: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
+  const typeRef = useRef<number>(null);
+  const detailsRef = useRef<DetailsForm>(null);
+  const validationRef = useRef<{ email: string; code: string }>(null);
+  const signupFormState: SignupFormState = useAppSelector(
+    (state) => state.signupForm,
+  );
+  const dispatch = useAppDispatch();
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    switch (signupFormState.step) {
+      case 0:
+        dispatch(completeType(typeRef.current as number));
+        break;
+      case 1:
+        dispatch(completeDetails(detailsRef.current as DetailsForm));
+        break;
+      case 2:
+        dispatch(completeValidation());
+        break;
+    }
   };
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    switch (signupFormState.step) {
+      case 2:
+        dispatch(cancelValidation());
+        break;
+      case 1:
+        dispatch(cancelDetails());
+        break;
+    }
   };
 
   return (
@@ -49,7 +69,11 @@ const SignupForm: React.FC = () => {
         <Typography variant="h5">가입신청</Typography>
       </Box>
       <Divider />
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3 }}>
+      <Stepper
+        activeStep={signupFormState.step}
+        alternativeLabel
+        sx={{ mt: 3 }}
+      >
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
           return (
@@ -60,7 +84,7 @@ const SignupForm: React.FC = () => {
         })}
       </Stepper>
       <Box sx={{ mt: 5 }}>
-        {activeStep === steps.length ? (
+        {signupFormState.step == 3 ? (
           <>
             <Typography sx={{ mt: 2, mb: 1 }}>
               <b>KHS 진단검사시스템</b> 가입이 신청되었습니다. 관리자의 최종
@@ -81,11 +105,20 @@ const SignupForm: React.FC = () => {
           </>
         ) : (
           <>
-            <InnerForm activeStep={activeStep} />
+            {(() => {
+              switch (signupFormState.step) {
+                case 0:
+                  return <StaffTypeForm ref={typeRef} />;
+                case 1:
+                  return <StaffDetailForm ref={detailsRef} />;
+                case 2:
+                  return <ValidationForm ref={validationRef} />;
+              }
+            })()}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
               <Button
                 color="inherit"
-                disabled={activeStep === 0}
+                disabled={signupFormState.step === 0}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >
@@ -93,13 +126,13 @@ const SignupForm: React.FC = () => {
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button variant="contained" onClick={handleNext}>
-                {activeStep === steps.length - 1 ? '가입하기' : '다음'}
+                {signupFormState.step === 2 ? '가입하기' : '다음'}
               </Button>
             </Box>
           </>
         )}
       </Box>
-      {activeStep === steps.length || (
+      {signupFormState.step == 3 || (
         <Box sx={{ mt: 3, mb: 3, display: 'inline-flex', gap: 1 }}>
           <Typography variant="body2">이미 계정이 있으신가요?</Typography>
           <Link
