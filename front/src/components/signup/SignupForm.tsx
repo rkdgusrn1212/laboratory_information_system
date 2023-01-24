@@ -4,6 +4,7 @@ import {
   useCallback,
   FormEventHandler,
   useMemo,
+  useEffect,
 } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Box from '@mui/material/Box';
@@ -32,6 +33,7 @@ import {
   reset,
   SignupFormState,
 } from '../../services/signupFormSlice';
+import { SignupRequest, useSignupMutation } from '../../services/authApi';
 
 const steps = ['직책 선택', '필수정보 입력', '이메일 인증'];
 
@@ -40,6 +42,7 @@ const SignupForm: React.FC = () => {
   const typeRef = useRef<number>(null);
   const detailsRef = useRef<DetailsForm>(null);
   const validationRef = useRef<string>(null);
+  const [signup, signupState] = useSignupMutation();
   const signupFormState: SignupFormState = useSelector(
     (state: RootState) => state.signupForm,
   );
@@ -53,7 +56,7 @@ const SignupForm: React.FC = () => {
       case 'typeCompleted':
         useAppDispatch(completeDetails(detailsRef.current as DetailsForm));
         break;
-      case 'detailsCompleted':
+      case 'emailCompleted':
         useAppDispatch(completeEmail(validationRef.current as string));
         break;
     }
@@ -68,16 +71,24 @@ const SignupForm: React.FC = () => {
         break;
       case 'emailCompleted':
         useAppDispatch(cancelEmail());
+        useAppDispatch(cancelDetails());
         break;
     }
   };
 
   const handleSubmitSignupForm = useCallback<FormEventHandler<HTMLFormElement>>(
     (event) => {
-      event.preventDefault;
+      useAppDispatch(completeEmail(validationRef.current as string));
+      event.preventDefault();
     },
-    [],
+    [validationRef.current],
   );
+
+  useEffect(() => {
+    if (signupFormState.status === 'emailCompleted') {
+      signup(signupFormState.form as SignupRequest);
+    }
+  }, [signupFormState.status]);
 
   const activeStep = useMemo(() => {
     switch (signupFormState.status) {
