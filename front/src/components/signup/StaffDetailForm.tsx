@@ -28,20 +28,20 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
   const [staffBirth, setStaffBirth] = useState<Dayjs | null>(
     dayjs(signupFormState.form.staffBirth),
   );
-  const [staffName, setStaffName] = useState<string | undefined>(
-    signupFormState.form.staffName,
+  const [staffName, setStaffName] = useState<string>(
+    signupFormState.form.staffName || '',
   );
-  const [authId, setAuthId] = useState<string | undefined>(
-    signupFormState.form.authId,
+  const [authId, setAuthId] = useState<string>(
+    signupFormState.form.authId || '',
   );
-  const [authPassword, setAuthPassword] = useState<string | undefined>(
-    signupFormState.form.authPassword,
+  const [authPassword, setAuthPassword] = useState<string>(
+    signupFormState.form.authPassword || '',
   );
-  const [staffPhone, setStaffPhone] = useState<string | undefined>(
-    signupFormState.form.staffPhone,
+  const [staffPhone, setStaffPhone] = useState<string>(
+    signupFormState.form.staffPhone || '',
   );
-  const [staffRrn, setStaffRrn] = useState<string | undefined>(
-    signupFormState.form.staffRrn,
+  const [staffRrn, setStaffRrn] = useState<string>(
+    signupFormState.form.staffRrn || '',
   );
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
 

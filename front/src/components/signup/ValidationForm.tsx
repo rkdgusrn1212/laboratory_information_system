@@ -17,7 +17,6 @@ import { green } from '@mui/material/colors';
 import { useAppSelector } from '../../hooks';
 
 const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
-  const [validating, setValidating] = useState(false);
   const [signup, signupState] = useSignupMutation();
   const [email, setEmail] = useState<string>('');
   const signupFormState = useAppSelector((state) => state.signupForm);
@@ -32,9 +31,12 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
   const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     (event) => {
       event.preventDefault();
-      signup(signupFormState.form as SignupRequest);
+      signup({
+        validationEmail: email,
+        ...signupFormState.form,
+      } as SignupRequest);
     },
-    [],
+    [email],
   );
 
   useImperativeHandle(ref, () => email);
@@ -47,9 +49,10 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         id="email"
         label="이메일"
         name="email"
+        value={email}
         onChange={handleEmailChange}
         autoComplete="email"
-        disabled={validating}
+        disabled={signupState.isSuccess}
       />
       {signupState.isSuccess || (
         <Box sx={{ mt: 2, mb: 1, position: 'relative' }}>
@@ -78,9 +81,9 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         </Box>
       )}
       {signupState.isSuccess && (
-        <>
-          <Box sx={{ display: 'flex', mt: 2 }}>
-            <Grow in={validating}>
+        <Box sx={{ display: 'flex', mt: 1 }}>
+          <Grow in={signupState.isSuccess}>
+            <Box sx={{ display: 'block', width: '100%' }}>
               <TextField
                 required
                 fullWidth
@@ -89,24 +92,17 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
                 name="code"
                 autoComplete="one-time-code"
               />
-            </Grow>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Button
-              color="warning"
-              onClick={() => {
-                setValidating(false);
-              }}
-              variant="text"
-              sx={{ mt: 1, mb: 2 }}
-            >
-              이메일 변경
-            </Button>
-            <Button color="secondary" variant="text" sx={{ mt: 1, mb: 2 }}>
-              인증번호 재발급
-            </Button>
-          </Box>
-        </>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Button color="warning" variant="text" sx={{ mt: 1, mb: 2 }}>
+                  이메일 변경
+                </Button>
+                <Button color="secondary" variant="text" sx={{ mt: 1, mb: 2 }}>
+                  인증번호 재발급
+                </Button>
+              </Box>
+            </Box>
+          </Grow>
+        </Box>
       )}
     </Box>
   );
