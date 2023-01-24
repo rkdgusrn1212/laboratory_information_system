@@ -11,23 +11,28 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grow from '@mui/material/Grow';
-import { useSignupMutation } from '../../services/authApi';
-import { RootState } from '../../store';
-import { SignupFormState } from '../../services/signupFormSlice';
-import { useSelector } from 'react-redux';
+import { SignupRequest, useSignupMutation } from '../../services/authApi';
+import { CircularProgress } from '@mui/material';
+import { green } from '@mui/material/colors';
+import { useAppSelector } from '../../hooks';
 
-const ValidationForm: ForwardRefRenderFunction<
-  unknown,
-  { handleSubmit: FormEventHandler<HTMLFormElement> }
-> = ({ handleSubmit }, ref) => {
+const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
   const [validating, setValidating] = useState(false);
   const [signup, signupState] = useSignupMutation();
   const [email, setEmail] = useState<string>('');
-  const signupFormstate = useSelector((state: RootState) => state.signupForm);
+  const signupFormState = useAppSelector((state) => state.signupForm);
 
   const handleEmailChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
       setEmail(event.target.value);
+    },
+    [],
+  );
+
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+    (event) => {
+      event.preventDefault();
+      signup(signupFormState.form as SignupRequest);
     },
     [],
   );
@@ -46,8 +51,34 @@ const ValidationForm: ForwardRefRenderFunction<
         autoComplete="email"
         disabled={validating}
       />
-      <>
-        {signupFormstate.status === 'validating' && (
+      {signupState.isSuccess || (
+        <Box sx={{ mt: 2, mb: 1, position: 'relative' }}>
+          <Button
+            type="submit"
+            fullWidth
+            color="secondary"
+            variant="contained"
+            disabled={signupState.isLoading}
+          >
+            인증번호 발급
+          </Button>
+          {signupState.isLoading && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: green[500],
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          )}
+        </Box>
+      )}
+      {signupState.isSuccess && (
+        <>
           <Box sx={{ display: 'flex', mt: 2 }}>
             <Grow in={validating}>
               <TextField
@@ -60,19 +91,6 @@ const ValidationForm: ForwardRefRenderFunction<
               />
             </Grow>
           </Box>
-        )}
-        {signupFormstate.status === 'detailsCompleted' && (
-          <Button
-            type="submit"
-            fullWidth
-            color="secondary"
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            인증번호 발급
-          </Button>
-        )}
-        {signupFormstate.status === 'validating' && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Button
               color="warning"
@@ -88,8 +106,8 @@ const ValidationForm: ForwardRefRenderFunction<
               인증번호 재발급
             </Button>
           </Box>
-        )}
-      </>
+        </>
+      )}
     </Box>
   );
 };

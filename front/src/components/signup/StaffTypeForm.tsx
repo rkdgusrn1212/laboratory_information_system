@@ -1,4 +1,4 @@
-import {
+import React, {
   useState,
   useCallback,
   useImperativeHandle,
@@ -9,9 +9,16 @@ import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { Avatar } from '@mui/material';
+import { useAppSelector } from '../../hooks';
 
-const StaffTypeForm: ForwardRefRenderFunction<unknown, any> = (props, ref) => {
-  const [selectedType, setSelectedType] = useState(0);
+const StaffTypeForm: ForwardRefRenderFunction<unknown, unknown> = (
+  props,
+  ref,
+) => {
+  const signupFormState = useAppSelector((state) => state.signupForm);
+  const [selectedType, setSelectedType] = useState<number | undefined>(
+    signupFormState.form.staffType,
+  );
 
   useImperativeHandle(ref, () => selectedType);
 

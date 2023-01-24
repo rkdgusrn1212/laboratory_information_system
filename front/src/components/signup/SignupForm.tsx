@@ -1,11 +1,4 @@
-import {
-  useRef,
-  useCallback,
-  FormEventHandler,
-  useMemo,
-  useEffect,
-} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useRef } from 'react';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -21,18 +14,16 @@ import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
 import ValidationForm from './ValidationForm';
-import { RootState, AppDispatch } from '../../store';
 import {
   cancelDetails,
-  cancelEmail,
+  cancelValidation,
   completeDetails,
-  completeEmail,
   completeType,
+  completeValidation,
   DetailsForm,
-  reset,
   SignupFormState,
 } from '../../services/signupFormSlice';
-import { SignupRequest, useSignupMutation } from '../../services/authApi';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 const steps = ['직책 선택', '필수정보 입력', '이메일 인증'];
 
@@ -40,68 +31,35 @@ const SignupForm: React.FC = () => {
   const navigate = useNavigate();
   const typeRef = useRef<number>(null);
   const detailsRef = useRef<DetailsForm>(null);
-  const validationRef = useRef<string>(null);
-  const [signup, signupState] = useSignupMutation();
-  const signupFormState: SignupFormState = useSelector(
-    (state: RootState) => state.signupForm,
+  const validationRef = useRef<{ email: string; code: string }>(null);
+  const signupFormState: SignupFormState = useAppSelector(
+    (state) => state.signupForm,
   );
-  const useAppDispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const handleNext = () => {
-    switch (signupFormState.status) {
-      case 'uninitialized':
-        useAppDispatch(completeType(typeRef.current as number));
+    switch (signupFormState.step) {
+      case 0:
+        dispatch(completeType(typeRef.current as number));
         break;
-      case 'typeCompleted':
-        useAppDispatch(completeDetails(detailsRef.current as DetailsForm));
+      case 1:
+        dispatch(completeDetails(detailsRef.current as DetailsForm));
         break;
-      case 'emailCompleted':
-        useAppDispatch(completeEmail(validationRef.current as string));
+      case 2:
+        dispatch(completeValidation());
         break;
     }
   };
   const handleBack = () => {
-    switch (signupFormState.status) {
-      case 'typeCompleted':
-        useAppDispatch(reset());
+    switch (signupFormState.step) {
+      case 2:
+        dispatch(cancelValidation());
         break;
-      case 'detailsCompleted':
-        useAppDispatch(cancelDetails());
-        break;
-      case 'emailCompleted':
-        useAppDispatch(cancelEmail());
-        useAppDispatch(cancelDetails());
+      case 1:
+        dispatch(cancelDetails());
         break;
     }
   };
-
-  const handleSubmitSignupForm = useCallback<FormEventHandler<HTMLFormElement>>(
-    (event) => {
-      useAppDispatch(completeEmail(validationRef.current as string));
-      event.preventDefault();
-    },
-    [validationRef.current],
-  );
-
-  useEffect(() => {
-    if (signupFormState.status === 'emailCompleted') {
-      signup(signupFormState.form as SignupRequest);
-    }
-  }, [signupFormState.status]);
-
-  const activeStep = useMemo(() => {
-    switch (signupFormState.status) {
-      case 'uninitialized':
-        return 0;
-      case 'typeCompleted':
-        return 1;
-      case 'detailsCompleted':
-      case 'emailCompleted':
-        return 2;
-      case 'finished':
-        return 3;
-    }
-  }, [signupFormState.status]);
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
@@ -111,7 +69,11 @@ const SignupForm: React.FC = () => {
         <Typography variant="h5">가입신청</Typography>
       </Box>
       <Divider />
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ mt: 3 }}>
+      <Stepper
+        activeStep={signupFormState.step}
+        alternativeLabel
+        sx={{ mt: 3 }}
+      >
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
           return (
@@ -122,7 +84,7 @@ const SignupForm: React.FC = () => {
         })}
       </Stepper>
       <Box sx={{ mt: 5 }}>
-        {signupFormState.status === 'finished' ? (
+        {signupFormState.step == 3 ? (
           <>
             <Typography sx={{ mt: 2, mb: 1 }}>
               <b>KHS 진단검사시스템</b> 가입이 신청되었습니다. 관리자의 최종
@@ -144,27 +106,19 @@ const SignupForm: React.FC = () => {
         ) : (
           <>
             {(() => {
-              switch (signupFormState.status) {
-                case 'uninitialized':
+              switch (signupFormState.step) {
+                case 0:
                   return <StaffTypeForm ref={typeRef} />;
-                case 'typeCompleted':
+                case 1:
                   return <StaffDetailForm ref={detailsRef} />;
-                case 'detailsCompleted':
-                case 'emailCompleted':
-                  return (
-                    <ValidationForm
-                      ref={validationRef}
-                      handleSubmit={handleSubmitSignupForm}
-                    />
-                  );
-                default:
-                  return null;
+                case 2:
+                  return <ValidationForm ref={validationRef} />;
               }
             })()}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
               <Button
                 color="inherit"
-                disabled={signupFormState.status === 'uninitialized'}
+                disabled={signupFormState.step === 0}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >
@@ -172,15 +126,13 @@ const SignupForm: React.FC = () => {
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
               <Button variant="contained" onClick={handleNext}>
-                {signupFormState.status === 'emailCompleted'
-                  ? '가입하기'
-                  : '다음'}
+                {signupFormState.step === 2 ? '가입하기' : '다음'}
               </Button>
             </Box>
           </>
         )}
       </Box>
-      {signupFormState.status === 'finished' || (
+      {signupFormState.step == 3 || (
         <Box sx={{ mt: 3, mb: 3, display: 'inline-flex', gap: 1 }}>
           <Typography variant="body2">이미 계정이 있으신가요?</Typography>
           <Link

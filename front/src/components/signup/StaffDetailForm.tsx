@@ -18,19 +18,31 @@ import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useAppSelector } from '../../hooks';
 
 const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
   props,
   ref,
 ) => {
+  const signupFormState = useAppSelector((state) => state.signupForm);
   const [staffBirth, setStaffBirth] = useState<Dayjs | null>(
-    dayjs('1990-01-01'),
+    dayjs(signupFormState.form.staffBirth),
   );
-  const [staffName, setStaffName] = useState<string>('');
-  const [authId, setAuthId] = useState<string>('');
-  const [authPassword, setAuthPassword] = useState<string>('');
-  const [staffPhone, setStaffPhone] = useState<string>('');
-  const [staffRrn, setStaffRrn] = useState<string>('');
+  const [staffName, setStaffName] = useState<string | undefined>(
+    signupFormState.form.staffName,
+  );
+  const [authId, setAuthId] = useState<string | undefined>(
+    signupFormState.form.authId,
+  );
+  const [authPassword, setAuthPassword] = useState<string | undefined>(
+    signupFormState.form.authPassword,
+  );
+  const [staffPhone, setStaffPhone] = useState<string | undefined>(
+    signupFormState.form.staffPhone,
+  );
+  const [staffRrn, setStaffRrn] = useState<string | undefined>(
+    signupFormState.form.staffRrn,
+  );
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
 
   const handleMouseUpAndLeaveVisibility = useCallback(
@@ -98,6 +110,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             id="id"
             label="아이디"
             name="id"
+            value={authId}
             onChange={handleIdChange}
             autoComplete="username"
             InputProps={{
@@ -122,6 +135,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             fullWidth
             name="password"
             label="비밀번호"
+            value={authPassword}
             onChange={handlePasswordChange}
             type={passwordVisiblity ? 'text' : 'password'}
             id="password"
@@ -173,6 +187,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             onChange={handleNameChange}
             id="name"
             label="성명"
+            value={staffName}
             autoFocus
           />
         </Grid>
@@ -183,6 +198,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             required
             fullWidth
             id="tel"
+            value={staffPhone}
             label="전화번호"
             onChange={handlePhoneChange}
             autoFocus
@@ -195,6 +211,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             fullWidth
             onChange={handleRrnChange}
             id="rrn"
+            value={staffRrn}
             label="주민번호"
             autoFocus
           />
