@@ -25,6 +25,33 @@ export interface SignupRequest {
   staffType: number;
 }
 
+const SignupErrorDatas = [
+  'UNKNOWN',
+  'DUPLICATED_EMAIL',
+  'DUPLICATED_ID',
+  'INVALID_EMAIL',
+] as const;
+type SignupErrorData = typeof SignupErrorDatas[number];
+
+interface SignupErrorResponse {
+  status: number;
+  data: SignupErrorData;
+}
+
+export function isSignupErrorResponse(
+  error: unknown,
+): error is SignupErrorResponse {
+  return (
+    typeof error === 'object' &&
+    error != null &&
+    'status' in error &&
+    typeof error.status === 'number' &&
+    'data' in error &&
+    typeof error.data === 'string' &&
+    (SignupErrorDatas as readonly string[]).indexOf(error.data) >= 0
+  );
+}
+
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/auth/`,

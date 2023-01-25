@@ -1,20 +1,24 @@
 import {
   useState,
+  useMemo,
   useCallback,
   forwardRef,
   useImperativeHandle,
   ChangeEventHandler,
   ForwardRefRenderFunction,
-  FormEventHandler,
   MouseEventHandler,
 } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grow from '@mui/material/Grow';
-import { SignupRequest, useSignupMutation } from '../../services/authApi';
-import { CircularProgress, FormHelperText } from '@mui/material';
-import { green } from '@mui/material/colors';
+import CircularProgress from '@mui/material/CircularProgress';
+import green from '@mui/material/colors/green';
+import {
+  isSignupErrorResponse,
+  SignupRequest,
+  useSignupMutation,
+} from '../../services/authApi';
 import { useAppSelector } from '../../hooks';
 
 const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
@@ -36,9 +40,25 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
       validationEmail: email,
       ...signupFormState.form,
     } as SignupRequest);
-  }, [email]);
+  }, [email, signup, signupFormState.form]);
 
   useImperativeHandle(ref, () => email);
+
+  const helperText = useMemo(() => {
+    if (signupState.isError && isSignupErrorResponse(signupState.error)) {
+      switch (signupState.error.data) {
+        case 'DUPLICATED_EMAIL':
+          return <>'이메일이 이미 사용중입니다.'</>;
+        case 'DUPLICATED_ID':
+          return <>'아이디가 이미 사용중입니다.'</>;
+        case 'INVALID_EMAIL':
+          return <>'메일 전송 불가. 이메일을 다시 확인해주세요'</>;
+        case 'UNKNOWN':
+          return <>'알수없는 오류가 발생했습니다.'</>;
+      }
+    }
+    return null;
+  }, [signupState.isError, signupState.error]);
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -51,7 +71,7 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         value={email}
         onChange={handleEmailChange}
         autoComplete="email"
-        helperText={signupState.isError && '인증번호 발급 요청 실패'}
+        helperText={helperText}
         error={signupState.isError}
         disabled={signupState.isSuccess}
       />

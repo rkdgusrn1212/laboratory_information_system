@@ -6,7 +6,11 @@
     "commonjs": true,
     "node": true
   },
-  "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:react-hooks/recommended"
+  ],
   "overrides": [],
   "globals": {
     "Atomics": "readonly",
