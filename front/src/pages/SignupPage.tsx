@@ -30,29 +30,17 @@ const SignupPage = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box
+      <Container
+        component="main"
+        maxWidth="sm"
         sx={{
           width: '100%',
-          height: '100vh',
-          backgroundPosition: 'center',
-          backgroundSize: 'cover',
+          mt: 5,
+          mb: 5,
         }}
       >
-        <Container
-          component="main"
-          maxWidth="sm"
-          sx={{
-            width: '100%',
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            padding: '80px',
-          }}
-        >
-          <SignupForm />
-        </Container>
-      </Box>
+        <SignupForm />
+      </Container>
     </ThemeProvider>
   );
 };

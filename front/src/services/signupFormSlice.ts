@@ -4,6 +4,7 @@ export interface DetailsForm {
   authId: string | undefined;
   authPassword: string | undefined;
   staffName: string | undefined;
+  staffMale: boolean | undefined;
   staffBirth: string | undefined;
   staffPhone: string | undefined;
   staffImage: string | undefined;

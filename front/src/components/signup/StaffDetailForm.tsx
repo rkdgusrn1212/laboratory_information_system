@@ -5,6 +5,7 @@ import {
   ForwardRefRenderFunction,
   useImperativeHandle,
   ChangeEventHandler,
+  ChangeEvent,
 } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -19,6 +20,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useAppSelector } from '../../hooks';
+import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
   props,
@@ -30,6 +32,9 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
   );
   const [staffName, setStaffName] = useState<string>(
     signupFormState.form.staffName || '',
+  );
+  const [staffMale, setStaffMale] = useState<boolean | undefined>(
+    signupFormState.form.staffMale,
   );
   const [authId, setAuthId] = useState<string>(
     signupFormState.form.authId || '',
@@ -59,6 +64,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
     authId,
     authPassword,
     staffName,
+    staffMale,
     staffBirth: staffBirth?.toString(),
     staffPhone,
     staffRrn,
@@ -96,6 +102,13 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
     [],
   );
 
+  const handleMaleChange = useCallback(
+    (event: ChangeEvent<HTMLInputElement>, value: string) => {
+      setStaffMale(value === 'male');
+    },
+    [],
+  );
+
   return (
     <Box component="form" noValidate sx={{ mt: 3 }}>
       <Grid container spacing={2}>
@@ -107,9 +120,7 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
           <TextField
             required
             fullWidth
-            id="id"
             label="아이디"
-            name="id"
             value={authId}
             onChange={handleIdChange}
             autoComplete="username"
@@ -133,12 +144,10 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
           <TextField
             required
             fullWidth
-            name="password"
             label="비밀번호"
             value={authPassword}
             onChange={handlePasswordChange}
             type={passwordVisiblity ? 'text' : 'password'}
-            id="password"
             autoComplete="new-password"
             InputProps={{
               endAdornment: (
@@ -159,7 +168,26 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             }}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={5}>
+          <TextField
+            autoComplete="name"
+            required
+            fullWidth
+            onChange={handleNameChange}
+            label="성명"
+            value={staffName}
+          />
+        </Grid>
+        <Grid item xs={7}>
+          <TextField
+            required
+            fullWidth
+            onChange={handleRrnChange}
+            value={staffRrn}
+            label="주민번호"
+          />
+        </Grid>
+        <Grid item xs={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               disableFuture
@@ -178,42 +206,33 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
             />
           </LocalizationProvider>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            autoComplete="name"
-            name="name"
-            required
-            fullWidth
-            onChange={handleNameChange}
-            id="name"
-            label="성명"
-            value={staffName}
-            autoFocus
-          />
+
+        <Grid item xs={6}>
+          <FormLabel id="male-radio-buttons-group-label">성별</FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="male-radio-buttons-group-label"
+            value={
+              staffMale === undefined
+                ? undefined
+                : staffMale
+                ? 'male'
+                : 'female'
+            }
+            onChange={handleMaleChange}
+          >
+            <FormControlLabel value="male" control={<Radio />} label="남성" />
+            <FormControlLabel value="female" control={<Radio />} label="여성" />
+          </RadioGroup>
         </Grid>
         <Grid item xs={12}>
           <TextField
             autoComplete="tel"
-            name="tel"
             required
             fullWidth
-            id="tel"
             value={staffPhone}
             label="전화번호"
             onChange={handlePhoneChange}
-            autoFocus
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            name="rrn"
-            required
-            fullWidth
-            onChange={handleRrnChange}
-            id="rrn"
-            value={staffRrn}
-            label="주민번호"
-            autoFocus
           />
         </Grid>
       </Grid>
