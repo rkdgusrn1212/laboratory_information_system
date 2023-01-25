@@ -2,12 +2,16 @@ package com.kanghoshin.lis.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
+import com.kanghoshin.lis.exception.auth.SignupFailedException;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
 import com.kanghoshin.lis.service.AuthService;
@@ -22,17 +26,22 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("signup")
-	public boolean signup(@Valid @RequestBody SignUpDto signUpDto) {
-		return authService.signUp(signUpDto);
+	public void signup(@Valid @RequestBody SignUpDto signUpDto) throws SignupFailedException {
+		authService.signUp(signUpDto);
+	}
+	
+	@ExceptionHandler(SignupFailedException.class)
+	public ResponseEntity<SignupFailedException.ErrorCode> handleSignupFailedException(SignupFailedException exception) {
+		return new ResponseEntity<SignupFailedException.ErrorCode>(exception.getErrorCode(),HttpStatus.BAD_REQUEST);
 	}
 	
 	@PostMapping("refresh-validation-code")
-	public boolean refreshValidationCode(@Valid @RequestBody RefreshValidaitonCodeDto sendCodeDto) {
-		return authService.refreshValidationCode(sendCodeDto);
+	public void refreshValidationCode(@Valid @RequestBody RefreshValidaitonCodeDto sendCodeDto) {
+		authService.refreshValidationCode(sendCodeDto);
 	}
 	
 	@PostMapping("verify-validation-code")
-	public boolean verifyValidationCode(@Valid @RequestBody VerifyValidationCodeDto receiveCodeDto) {
-		return authService.verifyValidationCode(receiveCodeDto);
+	public void verifyValidationCode(@Valid @RequestBody VerifyValidationCodeDto receiveCodeDto) {
+		authService.verifyValidationCode(receiveCodeDto);
 	}
 }

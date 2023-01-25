@@ -43,6 +43,7 @@ const SignupForm: React.FC = () => {
         dispatch(completeType(typeRef.current as number));
         break;
       case 1:
+        console.log(detailsRef.current as DetailsForm);
         dispatch(completeDetails(detailsRef.current as DetailsForm));
         break;
       case 2:
