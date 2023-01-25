@@ -60,15 +60,27 @@ const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
     [],
   );
 
-  useImperativeHandle(ref, () => ({
-    authId,
-    authPassword,
-    staffName,
-    staffMale,
-    staffBirth: staffBirth?.toString(),
-    staffPhone,
-    staffRrn,
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      authId,
+      authPassword,
+      staffName,
+      staffMale,
+      staffBirth: staffBirth?.toString(),
+      staffPhone,
+      staffRrn,
+    }),
+    [
+      authId,
+      authPassword,
+      staffName,
+      staffMale,
+      staffBirth,
+      staffPhone,
+      staffRrn,
+    ],
+  );
 
   const handleIdChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {

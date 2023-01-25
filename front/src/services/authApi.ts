@@ -17,6 +17,7 @@ export interface SignupRequest {
   authPassword: string;
   validationEmail: string;
   staffName: string;
+  staffMale: boolean;
   staffBirth: string;
   staffPhone: string;
   staffImage: string | null;

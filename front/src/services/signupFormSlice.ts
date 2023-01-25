@@ -34,7 +34,7 @@ const signupFormSlice = createSlice({
       state.step = 1;
     },
     completeDetails: (state, action: PayloadAction<DetailsForm>) => {
-      state.form = { ...action.payload, ...state.form };
+      state.form = { ...state.form, ...action.payload };
       state.step = 2;
     },
     completeValidation: (state) => {

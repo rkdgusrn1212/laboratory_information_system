@@ -6,13 +6,14 @@ import {
   ChangeEventHandler,
   ForwardRefRenderFunction,
   FormEventHandler,
+  MouseEventHandler,
 } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Grow from '@mui/material/Grow';
 import { SignupRequest, useSignupMutation } from '../../services/authApi';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, FormHelperText } from '@mui/material';
 import { green } from '@mui/material/colors';
 import { useAppSelector } from '../../hooks';
 
@@ -28,21 +29,19 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
     [],
   );
 
-  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
-    (event) => {
-      event.preventDefault();
-      signup({
-        validationEmail: email,
-        ...signupFormState.form,
-      } as SignupRequest);
-    },
-    [email],
-  );
+  const handleSignupClick = useCallback<
+    MouseEventHandler<HTMLButtonElement>
+  >(() => {
+    signup({
+      validationEmail: email,
+      ...signupFormState.form,
+    } as SignupRequest);
+  }, [email]);
 
   useImperativeHandle(ref, () => email);
 
   return (
-    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+    <Box sx={{ mt: 3 }}>
       <TextField
         required
         fullWidth
@@ -52,15 +51,17 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         value={email}
         onChange={handleEmailChange}
         autoComplete="email"
+        helperText={signupState.isError && '인증번호 발급 요청 실패'}
+        error={signupState.isError}
         disabled={signupState.isSuccess}
       />
       {signupState.isSuccess || (
         <Box sx={{ mt: 2, mb: 1, position: 'relative' }}>
           <Button
-            type="submit"
             fullWidth
             color="secondary"
             variant="contained"
+            onClick={handleSignupClick}
             disabled={signupState.isLoading}
           >
             인증번호 발급
