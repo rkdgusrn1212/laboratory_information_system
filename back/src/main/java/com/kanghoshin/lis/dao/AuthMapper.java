@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.kanghoshin.lis.vo.AuthVo;
+import com.kanghoshin.lis.vo.entity.AuthVo;
 
 @Mapper
 public interface AuthMapper {

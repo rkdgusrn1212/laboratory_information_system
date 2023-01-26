@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
-import com.kanghoshin.lis.vo.AuthVo;
-import com.kanghoshin.lis.vo.StaffVo;
-import com.kanghoshin.lis.vo.ValidationVo;
+import com.kanghoshin.lis.vo.entity.AuthVo;
+import com.kanghoshin.lis.vo.entity.StaffVo;
+import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 import lombok.RequiredArgsConstructor;
 

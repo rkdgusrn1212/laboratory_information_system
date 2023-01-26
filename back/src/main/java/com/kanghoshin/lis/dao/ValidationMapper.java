@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.kanghoshin.lis.vo.ValidationVo;
+import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 @Mapper
 public interface ValidationMapper {

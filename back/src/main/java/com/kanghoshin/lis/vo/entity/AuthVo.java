@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.vo;
+package com.kanghoshin.lis.vo.entity;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

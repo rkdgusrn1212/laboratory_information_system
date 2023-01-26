@@ -44,22 +44,6 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
 
   useImperativeHandle(ref, () => email);
 
-  const helperText = useMemo(() => {
-    if (signupState.isError && isSignupErrorResponse(signupState.error)) {
-      switch (signupState.error.data) {
-        case 'DUPLICATED_EMAIL':
-          return <>'이메일이 이미 사용중입니다.'</>;
-        case 'DUPLICATED_ID':
-          return <>'아이디가 이미 사용중입니다.'</>;
-        case 'INVALID_EMAIL':
-          return <>'메일 전송 불가. 이메일을 다시 확인해주세요'</>;
-        case 'UNKNOWN':
-          return <>'알수없는 오류가 발생했습니다.'</>;
-      }
-    }
-    return null;
-  }, [signupState.isError, signupState.error]);
-
   return (
     <Box sx={{ mt: 3 }}>
       <TextField
@@ -71,7 +55,11 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         value={email}
         onChange={handleEmailChange}
         autoComplete="email"
-        helperText={helperText}
+        helperText={
+          signupState.isError &&
+          isSignupErrorResponse(signupState.error) &&
+          signupState.error.data.message
+        }
         error={signupState.isError}
         disabled={signupState.isSuccess}
       />

@@ -6,9 +6,9 @@ import java.util.Date;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.kanghoshin.lis.vo.AuthVo;
-import com.kanghoshin.lis.vo.StaffVo;
-import com.kanghoshin.lis.vo.ValidationVo;
+import com.kanghoshin.lis.vo.entity.AuthVo;
+import com.kanghoshin.lis.vo.entity.StaffVo;
+import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 import lombok.RequiredArgsConstructor;
 
