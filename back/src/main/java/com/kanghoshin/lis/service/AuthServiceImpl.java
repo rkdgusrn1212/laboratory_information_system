@@ -12,6 +12,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
@@ -36,9 +39,12 @@ public class AuthServiceImpl implements AuthService {
 	private final JavaMailSender emailSender;
 	@Value("${spring.mail.username}")
 	private String adminEmail;
+	private final PlatformTransactionManager transactionManager;
 
 	@Override
 	public void signUp(SignUpDto signUpDto) throws SignupFailedException {
+	    TransactionStatus txStatus =
+	            transactionManager.getTransaction(new DefaultTransactionDefinition());
 		boolean insertAuthSuccess = false;
 		try {
 			staffMapper.insertBySignUpDto(signUpDto);
@@ -49,14 +55,17 @@ public class AuthServiceImpl implements AuthService {
 			validationMapper.insert(signUpDto.getValidationEmail(), passwordEncoder.encode(code), signUpDto.getAuthId());
 			//성공적으로 삽입된 경우에만 발송
 			sendEmail(signUpDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
-
 		}catch(DuplicateKeyException e) {
+			transactionManager.rollback(txStatus);
 			throw new SignupFailedException(insertAuthSuccess?SignupErrorVo.DUPLICATED_EMAIL:SignupErrorVo.DUPLICATED_ID);
 		}catch(MailException e) {
+			transactionManager.rollback(txStatus);
 			throw new SignupFailedException(SignupErrorVo.INVALID_EMAIL);
 		}catch(Exception e){
+			transactionManager.rollback(txStatus);
 			throw new SignupFailedException(SignupErrorVo.UNKNOWN);
 		}
+		transactionManager.commit(txStatus);
 	}
 
 

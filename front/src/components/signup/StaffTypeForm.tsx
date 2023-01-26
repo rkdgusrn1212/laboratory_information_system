@@ -32,7 +32,7 @@ const StaffTypeForm: ForwardRefRenderFunction<unknown, unknown> = (
   return (
     <ToggleButtonGroup
       fullWidth
-      color="secondary"
+      color="standard"
       value={selectedType}
       exclusive
       onChange={handleChange}
