@@ -14,9 +14,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
-import com.kanghoshin.lis.vo.AuthVo;
-import com.kanghoshin.lis.vo.StaffVo;
-import com.kanghoshin.lis.vo.ValidationVo;
+import com.kanghoshin.lis.vo.entity.AuthVo;
+import com.kanghoshin.lis.vo.entity.StaffVo;
+import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{

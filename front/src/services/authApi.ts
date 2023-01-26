@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import server from '../server.json';
 import { Principal } from './authSlice';
+import { GenericErrorReponse, isGenericErrorReponse } from './types';
 
 export interface SignInResponse {
   accessToken: string;
@@ -25,31 +26,25 @@ export interface SignupRequest {
   staffType: number;
 }
 
-const SignupErrorDatas = [
+const SignupErrorCodes = [
   'UNKNOWN',
   'DUPLICATED_EMAIL',
   'DUPLICATED_ID',
   'INVALID_EMAIL',
 ] as const;
-type SignupErrorData = typeof SignupErrorDatas[number];
+type SignupErrorCode = typeof SignupErrorCodes[number];
 
-interface SignupErrorResponse {
-  status: number;
-  data: SignupErrorData;
-}
+type SignupErrorResponse = {
+  data: {
+    code: SignupErrorCode;
+    message: string;
+  };
+} & GenericErrorReponse;
 
 export function isSignupErrorResponse(
   error: unknown,
 ): error is SignupErrorResponse {
-  return (
-    typeof error === 'object' &&
-    error != null &&
-    'status' in error &&
-    typeof error.status === 'number' &&
-    'data' in error &&
-    typeof error.data === 'string' &&
-    (SignupErrorDatas as readonly string[]).indexOf(error.data) >= 0
-  );
+  return isGenericErrorReponse(error) && error.data.subject === 'signup';
 }
 
 export const authApi = createApi({

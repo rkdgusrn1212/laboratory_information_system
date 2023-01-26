@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.vo;
+package com.kanghoshin.lis.vo.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;

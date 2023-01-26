@@ -18,8 +18,8 @@ import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
 import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
 import com.kanghoshin.lis.exception.auth.SignupFailedException;
-import com.kanghoshin.lis.exception.auth.SignupFailedException.ErrorCode;
-import com.kanghoshin.lis.vo.ValidationVo;
+import com.kanghoshin.lis.vo.entity.ValidationVo;
+import com.kanghoshin.lis.vo.error.auth.SignupErrorVo;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
 
@@ -51,11 +51,11 @@ public class AuthServiceImpl implements AuthService {
 			sendEmail(signUpDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
 
 		}catch(DuplicateKeyException e) {
-			throw new SignupFailedException(insertAuthSuccess?ErrorCode.DUPLICATED_EMAIL:ErrorCode.DUPLICATED_ID);
+			throw new SignupFailedException(insertAuthSuccess?SignupErrorVo.DUPLICATED_EMAIL:SignupErrorVo.DUPLICATED_ID);
 		}catch(MailException e) {
-			throw new SignupFailedException(ErrorCode.INVALID_EMAIL);
+			throw new SignupFailedException(SignupErrorVo.INVALID_EMAIL);
 		}catch(Exception e){
-			throw new SignupFailedException(ErrorCode.UNKNOWN);
+			throw new SignupFailedException(SignupErrorVo.UNKNOWN);
 		}
 	}
 
