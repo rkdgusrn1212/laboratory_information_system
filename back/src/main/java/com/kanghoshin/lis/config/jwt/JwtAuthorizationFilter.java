@@ -1,6 +1,7 @@
 package com.kanghoshin.lis.config.jwt;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,10 +15,8 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
-import com.kanghoshin.lis.vo.entity.AuthVo;
-import com.kanghoshin.lis.vo.entity.StaffVo;
-
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 
@@ -44,12 +43,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 
 		}
 		if(decodedJwt != null) {
-			StaffVo staffVo = decodedJwt.getClaim("staff").as(StaffVo.class);
-			PrincipalDetails principalDetails = new PrincipalDetails(
-					new AuthVo(
-							decodedJwt.getSubject(), null, null, staffVo!=null?staffVo.getStaffNo():0,
-							decodedJwt.getClaim("validation_email").asString()),
-					staffVo);
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			Map<String, Object> principalMap = decodedJwt.getClaim("principal").as(Map.class);
+			PrincipalDetails principalDetails = objectMapper.convertValue(principalMap, PrincipalDetails.class);
 			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(
 							principalDetails, //나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편함.

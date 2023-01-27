@@ -1,7 +1,5 @@
 package com.kanghoshin.lis.vo.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 import javax.validation.constraints.Max;
@@ -10,8 +8,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
-import org.springframework.security.core.GrantedAuthority;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -49,17 +45,4 @@ public class StaffVo {
 	@Max(value = 1, message="타입은 최대 1(의사)")
 	@Min(value = 0, message="타입은 최소 0(간호사)")
 	private int staffType;
-
-
-	public Collection<GrantedAuthority> getRole(){
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-		if(staffAdmitted) {
-			authorities.add(()->{return "ROLE_STAFF";});
-			if(staffType==1) {
-				authorities.add(()->{return "ROLE_DOCTOR";});
-			}
-		}
-		return authorities;
-	}
 }

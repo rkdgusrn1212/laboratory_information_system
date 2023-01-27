@@ -1,14 +1,9 @@
 package com.kanghoshin.lis.config.jwt;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.auth0.jwt.JWT;
@@ -25,7 +19,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dto.auth.SignInDto;
-import com.kanghoshin.lis.vo.entity.StaffVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -67,30 +60,21 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-		StaffVo staffVo = principalDetails.getStaffVo();
-		Map<String, Object> staffMap =null;
-		if(staffVo!=null) {
-			ObjectMapper objectMapper = new ObjectMapper();
-			staffMap = objectMapper.convertValue(staffVo, Map.class);
-		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> principalMap = objectMapper.convertValue(principalDetails, Map.class);
 		String jwtToken = JWT.create()
 				.withSubject(principalDetails.getUsername())
-				.withClaim("validation_email", principalDetails.getValidationEmail())
-				.withClaim("staff", staffMap)
+				.withClaim("principal", principalMap)
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 
-		Map<String, Object> principalMap = new HashMap<>();
-		principalMap.put("authId", principalDetails.getUsername());
-		principalMap.put("validation_email", principalDetails.getValidationEmail());
-		principalMap.put("staff", staffMap);
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("accessToken", JwtProperties.TOKEN_PREFIX+jwtToken);
 		payload.put("principal", principalMap);
 
-		response.getWriter().print(new ObjectMapper().writeValueAsString(payload));
+		response.getWriter().print(objectMapper.writeValueAsString(payload));
 	}
 }
