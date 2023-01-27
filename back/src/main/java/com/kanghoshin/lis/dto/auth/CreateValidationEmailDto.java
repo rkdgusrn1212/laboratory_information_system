@@ -9,9 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class RefreshValidaitonCodeDto {
+@NoArgsConstructor
+public class CreateValidationEmailDto {
 	
 	@NotNull(message="이메일이 비어있음")
 	@EmailConstraints
