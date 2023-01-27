@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints;
+package com.kanghoshin.lis.constraints.auth;
 
 import javax.validation.constraints.Pattern;
 

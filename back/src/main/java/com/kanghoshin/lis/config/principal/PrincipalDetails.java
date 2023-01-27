@@ -20,7 +20,7 @@ public class PrincipalDetails implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		if(staffVo==null) {
 			Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-			authorities.add(()->{return "ROLE_DETAIL";});
+			authorities.add(()->{return "ROLE_AUTHONLY";});
 			return authorities;
 		}
 		return staffVo.getRole();

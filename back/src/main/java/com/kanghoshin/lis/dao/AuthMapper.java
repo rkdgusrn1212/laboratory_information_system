@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.kanghoshin.lis.vo.entity.AuthVo;
 
@@ -20,4 +21,7 @@ public interface AuthMapper {
 			@Param("auth_password") String authPassword,
 			@Param("auth_refresh") String authRefresh,
 			@Param("validation_email") String validationEmail);
+	
+	@Update("UPDATE auth SET staff_no = #{staff_no} WHERE auth_id = #{auth_id}")
+	int attachStaff(@Param("auth_id") String authId, @Param("staff_no") int staffNo);
 }

@@ -16,20 +16,21 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
 import com.kanghoshin.lis.exception.auth.CreateVallidationFailedException;
-import com.kanghoshin.lis.exception.auth.SignupFailedException;
+import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
 import com.kanghoshin.lis.vo.entity.ValidationVo;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
 import com.kanghoshin.lis.vo.error.auth.CreateValidationErrorVo;
-import com.kanghoshin.lis.vo.error.auth.SignupErrorVo;
+import com.kanghoshin.lis.vo.error.auth.WriteDetailsErrorVo;
 import com.kanghoshin.lis.dto.auth.CreateAuthDto;
 import com.kanghoshin.lis.dto.auth.CreateValidationDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
-import com.kanghoshin.lis.dto.auth.SignUpDto;
+import com.kanghoshin.lis.dto.auth.DetailsDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -92,23 +93,25 @@ public class AuthServiceImpl implements AuthService {
 		}
 		transactionManager.commit(txStatus);
 	}
-	
+
+
 	@Override
-	public void signUp(SignUpDto signUpDto) throws SignupFailedException {
+	public void writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException {
 		TransactionStatus txStatus =
 				transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
-			staffMapper.insertBySignUpDto(signUpDto);
-		}catch(MailException e) {
+			staffMapper.insertDetailsDto(detailsDto);
+			if(authMapper.attachStaff(principalDetails.getUsername(),detailsDto.getStaffNo())<1)
+				throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
+		}catch(WriteDetailsFailedException e) {
 			transactionManager.rollback(txStatus);
-			throw new SignupFailedException(SignupErrorVo.INVALID_EMAIL);
-		}catch(Exception e){
+			throw e;
+		}catch(Exception e) {
 			transactionManager.rollback(txStatus);
-			throw new SignupFailedException(SignupErrorVo.UNKNOWN);
+			throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
 		}
 		transactionManager.commit(txStatus);
 	}
-
 
 	@Override
 	public boolean isDuplicatedId(String id) {

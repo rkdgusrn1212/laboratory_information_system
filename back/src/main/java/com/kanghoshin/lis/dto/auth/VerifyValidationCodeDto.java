@@ -3,7 +3,7 @@ package com.kanghoshin.lis.dto.auth;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.kanghoshin.lis.constraints.ValidationEmailConstraints;
+import com.kanghoshin.lis.constraints.validation.ValidationEmailConstraints;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

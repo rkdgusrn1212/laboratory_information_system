@@ -4,7 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.kanghoshin.lis.constraints.ValidationEmailConstraints;
+import com.kanghoshin.lis.constraints.validation.ValidationEmailConstraints;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
