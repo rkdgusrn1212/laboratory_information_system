@@ -1,6 +1,7 @@
 package com.kanghoshin.lis.config.jwt;
 
 import java.io.IOException;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.vo.entity.AuthVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
-import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
@@ -44,25 +44,12 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 
 		}
 		if(decodedJwt != null) {
-			String authId = decodedJwt.getClaim("auth_id").asString();
-			int staffNo = decodedJwt.getClaim("staff_no").asInt();
+			StaffVo staffVo = decodedJwt.getClaim("staff").as(StaffVo.class);
 			PrincipalDetails principalDetails = new PrincipalDetails(
-					new ValidationVo(decodedJwt.getSubject(), null, authId),
 					new AuthVo(
-							decodedJwt.getClaim("auth_id").asString(), null,
-							decodedJwt.getClaim("auth_refresh").asString(), staffNo
-							),
-					new StaffVo(
-							staffNo,
-							decodedJwt.getClaim("staff_name").asString(),
-							decodedJwt.getClaim("staff_birth").asDate(),
-							decodedJwt.getClaim("staff_male").asBoolean(),
-							decodedJwt.getClaim("staff_phone").asString(),
-							decodedJwt.getClaim("staff_image").asString(),
-							decodedJwt.getClaim("staff_rrn").asString(),
-							decodedJwt.getClaim("staff_admitted").asBoolean(),
-							decodedJwt.getClaim("staff_type").asInt()
-					));
+							decodedJwt.getSubject(), null, null, staffVo!=null?staffVo.getStaffNo():0,
+							decodedJwt.getClaim("validation_email").asString()),
+					staffVo);
 			Authentication authentication =
 					new UsernamePasswordAuthenticationToken(
 							principalDetails, //나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편함.

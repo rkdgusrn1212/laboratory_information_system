@@ -73,16 +73,13 @@ public class AuthServiceImpl implements AuthService {
 		TransactionStatus txStatus =
 				transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
-			ValidationVo validationVo = validationMapper.findByEmail(createAuthDto.getValidationEmail());
+			ValidationVo validationVo = validationMapper.findByValidationEmail(createAuthDto.getValidationEmail());
 			if(validationVo==null) throw new CreateAuthFailedException(CreateAuthErrorVo.EMAIL_NOT_EXIST);
-			if(!passwordEncoder.matches(createAuthDto.getValidationCode(), validationVo.getCode())) {
+			if(!passwordEncoder.matches(createAuthDto.getValidationCode(), validationVo.getValidationCode())) {
 				throw new CreateAuthFailedException(CreateAuthErrorVo.WRONG_CODE);
 			}
 			authMapper.insert(createAuthDto.getAuthId(), passwordEncoder.encode(createAuthDto.getAuthPassword()),
-					UUID.randomUUID().toString());
-			if(validationMapper.attachAuth(createAuthDto.getValidationEmail(), createAuthDto.getAuthId())<1) {
-				throw new CreateAuthFailedException(CreateAuthErrorVo.UNKNOWN);//where절에서 해당 이메일을 못찾음, 앞에서 검사해서 못 찾을 이유가 없음
-			}
+					UUID.randomUUID().toString(), createAuthDto.getValidationEmail());
 		}catch(DuplicateKeyException e) {
 			transactionManager.rollback(txStatus);
 			throw new CreateAuthFailedException(CreateAuthErrorVo.DUPLICATED_ID);
@@ -115,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public boolean isDuplicatedId(String id) {
-		return authMapper.findById(id)!=null;
+		return authMapper.findByAuthId(id)!=null;
 	}
 
 

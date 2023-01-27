@@ -1,14 +1,12 @@
 package com.kanghoshin.lis.config.principal;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.kanghoshin.lis.vo.entity.AuthVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
-import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,23 +14,26 @@ import lombok.RequiredArgsConstructor;
 public class PrincipalDetails implements UserDetails{
 
 	private static final long serialVersionUID = 7772998674503481744L;
-	private final ValidationVo validationVo;
 	private final AuthVo authVo;
 	private final StaffVo staffVo;
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
+		if(staffVo==null) {
+			Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+			authorities.add(()->{return "ROLE_DETAIL";});
+			return authorities;
+		}
 		return staffVo.getRole();
 	}
 
 	@Override
 	public String getPassword() {
-		return authVo.getPassword();
+		return authVo.getAuthPassword();
 	}
 
 	@Override
 	public String getUsername() {
-		return authVo.getId();
+		return authVo.getAuthId();
 	}
 
 	@Override
@@ -55,47 +56,15 @@ public class PrincipalDetails implements UserDetails{
 		return true;
 	}
 	
-	public String getRefresh() {
-		return authVo.getRefresh();
+	public String getAuthRefresh() {
+		return authVo.getAuthRefresh();
 	}
 	
-	public String getEmail() {
-		return validationVo.getEmail();
+	public String getValidationEmail() {
+		return authVo.getValidationEmail();
 	}
 	
-	public int getStaffNo() {
-		return staffVo.getNo();
-	}
-	
-	public Date getBirth() {
-		return staffVo.getBirth();
-	}
-	
-	public String getRrn() {
-		return staffVo.getRrn();
-	}
-	
-	public boolean getAdmitted() {
-		return staffVo.isAdmitted();
-	}
-
-	public String getPhone() {
-		return staffVo.getPhone();
-	}
-	
-	public String getName() {
-		return staffVo.getName();
-	}
-	
-	public String getImage() {
-		return staffVo.getImage();
-	}
-	
-	public int getType() {
-		return staffVo.getType();
-	}
-	
-	public boolean isMale() {
-		return staffVo.isMale();
+	public StaffVo getStaffVo() {
+		return staffVo;
 	}
 }

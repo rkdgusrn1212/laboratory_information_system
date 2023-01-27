@@ -14,26 +14,26 @@
 
 
 -- kanghoshin_lis 데이터베이스 구조 내보내기
-DROP DATABASE IF EXISTS `kanghoshin_lis`;
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
 -- 테이블 kanghoshin_lis.auth 구조 내보내기
-DROP TABLE IF EXISTS `auth`;
 CREATE TABLE IF NOT EXISTS `auth` (
   `auth_id` varchar(40) NOT NULL,
   `auth_password` char(60) NOT NULL,
   `auth_refresh` char(36) NOT NULL,
-  `staff_no` int(11) NOT NULL,
+  `staff_no` int(11) DEFAULT NULL,
+  `validation_email` varchar(320) NOT NULL,
   PRIMARY KEY (`auth_id`),
   KEY `FK__staff` (`staff_no`),
-  CONSTRAINT `FK__staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`)
+  KEY `FK_validation` (`validation_email`),
+  CONSTRAINT `FK__staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_validation` FOREIGN KEY (`validation_email`) REFERENCES `validation` (`validation_email`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
 -- 테이블 kanghoshin_lis.staff 구조 내보내기
-DROP TABLE IF EXISTS `staff`;
 CREATE TABLE IF NOT EXISTS `staff` (
   `staff_no` int(11) NOT NULL AUTO_INCREMENT,
   `staff_name` varchar(40) NOT NULL,
@@ -45,19 +45,15 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `staff_admitted` bit(1) NOT NULL DEFAULT b'0',
   `staff_type` tinyint(4) NOT NULL,
   PRIMARY KEY (`staff_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
 -- 테이블 kanghoshin_lis.validation 구조 내보내기
-DROP TABLE IF EXISTS `validation`;
 CREATE TABLE IF NOT EXISTS `validation` (
   `validation_email` varchar(320) NOT NULL,
-  `validation_code` char(60),
-  `auth_id` varchar(40) NOT NULL,
-  PRIMARY KEY (`validation_email`),
-  KEY `FK_validation_auth` (`auth_id`),
-  CONSTRAINT `FK_validation_auth` FOREIGN KEY (`auth_id`) REFERENCES `auth` (`auth_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `validation_code` char(60) DEFAULT NULL,
+  PRIMARY KEY (`validation_email`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.

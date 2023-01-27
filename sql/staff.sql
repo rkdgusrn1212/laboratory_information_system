@@ -14,12 +14,10 @@
 
 
 -- kanghoshin_lis 데이터베이스 구조 내보내기
-DROP DATABASE IF EXISTS `kanghoshin_lis`;
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
 -- 테이블 kanghoshin_lis.staff 구조 내보내기
-DROP TABLE IF EXISTS `staff`;
 CREATE TABLE IF NOT EXISTS `staff` (
   `staff_no` int(11) NOT NULL AUTO_INCREMENT,
   `staff_name` varchar(40) NOT NULL,
@@ -31,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `staff_admitted` bit(1) NOT NULL DEFAULT b'0',
   `staff_type` tinyint(4) NOT NULL,
   PRIMARY KEY (`staff_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 

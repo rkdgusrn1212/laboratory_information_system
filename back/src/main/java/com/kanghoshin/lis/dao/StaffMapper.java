@@ -12,11 +12,11 @@ import com.kanghoshin.lis.vo.entity.StaffVo;
 @Mapper
 public interface StaffMapper {
 
-	@Select("SELECT staff_no as no,"
-			+ "staff_name as name, staff_birth as birth, staff_male as male, staff_phone as phone,"
-			+ "staff_image as image, staff_rrn as rrn, staff_admitted as admitted"
-			+ "staff_type as type  FROM staff WHERE staff_no = #{staff_no}")
-	StaffVo findByNo(@Param("staff_no") int no);
+	@Select("SELECT staff_no as staffNo,"
+			+ "staff_name as staffName, staff_birth as staffBirth, staff_male as staffMale, staff_phone as staffPhone,"
+			+ "staff_image as staffImage, staff_rrn as staffRrn, staff_admitted as staffAdmitted, "
+			+ "staff_type as staffType FROM staff WHERE staff_no = #{staff_no}")
+	StaffVo findByStaffNo(@Param("staff_no") int staffNo);
 
 	@Insert("INSERT INTO staff(staff_name, "
 			+ "staff_birth, staff_male, "
