@@ -15,5 +15,5 @@ public class CreateValidationEmailDto {
 	
 	@NotNull(message="이메일이 비어있음")
 	@EmailConstraints
-	private String email;
+	private String validationEmail;
 }

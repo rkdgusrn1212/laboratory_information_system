@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
+import com.kanghoshin.lis.exception.auth.CreateVallidationEmailFailedException;
 import com.kanghoshin.lis.exception.auth.SignupFailedException;
+import com.kanghoshin.lis.dto.auth.CreateValidationEmailDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
 import com.kanghoshin.lis.service.AuthService;
+import com.kanghoshin.lis.vo.error.auth.CreateValidationEmailErrorVo;
 import com.kanghoshin.lis.vo.error.auth.SignupErrorVo;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +37,16 @@ public class AuthController {
 	@ExceptionHandler(SignupFailedException.class)
 	public ResponseEntity<SignupErrorVo> handleSignupFailedException(SignupFailedException exception) {
 		return new ResponseEntity<SignupErrorVo>(exception.getSignupErrorVo(),HttpStatus.BAD_REQUEST);
+	}
+	
+	@PostMapping("create-validation-email")
+	public void createValidationEmail(@Valid @RequestBody CreateValidationEmailDto createValidationEmailDto) throws CreateVallidationEmailFailedException {
+		authService.createValidationEmail(createValidationEmailDto);
+	}	
+	
+	@ExceptionHandler(CreateVallidationEmailFailedException.class)
+	public ResponseEntity<CreateValidationEmailErrorVo> handleCreateVallidationEmailFailedException(CreateVallidationEmailFailedException exception) {
+		return new ResponseEntity<CreateValidationEmailErrorVo>(exception.getCreateValidationEmailErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 	
 	@PostMapping("refresh-validation-code")
