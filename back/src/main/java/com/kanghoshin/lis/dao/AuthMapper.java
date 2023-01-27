@@ -14,8 +14,8 @@ public interface AuthMapper {
 			+ "FROM auth WHRER auth_id = #{auth_id}")
 	AuthVo findById(@Param("auth_id") String id);
 
-	@Insert("INSERT INTO auth VALUES(#{auth_id}, #{auth_password}, #{auth_refresh}, #{staff_no})")
+	@Insert("INSERT INTO auth VALUES(#{auth_id}, #{auth_password}, #{auth_refresh}, null)")
 	int insert(@Param("auth_id") String id,
 			@Param("auth_password") String password,
-			@Param("auth_refresh") String refresh, @Param("staff_no") int staffNo);
+			@Param("auth_refresh") String refresh);
 }

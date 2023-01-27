@@ -19,4 +19,7 @@ public interface ValidationMapper {
 	
 	@Update("UPDATE validation SET validation_code = #{validation_code} WHERE validation_email = #{validation_email}")
 	int updateCode(@Param("validation_email") String email, @Param("validation_code") String code);
+	
+	@Update("UPDATE validation SET validation_code = null, auth_id = #{auth_id} WHERE validation_email = #{validation_email}")
+	int attachAuth(@Param("validation_email") String email, @Param("auth_id") String authId);
 }

@@ -3,7 +3,7 @@ package com.kanghoshin.lis.dto.auth;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.kanghoshin.lis.constraints.EmailConstraints;
+import com.kanghoshin.lis.constraints.ValidationEmailConstraints;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +18,6 @@ public class VerifyValidationCodeDto {
 	private String code;
 	
 	@NotNull(message="이메일이 비어있음")
-	@EmailConstraints
+	@ValidationEmailConstraints
 	private String email;
 }

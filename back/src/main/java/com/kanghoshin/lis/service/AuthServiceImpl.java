@@ -19,13 +19,15 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
-import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
-import com.kanghoshin.lis.exception.auth.CreateVallidationEmailFailedException;
+import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
+import com.kanghoshin.lis.exception.auth.CreateVallidationFailedException;
 import com.kanghoshin.lis.exception.auth.SignupFailedException;
 import com.kanghoshin.lis.vo.entity.ValidationVo;
-import com.kanghoshin.lis.vo.error.auth.CreateValidationEmailErrorVo;
+import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
+import com.kanghoshin.lis.vo.error.auth.CreateValidationErrorVo;
 import com.kanghoshin.lis.vo.error.auth.SignupErrorVo;
-import com.kanghoshin.lis.dto.auth.CreateValidationEmailDto;
+import com.kanghoshin.lis.dto.auth.CreateAuthDto;
+import com.kanghoshin.lis.dto.auth.CreateValidationDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.SignUpDto;
 
@@ -46,39 +48,60 @@ public class AuthServiceImpl implements AuthService {
 
 
 	@Override
-	public void createValidationEmail(@Valid CreateValidationEmailDto createValidationEmailDto) throws CreateVallidationEmailFailedException {
-	    TransactionStatus txStatus =
-	            transactionManager.getTransaction(new DefaultTransactionDefinition());
+	public void createValidation(@Valid CreateValidationDto createValidationDto) throws CreateVallidationFailedException {
+		TransactionStatus txStatus =
+				transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
 			String code = UUID.randomUUID().toString();
-			validationMapper.insert(createValidationEmailDto.getValidationEmail(), passwordEncoder.encode(code));
-			sendEmail(createValidationEmailDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
+			validationMapper.insert(createValidationDto.getValidationEmail(), passwordEncoder.encode(code));
+			sendEmail(createValidationDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
 		}catch(DuplicateKeyException e) {
 			transactionManager.rollback(txStatus);
-			throw new CreateVallidationEmailFailedException(CreateValidationEmailErrorVo.DUPLICATED_EMAIL);
+			throw new CreateVallidationFailedException(CreateValidationErrorVo.DUPLICATED_EMAIL);
 		}catch(MailException e) {
 			transactionManager.rollback(txStatus);
-			throw new CreateVallidationEmailFailedException(CreateValidationEmailErrorVo.INVALID_EMAIL);
+			throw new CreateVallidationFailedException(CreateValidationErrorVo.INVALID_EMAIL);
 		}catch(Exception e) {
 			transactionManager.rollback(txStatus);
-			throw new CreateVallidationEmailFailedException(CreateValidationEmailErrorVo.UNKNOWN);
+			throw new CreateVallidationFailedException(CreateValidationErrorVo.UNKNOWN);
+		}
+		transactionManager.commit(txStatus);
+	}
+
+	@Override
+	public void createAuth(@Valid CreateAuthDto createAuthDto) throws CreateAuthFailedException {
+		TransactionStatus txStatus =
+				transactionManager.getTransaction(new DefaultTransactionDefinition());
+		try {
+			ValidationVo validationVo = validationMapper.findByEmail(createAuthDto.getValidationEmail());
+			if(validationVo==null) throw new CreateAuthFailedException(CreateAuthErrorVo.EMAIL_NOT_EXIST);
+			if(!passwordEncoder.matches(createAuthDto.getValidationCode(), validationVo.getCode())) {
+				throw new CreateAuthFailedException(CreateAuthErrorVo.WRONG_CODE);
+			}
+			authMapper.insert(createAuthDto.getAuthId(), passwordEncoder.encode(createAuthDto.getAuthPassword()),
+					UUID.randomUUID().toString());
+			if(validationMapper.attachAuth(createAuthDto.getValidationEmail(), createAuthDto.getAuthId())<1) {
+				throw new CreateAuthFailedException(CreateAuthErrorVo.UNKNOWN);//where절에서 해당 이메일을 못찾음, 앞에서 검사해서 못 찾을 이유가 없음
+			}
+		}catch(DuplicateKeyException e) {
+			transactionManager.rollback(txStatus);
+			throw new CreateAuthFailedException(CreateAuthErrorVo.DUPLICATED_ID);
+		}catch(CreateAuthFailedException e) {
+			transactionManager.rollback(txStatus);
+			throw e;
+		}catch(Exception e) {
+			transactionManager.rollback(txStatus);
+			throw new CreateAuthFailedException(CreateAuthErrorVo.UNKNOWN);
 		}
 		transactionManager.commit(txStatus);
 	}
 	
 	@Override
 	public void signUp(SignUpDto signUpDto) throws SignupFailedException {
-	    TransactionStatus txStatus =
-	            transactionManager.getTransaction(new DefaultTransactionDefinition());
-		boolean insertAuthSuccess = false;
+		TransactionStatus txStatus =
+				transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
 			staffMapper.insertBySignUpDto(signUpDto);
-			authMapper.insert(signUpDto.getAuthId(), passwordEncoder.encode(signUpDto.getAuthPassword()),
-					UUID.randomUUID().toString(), signUpDto.getStaffNo());
-			insertAuthSuccess = true;
-		}catch(DuplicateKeyException e) {
-			transactionManager.rollback(txStatus);
-			throw new SignupFailedException(insertAuthSuccess?SignupErrorVo.DUPLICATED_EMAIL:SignupErrorVo.DUPLICATED_ID);
 		}catch(MailException e) {
 			transactionManager.rollback(txStatus);
 			throw new SignupFailedException(SignupErrorVo.INVALID_EMAIL);
@@ -115,17 +138,5 @@ public class AuthServiceImpl implements AuthService {
 		message.setSubject(title);
 		message.setText(content);
 		emailSender.send(message);
-	}
-
-
-	@Override
-	public boolean verifyValidationCode(@Valid VerifyValidationCodeDto receiveCodeDto) {
-		try {
-			ValidationVo validationVo = validationMapper.findByEmail(receiveCodeDto.getEmail());
-			if(!passwordEncoder.matches(receiveCodeDto.getCode(), validationVo.getCode())) return false;
-			return validationMapper.updateCode(validationVo.getEmail(), null) > 0;
-		}catch(Exception e) {
-			return false;
-		}
 	}
 }
