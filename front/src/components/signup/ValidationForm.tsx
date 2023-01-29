@@ -13,17 +13,18 @@ import Button from '@mui/material/Button';
 import Grow from '@mui/material/Grow';
 import CircularProgress from '@mui/material/CircularProgress';
 import green from '@mui/material/colors/green';
-import {
-  isSignupErrorResponse,
-  SignupRequest,
-  useSignupMutation,
-} from '../../services/authApi';
 import { useAppSelector } from '../../hooks';
+import { selectAccount } from '../../services/accountSlice';
+import {
+  CreateValidationRequest,
+  isCreateValidationError,
+  useCreateValidationMutation,
+} from '../../services/authApi';
 
 const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
-  const [signup, signupState] = useSignupMutation();
   const [email, setEmail] = useState<string>('');
-  const signupFormState = useAppSelector((state) => state.signupForm);
+  const [createValidation, createValidationState] =
+    useCreateValidationMutation();
 
   const handleEmailChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
@@ -32,14 +33,13 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
     [],
   );
 
-  const handleSignupClick = useCallback<
+  const handleCreateValidationClick = useCallback<
     MouseEventHandler<HTMLButtonElement>
   >(() => {
-    signup({
+    createValidation({
       validationEmail: email,
-      ...signupFormState.form,
-    } as SignupRequest);
-  }, [email, signup, signupFormState.form]);
+    } as CreateValidationRequest);
+  }, [email, createValidation]);
 
   useImperativeHandle(ref, () => email);
 
@@ -55,25 +55,25 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         onChange={handleEmailChange}
         autoComplete="email"
         helperText={
-          signupState.isError &&
-          isSignupErrorResponse(signupState.error) &&
-          signupState.error.data.message
+          createValidationState.isError &&
+          isCreateValidationError(createValidationState.error) &&
+          createValidationState.error.data.message
         }
-        error={signupState.isError}
-        disabled={signupState.isSuccess}
+        error={createValidationState.isError}
+        disabled={createValidationState.isSuccess}
       />
-      {signupState.isSuccess || (
+      {createValidationState.isSuccess || (
         <Box sx={{ mt: 2, mb: 1, position: 'relative' }}>
           <Button
             fullWidth
             color="secondary"
             variant="contained"
-            onClick={handleSignupClick}
-            disabled={signupState.isLoading}
+            onClick={handleCreateValidationClick}
+            disabled={createValidationState.isLoading}
           >
             인증번호 발급
           </Button>
-          {signupState.isLoading && (
+          {createValidationState.isLoading && (
             <CircularProgress
               size={24}
               sx={{
@@ -88,9 +88,9 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
           )}
         </Box>
       )}
-      {signupState.isSuccess && (
+      {createValidationState.isSuccess && (
         <Box sx={{ display: 'flex', mt: 1 }}>
-          <Grow in={signupState.isSuccess}>
+          <Grow in={createValidationState.isSuccess}>
             <Box sx={{ display: 'block', width: '100%' }}>
               <TextField
                 required

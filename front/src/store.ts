@@ -1,13 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authApi } from './services/authApi';
-import authSlice from './services/authSlice';
-import signupFormSlice from './services/signupFormSlice';
+import accountSlice from './services/accountSlice';
 
 export const store = configureStore({
   reducer: {
-    auth: authSlice.reducer,
+    account: accountSlice.reducer,
     [authApi.reducerPath]: authApi.reducer,
-    signupForm: signupFormSlice.reducer,
   },
   middleware: (getDM) => getDM().concat(authApi.middleware),
 });

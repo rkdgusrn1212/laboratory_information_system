@@ -19,35 +19,19 @@ import dayjs, { Dayjs } from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useAppSelector } from '../../hooks';
 import { FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
 
 const StaffDetailForm: ForwardRefRenderFunction<unknown, unknown> = (
   props,
   ref,
 ) => {
-  const signupFormState = useAppSelector((state) => state.signupForm);
-  const [staffBirth, setStaffBirth] = useState<Dayjs | null>(
-    dayjs(signupFormState.form.staffBirth),
-  );
-  const [staffName, setStaffName] = useState<string>(
-    signupFormState.form.staffName || '',
-  );
-  const [staffMale, setStaffMale] = useState<boolean | undefined>(
-    signupFormState.form.staffMale,
-  );
-  const [authId, setAuthId] = useState<string>(
-    signupFormState.form.authId || '',
-  );
-  const [authPassword, setAuthPassword] = useState<string>(
-    signupFormState.form.authPassword || '',
-  );
-  const [staffPhone, setStaffPhone] = useState<string>(
-    signupFormState.form.staffPhone || '',
-  );
-  const [staffRrn, setStaffRrn] = useState<string>(
-    signupFormState.form.staffRrn || '',
-  );
+  const [staffBirth, setStaffBirth] = useState<Dayjs | null>(null);
+  const [staffName, setStaffName] = useState<string>('');
+  const [staffMale, setStaffMale] = useState<boolean | undefined>(undefined);
+  const [authId, setAuthId] = useState<string>('');
+  const [authPassword, setAuthPassword] = useState<string>('');
+  const [staffPhone, setStaffPhone] = useState<string>('');
+  const [staffRrn, setStaffRrn] = useState<string>('');
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
 
   const handleMouseUpAndLeaveVisibility = useCallback(

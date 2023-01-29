@@ -1,58 +1,75 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import server from '../server.json';
-import { Principal } from './authSlice';
-import { GenericErrorReponse, isGenericErrorReponse } from './types';
+import { Account, GenericErrorWithMessage, isGenericError } from './types';
 
-export interface SignInResponse {
-  accessToken: string;
-  principal: Principal;
-}
+export type SigninResponse = Account;
+
 export interface SigninRequest {
-  id: string;
-  password: string;
+  authId: string;
+  authPassword: string;
 }
 
-export interface SignupRequest {
+export interface CreateValidationRequest {
+  validationEmail: string;
+}
+
+type CreateValidationError = {
+  data: {
+    code: 'UNKNOWN' | 'DUPLICATED_EMAIL' | 'INVALID_EMAIL';
+  };
+} & GenericErrorWithMessage;
+
+export function isCreateValidationError(
+  error: unknown,
+): error is CreateValidationError {
+  return isGenericError(error) && error.data.subject === 'createValidation';
+}
+
+export interface CreateAuthRequest {
   authId: string;
   authPassword: string;
   validationEmail: string;
+  validationCode: string;
+}
+
+type CreateAuthError = {
+  data: {
+    code: 'UNKNOWN' | 'DUPLICATED_ID' | 'WRONG_CODE' | 'EMAIL_NOT_EXIST';
+  };
+} & GenericErrorWithMessage;
+
+export function isCreateAuthError(error: unknown): error is CreateAuthError {
+  return isGenericError(error) && error.data.subject === 'createAuth';
+}
+
+export interface WriteDetailsRequest {
   staffName: string;
-  staffMale: boolean;
   staffBirth: string;
+  staffMale: boolean;
   staffPhone: string;
-  staffImage: string | null;
+  staffImage: string;
   staffRrn: string;
   staffType: number;
 }
 
-const SignupErrorCodes = [
-  'UNKNOWN',
-  'DUPLICATED_EMAIL',
-  'DUPLICATED_ID',
-  'INVALID_EMAIL',
-] as const;
-type SignupErrorCode = typeof SignupErrorCodes[number];
-
-type SignupErrorResponse = {
+type WriteDetailsError = {
   data: {
-    code: SignupErrorCode;
-    message: string;
+    code: 'UNKNOWN';
   };
-} & GenericErrorReponse;
+} & GenericErrorWithMessage;
 
-export function isSignupErrorResponse(
+export function isWriteDetailsError(
   error: unknown,
-): error is SignupErrorResponse {
-  return isGenericErrorReponse(error) && error.data.subject === 'signup';
+): error is WriteDetailsError {
+  return isGenericError(error) && error.data.subject === 'writeDetails';
 }
 
 export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/auth/`,
     prepareHeaders: (headers, { getState }) => {
-      // 스토어에 저장된 토큰이 있다면 요청에 실어 보낸다.
-      const token = (getState() as RootState).auth.token;
+      const token = (getState() as RootState).account?.accessToken;
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
       }
@@ -61,21 +78,40 @@ export const authApi = createApi({
   }),
   reducerPath: 'authApi',
   endpoints: (builder) => ({
-    signin: builder.mutation<SignInResponse, SigninRequest>({
+    signin: builder.mutation<SigninResponse, SigninRequest>({
       query: (auth) => ({
         body: auth,
-        method: 'Post',
+        method: 'POST',
         url: 'signin',
       }),
     }),
-    signup: builder.mutation<boolean, SignupRequest>({
-      query: (signUpResponse) => ({
-        body: signUpResponse,
-        method: 'Post',
-        url: 'signup',
+    createValidation: builder.mutation<unknown, CreateValidationRequest>({
+      query: (body) => ({
+        body: body,
+        method: 'POST',
+        url: 'create-validation',
+      }),
+    }),
+    createAuth: builder.mutation<unknown, CreateAuthRequest>({
+      query: (body) => ({
+        body: body,
+        method: 'POST',
+        url: 'create-auth',
+      }),
+    }),
+    writeDetails: builder.mutation<unknown, WriteDetailsRequest>({
+      query: (body) => ({
+        body: body,
+        method: 'POST',
+        url: 'write-details',
       }),
     }),
   }),
 });
 export default authApi;
-export const { useSigninMutation, useSignupMutation } = authApi;
+export const {
+  useSigninMutation,
+  useCreateValidationMutation,
+  useCreateAuthMutation,
+  useWriteDetailsMutation,
+} = authApi;
