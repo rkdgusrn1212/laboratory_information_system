@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
-import com.kanghoshin.lis.exception.auth.CreateVallidationFailedException;
+import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dto.auth.CreateAuthDto;
-import com.kanghoshin.lis.dto.auth.CreateValidationDto;
+import com.kanghoshin.lis.dto.auth.issueValidationCodeDto;
 import com.kanghoshin.lis.dto.auth.DetailsDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.service.AuthService;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
-import com.kanghoshin.lis.vo.error.auth.CreateValidationErrorVo;
+import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
 import com.kanghoshin.lis.vo.error.auth.WriteDetailsErrorVo;
 
 import lombok.RequiredArgsConstructor;
@@ -34,14 +34,14 @@ public class AuthController {
 
 	private final AuthService authService;
 
-	@PostMapping("create-validation")
-	public void createValidation(@Valid @RequestBody CreateValidationDto createValidationEmailDto) throws CreateVallidationFailedException {
-		authService.createValidation(createValidationEmailDto);
+	@PostMapping("issue-validation-code")
+	public void issueValidationCode(@Valid @RequestBody issueValidationCodeDto issueValidationCodeDto) throws IssueVallidationCodeFailedException {
+		authService.issueValidationCode(issueValidationCodeDto);
 	}	
 
-	@ExceptionHandler(CreateVallidationFailedException.class)
-	public ResponseEntity<CreateValidationErrorVo> handleCreateVallidationEmailFailedException(CreateVallidationFailedException exception) {
-		return new ResponseEntity<CreateValidationErrorVo>(exception.getCreateValidationEmailErrorVo(),HttpStatus.BAD_REQUEST);
+	@ExceptionHandler(IssueVallidationCodeFailedException.class)
+	public ResponseEntity<IssueValidationCodeErrorVo> handleCreateVallidationEmailFailedException(IssueVallidationCodeFailedException exception) {
+		return new ResponseEntity<IssueValidationCodeErrorVo>(exception.getIssueValidationCodeErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 
 	@PostMapping("create-auth")

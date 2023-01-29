@@ -21,14 +21,14 @@ import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
-import com.kanghoshin.lis.exception.auth.CreateVallidationFailedException;
+import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
 import com.kanghoshin.lis.vo.entity.ValidationVo;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
-import com.kanghoshin.lis.vo.error.auth.CreateValidationErrorVo;
+import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
 import com.kanghoshin.lis.vo.error.auth.WriteDetailsErrorVo;
 import com.kanghoshin.lis.dto.auth.CreateAuthDto;
-import com.kanghoshin.lis.dto.auth.CreateValidationDto;
+import com.kanghoshin.lis.dto.auth.issueValidationCodeDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
 import com.kanghoshin.lis.dto.auth.DetailsDto;
 
@@ -49,22 +49,31 @@ public class AuthServiceImpl implements AuthService {
 
 
 	@Override
-	public void createValidation(@Valid CreateValidationDto createValidationDto) throws CreateVallidationFailedException {
+	public void issueValidationCode(@Valid issueValidationCodeDto issueValidationCodeDto) throws IssueVallidationCodeFailedException {
 		TransactionStatus txStatus =
 				transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
 			String code = UUID.randomUUID().toString();
-			validationMapper.insert(createValidationDto.getValidationEmail(), passwordEncoder.encode(code));
-			sendEmail(createValidationDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
-		}catch(DuplicateKeyException e) {
+			ValidationVo validationVo = validationMapper.findByValidationEmail(issueValidationCodeDto.getValidationEmail());
+			if(validationVo==null) {
+				validationMapper.insert(issueValidationCodeDto.getValidationEmail(), passwordEncoder.encode(code));	
+			}else {
+				if(validationVo.getValidationCode()==null) {//이미 인증된 이메일
+					throw new IssueVallidationCodeFailedException(IssueValidationCodeErrorVo.DUPLICATED_EMAIL);
+				}
+				if(validationMapper.updateCode(issueValidationCodeDto.getValidationEmail(), passwordEncoder.encode(code))<1)
+					throw new IssueVallidationCodeFailedException(IssueValidationCodeErrorVo.UNKNOWN);
+			}
+			sendEmail(issueValidationCodeDto.getValidationEmail(), "[KHS] 이메일 인증번호 입니다.", code);
+		}catch(IssueVallidationCodeFailedException e) {
 			transactionManager.rollback(txStatus);
-			throw new CreateVallidationFailedException(CreateValidationErrorVo.DUPLICATED_EMAIL);
+			throw e;
 		}catch(MailException e) {
 			transactionManager.rollback(txStatus);
-			throw new CreateVallidationFailedException(CreateValidationErrorVo.INVALID_EMAIL);
+			throw new IssueVallidationCodeFailedException(IssueValidationCodeErrorVo.INVALID_EMAIL);
 		}catch(Exception e) {
 			transactionManager.rollback(txStatus);
-			throw new CreateVallidationFailedException(CreateValidationErrorVo.UNKNOWN);
+			throw new IssueVallidationCodeFailedException(IssueValidationCodeErrorVo.UNKNOWN);
 		}
 		transactionManager.commit(txStatus);
 	}

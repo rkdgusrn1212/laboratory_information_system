@@ -89,7 +89,7 @@ export const authApi = createApi({
       query: (body) => ({
         body: body,
         method: 'POST',
-        url: 'create-validation',
+        url: 'issue-validation-code',
       }),
     }),
     createAuth: builder.mutation<unknown, CreateAuthRequest>({

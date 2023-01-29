@@ -1,8 +1,6 @@
 import {
   useState,
   useCallback,
-  forwardRef,
-  useImperativeHandle,
   ChangeEventHandler,
   ForwardRefRenderFunction,
   MouseEventHandler,
@@ -13,15 +11,14 @@ import Button from '@mui/material/Button';
 import Grow from '@mui/material/Grow';
 import CircularProgress from '@mui/material/CircularProgress';
 import green from '@mui/material/colors/green';
-import { useAppSelector } from '../../hooks';
-import { selectAccount } from '../../services/accountSlice';
+
 import {
   CreateValidationRequest,
   isCreateValidationError,
   useCreateValidationMutation,
 } from '../../services/authApi';
 
-const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
+const ValidationForm: ForwardRefRenderFunction<unknown> = () => {
   const [email, setEmail] = useState<string>('');
   const [createValidation, createValidationState] =
     useCreateValidationMutation();
@@ -33,7 +30,7 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
     [],
   );
 
-  const handleCreateValidationClick = useCallback<
+  const handleIssueClick = useCallback<
     MouseEventHandler<HTMLButtonElement>
   >(() => {
     createValidation({
@@ -41,7 +38,11 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
     } as CreateValidationRequest);
   }, [email, createValidation]);
 
-  useImperativeHandle(ref, () => email);
+  const handleCancelClick = useCallback<
+    MouseEventHandler<HTMLButtonElement>
+  >(() => {
+    createValidationState.reset();
+  }, [createValidationState]);
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -56,8 +57,9 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
         autoComplete="email"
         helperText={
           createValidationState.isError &&
-          isCreateValidationError(createValidationState.error) &&
-          createValidationState.error.data.message
+          (isCreateValidationError(createValidationState.error)
+            ? createValidationState.error.data.message
+            : '알수없는 오류 발생')
         }
         error={createValidationState.isError}
         disabled={createValidationState.isSuccess}
@@ -68,7 +70,7 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
             fullWidth
             color="secondary"
             variant="contained"
-            onClick={handleCreateValidationClick}
+            onClick={handleIssueClick}
             disabled={createValidationState.isLoading}
           >
             인증번호 발급
@@ -100,12 +102,14 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
                 name="code"
                 autoComplete="one-time-code"
               />
-              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                <Button color="warning" variant="text" sx={{ mt: 1, mb: 2 }}>
-                  이메일 변경
-                </Button>
-                <Button color="secondary" variant="text" sx={{ mt: 1, mb: 2 }}>
-                  인증번호 재발급
+              <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+                <Button
+                  color="secondary"
+                  variant="text"
+                  sx={{ mt: 1, mb: 2 }}
+                  onClick={handleCancelClick}
+                >
+                  취소
                 </Button>
               </Box>
             </Box>
@@ -115,4 +119,4 @@ const ValidationForm: ForwardRefRenderFunction<unknown> = (props, ref) => {
     </Box>
   );
 };
-export default forwardRef(ValidationForm);
+export default ValidationForm;
