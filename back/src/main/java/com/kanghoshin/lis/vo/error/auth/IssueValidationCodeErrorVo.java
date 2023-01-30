@@ -19,6 +19,6 @@ public enum IssueValidationCodeErrorVo implements GenericErrorVo{
 	
 	@Override
 	public String getSubject() {
-		return "createValidation";
+		return "issueValidationError";
 	}
 }

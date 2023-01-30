@@ -10,20 +10,20 @@ export interface SigninRequest {
   authPassword: string;
 }
 
-export interface CreateValidationRequest {
+export interface issueValidationCodeRequest {
   validationEmail: string;
 }
 
-type CreateValidationError = {
+type IssueValidationCodeError = {
   data: {
     code: 'UNKNOWN' | 'DUPLICATED_EMAIL' | 'INVALID_EMAIL';
   };
 } & GenericErrorWithMessage;
 
-export function isCreateValidationError(
+export function isIssueValidationCodeError(
   error: unknown,
-): error is CreateValidationError {
-  return isGenericError(error) && error.data.subject === 'createValidation';
+): error is IssueValidationCodeError {
+  return isGenericError(error) && error.data.subject === 'issueValidationError';
 }
 
 export interface CreateAuthRequest {
@@ -85,7 +85,7 @@ export const authApi = createApi({
         url: 'signin',
       }),
     }),
-    createValidation: builder.mutation<unknown, CreateValidationRequest>({
+    issueValidationCode: builder.mutation<unknown, issueValidationCodeRequest>({
       query: (body) => ({
         body: body,
         method: 'POST',
@@ -111,7 +111,7 @@ export const authApi = createApi({
 export default authApi;
 export const {
   useSigninMutation,
-  useCreateValidationMutation,
+  useIssueValidationCodeMutation,
   useCreateAuthMutation,
   useWriteDetailsMutation,
 } = authApi;

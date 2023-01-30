@@ -38,6 +38,14 @@ export function isGenericErrorWithMessage(
   );
 }
 
+export type ValidationError = {
+  data: { array: { field: string; value: string; message: string }[] };
+} & GenericError;
+
+export function isValidationError(error: unknown): error is ValidationError {
+  return isGenericError(error) && error.data.subject === 'validation';
+}
+
 export interface Staff {
   staffNo: number;
   staffName: string;

@@ -23,6 +23,8 @@ import {
   WriteDetailsRequest,
 } from '../../services/authApi';
 
+const steps = ['인증 및 아이디 생성', '직책 선택', '상세정보 입력'];
+
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
   const typeRef = useRef<number>(null);
@@ -31,9 +33,12 @@ const SignupForm: React.FC = () => {
   const [step, setStep] = useState<number>(0);
   const [createAuth, createAuthState] = useCreateAuthMutation();
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
+  const [createAuthForm, setCreateAuthForm] = useState<CreateAuthRequest>();
 
-  const steps = useMemo(
-    () => ['인증 및 아이디 생성', '직책 선택', '상세정보 입력'],
+  const handleCreateAuthFormComplete = useCallback(
+    (form: CreateAuthRequest | undefined) => {
+      setCreateAuthForm(form);
+    },
     [],
   );
 
@@ -52,7 +57,8 @@ const SignupForm: React.FC = () => {
   const handleNext = useCallback(() => {
     switch (step) {
       case 0:
-        createAuth({} as CreateAuthRequest);
+        createAuth(createAuthForm as CreateAuthRequest);
+        break;
       case 1:
         setStep(2);
         break;
@@ -116,7 +122,11 @@ const SignupForm: React.FC = () => {
             {(() => {
               switch (step) {
                 case 0:
-                  return <ValidationForm />;
+                  return (
+                    <ValidationForm
+                      onCreateAuthFormComplete={handleCreateAuthFormComplete}
+                    />
+                  );
                 case 1:
                   return <StaffTypeForm ref={typeRef} />;
                 case 2:
@@ -133,9 +143,24 @@ const SignupForm: React.FC = () => {
                 이전
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
-              <Button variant="contained" onClick={handleNext}>
-                {step === 2 ? '가입하기' : '다음'}
-              </Button>
+              <Box sx={{ position: 'relative' }}>
+                <Button
+                  variant="contained"
+                  onClick={handleNext}
+                  disabled={!createAuthForm}
+                >
+                  {(() => {
+                    switch (step) {
+                      case 0:
+                        return '아이디 생성';
+                      case 1:
+                        return '다음';
+                      case 2:
+                        return '가입신청';
+                    }
+                  })()}
+                </Button>
+              </Box>
             </Box>
           </>
         )}
