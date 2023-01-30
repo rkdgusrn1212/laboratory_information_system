@@ -9,12 +9,10 @@ const accountSlice = createSlice({
   reducers: {
     signout: () => null,
   },
-  extraReducers(builder) {
+  extraReducers: (builder) => {
     builder.addMatcher(
       authApi.endpoints.signin.matchFulfilled,
-      (state, { payload }) => {
-        state = payload;
-      },
+      (state, { payload }) => payload,
     );
   },
 });

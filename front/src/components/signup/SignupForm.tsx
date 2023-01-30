@@ -20,14 +20,17 @@ import {
   CreateAuthField,
   CreateAuthRequest,
   isCreateAuthError,
+  SigninRequest,
   useCreateAuthMutation,
+  useSigninMutation,
   useWriteDetailsMutation,
   WriteDetailsRequest,
 } from '../../services/authApi';
 import { Alert, CircularProgress, Snackbar } from '@mui/material';
 import { isValidationError } from '../../services/types';
+import SigninForm, { SigninFormProps } from './SigninForm';
 
-const steps = ['인증 및 아이디 생성', '직책 선택', '상세정보 입력'];
+const steps = ['인증 및 아이디 생성', '로그인', '직책 선택', '상세정보 입력'];
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
@@ -36,28 +39,35 @@ const SignupForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const [step, setStep] = useState<number>(0);
   const [createAuth, createAuthState] = useCreateAuthMutation();
+  const [signin, signinState] = useSigninMutation();
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
   const [createAuthForm, setCreateAuthForm] = useState<CreateAuthRequest>();
+  const [signinForm, setSigninForm] = useState<SigninRequest>();
   const [toastOpen, setToastOpen] = useState(false);
 
-  const handleCreateAuthFormComplete = useCallback(
-    (form: CreateAuthRequest | undefined) => {
-      setCreateAuthForm(form);
-    },
-    [],
-  );
+  const handleCreateAuthFormComplete = (
+    form: CreateAuthRequest | undefined,
+  ) => {
+    setCreateAuthForm(form);
+  };
 
   useEffect(() => {
     if (accountState) {
       if (accountState.principal.authorities[0] === 'ROLE_AUTHONLY') {
-        setStep((step) => (step < 1 || step > 2 ? 1 : step));
+        setStep((step) => (step < 2 || step > 3 ? 2 : step));
       } else {
-        setStep(3);
+        setStep(4);
       }
     } else {
       setStep(0);
     }
-  }, [accountState]);
+  }, [accountState, setStep]);
+
+  useEffect(() => {
+    if (createAuthState.isSuccess) {
+      setStep(1);
+    }
+  }, [createAuthState.isSuccess]);
 
   const handleNext = useCallback(() => {
     switch (step) {
@@ -65,13 +75,13 @@ const SignupForm: React.FC = () => {
         createAuth(createAuthForm as CreateAuthRequest);
         break;
       case 1:
-        setStep(2);
+        signin(signinForm as SigninRequest).unwrap();
         break;
       case 2:
         writeDetails({} as WriteDetailsRequest);
         break;
     }
-  }, [step, createAuth, writeDetails, createAuthForm]);
+  }, [step, createAuth, writeDetails, createAuthForm, signin, signinForm]);
 
   const handleBack = useCallback(() => {
     switch (step) {
@@ -93,6 +103,27 @@ const SignupForm: React.FC = () => {
     }
     setToastOpen(false);
   };
+
+  const handleSigninFormComplete = (form: SigninRequest | undefined) => {
+    setSigninForm(form);
+  };
+
+  const isNextDisable = useMemo(() => {
+    switch (step) {
+      case 0:
+        return !createAuthForm || createAuthState.isLoading;
+      case 1:
+        return !signinForm || signinState.isLoading;
+      default:
+        return false;
+    }
+  }, [
+    step,
+    createAuthForm,
+    signinForm,
+    createAuthState.isLoading,
+    signinState.isLoading,
+  ]);
 
   const createAuthError = useMemo(() => {
     const result = {} as { [key in CreateAuthField]: string | undefined };
@@ -123,6 +154,19 @@ const SignupForm: React.FC = () => {
     console.log(result);
     return result;
   }, [createAuthState.error, createAuthState.isError]);
+
+  const nextText = useMemo(() => {
+    switch (step) {
+      case 0:
+        return '아이디 생성';
+      case 1:
+        return '로그인';
+      case 2:
+        return '다음';
+      case 3:
+        return '가입신청';
+    }
+  }, [step]);
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
@@ -174,8 +218,14 @@ const SignupForm: React.FC = () => {
                     />
                   );
                 case 1:
-                  return <StaffTypeForm ref={typeRef} />;
+                  return (
+                    <SigninForm
+                      onSigninFormComplete={handleSigninFormComplete}
+                    />
+                  );
                 case 2:
+                  return <StaffTypeForm ref={typeRef} />;
+                case 3:
                   return <StaffDetailForm />;
               }
             })()}
@@ -193,18 +243,9 @@ const SignupForm: React.FC = () => {
                 <Button
                   variant="contained"
                   onClick={handleNext}
-                  disabled={!createAuthForm || createAuthState.isLoading}
+                  disabled={isNextDisable}
                 >
-                  {(() => {
-                    switch (step) {
-                      case 0:
-                        return '아이디 생성';
-                      case 1:
-                        return '다음';
-                      case 2:
-                        return '가입신청';
-                    }
-                  })()}
+                  {nextText}
                 </Button>
                 {createAuthState.isLoading && (
                   <CircularProgress
