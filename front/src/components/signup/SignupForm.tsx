@@ -35,9 +35,15 @@ const steps = ['인증 및 아이디 생성', '로그인', '직책 선택', '상
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
   const typeRef = useRef<number>(null);
-  const accountState = useAppSelector(selectAccount);
   const dispatch = useAppDispatch();
-  const [step, setStep] = useState<number>(0);
+  const account = useAppSelector(selectAccount);
+  const [step, setStep] = useState<number>(
+    account == null
+      ? 0
+      : account.principal.authorities[0] === 'ROLE_AUTHONLY'
+      ? 2
+      : 4,
+  );
   const [createAuth, createAuthState] = useCreateAuthMutation();
   const [signin, signinState] = useSigninMutation();
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
@@ -50,32 +56,21 @@ const SignupForm: React.FC = () => {
   ) => {
     setCreateAuthForm(form);
   };
-
-  useEffect(() => {
-    if (accountState) {
-      if (accountState.principal.authorities[0] === 'ROLE_AUTHONLY') {
-        setStep((step) => (step < 2 || step > 3 ? 2 : step));
-      } else {
-        setStep(4);
-      }
-    } else {
-      setStep(0);
-    }
-  }, [accountState, setStep]);
-
-  useEffect(() => {
-    if (createAuthState.isSuccess) {
-      setStep(1);
-    }
-  }, [createAuthState.isSuccess]);
-
   const handleNext = useCallback(() => {
     switch (step) {
       case 0:
-        createAuth(createAuthForm as CreateAuthRequest);
+        createAuth(createAuthForm as CreateAuthRequest)
+          .unwrap()
+          .then(() => {
+            setStep(1);
+          });
         break;
       case 1:
-        signin(signinForm as SigninRequest).unwrap();
+        signin(signinForm as SigninRequest)
+          .unwrap()
+          .then(() => {
+            setStep(2);
+          });
         break;
       case 2:
         writeDetails({} as WriteDetailsRequest);
@@ -85,12 +80,14 @@ const SignupForm: React.FC = () => {
 
   const handleBack = useCallback(() => {
     switch (step) {
-      case 2:
-        setStep(1);
-        break;
       case 1:
         dispatch(signout());
+        setStep(0);
         break;
+      case 3:
+        setStep(2);
+        break;
+      default:
     }
   }, [step, dispatch]);
 
@@ -125,6 +122,30 @@ const SignupForm: React.FC = () => {
     signinState.isLoading,
   ]);
 
+  const nextText = useMemo(() => {
+    switch (step) {
+      case 0:
+        return '아이디 생성';
+      case 1:
+        return '로그인';
+      case 2:
+        return '다음';
+      case 3:
+        return '가입신청';
+    }
+  }, [step]);
+
+  const isPrevDisable = useMemo(() => {
+    switch (step) {
+      case 1:
+        return false;
+      case 3:
+        return false;
+      default:
+        return true;
+    }
+  }, [step]);
+
   const createAuthError = useMemo(() => {
     const result = {} as { [key in CreateAuthField]: string | undefined };
     if (createAuthState.isError) {
@@ -154,19 +175,6 @@ const SignupForm: React.FC = () => {
     console.log(result);
     return result;
   }, [createAuthState.error, createAuthState.isError]);
-
-  const nextText = useMemo(() => {
-    switch (step) {
-      case 0:
-        return '아이디 생성';
-      case 1:
-        return '로그인';
-      case 2:
-        return '다음';
-      case 3:
-        return '가입신청';
-    }
-  }, [step]);
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
@@ -232,7 +240,7 @@ const SignupForm: React.FC = () => {
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
               <Button
                 color="inherit"
-                disabled={step === 0}
+                disabled={isPrevDisable}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >

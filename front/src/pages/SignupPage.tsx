@@ -1,7 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
 import SignupForm from '../components/signup/SignupForm';
 
 const theme = createTheme({

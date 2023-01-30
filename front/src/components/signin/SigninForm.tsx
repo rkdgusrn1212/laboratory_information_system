@@ -1,4 +1,5 @@
 import { ChangeEventHandler, MouseEventHandler, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -23,6 +24,7 @@ const SigninForm = () => {
   const [authPassword, setAuthPassword] = useState('');
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
   const [signin, signinState] = useSigninMutation();
+  const navigate = useNavigate();
 
   const handleIdChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setAuthId(event.target.value);
@@ -39,7 +41,15 @@ const SigninForm = () => {
   const handleMouseDownVisibility = () => setPasswordVisibility(true);
 
   const handleSigninClick: MouseEventHandler<HTMLButtonElement> = () => {
-    signin({ authId, authPassword });
+    signin({ authId, authPassword })
+      .unwrap()
+      .then((account) => {
+        if (account.principal.authorities[0] === 'ROLE_AUTHONLY') {
+          navigate('signup');
+        } else {
+          //의사는 진료 간호사는 채혈접수
+        }
+      });
   };
 
   return (
@@ -106,7 +116,7 @@ const SigninForm = () => {
               onClick={handleSigninClick}
               fullWidth
               variant="contained"
-              disabled={!signinState.isLoading}
+              disabled={signinState.isLoading}
             >
               로그인
             </Button>
