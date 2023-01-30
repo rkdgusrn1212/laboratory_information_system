@@ -38,11 +38,13 @@ export function isGenericErrorWithMessage(
   );
 }
 
-export type ValidationError = {
-  data: { array: { field: string; value: string; message: string }[] };
+export type ValidationError<Fields extends string> = {
+  data: { array: { field: Fields; value: string; message: string }[] };
 } & GenericError;
 
-export function isValidationError(error: unknown): error is ValidationError {
+export function isValidationError<T extends string>(
+  error: unknown,
+): error is ValidationError<T> {
   return isGenericError(error) && error.data.subject === 'validation';
 }
 

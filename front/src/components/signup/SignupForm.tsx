@@ -17,11 +17,15 @@ import ValidationForm from './ValidationForm';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectAccount, signout } from '../../services/accountSlice';
 import {
+  CreateAuthField,
   CreateAuthRequest,
+  isCreateAuthError,
   useCreateAuthMutation,
   useWriteDetailsMutation,
   WriteDetailsRequest,
 } from '../../services/authApi';
+import { Alert, CircularProgress, Snackbar } from '@mui/material';
+import { isValidationError } from '../../services/types';
 
 const steps = ['인증 및 아이디 생성', '직책 선택', '상세정보 입력'];
 
@@ -34,6 +38,7 @@ const SignupForm: React.FC = () => {
   const [createAuth, createAuthState] = useCreateAuthMutation();
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
   const [createAuthForm, setCreateAuthForm] = useState<CreateAuthRequest>();
+  const [toastOpen, setToastOpen] = useState(false);
 
   const handleCreateAuthFormComplete = useCallback(
     (form: CreateAuthRequest | undefined) => {
@@ -66,7 +71,7 @@ const SignupForm: React.FC = () => {
         writeDetails({} as WriteDetailsRequest);
         break;
     }
-  }, [step, createAuth, writeDetails]);
+  }, [step, createAuth, writeDetails, createAuthForm]);
 
   const handleBack = useCallback(() => {
     switch (step) {
@@ -78,6 +83,46 @@ const SignupForm: React.FC = () => {
         break;
     }
   }, [step, dispatch]);
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToastOpen(false);
+  };
+
+  const createAuthError = useMemo(() => {
+    const result = {} as { [key in CreateAuthField]: string | undefined };
+    if (createAuthState.isError) {
+      const error = createAuthState.error;
+      if (isCreateAuthError(error)) {
+        switch (error.data.code) {
+          case 'DUPLICATED_ID':
+            result.authId = error.data.message;
+            break;
+          case 'EMAIL_NOT_EXIST':
+            result.validationEmail = error.data.message;
+            break;
+          case 'WRONG_CODE':
+            result.validationCode = error.data.message;
+            break;
+          default:
+            setToastOpen(true);
+        }
+      } else if (isValidationError<CreateAuthField>(error)) {
+        for (const item of error.data.array) {
+          result[item.field] = item.message;
+        }
+      } else {
+        setToastOpen(true);
+      }
+    }
+    console.log(result);
+    return result;
+  }, [createAuthState.error, createAuthState.isError]);
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
@@ -97,7 +142,7 @@ const SignupForm: React.FC = () => {
           );
         })}
       </Stepper>
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ mt: 5, mb: 2 }}>
         {step == 3 ? (
           <>
             <Typography sx={{ mt: 2, mb: 1 }}>
@@ -125,6 +170,7 @@ const SignupForm: React.FC = () => {
                   return (
                     <ValidationForm
                       onCreateAuthFormComplete={handleCreateAuthFormComplete}
+                      error={createAuthError}
                     />
                   );
                 case 1:
@@ -147,7 +193,7 @@ const SignupForm: React.FC = () => {
                 <Button
                   variant="contained"
                   onClick={handleNext}
-                  disabled={!createAuthForm}
+                  disabled={!createAuthForm || createAuthState.isLoading}
                 >
                   {(() => {
                     switch (step) {
@@ -160,11 +206,34 @@ const SignupForm: React.FC = () => {
                     }
                   })()}
                 </Button>
+                {createAuthState.isLoading && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      color: 'primary',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                  />
+                )}
               </Box>
             </Box>
           </>
         )}
       </Box>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={toastOpen}
+        autoHideDuration={4000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          "알수없는 오류가 발생했습니다."
+        </Alert>
+      </Snackbar>
       {step == 3 || (
         <Box sx={{ mt: 3, mb: 3, display: 'inline-flex', gap: 1 }}>
           <Typography variant="body2">이미 계정이 있으신가요?</Typography>

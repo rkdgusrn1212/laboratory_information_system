@@ -33,9 +33,20 @@ export interface CreateAuthRequest {
   validationCode: string;
 }
 
+export type CreateAuthField =
+  | 'authId'
+  | 'authPassword'
+  | 'validationEmail'
+  | 'validationCode';
+
 type CreateAuthError = {
   data: {
-    code: 'UNKNOWN' | 'DUPLICATED_ID' | 'WRONG_CODE' | 'EMAIL_NOT_EXIST';
+    code:
+      | 'UNKNOWN'
+      | 'DUPLICATED_ID'
+      | 'WRONG_CODE'
+      | 'EMAIL_NOT_EXIST'
+      | 'DUPLICATED_EMAIL';
   };
 } & GenericErrorWithMessage;
 
