@@ -54,7 +54,7 @@ const SigninForm: React.FC<SigninFormProps> = ({ onSigninFormComplete }) => {
         value={authPassword}
         onChange={handlePasswordChange}
         type={passwordVisiblity ? 'text' : 'password'}
-        autoComplete="new-password"
+        autoComplete="current-password"
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

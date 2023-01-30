@@ -247,7 +247,7 @@ const SignupForm: React.FC = () => {
                 >
                   {nextText}
                 </Button>
-                {createAuthState.isLoading && (
+                {(createAuthState.isLoading || signinState.isLoading) && (
                   <CircularProgress
                     size={24}
                     sx={{
