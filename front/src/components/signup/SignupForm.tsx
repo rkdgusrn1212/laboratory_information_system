@@ -50,6 +50,16 @@ const SignupForm: React.FC = () => {
   const [createAuthForm, setCreateAuthForm] = useState<CreateAuthRequest>();
   const [signinForm, setSigninForm] = useState<SigninRequest>();
   const [toastOpen, setToastOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState<number | undefined>(
+    undefined,
+  );
+
+  const handleTypeChange = useCallback(
+    (event: React.MouseEvent<HTMLElement>, newType: number) => {
+      setSelectedType(newType);
+    },
+    [],
+  );
 
   const handleCreateAuthFormComplete = (
     form: CreateAuthRequest | undefined,
@@ -73,6 +83,9 @@ const SignupForm: React.FC = () => {
           });
         break;
       case 2:
+        setStep(3);
+        break;
+      case 3:
         writeDetails({} as WriteDetailsRequest);
         break;
     }
@@ -87,7 +100,6 @@ const SignupForm: React.FC = () => {
       case 3:
         setStep(2);
         break;
-      default:
     }
   }, [step, dispatch]);
 
@@ -195,7 +207,7 @@ const SignupForm: React.FC = () => {
         })}
       </Stepper>
       <Box sx={{ mt: 5, mb: 2 }}>
-        {step == 3 ? (
+        {step == 4 ? (
           <>
             <Typography sx={{ mt: 2, mb: 1 }}>
               <b>KHS 진단검사시스템</b> 가입이 신청되었습니다. 관리자의 최종
@@ -232,7 +244,12 @@ const SignupForm: React.FC = () => {
                     />
                   );
                 case 2:
-                  return <StaffTypeForm ref={typeRef} />;
+                  return (
+                    <StaffTypeForm
+                      onChange={handleTypeChange}
+                      value={selectedType}
+                    />
+                  );
                 case 3:
                   return <StaffDetailForm />;
               }

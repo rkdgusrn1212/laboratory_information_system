@@ -1,40 +1,19 @@
-import React, {
-  useState,
-  useCallback,
-  useImperativeHandle,
-  forwardRef,
-  ForwardRefRenderFunction,
-} from 'react';
 import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { Avatar } from '@mui/material';
 
-const StaffTypeForm: ForwardRefRenderFunction<unknown, unknown> = (
-  props,
-  ref,
-) => {
-  const [selectedType, setSelectedType] = useState<number | undefined>(
-    undefined,
-  );
-
-  useImperativeHandle(ref, () => selectedType);
-
-  const handleChange = useCallback(
-    (event: React.MouseEvent<HTMLElement>, newType: number) => {
-      setSelectedType(newType);
-    },
-    [],
-  );
-
+const StaffTypeForm: React.FC<{
+  onChange: (event: React.MouseEvent<HTMLElement>, newType: number) => void;
+  value: number | undefined;
+}> = ({ onChange, value }) => {
   return (
     <ToggleButtonGroup
       fullWidth
       color="standard"
-      value={selectedType}
+      value={value}
       exclusive
-      onChange={handleChange}
-      aria-label="Platform"
+      onChange={onChange}
     >
       <ToggleButton value={0}>
         <Box sx={{ display: 'block', p: 1 }}>
@@ -69,4 +48,4 @@ const StaffTypeForm: ForwardRefRenderFunction<unknown, unknown> = (
     </ToggleButtonGroup>
   );
 };
-export default forwardRef(StaffTypeForm);
+export default StaffTypeForm;
