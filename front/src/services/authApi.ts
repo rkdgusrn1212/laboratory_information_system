@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import server from '../server.json';
-import { Account, GenericErrorWithMessage, isGenericError } from './types';
+import { Account, GeneralErrorWithMessage, isGeneralError } from './types';
 
 export type SigninResponse = Account;
 
@@ -18,12 +18,12 @@ type IssueValidationCodeError = {
   data: {
     code: 'UNKNOWN' | 'DUPLICATED_EMAIL' | 'INVALID_EMAIL';
   };
-} & GenericErrorWithMessage;
+} & GeneralErrorWithMessage;
 
 export function isIssueValidationCodeError(
   error: unknown,
 ): error is IssueValidationCodeError {
-  return isGenericError(error) && error.data.subject === 'issueValidationError';
+  return isGeneralError(error) && error.data.subject === 'issueValidationError';
 }
 
 export interface CreateAuthRequest {
@@ -48,10 +48,10 @@ type CreateAuthError = {
       | 'EMAIL_NOT_EXIST'
       | 'DUPLICATED_EMAIL';
   };
-} & GenericErrorWithMessage;
+} & GeneralErrorWithMessage;
 
 export function isCreateAuthError(error: unknown): error is CreateAuthError {
-  return isGenericError(error) && error.data.subject === 'createAuth';
+  return isGeneralError(error) && error.data.subject === 'createAuth';
 }
 
 export interface WriteDetailsRequest {
@@ -68,12 +68,12 @@ type WriteDetailsError = {
   data: {
     code: 'UNKNOWN';
   };
-} & GenericErrorWithMessage;
+} & GeneralErrorWithMessage;
 
 export function isWriteDetailsError(
   error: unknown,
 ): error is WriteDetailsError {
-  return isGenericError(error) && error.data.subject === 'writeDetails';
+  return isGeneralError(error) && error.data.subject === 'writeDetails';
 }
 
 export const authApi = createApi({

@@ -28,7 +28,7 @@ const validationEmailPattern =
 const passwordPattern =
   /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*#?&^])[A-Za-z0-9@$!%*#?&^]{9,40}$/;
 
-const ValidationForm: React.FC<{
+const CreateAuthForm: React.FC<{
   onCreateAuthFormComplete: (form: CreateAuthRequest | undefined) => void;
   error: {
     validationEmail?: string;
@@ -317,4 +317,4 @@ const ValidationForm: React.FC<{
     </Stack>
   );
 };
-export default ValidationForm;
+export default CreateAuthForm;

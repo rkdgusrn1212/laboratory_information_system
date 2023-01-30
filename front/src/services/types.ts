@@ -1,11 +1,11 @@
-export interface GenericError {
+export interface GeneralError {
   status: number;
   data: {
     subject: string;
   };
 }
 
-export function isGenericError(error: unknown): error is GenericError {
+export function isGeneralError(error: unknown): error is GeneralError {
   return (
     typeof error === 'object' &&
     error != null &&
@@ -19,18 +19,18 @@ export function isGenericError(error: unknown): error is GenericError {
   );
 }
 
-export type GenericErrorWithMessage = {
+export type GeneralErrorWithMessage = {
   data: {
     code: string;
     message: string;
   };
-} & GenericError;
+} & GeneralError;
 
-export function isGenericErrorWithMessage(
+export function isGeneralErrorWithMessage(
   error: unknown,
-): error is GenericErrorWithMessage {
+): error is GeneralErrorWithMessage {
   return (
-    isGenericError(error) &&
+    isGeneralError(error) &&
     'code' in error.data &&
     typeof error.data.code === 'string' &&
     'message' in error.data &&
@@ -40,12 +40,12 @@ export function isGenericErrorWithMessage(
 
 export type ValidationError<Fields extends string> = {
   data: { array: { field: Fields; value: string; message: string }[] };
-} & GenericError;
+} & GeneralError;
 
 export function isValidationError<T extends string>(
   error: unknown,
 ): error is ValidationError<T> {
-  return isGenericError(error) && error.data.subject === 'validation';
+  return isGeneralError(error) && error.data.subject === 'validation';
 }
 
 export interface Staff {

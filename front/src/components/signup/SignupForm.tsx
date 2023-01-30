@@ -13,7 +13,7 @@ import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import Logo from '../common/Logo';
-import ValidationForm from './ValidationForm';
+import CreateAuthForm from './CreateAuthForm';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectAccount, signout } from '../../services/accountSlice';
 import {
@@ -168,7 +168,7 @@ const SignupForm: React.FC = () => {
               switch (step) {
                 case 0:
                   return (
-                    <ValidationForm
+                    <CreateAuthForm
                       onCreateAuthFormComplete={handleCreateAuthFormComplete}
                       error={createAuthError}
                     />
