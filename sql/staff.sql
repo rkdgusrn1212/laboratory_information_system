@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `staff_admitted` bit(1) NOT NULL DEFAULT b'0',
   `staff_type` tinyint(4) NOT NULL,
   PRIMARY KEY (`staff_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 

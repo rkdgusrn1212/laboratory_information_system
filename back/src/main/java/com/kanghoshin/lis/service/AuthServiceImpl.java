@@ -91,8 +91,6 @@ public class AuthServiceImpl implements AuthService {
 			if(!passwordEncoder.matches(createAuthDto.getValidationCode(), validationVo.getValidationCode())) {
 				throw new CreateAuthFailedException(CreateAuthErrorVo.WRONG_CODE);
 			}
-			if(validationMapper.updateCode(createAuthDto.getValidationEmail(), null)<1) 
-				throw new CreateAuthFailedException(CreateAuthErrorVo.UNKNOWN);//분명 해당 mail이 존재해서 삭제되어야함
 			authMapper.insert(createAuthDto.getAuthId(), passwordEncoder.encode(createAuthDto.getAuthPassword()),
 					UUID.randomUUID().toString(), createAuthDto.getValidationEmail());
 		}catch(DuplicateKeyException e) {

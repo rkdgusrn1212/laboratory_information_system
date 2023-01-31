@@ -25,13 +25,31 @@ CREATE TABLE IF NOT EXISTS `auth` (
   `staff_no` int(11) DEFAULT NULL,
   `validation_email` varchar(320) NOT NULL,
   PRIMARY KEY (`auth_id`),
-  KEY `FK__staff` (`staff_no`),
   KEY `FK_validation` (`validation_email`),
-  CONSTRAINT `FK__staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_validation` FOREIGN KEY (`validation_email`) REFERENCES `validation` (`validation_email`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `FK__staff` (`staff_no`),
+  CONSTRAINT `FK__staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_validation` FOREIGN KEY (`validation_email`) REFERENCES `validation` (`validation_email`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 트리거 kanghoshin_lis.auth_after_delete 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `auth_after_delete` AFTER DELETE ON `auth` FOR EACH ROW BEGIN
+DELETE FROM validation WHERE validation_email = OLD.validation_email;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- 트리거 kanghoshin_lis.auth_before_insert 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `auth_before_insert` BEFORE INSERT ON `auth` FOR EACH ROW BEGIN
+UPDATE validation SET validation_code = NULL WHERE validation_email = NEW.validation_email;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
