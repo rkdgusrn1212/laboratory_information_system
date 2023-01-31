@@ -44,10 +44,20 @@ const SigninForm = () => {
     signin({ authId, authPassword })
       .unwrap()
       .then((account) => {
-        if (account.principal.authorities[0] === 'ROLE_AUTHONLY') {
-          navigate('signup');
-        } else {
-          //의사는 진료 간호사는 채혈접수
+        switch (account.principal.authorities[0]) {
+          case 'ROLE_AUTHONLY':
+            navigate('/signup', { replace: true });
+            break;
+          case 'ROLE_PENDING':
+            navigate('/signup', { replace: true });
+            break;
+          case 'ROLE_STAFF':
+            if (account.principal.authorities[1] === 'ROLE_DOCTOR') {
+              navigate('/order', { replace: true });
+            } else {
+              navigate('/collection', { replace: true });
+            }
+            break;
         }
       });
   };

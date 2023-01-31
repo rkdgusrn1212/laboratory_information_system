@@ -1,8 +1,12 @@
+import { useEffect } from 'react';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material';
 import styled from '@emotion/styled';
 import SigninForm from '../components/signin/SigninForm';
 import Logo from '../components/common/Logo';
+import { useAppSelector } from '../hooks';
+import { useNavigate } from 'react-router-dom';
+import { selectAccount } from '../services/accountSlice';
 
 const theme = createTheme({
   palette: {
@@ -41,6 +45,19 @@ const SigninInnerContainer = styled.div`
 `;
 
 const SigninPage = () => {
+  const account = useAppSelector(selectAccount);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (account) {
+      if (account.principal.staffVo) {
+        navigate('/order', { replace: true });
+      } else {
+        navigate('/signup', { replace: true });
+      }
+    }
+  }, [account, navigate]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

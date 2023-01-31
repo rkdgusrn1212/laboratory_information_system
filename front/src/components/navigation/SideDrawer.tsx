@@ -1,0 +1,219 @@
+import { useLocation } from 'react-router-dom';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
+import BiotechIcon from '@mui/icons-material/Biotech';
+import MuiDrawer from '@mui/material/Drawer';
+import {
+  Accordion as MuiAccordion,
+  AccordionDetails as MuiAccordionDetails,
+  AccordionProps,
+  AccordionSummary as MuiAccordionSummary,
+  AccordionSummaryProps,
+  CSSObject,
+  styled,
+  Theme,
+  Toolbar,
+  Typography,
+} from '@mui/material';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { drawerWidth } from '../../pages/Navigation';
+import { useEffect, useState } from 'react';
+
+const category = [
+  { name: '진료', icon: <TroubleshootIcon /> },
+  { name: '채혈', icon: <VaccinesIcon /> },
+  { name: '검사', icon: <BiotechIcon /> },
+];
+const pages = [
+  [{ name: '진료', icon: <InboxIcon /> }],
+  [
+    { name: '채혈 접수', icon: <InboxIcon /> },
+    { name: '채혈 등록', icon: <InboxIcon /> },
+    { name: '부적합검체 등록', icon: <InboxIcon /> },
+  ],
+  [
+    { name: '검사 접수', icon: <InboxIcon /> },
+    { name: '검사결과 입력', icon: <InboxIcon /> },
+    { name: '검사결과 조회', icon: <InboxIcon /> },
+  ],
+];
+
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+});
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
+
+const Accordion = styled((props: AccordionProps) => (
+  <MuiAccordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({}));
+
+const AccordionSummary = styled((props: AccordionSummaryProps) => (
+  <MuiAccordionSummary
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    {...props}
+  />
+))(({ theme }) => ({
+  backgroundColor:
+    theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, .05)'
+      : 'rgba(0, 0, 0, .03)',
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper': {
+    '&.Mui-expanded': {
+      transform: 'rotate(90deg)',
+    },
+  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+  padding: theme.spacing(0),
+  borderTop: '1px solid rgba(0, 0, 0, .125)',
+}));
+
+const SideDrawer: React.FC<{
+  open: boolean;
+  onCloseIconClick: React.MouseEventHandler<HTMLButtonElement>;
+}> = ({ open, onCloseIconClick }) => {
+  const location = useLocation();
+  const [expandList, setExpandList] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    switch (location.pathname) {
+      case '/order':
+        setExpandList(0);
+        break;
+      case '/collection':
+        setExpandList(1);
+        break;
+      case '/test':
+        setExpandList(2);
+        break;
+      default:
+        setExpandList(undefined);
+    }
+  }, [location, open]);
+
+  const handleListHeaderChange =
+    (num: number) =>
+    (event: React.SyntheticEvent<Element, Event>, expanded: boolean) => {
+      setExpandList(expanded ? num : undefined);
+    };
+
+  return (
+    <Drawer variant="permanent" open={open}>
+      <Toolbar
+        variant="dense"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <IconButton onClick={onCloseIconClick}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </Toolbar>
+      <Divider />
+
+      {category.map(
+        ({ name: categoryName, icon: categoryIcon }, categoryIdx) => (
+          <>
+            <Accordion
+              TransitionProps={{ unmountOnExit: true }}
+              key={categoryName}
+              expanded={expandList === categoryIdx}
+              onChange={handleListHeaderChange(categoryIdx)}
+            >
+              <AccordionSummary>
+                {categoryIcon}
+                {open && <Typography sx={{ ml: 2 }}>{categoryName}</Typography>}
+              </AccordionSummary>
+              <AccordionDetails>
+                <List>
+                  {pages[categoryIdx].map(
+                    ({ name: pageName, icon: pageIcon }, pageIdx) => (
+                      <ListItem
+                        key={pageIdx}
+                        disablePadding
+                        sx={{ display: 'block' }}
+                      >
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            {pageIcon}
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={pageName}
+                            sx={{ opacity: open ? 1 : 0 }}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    ),
+                  )}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+            <Divider />
+          </>
+        ),
+      )}
+    </Drawer>
+  );
+};
+export default SideDrawer;

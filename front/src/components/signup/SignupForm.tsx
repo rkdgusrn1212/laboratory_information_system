@@ -39,7 +39,6 @@ import {
   mapValidationError,
 } from '../../services/types';
 import SigninForm from './SigninForm';
-import StaffDetailsForm from './StaffDetailsForm';
 
 const steps = ['인증 및 아이디 생성', '로그인', '직책 선택', '상세정보 입력'];
 
@@ -277,6 +276,7 @@ const SignupForm: React.FC = () => {
               <Box sx={{ flex: '1 1 auto' }} />
               <Button
                 onClick={() => {
+                  dispatch(signout());
                   navigate('/', { replace: true });
                 }}
                 fullWidth
@@ -373,7 +373,10 @@ const SignupForm: React.FC = () => {
           <Link
             component="button"
             variant="body2"
-            onClick={() => navigate('/', { replace: true })}
+            onClick={() => {
+              dispatch(signout());
+              navigate('/', { replace: true });
+            }}
           >
             로그인하기
           </Link>

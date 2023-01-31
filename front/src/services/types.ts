@@ -68,7 +68,7 @@ export interface Staff {
   staffBirth: string;
   staffMale: boolean;
   staffPhone: string;
-  staffImage: string;
+  staffImage: string | null;
   staffRrn: string;
   staffAdmitted: boolean;
   staffType: number;

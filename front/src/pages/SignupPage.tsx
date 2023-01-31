@@ -2,6 +2,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Container from '@mui/material/Container';
 import SignupForm from '../components/signup/SignupForm';
+import { useAppDispatch } from '../hooks';
 
 const theme = createTheme({
   palette: {
