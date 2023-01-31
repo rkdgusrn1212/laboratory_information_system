@@ -54,6 +54,15 @@ export function isCreateAuthError(error: unknown): error is CreateAuthError {
   return isGeneralError(error) && error.data.subject === 'createAuth';
 }
 
+export type WriteDetailsField =
+  | 'staffName'
+  | 'staffBirth'
+  | 'staffMale'
+  | 'staffPhone'
+  | 'staffImage'
+  | 'staffRrn'
+  | 'staffType';
+
 export interface WriteDetailsRequest {
   staffName: string;
   staffBirth: string;
@@ -82,7 +91,7 @@ export const authApi = createApi({
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).account?.accessToken;
       if (token) {
-        headers.set('authorization', `Bearer ${token}`);
+        headers.set('authorization', token);
       }
       return headers;
     },

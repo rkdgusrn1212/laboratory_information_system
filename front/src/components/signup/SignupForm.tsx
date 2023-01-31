@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -6,12 +8,15 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import StaffTypeForm from './StaffTypeForm';
-import StaffDetailForm from './StaffDetailForm';
+import StaffDetailForm, { DetailsForm } from './StaffDetailsForm';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
-import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+
 import Logo from '../common/Logo';
 import CreateAuthForm from './CreateAuthForm';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -20,21 +25,26 @@ import {
   CreateAuthField,
   CreateAuthRequest,
   isCreateAuthError,
+  isWriteDetailsError,
   SigninRequest,
   useCreateAuthMutation,
   useSigninMutation,
   useWriteDetailsMutation,
+  WriteDetailsField,
   WriteDetailsRequest,
 } from '../../services/authApi';
-import { Alert, CircularProgress, Snackbar } from '@mui/material';
-import { isValidationError } from '../../services/types';
-import SigninForm, { SigninFormProps } from './SigninForm';
+import {
+  isValidationError,
+  MappedValidationError,
+  mapValidationError,
+} from '../../services/types';
+import SigninForm from './SigninForm';
+import StaffDetailsForm from './StaffDetailsForm';
 
 const steps = ['인증 및 아이디 생성', '로그인', '직책 선택', '상세정보 입력'];
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
-  const typeRef = useRef<number>(null);
   const dispatch = useAppDispatch();
   const account = useAppSelector(selectAccount);
   const [step, setStep] = useState<number>(
@@ -53,6 +63,9 @@ const SignupForm: React.FC = () => {
   const [selectedType, setSelectedType] = useState<number | undefined>(
     undefined,
   );
+  const [detailsForm, setDetailsForm] = useState<DetailsForm | undefined>(
+    undefined,
+  );
 
   const handleTypeChange = useCallback(
     (event: React.MouseEvent<HTMLElement>, newType: number) => {
@@ -66,6 +79,11 @@ const SignupForm: React.FC = () => {
   ) => {
     setCreateAuthForm(form);
   };
+
+  const handleDetailsFormComplete = (form: DetailsForm | undefined) => {
+    setDetailsForm(form);
+  };
+
   const handleNext = useCallback(() => {
     switch (step) {
       case 0:
@@ -86,10 +104,26 @@ const SignupForm: React.FC = () => {
         setStep(3);
         break;
       case 3:
-        writeDetails({} as WriteDetailsRequest);
+        writeDetails({
+          staffType: selectedType,
+          ...detailsForm,
+        } as WriteDetailsRequest)
+          .unwrap()
+          .then(() => {
+            setStep(4);
+          });
         break;
     }
-  }, [step, createAuth, writeDetails, createAuthForm, signin, signinForm]);
+  }, [
+    step,
+    createAuth,
+    writeDetails,
+    createAuthForm,
+    signin,
+    signinForm,
+    selectedType,
+    detailsForm,
+  ]);
 
   const handleBack = useCallback(() => {
     switch (step) {
@@ -120,18 +154,27 @@ const SignupForm: React.FC = () => {
   const isNextDisable = useMemo(() => {
     switch (step) {
       case 0:
-        return !createAuthForm || createAuthState.isLoading;
+        return createAuthForm === undefined || createAuthState.isLoading;
       case 1:
-        return !signinForm || signinState.isLoading;
-      default:
+        return signinForm === undefined || signinState.isLoading;
+      case 2:
         return false;
+      case 3:
+        return (
+          detailsForm === undefined ||
+          selectedType === undefined ||
+          writeDetailsState.isLoading
+        );
     }
   }, [
     step,
     createAuthForm,
     signinForm,
+    detailsForm,
+    selectedType,
     createAuthState.isLoading,
     signinState.isLoading,
+    writeDetailsState.isLoading,
   ]);
 
   const nextText = useMemo(() => {
@@ -159,10 +202,10 @@ const SignupForm: React.FC = () => {
   }, [step]);
 
   const createAuthError = useMemo(() => {
-    const result = {} as { [key in CreateAuthField]: string | undefined };
     if (createAuthState.isError) {
       const error = createAuthState.error;
       if (isCreateAuthError(error)) {
+        const result = {} as MappedValidationError<CreateAuthField>;
         switch (error.data.code) {
           case 'DUPLICATED_ID':
             result.authId = error.data.message;
@@ -176,16 +219,33 @@ const SignupForm: React.FC = () => {
           default:
             setToastOpen(true);
         }
+        return result;
       } else if (isValidationError<CreateAuthField>(error)) {
-        for (const item of error.data.array) {
-          result[item.field] = item.message;
-        }
+        return mapValidationError<CreateAuthField>(error);
       } else {
         setToastOpen(true);
+        return {} as MappedValidationError<CreateAuthField>;
       }
+    } else {
+      return {} as MappedValidationError<CreateAuthField>;
     }
-    console.log(result);
-    return result;
+  }, [createAuthState.error, createAuthState.isError]);
+
+  const writeDetailError = useMemo(() => {
+    if (createAuthState.isError) {
+      const error = createAuthState.error;
+      if (isWriteDetailsError(error)) {
+        setToastOpen(true);
+        return {} as MappedValidationError<WriteDetailsField>;
+      } else if (isValidationError<WriteDetailsField>(error)) {
+        return mapValidationError<WriteDetailsField>(error);
+      } else {
+        setToastOpen(true);
+        return {} as MappedValidationError<WriteDetailsField>;
+      }
+    } else {
+      return {} as MappedValidationError<WriteDetailsField>;
+    }
   }, [createAuthState.error, createAuthState.isError]);
 
   return (
@@ -251,7 +311,12 @@ const SignupForm: React.FC = () => {
                     />
                   );
                 case 3:
-                  return <StaffDetailForm />;
+                  return (
+                    <StaffDetailForm
+                      onDetailFormComplete={handleDetailsFormComplete}
+                      error={writeDetailError}
+                    />
+                  );
               }
             })()}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
@@ -272,7 +337,9 @@ const SignupForm: React.FC = () => {
                 >
                   {nextText}
                 </Button>
-                {(createAuthState.isLoading || signinState.isLoading) && (
+                {(createAuthState.isLoading ||
+                  signinState.isLoading ||
+                  writeDetailsState.isLoading) && (
                   <CircularProgress
                     size={24}
                     sx={{

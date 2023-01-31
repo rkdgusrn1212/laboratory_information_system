@@ -23,7 +23,7 @@ import javax.validation.constraints.Pattern;
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 안맞음")
+@Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 맞지 않습니다.")
 public @interface StaffPhoneConstraints {
 	String message() default "전화번호 값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };

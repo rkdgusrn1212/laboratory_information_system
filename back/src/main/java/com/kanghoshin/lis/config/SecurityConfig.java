@@ -37,7 +37,7 @@ public class SecurityConfig{
 				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild()))
 				.authorizeRequests()
 				.antMatchers("/api/auth/write-details")
-				.access("hasRole("+PrincipalAuthority.ROLE_AUTHONLY.getAuthority()+")")
+				.access("hasRole('"+PrincipalAuthority.ROLE_AUTHONLY.getAuthority()+"')")
 				.antMatchers("/api/doc/**")
 				.access("hasRole('ROLE_DOC')")
 				.antMatchers("/api/nur/**")

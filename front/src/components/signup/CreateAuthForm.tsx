@@ -19,9 +19,10 @@ import {
   isIssueValidationCodeError,
   useIssueValidationCodeMutation,
   CreateAuthRequest,
+  CreateAuthField,
 } from '../../services/authApi';
 import { Stack } from '@mui/system';
-import { isValidationError } from '../../services/types';
+import { isValidationError, MappedValidationError } from '../../services/types';
 
 const validationEmailPattern =
   /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
@@ -30,12 +31,7 @@ const passwordPattern =
 
 const CreateAuthForm: React.FC<{
   onCreateAuthFormComplete: (form: CreateAuthRequest | undefined) => void;
-  error: {
-    validationEmail?: string;
-    validationCode?: string;
-    authId?: string;
-    authPassword?: string;
-  };
+  error: MappedValidationError<CreateAuthField>;
 }> = ({ onCreateAuthFormComplete, error }) => {
   const [validationEmail, setValidationEmail] = useState('');
   const [issueValidationCode, issueValidationCodeState] =

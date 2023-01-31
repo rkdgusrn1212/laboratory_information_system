@@ -5,7 +5,7 @@ export interface GeneralError {
   };
 }
 
-export function isGeneralError(error: unknown): error is GeneralError {
+export const isGeneralError = (error: unknown): error is GeneralError => {
   return (
     typeof error === 'object' &&
     error != null &&
@@ -17,7 +17,7 @@ export function isGeneralError(error: unknown): error is GeneralError {
     'subject' in error.data &&
     typeof error.data.subject === 'string'
   );
-}
+};
 
 export type GeneralErrorWithMessage = {
   data: {
@@ -26,9 +26,9 @@ export type GeneralErrorWithMessage = {
   };
 } & GeneralError;
 
-export function isGeneralErrorWithMessage(
+export const isGeneralErrorWithMessage = (
   error: unknown,
-): error is GeneralErrorWithMessage {
+): error is GeneralErrorWithMessage => {
   return (
     isGeneralError(error) &&
     'code' in error.data &&
@@ -36,17 +36,31 @@ export function isGeneralErrorWithMessage(
     'message' in error.data &&
     typeof error.data.message === 'string'
   );
-}
+};
 
 export type ValidationError<Fields extends string> = {
   data: { array: { field: Fields; value: string; message: string }[] };
 } & GeneralError;
 
-export function isValidationError<T extends string>(
+export const isValidationError = <T extends string>(
   error: unknown,
-): error is ValidationError<T> {
+): error is ValidationError<T> => {
   return isGeneralError(error) && error.data.subject === 'validation';
-}
+};
+
+export type MappedValidationError<T extends string> = {
+  [key in T]: string | undefined;
+};
+
+export const mapValidationError = <T extends string>(
+  error: ValidationError<T>,
+): MappedValidationError<T> => {
+  const result = {} as MappedValidationError<T>;
+  for (const item of error.data.array) {
+    result[item.field] = item.message;
+  }
+  return result;
+};
 
 export interface Staff {
   staffNo: number;
