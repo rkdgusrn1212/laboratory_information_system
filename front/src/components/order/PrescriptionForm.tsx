@@ -111,7 +111,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
           </Grid>
           <Grid item xs={12}>
             <Typography variant="h6" sx={{ mt: 5, mb: 2 }}>
-              검사 오더
+              처방 오더
             </Typography>
           </Grid>
 
@@ -134,8 +134,8 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
                   label="검색조건"
                   onChange={handleChange}
                 >
-                  <MenuItem value={'panel'}>검사패널</MenuItem>
-                  <MenuItem value={'name'}>검사항목</MenuItem>
+                  <MenuItem value={'panel'}>처방코드</MenuItem>
+                  <MenuItem value={'name'}>질병코드</MenuItem>
                 </Select>
               </FormControl>
               <FormControl

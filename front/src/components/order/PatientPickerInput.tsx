@@ -24,7 +24,7 @@ const PatientPickerInput: React.FC = () => {
         alignItems: 'center',
       }}
     >
-      <FormControl sx={{ m: 1, width: '150px' }} size="small">
+      <FormControl sx={{ m: 1, width: '40%' }} size="small">
         <InputLabel id="search-condition-label">검색조건</InputLabel>
         <Select
           variant="outlined"
@@ -39,7 +39,7 @@ const PatientPickerInput: React.FC = () => {
           <MenuItem value={'rnn'}>주민번호</MenuItem>
         </Select>
       </FormControl>
-      <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined" size="small">
+      <FormControl sx={{ m: 1, width: '60%' }} variant="outlined" size="small">
         <InputLabel htmlFor="outlined-adornment-password">검색</InputLabel>
         <OutlinedInput
           id="search"

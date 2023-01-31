@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import PrescriptionForm from '../components/order/PrescriptionForm';
 import { useState } from 'react';
 import { Patient } from '../services/types';
+import { Box } from '@mui/system';
 
 const theme = createTheme({
   palette: {
@@ -32,16 +33,34 @@ const OrderPage: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container height={'100vh'} spacing={1} sx={{ p: 1 }}>
-        <Grid item xs={12} md={6} xl={3} sx={{ height: '100%' }}>
-          <PatientPicker
-            onSelected={(item) => {
-              setSelected(item);
+      <Grid container spacing={1} sx={{ p: 1 }}>
+        <Grid item xs={12} md={6} xl={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              flexDirection: 'column',
+              height: '100%',
             }}
-          />
+          >
+            <PatientPicker
+              onSelected={(item) => {
+                setSelected(item);
+              }}
+            />
+          </Box>
         </Grid>
         <Grid item xs={12} md={6} xl={9}>
-          <PrescriptionForm patient={selected} />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              flexDirection: 'column',
+              height: '100%',
+            }}
+          >
+            <PrescriptionForm patient={selected} />
+          </Box>
         </Grid>
       </Grid>
     </ThemeProvider>

@@ -37,7 +37,14 @@ const PatientPicker: React.FC<{
   onSelected: (patient: Patient) => void;
 }> = ({ onSelected }) => {
   return (
-    <Paper sx={{ p: 3, height: '100%' }}>
+    <Paper
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        p: 3,
+      }}
+    >
       <Typography variant="h5">환자 선택</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <PatientPickerInput />

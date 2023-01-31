@@ -92,13 +92,13 @@ const headCells: readonly HeadCell[] = [
     id: 'no',
     numeric: false,
     disablePadding: false,
-    label: '오더번호',
+    label: '처방번호',
   },
   {
     id: 'panel',
     numeric: false,
     disablePadding: false,
-    label: '검사패널',
+    label: '처방코드',
   },
   {
     id: 'name',
@@ -211,7 +211,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          오더 목록
+          처방 목록
         </Typography>
       )}
       {numSelected > 0 ? (
