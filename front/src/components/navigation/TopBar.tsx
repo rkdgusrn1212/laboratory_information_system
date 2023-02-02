@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import AppBar, { AppBarProps } from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -18,8 +18,8 @@ import { drawerWidth } from '../../pages/Navigation';
 import Logo from '../common/Logo';
 import stringAvatar from '../../utils/stringAvatar';
 import { Account, Staff } from '../../services/types';
-import { useAppSelector } from '../../hooks';
-import { selectAccount } from '../../services/accountSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { selectAccount, signout } from '../../services/accountSlice';
 import { Tab, Tabs } from '@mui/material';
 
 const pages = ['진료', '채혈', '검사'];
@@ -32,10 +32,10 @@ export interface TopBarProps extends AppBarProps {
 
 const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [pageNum, setPageNum] = useState<number | undefined>(undefined);
-  const staff = (useAppSelector(selectAccount) as Account).principal
-    .staffVo as Staff;
+  const [pageNum, setPageNum] = useState<number>(0);
+  const staff = useAppSelector(selectAccount)?.principal.staffVo;
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     switch (location.pathname) {
@@ -49,9 +49,9 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
         setPageNum(2);
         break;
       default:
-        setPageNum(undefined);
+        setPageNum(0);
     }
-  }, [location]);
+  }, [location, dispatch]);
 
   const handlePageChange = (
     event: React.SyntheticEvent<Element, Event>,
@@ -64,8 +64,11 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (setting: string) => () => {
     setAnchorElUser(null);
+    if (setting === '로그아웃') {
+      dispatch(signout());
+    }
   };
 
   return (
@@ -112,15 +115,16 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="계정 관리">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {staff.staffImage ? (
-                  <Avatar
-                    sx={{ width: 36, height: 36 }}
-                    alt={staff.staffName}
-                    src={staff.staffImage}
-                  />
-                ) : (
-                  <Avatar {...stringAvatar(staff.staffName, 36)} />
-                )}
+                {staff &&
+                  (staff.staffImage ? (
+                    <Avatar
+                      sx={{ width: 36, height: 36 }}
+                      alt={staff.staffName}
+                      src={staff.staffImage}
+                    />
+                  ) : (
+                    <Avatar {...stringAvatar(staff.staffName, 36)} />
+                  ))}
               </IconButton>
             </Tooltip>
             <Menu
@@ -139,8 +143,8 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+              {settings.map((setting, idx) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

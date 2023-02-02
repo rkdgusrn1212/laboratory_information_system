@@ -16,7 +16,7 @@ const Navigation: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!account?.principal.staffVo) {
+    if (!account || !account.principal.staffVo) {
       navigate('/', { replace: true });
       return;
     }

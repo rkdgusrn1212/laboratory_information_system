@@ -92,13 +92,13 @@ const headCells: readonly HeadCell[] = [
     id: 'no',
     numeric: false,
     disablePadding: false,
-    label: '처방번호',
+    label: '처방코드',
   },
   {
     id: 'panel',
     numeric: false,
     disablePadding: false,
-    label: '처방코드',
+    label: '처방명',
   },
   {
     id: 'name',

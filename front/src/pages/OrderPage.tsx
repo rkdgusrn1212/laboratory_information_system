@@ -1,11 +1,12 @@
 import PatientPicker from '../components/order/PatientPicker';
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { ThemeProvider, createTheme, Stack, Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import PrescriptionForm from '../components/order/PrescriptionForm';
 import { useState } from 'react';
 import { Patient } from '../services/types';
 import { Box } from '@mui/system';
+import PrescriptionPicker from '../components/order/PrescriptionPicker';
 
 const theme = createTheme({
   palette: {
@@ -33,36 +34,32 @@ const OrderPage: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Grid container spacing={1} sx={{ p: 1 }}>
-        <Grid item xs={12} md={6} xl={3}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              flexDirection: 'column',
-              height: '100%',
-            }}
-          >
+      <Stack
+        direction="row"
+        justifyContent="center"
+        alignItems="stretch"
+        gap={1}
+        height="100%"
+      >
+        <Stack
+          direction="column"
+          justifyContent="start"
+          alignItems="stretch"
+          gap={1}
+        >
+          <Box sx={{ flexGrow: 1, height: 100 }}>
             <PatientPicker
               onSelected={(item) => {
                 setSelected(item);
               }}
             />
           </Box>
-        </Grid>
-        <Grid item xs={12} md={6} xl={9}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              flexDirection: 'column',
-              height: '100%',
-            }}
-          >
-            <PrescriptionForm patient={selected} />
+          <Box sx={{ flexGrow: 1, height: 100 }}>
+            <PrescriptionPicker />
           </Box>
-        </Grid>
-      </Grid>
+        </Stack>
+        <PrescriptionForm patient={selected} />
+      </Stack>
     </ThemeProvider>
   );
 };

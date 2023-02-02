@@ -26,7 +26,7 @@ import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { drawerWidth } from '../../pages/Navigation';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 const category = [
   { name: '진료', icon: <TroubleshootIcon /> },
@@ -162,10 +162,9 @@ const SideDrawer: React.FC<{
 
       {category.map(
         ({ name: categoryName, icon: categoryIcon }, categoryIdx) => (
-          <>
+          <Fragment key={categoryIdx}>
             <Accordion
               TransitionProps={{ unmountOnExit: true }}
-              key={categoryName}
               expanded={expandList === categoryIdx}
               onChange={handleListHeaderChange(categoryIdx)}
             >
@@ -210,7 +209,7 @@ const SideDrawer: React.FC<{
               </AccordionDetails>
             </Accordion>
             <Divider />
-          </>
+          </Fragment>
         ),
       )}
     </Drawer>

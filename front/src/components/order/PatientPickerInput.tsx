@@ -8,6 +8,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import { Stack } from '@mui/material';
 
 const PatientPickerInput: React.FC = () => {
   const [condition, setCondition] = useState('name');
@@ -16,15 +17,14 @@ const PatientPickerInput: React.FC = () => {
     setCondition(event.target.value as string);
   };
   return (
-    <Box
-      component="form"
-      sx={{
-        p: '2px 4px',
-        display: 'flex',
-        alignItems: 'center',
-      }}
+    <Stack
+      alignItems="start"
+      justifyContent="stretch"
+      direction="row"
+      spacing={1}
+      px={1}
     >
-      <FormControl sx={{ m: 1, width: '40%' }} size="small">
+      <FormControl sx={{ width: 120 }} size="small">
         <InputLabel id="search-condition-label">검색조건</InputLabel>
         <Select
           variant="outlined"
@@ -39,7 +39,7 @@ const PatientPickerInput: React.FC = () => {
           <MenuItem value={'rnn'}>주민번호</MenuItem>
         </Select>
       </FormControl>
-      <FormControl sx={{ m: 1, width: '60%' }} variant="outlined" size="small">
+      <FormControl sx={{ flexGrow: 1 }} variant="outlined" size="small">
         <InputLabel htmlFor="outlined-adornment-password">검색</InputLabel>
         <OutlinedInput
           id="search"
@@ -54,7 +54,7 @@ const PatientPickerInput: React.FC = () => {
           label="검색"
         />
       </FormControl>
-    </Box>
+    </Stack>
   );
 };
 export default PatientPickerInput;
