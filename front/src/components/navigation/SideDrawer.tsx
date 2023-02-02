@@ -5,10 +5,14 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import AddIcon from '@mui/icons-material/Add';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import BiotechIcon from '@mui/icons-material/Biotech';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import MuiDrawer from '@mui/material/Drawer';
 import {
   Accordion as MuiAccordion,
@@ -27,6 +31,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { drawerWidth } from '../../pages/Navigation';
 import { Fragment, useEffect, useState } from 'react';
+import { Box, width } from '@mui/system';
 
 const category = [
   { name: '진료', icon: <TroubleshootIcon /> },
@@ -34,16 +39,142 @@ const category = [
   { name: '검사', icon: <BiotechIcon /> },
 ];
 const pages = [
-  [{ name: '진료', icon: <InboxIcon /> }],
   [
-    { name: '채혈 접수', icon: <InboxIcon /> },
-    { name: '채혈 등록', icon: <InboxIcon /> },
-    { name: '부적합검체 등록', icon: <InboxIcon /> },
+    {
+      name: '환자 진료',
+      icon: (
+        <Box>
+          <TroubleshootIcon />
+          <sup>
+            <AddIcon
+              sx={{
+                position: 'relative',
+                left: '15%',
+                top: '-5%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 15,
+              }}
+            />
+          </sup>
+        </Box>
+      ),
+    },
   ],
   [
-    { name: '검사 접수', icon: <InboxIcon /> },
-    { name: '검사결과 입력', icon: <InboxIcon /> },
-    { name: '검사결과 조회', icon: <InboxIcon /> },
+    {
+      name: '채혈 접수',
+      icon: (
+        <Box>
+          <VaccinesIcon />
+          <sup>
+            <AddIcon
+              sx={{
+                position: 'relative',
+                left: '15%',
+                top: '-5%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 15,
+              }}
+            />
+          </sup>
+        </Box>
+      ),
+    },
+    {
+      name: '채혈 등록',
+      icon: (
+        <Box>
+          <VaccinesIcon />
+          <sup>
+            <SaveAltIcon
+              sx={{
+                position: 'relative',
+                left: '15%',
+                top: '-5%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 15,
+              }}
+            />
+          </sup>
+        </Box>
+      ),
+    },
+    {
+      name: '부적합검체 등록',
+      icon: (
+        <Box>
+          <VaccinesIcon />
+          <sup>
+            <WarningAmberIcon
+              sx={{
+                position: 'relative',
+                left: '15%',
+                top: '-5%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 15,
+              }}
+            />
+          </sup>
+        </Box>
+      ),
+    },
+  ],
+  [
+    {
+      name: '검사 접수',
+      icon: (
+        <Box>
+          <BiotechIcon />
+          <sup>
+            <AddIcon
+              sx={{
+                position: 'relative',
+                left: '15%',
+                top: '-5%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 15,
+              }}
+            />
+          </sup>
+        </Box>
+      ),
+    },
+    {
+      name: '검사결과 입력',
+      icon: (
+        <Box>
+          <BiotechIcon />
+          <sup>
+            <SaveAltIcon
+              sx={{
+                position: 'relative',
+                left: '15%',
+                top: '-5%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 15,
+              }}
+            />
+          </sup>
+        </Box>
+      ),
+    },
+    {
+      name: '검사결과 조회',
+      icon: (
+        <Box sx={{ display: 'inline-block' }}>
+          <BiotechIcon />
+          <QueryStatsIcon
+            sx={{
+              position: 'relative',
+              left: '15%',
+              top: '-5%',
+              transform: 'translate(-50%, -50%)',
+              fontSize: 15,
+            }}
+          />
+        </Box>
+      ),
+    },
   ],
 ];
 
