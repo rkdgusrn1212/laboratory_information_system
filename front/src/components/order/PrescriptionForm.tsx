@@ -1,18 +1,25 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import InputAdornment from '@mui/material/InputAdornment';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+
 import { Patient } from '../../services/types';
 import OrderTable from './OrderTable';
-import Button from '@mui/material/Button';
-import { Stack } from '@mui/system';
 
 const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
   patient,
 }) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const startTime = useMemo<number>(() => Date.now(), [patient]);
+  const [during, setDuring] = useState<string>('00:00');
+
   const age = useMemo(() => {
     if (patient) {
       return (
@@ -22,16 +29,58 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
     }
     return '';
   }, [patient]);
+
+  useEffect(() => {
+    setDuring('00:00');
+    const interval = setInterval(() => {
+      const seconds = parseInt(
+        new Date(Date.now() - startTime).getSeconds().toFixed(),
+      );
+      setDuring(
+        `${(seconds / 60).toFixed().padStart(2, '0')}:${(seconds % 60)
+          .toString()
+          .padStart(2, '0')}`,
+      );
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [startTime]);
+
   return (
-    <Paper elevation={2} sx={{ p: 2 }}>
-      <Box>
-        <Typography variant="h6">처방</Typography>
-        <Grid container rowSpacing={2} columnSpacing={1}>
-          <Grid item xs={12}>
-            <Typography variant="subtitle1" sx={{ mt: 5, mb: 2 }}>
-              처방 환자
+    <Paper elevation={2} sx={{ py: 3, height: '100%' }}>
+      <Stack direction="column" justifyContent="start" alignItems="stretch">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="start"
+        >
+          <Typography variant="h6" ml={3} mb={2}>
+            새 진료기록 작성
+          </Typography>{' '}
+          <Stack direction="column" alignItems="start">
+            <Stack
+              direction="row"
+              mr={2}
+              alignItems="center"
+              justifyContent="start"
+              spacing={1}
+            >
+              <AccessTimeIcon />
+              <Typography fontSize={24} fontFamily="digital-clock-font">
+                {during}
+              </Typography>
+            </Stack>
+            <Typography fontSize={12} textAlign="end" mr={2}>
+              {'진료 시작: ' + new Date(startTime).toLocaleString()}
             </Typography>
-          </Grid>
+          </Stack>
+        </Stack>
+        <Typography variant="subtitle1" ml={2} mb={1}>
+          환자 정보
+        </Typography>
+        <Grid container rowSpacing={2} columnSpacing={1} px={1} mb={2}>
           <Grid item xs={3} xl={1}>
             <TextField
               fullWidth
@@ -91,18 +140,16 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
             />
           </Grid>
         </Grid>
-        <Stack rowGap={1}>
-          <Typography variant="subtitle1" sx={{ mt: 5, mb: 2 }}>
-            처방 등록
-          </Typography>
-          <Box sx={{ height: 'auto' }}>
-            <OrderTable />
-          </Box>
-          <Button fullWidth variant="contained">
-            저장
-          </Button>
-        </Stack>
-      </Box>
+        <Typography variant="subtitle1" ml={2}>
+          처방 목록
+        </Typography>
+        <Box sx={{ flexGrow: 1 }}>
+          <OrderTable />
+        </Box>
+        <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
+          진료기록 저장
+        </Button>
+      </Stack>
     </Paper>
   );
 };

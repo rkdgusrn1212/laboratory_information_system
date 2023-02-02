@@ -43,6 +43,7 @@ const PatientPicker: React.FC<{
       sx={{
         height: '100%',
         py: 3,
+        minWidth: 400,
       }}
     >
       <Stack

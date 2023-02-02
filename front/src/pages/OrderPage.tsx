@@ -1,11 +1,9 @@
 import PatientPicker from '../components/order/PatientPicker';
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme, Stack, Container } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { ThemeProvider, createTheme, Stack, Box } from '@mui/material';
 import PrescriptionForm from '../components/order/PrescriptionForm';
 import { useState } from 'react';
 import { Patient } from '../services/types';
-import { Box } from '@mui/system';
 import PrescriptionPicker from '../components/order/PrescriptionPicker';
 
 const theme = createTheme({
@@ -35,29 +33,18 @@ const OrderPage: React.FC = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="stretch"
-        gap={1}
         height="100%"
+        direction="row"
+        alignItems="stretch"
+        spacing={1}
+        m={1}
       >
-        <Stack
-          direction="column"
-          justifyContent="start"
-          alignItems="stretch"
-          gap={1}
-        >
-          <Box sx={{ flexGrow: 1, height: 100 }}>
-            <PatientPicker
-              onSelected={(item) => {
-                setSelected(item);
-              }}
-            />
-          </Box>
-          <Box sx={{ flexGrow: 1, height: 100 }}>
-            <PrescriptionPicker />
-          </Box>
-        </Stack>
+        <PatientPicker
+          onSelected={(item) => {
+            setSelected(item);
+          }}
+        />
+        <PrescriptionPicker />
         <PrescriptionForm patient={selected} />
       </Stack>
     </ThemeProvider>
