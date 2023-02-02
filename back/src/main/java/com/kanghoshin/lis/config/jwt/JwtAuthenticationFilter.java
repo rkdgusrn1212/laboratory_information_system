@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +32,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
-		System.out.println("JwtAuthenticationFilter : 진입");
-
 		// request에 있는 username과 password를 파싱해서 자바 Object로 받기
 		ObjectMapper om = new ObjectMapper();
 		SignInDto signInDto = null;
@@ -49,8 +46,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 						signInDto.getAuthId(), 
 						signInDto.getAuthPassword());
 
-		System.out.println("JwtAuthenticationFilter : 토큰생성완료");
-
 		//인증 프로바이더는 디폴트로 UserDetailService를 가짐 UserDetailService는 Default로 BCryptPasswordEncoder 사용
 		Authentication authentication = 
 				authenticationManager.authenticate(authenticationToken);
@@ -64,40 +59,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-		
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, Object> principalMap = objectMapper.convertValue(principalDetails, Map.class);
 		String jwtToken = JWT.create()
-				.withSubject(principalDetails.getEmail())
-				.withClaim("auth_id", principalDetails.getUsername())
-				.withClaim("auth_refresh", principalDetails.getRefresh())
-				.withClaim("staff_no", principalDetails.getStaffNo())
-				.withClaim("staff_name", principalDetails.getName())
-				.withClaim("staff_birth", principalDetails.getBirth())
-				.withClaim("staff_male", principalDetails.isMale())
-				.withClaim("staff_phone", principalDetails.getPhone())
-				.withClaim("staff_image",principalDetails.getImage())
-				.withClaim("staff_rrn",principalDetails.getRrn())
-				.withClaim("staff_admitted", principalDetails.getAdmitted())
-				.withClaim("staff_type",principalDetails.getType())		
+				.withSubject(principalDetails.getUsername())
+				.withClaim("principal", principalMap)
 				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
 				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
 
-		Map<String, Object> principalMap = new HashMap<>();
-
-		principalMap.put("name", principalDetails.getName());
-		principalMap.put("birth", principalDetails.getPhone());
-		principalMap.put("male", principalDetails.isMale());
-		principalMap.put("phone", principalDetails.getPhone());
-		principalMap.put("email",principalDetails.getEmail());
-		principalMap.put("image",principalDetails.getImage());
-		principalMap.put("type",principalDetails.getType());
-
 		Map<String, Object> payload = new HashMap<>();
 		payload.put("accessToken", JwtProperties.TOKEN_PREFIX+jwtToken);
 		payload.put("principal", principalMap);
 
-		response.getWriter().print(new ObjectMapper().writeValueAsString(payload));
+		response.getWriter().print(objectMapper.writeValueAsString(payload));
 	}
 }

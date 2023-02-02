@@ -1,21 +1,29 @@
 package com.kanghoshin.lis.controller;
 
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kanghoshin.lis.dto.auth.VerifyValidationCodeDto;
-import com.kanghoshin.lis.exception.auth.SignupFailedException;
+import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
+import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
+import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
+import com.kanghoshin.lis.config.principal.PrincipalDetails;
+import com.kanghoshin.lis.dto.auth.CreateAuthDto;
+import com.kanghoshin.lis.dto.auth.issueValidationCodeDto;
+import com.kanghoshin.lis.dto.auth.DetailsDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
-import com.kanghoshin.lis.dto.auth.SignUpDto;
 import com.kanghoshin.lis.service.AuthService;
-import com.kanghoshin.lis.vo.error.auth.SignupErrorVo;
+import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
+import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
+import com.kanghoshin.lis.vo.error.auth.WriteDetailsErrorVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,23 +34,40 @@ public class AuthController {
 
 	private final AuthService authService;
 
-	@PostMapping("signup")
-	public void signup(@Valid @RequestBody SignUpDto signUpDto) throws SignupFailedException {
-		authService.signUp(signUpDto);
+	@PostMapping("issue-validation-code")
+	public void issueValidationCode(@Valid @RequestBody issueValidationCodeDto issueValidationCodeDto) throws IssueVallidationCodeFailedException {
+		authService.issueValidationCode(issueValidationCodeDto);
+	}	
+
+	@ExceptionHandler(IssueVallidationCodeFailedException.class)
+	public ResponseEntity<IssueValidationCodeErrorVo> handleCreateVallidationEmailFailedException(IssueVallidationCodeFailedException exception) {
+		return new ResponseEntity<IssueValidationCodeErrorVo>(exception.getIssueValidationCodeErrorVo(),HttpStatus.BAD_REQUEST);
 	}
-	
-	@ExceptionHandler(SignupFailedException.class)
-	public ResponseEntity<SignupErrorVo> handleSignupFailedException(SignupFailedException exception) {
-		return new ResponseEntity<SignupErrorVo>(exception.getSignupErrorVo(),HttpStatus.BAD_REQUEST);
+
+	@PostMapping("create-auth")
+	public void createAuth(@Valid @RequestBody CreateAuthDto createAuthDto) throws CreateAuthFailedException {
+		authService.createAuth(createAuthDto);
 	}
-	
+
+	@ExceptionHandler(CreateAuthFailedException.class)
+	public ResponseEntity<CreateAuthErrorVo> handleCreateVallidationEmailFailedException(CreateAuthFailedException exception) {
+		return new ResponseEntity<CreateAuthErrorVo>(exception.getCreateAuthErrorVo(),HttpStatus.BAD_REQUEST);
+	}
+
 	@PostMapping("refresh-validation-code")
 	public void refreshValidationCode(@Valid @RequestBody RefreshValidaitonCodeDto sendCodeDto) {
 		authService.refreshValidationCode(sendCodeDto);
 	}
 	
-	@PostMapping("verify-validation-code")
-	public void verifyValidationCode(@Valid @RequestBody VerifyValidationCodeDto receiveCodeDto) {
-		authService.verifyValidationCode(receiveCodeDto);
+
+	@PostMapping("write-details")
+	public void writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
+			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException {
+		authService.writeDetails(principalDetasils, detailsDto);
+	}
+
+	@ExceptionHandler(WriteDetailsFailedException.class)
+	public ResponseEntity<WriteDetailsErrorVo> handleSignupFailedException(WriteDetailsFailedException exception) {
+		return new ResponseEntity<WriteDetailsErrorVo>(exception.getSignupErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 }

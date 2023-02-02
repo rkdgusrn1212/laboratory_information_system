@@ -14,19 +14,14 @@
 
 
 -- kanghoshin_lis 데이터베이스 구조 내보내기
-DROP DATABASE IF EXISTS `kanghoshin_lis`;
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
 -- 테이블 kanghoshin_lis.validation 구조 내보내기
-DROP TABLE IF EXISTS `validation`;
 CREATE TABLE IF NOT EXISTS `validation` (
   `validation_email` varchar(320) NOT NULL,
-  `validation_code` char(60),
-  `auth_id` varchar(40) NOT NULL,
-  PRIMARY KEY (`validation_email`),
-  KEY `FK_validation_auth` (`auth_id`),
-  CONSTRAINT `FK_validation_auth` FOREIGN KEY (`auth_id`) REFERENCES `auth` (`auth_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  `validation_code` char(60) DEFAULT NULL,
+  PRIMARY KEY (`validation_email`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.

@@ -43,7 +43,7 @@
 /front/src/services/authSlice.ts @rkdgusrn1212
 
 # 로그인 페이지
-/front/src/components/signin/* @rkdgusrn1212
+/front/src/components/signin/ @rkdgusrn1212
 /front/src/pages/SigninPage.tsx @rkdgusrn1212
 
 # 로고
@@ -51,5 +51,22 @@
 
 # 회원가입 페이지
 /front/src/pages/SignupPage.tsx @rkdgusrn1212
-/front/src/components/signup/* @rkdgusrn1212
+/front/src/components/signup/ @rkdgusrn1212
+
+# 네비게이션
+/front/src/pages/Navigation.tsx @rkdgusrn1212
+/front/src/components/navigation/ @rkdgusrn1212
+
+# 진료
+/front/src/pages/OrderPage.tsx @rkdgusrn1212
+/front/src/components/order/ @rkdgusrn1212
+
+# 인증관련 리덕스 & 리덕스 설정
+/front/src/services/accountSlice.ts
+/front/src/services/authApi.ts
+/front/src/services/types.ts
+/front/src/hooks/index.ts
+
+# stirngAvatar 유틸
+/front/src/utils/stringAvatar.ts
 

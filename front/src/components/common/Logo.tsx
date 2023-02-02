@@ -21,7 +21,6 @@ const Logo: React.FC<LogoProps> = ({ darkMode, size, sx }) => (
     </Typography>
     <Typography
       color={darkMode ? 'light' : 'dark'}
-      mb={3}
       fontFamily="fantasy"
       textAlign="center"
       fontSize={size * 0.618}

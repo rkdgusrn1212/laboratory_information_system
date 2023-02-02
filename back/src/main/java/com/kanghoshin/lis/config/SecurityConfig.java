@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.kanghoshin.lis.config.jwt.JwtAuthenticationFilter;
 import com.kanghoshin.lis.config.jwt.JwtAuthorizationFilter;
+import com.kanghoshin.lis.config.principal.PrincipalAuthority;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,8 +36,8 @@ public class SecurityConfig{
 				.addFilter(createJwtAuthenticationFilter())
 				.addFilter(new JwtAuthorizationFilter(authenticationManagerBuilder.getOrBuild()))
 				.authorizeRequests()
-				.antMatchers("/api/user/**")
-				.access("hasRole('ROLE_DOC') or hasRole('ROLE_NUR')")
+				.antMatchers("/api/auth/write-details")
+				.access("hasRole('"+PrincipalAuthority.ROLE_AUTHONLY.getAuthority()+"')")
 				.antMatchers("/api/doc/**")
 				.access("hasRole('ROLE_DOC')")
 				.antMatchers("/api/nur/**")

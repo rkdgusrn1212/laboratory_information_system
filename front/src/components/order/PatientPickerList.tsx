@@ -24,7 +24,7 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
 
   useEffect(() => {
     onSelected(selected);
-  }, [selected]);
+  }, [onSelected, selected]);
 
   return (
     <Stack gap={1}>
@@ -36,7 +36,6 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
             item.image = '/image/female_icon.png';
           }
         }
-        console.log(item.birth);
         const age =
           new Date(new Date().getTime() - item.birth.getTime()).getFullYear() -
           1970;

@@ -5,6 +5,8 @@ import PatientPickerList from './PatientPickerList';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import { Patient } from '../../services/types';
+import { autoBatchEnhancer } from '@reduxjs/toolkit';
+import { Stack } from '@mui/material';
 
 const dummyPatient = [
   {
@@ -37,13 +39,29 @@ const PatientPicker: React.FC<{
   onSelected: (patient: Patient) => void;
 }> = ({ onSelected }) => {
   return (
-    <Paper sx={{ p: 3, height: '100%' }}>
-      <Typography variant="h5">환자 선택</Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <Paper
+      sx={{
+        height: '100%',
+        py: 3,
+      }}
+    >
+      <Stack
+        alignItems="stretch"
+        justifyContent="start"
+        flexDirection="column"
+        height="100%"
+        gap={2}
+      >
+        <Typography variant="h6" ml={3}>
+          환자 선택
+        </Typography>
         <PatientPickerInput />
-      </Box>
-      <Divider sx={{ mb: 2 }} />
-      <PatientPickerList onSelected={onSelected} data={dummyPatient} />
+        <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
+          <Box sx={{ minHeight: 0, px: 1 }}>
+            <PatientPickerList onSelected={onSelected} data={dummyPatient} />
+          </Box>
+        </Box>
+      </Stack>
     </Paper>
   );
 };

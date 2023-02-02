@@ -10,12 +10,12 @@ import com.kanghoshin.lis.vo.entity.ValidationVo;
 
 @Mapper
 public interface ValidationMapper {
-	@Select("SELECT validation_email as email, validation_code as code, auth_id as authId "
+	@Select("SELECT validation_email as validationEmail, validation_code as validationCode "
 			+ "FROM validation WHERE validation_email = #{validation_email}")
-	ValidationVo findByEmail(@Param("validation_email") String email);
+	ValidationVo findByValidationEmail(@Param("validation_email") String email);
 	
-	@Insert("INSERT INTO validation VALUES(#{validation_email}, #{validation_code}, #{auth_id})")
-	int insert(@Param("validation_email") String email, @Param("validation_code") String code, @Param("auth_id") String authId);
+	@Insert("INSERT INTO validation VALUES(#{validation_email}, #{validation_code})")
+	int insert(@Param("validation_email") String email, @Param("validation_code") String code);
 	
 	@Update("UPDATE validation SET validation_code = #{validation_code} WHERE validation_email = #{validation_email}")
 	int updateCode(@Param("validation_email") String email, @Param("validation_code") String code);

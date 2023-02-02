@@ -1,101 +1,70 @@
 package com.kanghoshin.lis.config.principal;
 
-import java.util.Collection;
-import java.util.Date;
-
-import org.springframework.security.core.GrantedAuthority;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kanghoshin.lis.vo.entity.AuthVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
-import com.kanghoshin.lis.vo.entity.ValidationVo;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@RequiredArgsConstructor
+@Data
+@NoArgsConstructor
 public class PrincipalDetails implements UserDetails{
 
 	private static final long serialVersionUID = 7772998674503481744L;
-	private final ValidationVo validationVo;
-	private final AuthVo authVo;
-	private final StaffVo staffVo;
+	private List<PrincipalAuthority> authorities;
+	private StaffVo staffVo;
+	private String username;
+	@JsonIgnore
+	private String password;
+	@JsonIgnore
+	private String autoRefresh;
+	private String validationEmail;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return staffVo.getRole();
+	public PrincipalDetails(AuthVo authVo, StaffVo staffVo) {
+		this.staffVo = staffVo;
+		authorities = new ArrayList<PrincipalAuthority>();
+		if(staffVo==null) {
+			authorities.add(PrincipalAuthority.ROLE_AUTHONLY);//인증 정보만 있음
+		}else if(!staffVo.isStaffAdmitted()){
+			authorities.add(PrincipalAuthority.ROLE_PENDING);//승인 대기중
+		}else{
+			authorities.add(PrincipalAuthority.ROLE_STAFF);
+			if(staffVo.getStaffType()==1) {
+				authorities.add(PrincipalAuthority.ROLE_DOCTOR);
+			}
+		}
+		username = authVo.getAuthId();
+		password = authVo.getAuthPassword();
+		autoRefresh = authVo.getAuthRefresh();
+		validationEmail = authVo.getValidationEmail();
 	}
 
 	@Override
-	public String getPassword() {
-		return authVo.getPassword();
-	}
-
-	@Override
-	public String getUsername() {
-		return authVo.getId();
-	}
-
-	@Override
+	@JsonIgnore
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
 	@Override
+	@JsonIgnore
 	public boolean isEnabled() {
 		return true;
-	}
-	
-	public String getRefresh() {
-		return authVo.getRefresh();
-	}
-	
-	public String getEmail() {
-		return validationVo.getEmail();
-	}
-	
-	public int getStaffNo() {
-		return staffVo.getNo();
-	}
-	
-	public Date getBirth() {
-		return staffVo.getBirth();
-	}
-	
-	public String getRrn() {
-		return staffVo.getRrn();
-	}
-	
-	public boolean getAdmitted() {
-		return staffVo.isAdmitted();
-	}
-
-	public String getPhone() {
-		return staffVo.getPhone();
-	}
-	
-	public String getName() {
-		return staffVo.getName();
-	}
-	
-	public String getImage() {
-		return staffVo.getImage();
-	}
-	
-	public int getType() {
-		return staffVo.getType();
-	}
-	
-	public boolean isMale() {
-		return staffVo.isMale();
 	}
 }

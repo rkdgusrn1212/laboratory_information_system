@@ -1,4 +1,6 @@
-import { useRef } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -6,61 +8,244 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import StaffTypeForm from './StaffTypeForm';
-import StaffDetailForm from './StaffDetailForm';
+import StaffDetailForm, { DetailsForm } from './StaffDetailsForm';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
-import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
-import Logo from '../common/Logo';
-import ValidationForm from './ValidationForm';
-import {
-  cancelDetails,
-  cancelValidation,
-  completeDetails,
-  completeType,
-  completeValidation,
-  DetailsForm,
-  SignupFormState,
-} from '../../services/signupFormSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
 
-const steps = ['직책 선택', '필수정보 입력', '이메일 인증'];
+import Logo from '../common/Logo';
+import CreateAuthForm from './CreateAuthForm';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { selectAccount, signout } from '../../services/accountSlice';
+import {
+  CreateAuthField,
+  CreateAuthRequest,
+  isCreateAuthError,
+  isWriteDetailsError,
+  SigninRequest,
+  useCreateAuthMutation,
+  useSigninMutation,
+  useWriteDetailsMutation,
+  WriteDetailsField,
+  WriteDetailsRequest,
+} from '../../services/authApi';
+import {
+  isValidationError,
+  MappedValidationError,
+  mapValidationError,
+} from '../../services/types';
+import SigninForm from './SigninForm';
+
+const steps = ['인증 및 아이디 생성', '로그인', '직책 선택', '상세정보 입력'];
 
 const SignupForm: React.FC = () => {
   const navigate = useNavigate();
-  const typeRef = useRef<number>(null);
-  const detailsRef = useRef<DetailsForm>(null);
-  const validationRef = useRef<{ email: string; code: string }>(null);
-  const signupFormState: SignupFormState = useAppSelector(
-    (state) => state.signupForm,
-  );
   const dispatch = useAppDispatch();
+  const account = useAppSelector(selectAccount);
+  const [step, setStep] = useState<number>(
+    account == null
+      ? 0
+      : account.principal.authorities[0] === 'ROLE_AUTHONLY'
+      ? 2
+      : 4,
+  );
+  const [createAuth, createAuthState] = useCreateAuthMutation();
+  const [signin, signinState] = useSigninMutation();
+  const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
+  const [createAuthForm, setCreateAuthForm] = useState<CreateAuthRequest>();
+  const [signinForm, setSigninForm] = useState<SigninRequest>();
+  const [toastOpen, setToastOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState<number | undefined>(
+    undefined,
+  );
+  const [detailsForm, setDetailsForm] = useState<DetailsForm | undefined>(
+    undefined,
+  );
 
-  const handleNext = () => {
-    switch (signupFormState.step) {
+  const handleTypeChange = useCallback(
+    (event: React.MouseEvent<HTMLElement>, newType: number) => {
+      setSelectedType(newType);
+    },
+    [],
+  );
+
+  const handleCreateAuthFormComplete = (
+    form: CreateAuthRequest | undefined,
+  ) => {
+    setCreateAuthForm(form);
+  };
+
+  const handleDetailsFormComplete = (form: DetailsForm | undefined) => {
+    setDetailsForm(form);
+  };
+
+  const handleNext = useCallback(() => {
+    switch (step) {
       case 0:
-        dispatch(completeType(typeRef.current as number));
+        createAuth(createAuthForm as CreateAuthRequest)
+          .unwrap()
+          .then(() => {
+            setStep(1);
+          });
         break;
       case 1:
-        console.log(detailsRef.current as DetailsForm);
-        dispatch(completeDetails(detailsRef.current as DetailsForm));
+        signin(signinForm as SigninRequest)
+          .unwrap()
+          .then(() => {
+            setStep(2);
+          });
         break;
       case 2:
-        dispatch(completeValidation());
+        setStep(3);
+        break;
+      case 3:
+        writeDetails({
+          staffType: selectedType,
+          ...detailsForm,
+        } as WriteDetailsRequest)
+          .unwrap()
+          .then(() => {
+            setStep(4);
+          });
         break;
     }
-  };
-  const handleBack = () => {
-    switch (signupFormState.step) {
-      case 2:
-        dispatch(cancelValidation());
-        break;
+  }, [
+    step,
+    createAuth,
+    writeDetails,
+    createAuthForm,
+    signin,
+    signinForm,
+    selectedType,
+    detailsForm,
+  ]);
+
+  const handleBack = useCallback(() => {
+    switch (step) {
       case 1:
-        dispatch(cancelDetails());
+        dispatch(signout());
+        setStep(0);
+        break;
+      case 3:
+        setStep(2);
         break;
     }
+  }, [step, dispatch]);
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToastOpen(false);
   };
+
+  const handleSigninFormComplete = (form: SigninRequest | undefined) => {
+    setSigninForm(form);
+  };
+
+  const isNextDisable = useMemo(() => {
+    switch (step) {
+      case 0:
+        return createAuthForm === undefined || createAuthState.isLoading;
+      case 1:
+        return signinForm === undefined || signinState.isLoading;
+      case 2:
+        return false;
+      case 3:
+        return (
+          detailsForm === undefined ||
+          selectedType === undefined ||
+          writeDetailsState.isLoading
+        );
+    }
+  }, [
+    step,
+    createAuthForm,
+    signinForm,
+    detailsForm,
+    selectedType,
+    createAuthState.isLoading,
+    signinState.isLoading,
+    writeDetailsState.isLoading,
+  ]);
+
+  const nextText = useMemo(() => {
+    switch (step) {
+      case 0:
+        return '아이디 생성';
+      case 1:
+        return '로그인';
+      case 2:
+        return '다음';
+      case 3:
+        return '가입신청';
+    }
+  }, [step]);
+
+  const isPrevDisable = useMemo(() => {
+    switch (step) {
+      case 1:
+        return false;
+      case 3:
+        return false;
+      default:
+        return true;
+    }
+  }, [step]);
+
+  const createAuthError = useMemo(() => {
+    if (createAuthState.isError) {
+      const error = createAuthState.error;
+      if (isCreateAuthError(error)) {
+        const result = {} as MappedValidationError<CreateAuthField>;
+        switch (error.data.code) {
+          case 'DUPLICATED_ID':
+            result.authId = error.data.message;
+            break;
+          case 'EMAIL_NOT_EXIST':
+            result.validationEmail = error.data.message;
+            break;
+          case 'WRONG_CODE':
+            result.validationCode = error.data.message;
+            break;
+          default:
+            setToastOpen(true);
+        }
+        return result;
+      } else if (isValidationError<CreateAuthField>(error)) {
+        return mapValidationError<CreateAuthField>(error);
+      } else {
+        setToastOpen(true);
+        return {} as MappedValidationError<CreateAuthField>;
+      }
+    } else {
+      return {} as MappedValidationError<CreateAuthField>;
+    }
+  }, [createAuthState.error, createAuthState.isError]);
+
+  const writeDetailError = useMemo(() => {
+    if (createAuthState.isError) {
+      const error = createAuthState.error;
+      if (isWriteDetailsError(error)) {
+        setToastOpen(true);
+        return {} as MappedValidationError<WriteDetailsField>;
+      } else if (isValidationError<WriteDetailsField>(error)) {
+        return mapValidationError<WriteDetailsField>(error);
+      } else {
+        setToastOpen(true);
+        return {} as MappedValidationError<WriteDetailsField>;
+      }
+    } else {
+      return {} as MappedValidationError<WriteDetailsField>;
+    }
+  }, [createAuthState.error, createAuthState.isError]);
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
@@ -70,11 +255,7 @@ const SignupForm: React.FC = () => {
         <Typography variant="h5">가입신청</Typography>
       </Box>
       <Divider />
-      <Stepper
-        activeStep={signupFormState.step}
-        alternativeLabel
-        sx={{ mt: 3 }}
-      >
+      <Stepper activeStep={step} alternativeLabel sx={{ mt: 3 }}>
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
           return (
@@ -84,8 +265,8 @@ const SignupForm: React.FC = () => {
           );
         })}
       </Stepper>
-      <Box sx={{ mt: 5 }}>
-        {signupFormState.step == 3 ? (
+      <Box sx={{ mt: 5, mb: 2 }}>
+        {step == 4 ? (
           <>
             <Typography sx={{ mt: 2, mb: 1 }}>
               <b>KHS 진단검사시스템</b> 가입이 신청되었습니다. 관리자의 최종
@@ -95,6 +276,7 @@ const SignupForm: React.FC = () => {
               <Box sx={{ flex: '1 1 auto' }} />
               <Button
                 onClick={() => {
+                  dispatch(signout());
                   navigate('/', { replace: true });
                 }}
                 fullWidth
@@ -107,39 +289,94 @@ const SignupForm: React.FC = () => {
         ) : (
           <>
             {(() => {
-              switch (signupFormState.step) {
+              switch (step) {
                 case 0:
-                  return <StaffTypeForm ref={typeRef} />;
+                  return (
+                    <CreateAuthForm
+                      onCreateAuthFormComplete={handleCreateAuthFormComplete}
+                      error={createAuthError}
+                    />
+                  );
                 case 1:
-                  return <StaffDetailForm ref={detailsRef} />;
+                  return (
+                    <SigninForm
+                      onSigninFormComplete={handleSigninFormComplete}
+                    />
+                  );
                 case 2:
-                  return <ValidationForm ref={validationRef} />;
+                  return (
+                    <StaffTypeForm
+                      onChange={handleTypeChange}
+                      value={selectedType}
+                    />
+                  );
+                case 3:
+                  return (
+                    <StaffDetailForm
+                      onDetailFormComplete={handleDetailsFormComplete}
+                      error={writeDetailError}
+                    />
+                  );
               }
             })()}
             <Box sx={{ display: 'flex', flexDirection: 'row', pt: 5 }}>
               <Button
                 color="inherit"
-                disabled={signupFormState.step === 0}
+                disabled={isPrevDisable}
                 onClick={handleBack}
                 sx={{ mr: 1 }}
               >
                 이전
               </Button>
               <Box sx={{ flex: '1 1 auto' }} />
-              <Button variant="contained" onClick={handleNext}>
-                {signupFormState.step === 2 ? '가입하기' : '다음'}
-              </Button>
+              <Box sx={{ position: 'relative' }}>
+                <Button
+                  variant="contained"
+                  onClick={handleNext}
+                  disabled={isNextDisable}
+                >
+                  {nextText}
+                </Button>
+                {(createAuthState.isLoading ||
+                  signinState.isLoading ||
+                  writeDetailsState.isLoading) && (
+                  <CircularProgress
+                    size={24}
+                    sx={{
+                      color: 'primary',
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      marginTop: '-12px',
+                      marginLeft: '-12px',
+                    }}
+                  />
+                )}
+              </Box>
             </Box>
           </>
         )}
       </Box>
-      {signupFormState.step == 3 || (
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={toastOpen}
+        autoHideDuration={4000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          "알수없는 오류가 발생했습니다."
+        </Alert>
+      </Snackbar>
+      {step == 3 || (
         <Box sx={{ mt: 3, mb: 3, display: 'inline-flex', gap: 1 }}>
           <Typography variant="body2">이미 계정이 있으신가요?</Typography>
           <Link
             component="button"
             variant="body2"
-            onClick={() => navigate('/', { replace: true })}
+            onClick={() => {
+              dispatch(signout());
+              navigate('/', { replace: true });
+            }}
           >
             로그인하기
           </Link>

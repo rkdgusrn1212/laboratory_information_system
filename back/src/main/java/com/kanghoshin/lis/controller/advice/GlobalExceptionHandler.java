@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 		for(int i=0; i<responseBody.length; i++) {
 			FieldError error = errors.get(i);
 			responseBody[i] = new ValidationErrorItemVo(error.getField(),
-					error.getRejectedValue().toString(), error.getDefaultMessage());
+					error.getRejectedValue()!=null?error.getRejectedValue().toString():null, error.getDefaultMessage());
 		}
 		return new ResponseEntity<ValidationErrorVo>(new ValidationErrorVo(responseBody),HttpStatus.BAD_REQUEST);
 	}
