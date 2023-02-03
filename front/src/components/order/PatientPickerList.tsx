@@ -4,12 +4,13 @@ import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import { Patient } from '../../services/types';
+
+import { ReadablePatient } from '../../services/types';
+import stringAvatar from '../../utils/stringAvatar';
 
 export type PatientPickerListProps = {
-  onSelected: (patient: Patient) => void;
-  data: Patient[];
+  onSelected: (patient: ReadablePatient) => void;
+  data: ReadablePatient[];
 };
 
 const PatientPickerList: React.FC<PatientPickerListProps> = ({
@@ -18,7 +19,7 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
 }) => {
   const [selected, setSelected] = useState(data[0]);
 
-  const handleClickItem = useCallback((item: Patient) => {
+  const handleClickItem = useCallback((item: ReadablePatient) => {
     setSelected(item);
   }, []);
 
@@ -29,23 +30,17 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
   return (
     <Stack gap={1}>
       {data.map((item) => {
-        if (!item.image) {
-          if (item.male) {
-            item.image = '/image/male_icon.png';
-          } else {
-            item.image = '/image/female_icon.png';
-          }
-        }
         const age =
-          new Date(new Date().getTime() - item.birth.getTime()).getFullYear() -
-          1970;
+          new Date(
+            new Date().getTime() - new Date(item.patientBirth).getTime(),
+          ).getFullYear() - 1970;
         return (
           <Card
-            key={item.no}
+            key={item.patientNo}
             elevation={2}
             sx={{
               background:
-                item.no === selected?.no
+                item.patientNo === selected?.patientNo
                   ? 'linear-gradient(to right, #69dbff, #9198e5)'
                   : 'white',
             }}
@@ -54,48 +49,30 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
               onClick={() => {
                 handleClickItem(item);
               }}
+              sx={{ px: 2, py: 1 }}
             >
-              <Grid
-                container
-                minWidth="sm"
-                sx={{ alignItems: 'center', m: 1, gap: 1, spacing: 1 }}
-              >
-                <Grid item>
-                  <Avatar
-                    sx={{
-                      color: 'white',
-                      bgcolor: item.male ? '#ffa733' : '#ed4b82',
-                    }}
-                    alt={item.name}
-                    src={item.image}
-                  />
-                </Grid>
-                <Grid item xs={1}>
-                  <Typography variant="body1">
-                    <small>{item.no}</small>
+              <Stack direction="row" alignItems="center">
+                <Avatar color="white" {...stringAvatar(item.patientName, 40)} />
+                <Stack flexGrow={1} mx={2} alignItems="stretch">
+                  <Typography fontSize={10} textOverflow="ellipsis">
+                    <small>{item.patientNo}</small>
                   </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography variant="body1" fontWeight="bold">
-                    {item.name}
-                  </Typography>
-                </Grid>
-                <Grid item xs={2}>
-                  <Typography variant="body1">
-                    <small>만 {age}세</small>
-                  </Typography>
-                </Grid>
-                <Grid item xs={1}>
-                  <Typography variant="body1">
-                    <small>{item.male ? '남' : '여'}</small>
-                  </Typography>
-                </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="body1">
-                    <small>{item.rnn}</small>
-                  </Typography>
-                </Grid>
-              </Grid>
+                  <Stack direction="row" flexGrow={1} spacing={1}>
+                    <Typography flexGrow={1} variant="body1" fontWeight="bold">
+                      {item.patientName}
+                    </Typography>
+                    <Typography variant="body1">
+                      <small>{age}세</small>
+                    </Typography>
+                    <Typography variant="body1">
+                      <small>{item.patientMale ? '남' : '여'}</small>
+                    </Typography>
+                    <Typography variant="body1">
+                      <small>{item.patientBirth}</small>
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
             </CardActionArea>
           </Card>
         );

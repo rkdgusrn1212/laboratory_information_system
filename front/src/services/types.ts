@@ -74,6 +74,8 @@ export interface Staff {
   staffType: number;
 }
 
+export type ReadableStaff = Omit<Staff, 'staffRrn'>;
+
 export interface Principal {
   authorities: (
     | 'ROLE_AUTHONLY'
@@ -81,7 +83,7 @@ export interface Principal {
     | 'ROLE_STAFF'
     | 'ROLE_DOCTOR'
   )[];
-  staffVo: Staff;
+  staffVo: ReadableStaff;
   username: string;
   validationEmail: string;
 }
@@ -92,10 +94,11 @@ export interface Account {
 }
 
 export interface Patient {
-  no: string;
-  name: string;
-  rnn: string;
-  birth: Date;
-  male: boolean;
-  image: string | null;
+  patientNo: string;
+  patientName: string;
+  patientRrn: string;
+  patientBirth: string;
+  patientMale: boolean;
 }
+
+export type ReadablePatient = Omit<Patient, 'patientRrn'>;

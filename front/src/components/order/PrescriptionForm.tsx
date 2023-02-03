@@ -10,10 +10,10 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-import { Patient } from '../../services/types';
+import { ReadablePatient } from '../../services/types';
 import OrderTable from './OrderTable';
 
-const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
+const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
   patient,
 }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,8 +23,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
   const age = useMemo(() => {
     if (patient) {
       return (
-        new Date(new Date().getTime() - patient.birth.getTime()).getFullYear() -
-        1970
+        new Date(
+          new Date().getTime() - new Date(patient.patientBirth).getTime(),
+        ).getFullYear() - 1970
       );
     }
     return '';
@@ -57,7 +58,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
           alignItems="start"
         >
           <Typography variant="h6" ml={3} mb={2}>
-            새 진료기록 작성
+            새 진료기록
           </Typography>{' '}
           <Stack direction="column" alignItems="start">
             <Stack
@@ -88,7 +89,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               type="text"
               label="환자번호"
               disabled
-              value={patient ? patient.no : ''}
+              value={patient ? patient.patientNo : ''}
             />
           </Grid>
           <Grid item xs={9} xl={3.5}>
@@ -98,7 +99,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               type="text"
               label="성명"
               disabled
-              value={patient ? patient.name : ''}
+              value={patient ? patient.patientName : ''}
             />
           </Grid>
           <Grid item xs={4} xl={1.5}>
@@ -109,9 +110,6 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               disabled
               label="나이"
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">만</InputAdornment>
-                ),
                 endAdornment: (
                   <InputAdornment position="end">세</InputAdornment>
                 ),
@@ -126,7 +124,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               size="small"
               label="성별"
               disabled
-              value={patient ? (patient.male ? '남' : '여') : ''}
+              value={patient ? (patient.patientMale ? '남' : '여') : ''}
             />
           </Grid>
           <Grid item xs={6} xl={5}>
@@ -134,9 +132,9 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
               fullWidth
               type="text"
               size="small"
-              label="주민번호"
+              label="생년월일"
               disabled
-              value={patient ? patient.rnn : ''}
+              value={patient ? patient.patientBirth : ''}
             />
           </Grid>
         </Grid>
@@ -147,7 +145,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | null }> = ({
           <OrderTable />
         </Box>
         <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
-          진료기록 저장
+          진료기록 제출
         </Button>
       </Stack>
     </Paper>

@@ -1,10 +1,13 @@
-import PatientPicker from '../components/order/PatientPicker';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme, Stack, Box } from '@mui/material';
-import PrescriptionForm from '../components/order/PrescriptionForm';
 import { useState } from 'react';
-import { Patient } from '../services/types';
+
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider, createTheme } from '@mui/material';
+import Stack from '@mui/material/Stack';
+
+import PrescriptionForm from '../components/order/PrescriptionForm';
+import { ReadablePatient } from '../services/types';
 import PrescriptionPicker from '../components/order/PrescriptionPicker';
+import PatientPicker from '../components/order/PatientPicker';
 
 const theme = createTheme({
   palette: {
@@ -28,7 +31,7 @@ const theme = createTheme({
 });
 
 const OrderPage: React.FC = () => {
-  const [selected, setSelected] = useState<Patient | null>(null);
+  const [selected, setSelected] = useState<ReadablePatient | null>(null);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -44,8 +47,8 @@ const OrderPage: React.FC = () => {
             setSelected(item);
           }}
         />
-        <PrescriptionPicker />
         <PrescriptionForm patient={selected} />
+        <PrescriptionPicker />
       </Stack>
     </ThemeProvider>
   );

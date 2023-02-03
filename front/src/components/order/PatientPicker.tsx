@@ -1,43 +1,98 @@
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
-import PatientPickerInput from './PatientPickerInput';
 import PatientPickerList from './PatientPickerList';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import { Patient } from '../../services/types';
-import { autoBatchEnhancer } from '@reduxjs/toolkit';
-import { Stack } from '@mui/material';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Stack from '@mui/material/Stack';
+
+import { ReadablePatient } from '../../services/types';
+import { useState } from 'react';
 
 const dummyPatient = [
   {
-    no: 'P0001',
-    name: '강현구',
-    rnn: '951111-1234567',
-    birth: new Date('1995-11-11'),
-    male: true,
-    image: null,
+    patientNo: 'P0001',
+    patientName: '강현구',
+    patientBirth: '1995-11-11',
+    patientMale: true,
   },
   {
-    no: 'P0002',
-    name: '류진',
-    rnn: '960808-2134567',
-    birth: new Date('1996-08-08'),
-    male: false,
-    image: null,
+    patientNo: 'P0002',
+    patientName: '류진',
+    patientBirth: '1996-08-08',
+    patientMale: false,
   },
   {
-    no: 'P0003',
-    name: '김동신',
-    rnn: '960303-1313131',
-    birth: new Date('1996-03-03'),
-    male: true,
-    image: null,
+    patientNo: 'P0003',
+    patientName: '김동신',
+    patientBirth: '1996-03-03',
+    patientMale: true,
+  },
+  {
+    patientNo: 'P0004',
+    patientName: '김덕배',
+    patientBirth: '1995-03-13',
+    patientMale: true,
+  },
+  {
+    patientNo: 'P0005',
+    patientName: '이춘식',
+    patientBirth: '1996-02-12',
+    patientMale: false,
+  },
+  {
+    patientNo: 'P0006',
+    patientName: '김만식',
+    patientBirth: '1996-09-09',
+    patientMale: true,
+  },
+];
+
+const dummyReception = [
+  {
+    receptionNo: 'RC0001',
+    time: new Date(),
+    patient: 'P0001',
+  },
+  {
+    receptionNo: 'R0002',
+    time: new Date(),
+    patient: 'P0002',
+  },
+  {
+    receptionNo: 'R0003',
+    time: new Date(),
+    patient: 'P0005',
+  },
+];
+
+const dummyReservation = [
+  {
+    reservationNo: 'RS0001',
+    time: new Date(),
+    patient: 'P0003',
+  },
+  {
+    reservationNo: 'RS0002',
+    time: new Date(),
+    patient: 'P0004',
+  },
+  {
+    reservationNo: 'RS0003',
+    time: new Date(),
+    patient: 'P0006',
   },
 ];
 
 const PatientPicker: React.FC<{
-  onSelected: (patient: Patient) => void;
+  onSelected: (patient: ReadablePatient) => void;
 }> = ({ onSelected }) => {
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabValue(newValue);
+  };
+
   return (
     <Paper
       sx={{
@@ -56,12 +111,34 @@ const PatientPicker: React.FC<{
         <Typography variant="h6" ml={3}>
           환자 선택
         </Typography>
-        <PatientPickerInput />
-        <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
-          <Box sx={{ minHeight: 0, px: 1 }}>
-            <PatientPickerList onSelected={onSelected} data={dummyPatient} />
-          </Box>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs
+            value={tabValue}
+            onChange={handleChange}
+            aria-label="basic tabs example"
+          >
+            <Tab label="대기 환자" />
+            <Tab label="예약 환자" />
+          </Tabs>
         </Box>
+        {tabValue === 0 ? (
+          <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
+            <Box sx={{ minHeight: 0, px: 1 }}>
+              <PatientPickerList onSelected={onSelected} data={dummyPatient} />
+            </Box>
+          </Box>
+        ) : (
+          <>
+            <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
+              <Box sx={{ minHeight: 0, px: 1 }}>
+                <PatientPickerList
+                  onSelected={onSelected}
+                  data={dummyPatient}
+                />
+              </Box>
+            </Box>
+          </>
+        )}
       </Stack>
     </Paper>
   );

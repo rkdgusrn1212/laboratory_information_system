@@ -6,7 +6,6 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import AddIcon from '@mui/icons-material/Add';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import TroubleshootIcon from '@mui/icons-material/Troubleshoot';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -31,7 +30,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { drawerWidth } from '../../pages/Navigation';
 import { Fragment, useEffect, useState } from 'react';
-import { Box, width } from '@mui/system';
+import { Box } from '@mui/system';
 
 const category = [
   { name: '진료', icon: <TroubleshootIcon /> },
@@ -41,7 +40,7 @@ const category = [
 const pages = [
   [
     {
-      name: '진료기록 작성',
+      name: '환자 진료',
       icon: (
         <Box>
           <TroubleshootIcon />
