@@ -3,6 +3,7 @@ import { useState } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 
 import PrescriptionForm from '../components/order/PrescriptionForm';
 import { ReadablePatient } from '../services/types';
@@ -37,18 +38,24 @@ const OrderPage: React.FC = () => {
       <CssBaseline />
       <Stack
         height="100%"
+        width="100%"
         direction="row"
         alignItems="stretch"
         spacing={1}
-        m={1}
       >
-        <PatientPicker
-          onSelected={(item) => {
-            setSelected(item);
-          }}
-        />
-        <PrescriptionForm patient={selected} />
-        <PrescriptionPicker />
+        <Box flexGrow={1}>
+          <PatientPicker
+            onSelected={(item) => {
+              setSelected(item);
+            }}
+          />
+        </Box>
+        <Box flexGrow={2}>
+          <PrescriptionForm patient={selected} />
+        </Box>
+        <Box flexGrow={1}>
+          <PrescriptionPicker />
+        </Box>
       </Stack>
     </ThemeProvider>
   );

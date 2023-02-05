@@ -34,14 +34,10 @@ const Navigation: React.FC = () => {
   return (
     <>
       <CssBaseline />
-      <Box sx={{ display: 'flex', height: '100vh' }}>
-        <TopBar
-          position="fixed"
-          open={open}
-          onOpenIconClick={handleDrawerOpen}
-        />
+      <TopBar position="fixed" open={open} onOpenIconClick={handleDrawerOpen} />
+      <Box display="flex" alignItems="stretch" height="100vh">
         <SideDrawer open={open} onCloseIconClick={handleDrawerClose} />
-        <Stack>
+        <Stack flexGrow={1} p={1}>
           <Toolbar variant="dense" />
           <Outlet />
         </Stack>

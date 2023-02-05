@@ -28,7 +28,7 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
         ).getFullYear() - 1970
       );
     }
-    return '';
+    return undefined;
   }, [patient]);
 
   useEffect(() => {
@@ -81,18 +81,20 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
         <Typography variant="subtitle1" ml={2} mb={1}>
           환자 정보
         </Typography>
-        <Grid container rowSpacing={2} columnSpacing={1} px={1} mb={2}>
-          <Grid item xs={3} xl={1}>
+        <Stack direction="row" spacing={2} px={1} mb={2}>
+          <Box width={100}>
             <TextField
               fullWidth
               size="small"
               type="text"
-              label="환자번호"
+              label="차트번호"
               disabled
-              value={patient ? patient.patientNo : ''}
+              value={
+                patient ? patient.patientNo.toString().padStart(6, '0') : ''
+              }
             />
-          </Grid>
-          <Grid item xs={9} xl={3.5}>
+          </Box>
+          <Box flexGrow={1}>
             <TextField
               fullWidth
               size="small"
@@ -101,23 +103,18 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
               disabled
               value={patient ? patient.patientName : ''}
             />
-          </Grid>
-          <Grid item xs={4} xl={1.5}>
+          </Box>
+          <Box width={80}>
             <TextField
               fullWidth
-              type="number"
+              type="text"
               size="small"
               disabled
               label="나이"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">세</InputAdornment>
-                ),
-              }}
-              value={age}
+              value={age + ' 세'}
             />
-          </Grid>
-          <Grid item xs={2} xl={1}>
+          </Box>
+          <Box width={60}>
             <TextField
               fullWidth
               type="text"
@@ -126,8 +123,8 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
               disabled
               value={patient ? (patient.patientMale ? '남' : '여') : ''}
             />
-          </Grid>
-          <Grid item xs={6} xl={5}>
+          </Box>
+          <Box width={120}>
             <TextField
               fullWidth
               type="text"
@@ -136,8 +133,8 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
               disabled
               value={patient ? patient.patientBirth : ''}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Stack>
         <Typography variant="subtitle1" ml={2}>
           처방 목록
         </Typography>

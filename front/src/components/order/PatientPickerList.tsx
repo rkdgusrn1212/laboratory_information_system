@@ -73,7 +73,8 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
                   <Stack direction="row" justifyContent={'space-between'}>
                     <Typography fontSize={10}>
                       <small>
-                        {patient.patientNo.toString().padStart(6, '0')}
+                        {'차트번호 : ' +
+                          patient.patientNo.toString().padStart(6, '0')}
                       </small>
                     </Typography>
                     <Typography fontSize={10} textOverflow="ellipsis">
