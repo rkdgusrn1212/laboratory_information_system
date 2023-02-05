@@ -11,37 +11,37 @@ import { useState } from 'react';
 
 const dummyPatient = [
   {
-    patientNo: 'P0001',
+    patientNo: 1,
     patientName: '강현구',
     patientBirth: '1995-11-11',
     patientMale: true,
   },
   {
-    patientNo: 'P0002',
+    patientNo: 2,
     patientName: '류진',
     patientBirth: '1996-08-08',
     patientMale: false,
   },
   {
-    patientNo: 'P0003',
+    patientNo: 3,
     patientName: '김동신',
     patientBirth: '1996-03-03',
     patientMale: true,
   },
   {
-    patientNo: 'P0004',
+    patientNo: 4,
     patientName: '김덕배',
     patientBirth: '1995-03-13',
     patientMale: true,
   },
   {
-    patientNo: 'P0005',
+    patientNo: 5,
     patientName: '이춘식',
     patientBirth: '1996-02-12',
     patientMale: false,
   },
   {
-    patientNo: 'P0006',
+    patientNo: 6,
     patientName: '김만식',
     patientBirth: '1996-09-09',
     patientMale: true,
@@ -50,37 +50,37 @@ const dummyPatient = [
 
 const dummyReception = [
   {
-    receptionNo: 'RC0001',
-    time: new Date(),
-    patient: 'P0001',
+    receptionNo: 1,
+    receptionTime: new Date().toJSON(),
+    patient: dummyPatient[0],
   },
   {
-    receptionNo: 'R0002',
-    time: new Date(),
-    patient: 'P0002',
+    receptionNo: 2,
+    receptionTime: new Date().toJSON(),
+    patient: dummyPatient[1],
   },
   {
-    receptionNo: 'R0003',
-    time: new Date(),
-    patient: 'P0005',
+    receptionNo: 3,
+    receptionTime: new Date().toJSON(),
+    patient: dummyPatient[4],
   },
 ];
 
 const dummyReservation = [
   {
-    reservationNo: 'RS0001',
-    time: new Date(),
-    patient: 'P0003',
+    reservationNo: 1,
+    reservationTime: new Date().toJSON(),
+    patient: dummyPatient[2],
   },
   {
-    reservationNo: 'RS0002',
-    time: new Date(),
-    patient: 'P0004',
+    reservationNo: 2,
+    reservationTime: new Date().toJSON(),
+    patient: dummyPatient[3],
   },
   {
-    reservationNo: 'RS0003',
-    time: new Date(),
-    patient: 'P0006',
+    reservationNo: 3,
+    reservationTime: new Date().toJSON(),
+    patient: dummyPatient[5],
   },
 ];
 
@@ -124,7 +124,10 @@ const PatientPicker: React.FC<{
         {tabValue === 0 ? (
           <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
             <Box sx={{ minHeight: 0, px: 1 }}>
-              <PatientPickerList onSelected={onSelected} data={dummyPatient} />
+              <PatientPickerList
+                onSelected={onSelected}
+                data={dummyReception}
+              />
             </Box>
           </Box>
         ) : (
@@ -133,7 +136,7 @@ const PatientPicker: React.FC<{
               <Box sx={{ minHeight: 0, px: 1 }}>
                 <PatientPickerList
                   onSelected={onSelected}
-                  data={dummyPatient}
+                  data={dummyReservation}
                 />
               </Box>
             </Box>
