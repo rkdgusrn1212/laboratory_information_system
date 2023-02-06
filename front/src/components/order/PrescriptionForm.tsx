@@ -8,7 +8,8 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Skeleton from '@mui/material/Skeleton';
-
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { ReadablePatient } from '../../services/types';
 import OrderTable from './OrderTable';
 
@@ -167,7 +168,22 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | undefined }> = ({
           {patient ? (
             <OrderTable />
           ) : (
-            <Skeleton variant="rectangular" height={300} sx={{ mb: 3 }} />
+            <Box height={300} mb={3} position="relative">
+              <Skeleton variant="rectangular" height="100%" />
+              <Alert
+                sx={{
+                  width: '100%',
+                  position: 'absolute',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                }}
+                severity="info"
+              >
+                <AlertTitle>안내</AlertTitle>
+                진료할 환자가 선택되지 않았습니다. —{' '}
+                <strong>환자를 선택하면 바로 진료가 시작됩니다.</strong>
+              </Alert>
+            </Box>
           )}
         </Box>
         {patient ? (
