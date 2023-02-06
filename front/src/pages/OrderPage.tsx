@@ -32,7 +32,9 @@ const theme = createTheme({
 });
 
 const OrderPage: React.FC = () => {
-  const [selected, setSelected] = useState<ReadablePatient | null>(null);
+  const [selected, setSelected] = useState<ReadablePatient | undefined>(
+    undefined,
+  );
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

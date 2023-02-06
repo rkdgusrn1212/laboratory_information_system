@@ -3,17 +3,16 @@ import { useEffect, useMemo, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import Skeleton from '@mui/material/Skeleton';
 
 import { ReadablePatient } from '../../services/types';
 import OrderTable from './OrderTable';
 
-const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
+const PrescriptionForm: React.FC<{ patient: ReadablePatient | undefined }> = ({
   patient,
 }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,8 +57,8 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
           alignItems="start"
         >
           <Typography variant="h6" ml={3} mb={2}>
-            새 진료기록
-          </Typography>{' '}
+            {patient ? '새 진료기록' : <Skeleton width={120} />}
+          </Typography>
           <Stack direction="column" alignItems="start">
             <Stack
               direction="row"
@@ -68,82 +67,121 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | null }> = ({
               justifyContent="start"
               spacing={1}
             >
-              <AccessTimeIcon />
+              {patient ? (
+                <AccessTimeIcon />
+              ) : (
+                <Skeleton width={24} height={24} variant="circular" />
+              )}
               <Typography fontSize={24} fontFamily="digital-clock-font">
-                {during}
+                {patient ? during : <Skeleton width={120} />}
               </Typography>
             </Stack>
             <Typography fontSize={12} textAlign="end" mr={2}>
-              {'진료 시작: ' + new Date(startTime).toLocaleString()}
+              {patient ? (
+                '진료 시작: ' + new Date(startTime).toLocaleString()
+              ) : (
+                <Skeleton width={120} />
+              )}
             </Typography>
           </Stack>
         </Stack>
         <Typography variant="subtitle1" ml={2} mb={1}>
-          환자 정보
+          {patient ? '환자 정보' : <Skeleton width={120} />}
         </Typography>
         <Stack direction="row" spacing={2} px={1} mb={2}>
           <Box width={100}>
-            <TextField
-              fullWidth
-              size="small"
-              type="text"
-              label="차트번호"
-              disabled
-              value={
-                patient ? patient.patientNo.toString().padStart(6, '0') : ''
-              }
-            />
+            {patient ? (
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                label="차트번호"
+                disabled
+                value={patient.patientNo.toString().padStart(6, '0')}
+              />
+            ) : (
+              <Skeleton variant="rounded" height={40} />
+            )}
           </Box>
           <Box flexGrow={1}>
-            <TextField
-              fullWidth
-              size="small"
-              type="text"
-              label="성명"
-              disabled
-              value={patient ? patient.patientName : ''}
-            />
+            {patient ? (
+              <TextField
+                fullWidth
+                size="small"
+                type="text"
+                label="성명"
+                disabled
+                value={patient.patientName}
+              />
+            ) : (
+              <Skeleton variant="rounded" height={40} />
+            )}
           </Box>
           <Box width={80}>
-            <TextField
-              fullWidth
-              type="text"
-              size="small"
-              disabled
-              label="나이"
-              value={age + ' 세'}
-            />
+            {patient ? (
+              <TextField
+                fullWidth
+                type="text"
+                size="small"
+                disabled
+                label="나이"
+                value={age + ' 세'}
+              />
+            ) : (
+              <Skeleton variant="rounded" height={40} />
+            )}
           </Box>
           <Box width={60}>
-            <TextField
-              fullWidth
-              type="text"
-              size="small"
-              label="성별"
-              disabled
-              value={patient ? (patient.patientMale ? '남' : '여') : ''}
-            />
+            {patient ? (
+              <TextField
+                fullWidth
+                type="text"
+                size="small"
+                label="성별"
+                disabled
+                value={patient ? (patient.patientMale ? '남' : '여') : ''}
+              />
+            ) : (
+              <Skeleton variant="rounded" height={40} />
+            )}
           </Box>
           <Box width={120}>
-            <TextField
-              fullWidth
-              type="text"
-              size="small"
-              label="생년월일"
-              disabled
-              value={patient ? patient.patientBirth : ''}
-            />
+            {patient ? (
+              <TextField
+                fullWidth
+                type="text"
+                size="small"
+                label="생년월일"
+                disabled
+                value={patient ? patient.patientBirth : ''}
+              />
+            ) : (
+              <Skeleton variant="rounded" height={40} />
+            )}
           </Box>
         </Stack>
         <Typography variant="subtitle1" ml={2}>
-          처방 목록
+          {patient ? '처방 목록' : <Skeleton width={120} />}
         </Typography>
         <Box sx={{ flexGrow: 1 }}>
-          <OrderTable />
+          {patient ? (
+            <OrderTable />
+          ) : (
+            <Skeleton variant="rectangular" height={300} sx={{ mb: 3 }} />
+          )}
         </Box>
-        <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
-          진료기록 제출
-        </Button>
+        {patient ? (
+          <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
+            진료기록 제출
+          </Button>
+        ) : (
+          <Skeleton
+            variant="rounded"
+            width={120}
+            height={45}
+            sx={{ mr: 1, alignSelf: 'end' }}
+          />
+        )}
       </Stack>
     </Paper>
   );

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
@@ -16,7 +16,7 @@ import stringAvatar from '../../utils/stringAvatar';
 import dayjs from 'dayjs';
 
 export type PatientPickerListProps = {
-  onSelected: (patient: ReadablePatient) => void;
+  onSelected: (patient: ReadablePatient | undefined) => void;
   data: PatientReception[] | PatientReservation[];
 };
 
@@ -29,15 +29,23 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
     [data],
   );
   console.log(isReceptionData);
-  const [selected, setSelected] = useState(data[0].patient);
+  const [selected, setSelected] = useState<ReadablePatient | undefined>(
+    undefined,
+  );
 
-  const handleClickItem = useCallback((patient: ReadablePatient) => {
-    setSelected(patient);
-  }, []);
+  const handleClickItem = useCallback(
+    (patient: ReadablePatient) => {
+      if (selected !== patient) {
+        setSelected(patient);
+        onSelected(patient);
+      } else {
+        setSelected(undefined);
+        onSelected(undefined);
+      }
+    },
 
-  useEffect(() => {
-    onSelected(selected);
-  }, [onSelected, selected]);
+    [setSelected, onSelected, selected],
+  );
 
   return (
     <Stack gap={1}>

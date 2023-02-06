@@ -85,7 +85,7 @@ const dummyReservation = [
 ];
 
 const PatientPicker: React.FC<{
-  onSelected: (patient: ReadablePatient) => void;
+  onSelected: (patient: ReadablePatient | undefined) => void;
 }> = ({ onSelected }) => {
   const [tabValue, setTabValue] = useState(0);
 

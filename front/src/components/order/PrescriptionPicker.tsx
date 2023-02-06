@@ -106,7 +106,7 @@ const PrescriptionPicker: React.FC = () => {
         height="100%"
       >
         <Typography variant="h6" ml={3} mb={2}>
-          처방 선택
+          처방 검색
         </Typography>
         <Stack
           direction="row"
