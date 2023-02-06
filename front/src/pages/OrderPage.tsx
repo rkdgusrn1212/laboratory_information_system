@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { ThemeProvider, createTheme, styled, Container } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 
@@ -38,27 +38,37 @@ const OrderPage: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Stack
-        height="100%"
-        width="100%"
-        direction="row"
-        alignItems="stretch"
-        spacing={1}
-      >
-        <Box flexGrow={1}>
-          <PatientPicker
-            onSelected={(item) => {
-              setSelected(item);
+      <Container maxWidth="xl" sx={{ height: '100%', py: 1 }}>
+        <Stack
+          height="100%"
+          width="100%"
+          direction="row"
+          alignItems="stretch"
+          spacing={1}
+        >
+          <Box flexGrow={1}>
+            <PatientPicker
+              onSelected={(item) => {
+                setSelected(item);
+              }}
+            />
+          </Box>
+          <Box
+            flexGrow={2}
+            style={{
+              transition: theme.transitions.create('all', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
             }}
-          />
-        </Box>
-        <Box flexGrow={2}>
-          <PrescriptionForm patient={selected} />
-        </Box>
-        <Box flexGrow={1}>
-          <PrescriptionPicker />
-        </Box>
-      </Stack>
+          >
+            <PrescriptionForm patient={selected} />
+          </Box>
+          <Box flexGrow={1}>
+            <PrescriptionPicker />
+          </Box>
+        </Stack>
+      </Container>
     </ThemeProvider>
   );
 };

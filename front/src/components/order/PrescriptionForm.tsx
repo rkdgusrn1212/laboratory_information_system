@@ -10,6 +10,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import Skeleton from '@mui/material/Skeleton';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
+
 import { ReadablePatient } from '../../services/types';
 import OrderTable from './OrderTable';
 
@@ -51,154 +52,158 @@ const PrescriptionForm: React.FC<{ patient: ReadablePatient | undefined }> = ({
 
   return (
     <Paper elevation={2} sx={{ py: 3, height: '100%' }}>
-      <Stack direction="column" justifyContent="start" alignItems="stretch">
+      <Box position="relative" height="100%">
         <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="start"
+          direction="column"
+          height="100%"
+          justifyContent="start"
+          alignItems="stretch"
         >
-          <Typography variant="h6" ml={3} mb={2}>
-            {patient ? '새 진료기록' : <Skeleton width={120} />}
-          </Typography>
-          <Stack direction="column" alignItems="start">
-            <Stack
-              direction="row"
-              mr={2}
-              alignItems="center"
-              justifyContent="start"
-              spacing={1}
-            >
-              {patient ? (
-                <AccessTimeIcon />
-              ) : (
-                <Skeleton width={24} height={24} variant="circular" />
-              )}
-              <Typography fontSize={24} fontFamily="digital-clock-font">
-                {patient ? during : <Skeleton width={120} />}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="start"
+          >
+            <Typography variant="h6" ml={3} mb={2}>
+              {patient ? '새 진료기록' : <Skeleton width={120} />}
+            </Typography>
+            <Stack direction="column" alignItems="start">
+              <Stack
+                direction="row"
+                mr={2}
+                alignItems="center"
+                justifyContent="start"
+                spacing={1}
+              >
+                {patient ? (
+                  <AccessTimeIcon />
+                ) : (
+                  <Skeleton width={24} height={24} variant="circular" />
+                )}
+                <Typography fontSize={24} fontFamily="digital-clock-font">
+                  {patient ? during : <Skeleton width={120} />}
+                </Typography>
+              </Stack>
+              <Typography fontSize={12} textAlign="end" mr={2}>
+                {patient ? (
+                  '진료 시작: ' + new Date(startTime).toLocaleString()
+                ) : (
+                  <Skeleton width={120} />
+                )}
               </Typography>
             </Stack>
-            <Typography fontSize={12} textAlign="end" mr={2}>
-              {patient ? (
-                '진료 시작: ' + new Date(startTime).toLocaleString()
-              ) : (
-                <Skeleton width={120} />
-              )}
-            </Typography>
           </Stack>
-        </Stack>
-        <Typography variant="subtitle1" ml={2} mb={1}>
-          {patient ? '환자 정보' : <Skeleton width={120} />}
-        </Typography>
-        <Stack direction="row" spacing={2} px={1} mb={2}>
-          <Box width={100}>
-            {patient ? (
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                label="차트번호"
-                disabled
-                value={patient.patientNo.toString().padStart(6, '0')}
-              />
-            ) : (
-              <Skeleton variant="rounded" height={40} />
-            )}
-          </Box>
-          <Box flexGrow={1}>
-            {patient ? (
-              <TextField
-                fullWidth
-                size="small"
-                type="text"
-                label="성명"
-                disabled
-                value={patient.patientName}
-              />
-            ) : (
-              <Skeleton variant="rounded" height={40} />
-            )}
-          </Box>
-          <Box width={80}>
-            {patient ? (
-              <TextField
-                fullWidth
-                type="text"
-                size="small"
-                disabled
-                label="나이"
-                value={age + ' 세'}
-              />
-            ) : (
-              <Skeleton variant="rounded" height={40} />
-            )}
-          </Box>
-          <Box width={60}>
-            {patient ? (
-              <TextField
-                fullWidth
-                type="text"
-                size="small"
-                label="성별"
-                disabled
-                value={patient ? (patient.patientMale ? '남' : '여') : ''}
-              />
-            ) : (
-              <Skeleton variant="rounded" height={40} />
-            )}
-          </Box>
-          <Box width={120}>
-            {patient ? (
-              <TextField
-                fullWidth
-                type="text"
-                size="small"
-                label="생년월일"
-                disabled
-                value={patient ? patient.patientBirth : ''}
-              />
-            ) : (
-              <Skeleton variant="rounded" height={40} />
-            )}
-          </Box>
-        </Stack>
-        <Typography variant="subtitle1" ml={2}>
-          {patient ? '처방 목록' : <Skeleton width={120} />}
-        </Typography>
-        <Box sx={{ flexGrow: 1 }}>
-          {patient ? (
-            <OrderTable />
-          ) : (
-            <Box height={300} mb={3} position="relative">
-              <Skeleton variant="rectangular" height="100%" />
-              <Alert
-                sx={{
-                  width: '100%',
-                  position: 'absolute',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                }}
-                severity="info"
-              >
-                <AlertTitle>안내</AlertTitle>
-                진료할 환자가 선택되지 않았습니다. —{' '}
-                <strong>환자를 선택하면 바로 진료가 시작됩니다.</strong>
-              </Alert>
+          <Typography variant="subtitle1" ml={2} mb={1}>
+            {patient ? '환자 정보' : <Skeleton width={120} />}
+          </Typography>
+          <Stack direction="row" spacing={2} px={1} mb={2}>
+            <Box width={100}>
+              {patient ? (
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="text"
+                  label="차트번호"
+                  disabled
+                  value={patient.patientNo.toString().padStart(6, '0')}
+                />
+              ) : (
+                <Skeleton variant="rounded" height={40} />
+              )}
             </Box>
+            <Box flexGrow={1}>
+              {patient ? (
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="text"
+                  label="성명"
+                  disabled
+                  value={patient.patientName}
+                />
+              ) : (
+                <Skeleton variant="rounded" height={40} />
+              )}
+            </Box>
+            <Box width={80}>
+              {patient ? (
+                <TextField
+                  fullWidth
+                  type="text"
+                  size="small"
+                  disabled
+                  label="나이"
+                  value={age + ' 세'}
+                />
+              ) : (
+                <Skeleton variant="rounded" height={40} />
+              )}
+            </Box>
+            <Box width={60}>
+              {patient ? (
+                <TextField
+                  fullWidth
+                  type="text"
+                  size="small"
+                  label="성별"
+                  disabled
+                  value={patient ? (patient.patientMale ? '남' : '여') : ''}
+                />
+              ) : (
+                <Skeleton variant="rounded" height={40} />
+              )}
+            </Box>
+            <Box width={120}>
+              {patient ? (
+                <TextField
+                  fullWidth
+                  type="text"
+                  size="small"
+                  label="생년월일"
+                  disabled
+                  value={patient ? patient.patientBirth : ''}
+                />
+              ) : (
+                <Skeleton variant="rounded" height={40} />
+              )}
+            </Box>
+          </Stack>
+          <Typography variant="subtitle1" ml={2}>
+            {patient ? '처방 목록' : <Skeleton width={120} />}
+          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <OrderTable disabled={patient === undefined} />
+          </Box>
+          {patient ? (
+            <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
+              진료기록 제출
+            </Button>
+          ) : (
+            <Skeleton
+              variant="rounded"
+              width={120}
+              height={45}
+              sx={{ mr: 1, alignSelf: 'end' }}
+            />
           )}
-        </Box>
-        {patient ? (
-          <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
-            진료기록 제출
-          </Button>
-        ) : (
-          <Skeleton
-            variant="rounded"
-            width={120}
-            height={45}
-            sx={{ mr: 1, alignSelf: 'end' }}
-          />
+        </Stack>
+        {patient ? null : (
+          <Alert
+            sx={{
+              width: '80%',
+              left: '50%',
+              position: 'absolute',
+              top: '30%',
+              transform: 'translate(-50%,-50%)',
+            }}
+            severity="info"
+          >
+            <AlertTitle>안내</AlertTitle>
+            진료할 환자가 선택되지 않았습니다. —{' '}
+            <strong>환자를 선택하면 바로 진료가 시작됩니다.</strong>
+          </Alert>
         )}
-      </Stack>
+      </Box>
     </Paper>
   );
 };

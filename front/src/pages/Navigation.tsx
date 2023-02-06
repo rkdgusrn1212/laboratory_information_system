@@ -37,7 +37,7 @@ const Navigation: React.FC = () => {
       <TopBar position="fixed" open={open} onOpenIconClick={handleDrawerOpen} />
       <Box display="flex" alignItems="stretch" height="100vh">
         <SideDrawer open={open} onCloseIconClick={handleDrawerClose} />
-        <Stack flexGrow={1} p={1}>
+        <Stack flexGrow={1}>
           <Toolbar variant="dense" />
           <Outlet />
         </Stack>

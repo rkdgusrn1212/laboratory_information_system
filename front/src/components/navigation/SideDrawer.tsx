@@ -40,7 +40,7 @@ const category = [
 const pages = [
   [
     {
-      name: '환자 진료',
+      name: '진료실',
       icon: (
         <Box>
           <TroubleshootIcon />
