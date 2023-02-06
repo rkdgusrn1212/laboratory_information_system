@@ -300,7 +300,9 @@ export default function EnhancedTable({ disabled }: { disabled: boolean }) {
           sx={{ mb: 3, flexGrow: 1, minWidth: tableMinWidth }}
         />
       ) : (
-        <TableContainer sx={{ flexGrow: 1, height: 100 }}>
+        <TableContainer
+          sx={{ flexGrow: 1, minWidth: tableMinWidth, height: 100 }}
+        >
           <Table stickyHeader aria-labelledby="tableTitle" size="small">
             <EnhancedTableHead
               numSelected={selected.length}

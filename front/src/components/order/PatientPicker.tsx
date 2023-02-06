@@ -86,7 +86,8 @@ const dummyReservation = [
 
 const PatientPicker: React.FC<{
   onSelected: (patient: ReadablePatient | undefined) => void;
-}> = ({ onSelected }) => {
+  selected: ReadablePatient | undefined;
+}> = ({ onSelected, selected }) => {
   const [tabValue, setTabValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -127,6 +128,7 @@ const PatientPicker: React.FC<{
               <PatientPickerList
                 onSelected={onSelected}
                 data={dummyReception}
+                selected={selected}
               />
             </Box>
           </Box>
@@ -137,6 +139,7 @@ const PatientPicker: React.FC<{
                 <PatientPickerList
                   onSelected={onSelected}
                   data={dummyReservation}
+                  selected={selected}
                 />
               </Box>
             </Box>

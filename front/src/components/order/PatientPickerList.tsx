@@ -4,6 +4,13 @@ import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
 
 import {
   isArray,
@@ -17,34 +24,18 @@ import dayjs from 'dayjs';
 
 export type PatientPickerListProps = {
   onSelected: (patient: ReadablePatient | undefined) => void;
+  selected: ReadablePatient | undefined;
   data: PatientReception[] | PatientReservation[];
 };
 
 const PatientPickerList: React.FC<PatientPickerListProps> = ({
   onSelected,
   data,
+  selected,
 }) => {
   const isReceptionData = useMemo(
     () => isArray<PatientReception>(data, isPatientReception),
     [data],
-  );
-  console.log(isReceptionData);
-  const [selected, setSelected] = useState<ReadablePatient | undefined>(
-    undefined,
-  );
-
-  const handleClickItem = useCallback(
-    (patient: ReadablePatient) => {
-      if (selected !== patient) {
-        setSelected(patient);
-        onSelected(patient);
-      } else {
-        setSelected(undefined);
-        onSelected(undefined);
-      }
-    },
-
-    [setSelected, onSelected, selected],
   );
 
   return (
@@ -68,7 +59,7 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
           >
             <CardActionArea
               onClick={() => {
-                handleClickItem(patient);
+                onSelected(patient);
               }}
               sx={{ px: 2, py: 1 }}
             >
