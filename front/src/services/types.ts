@@ -74,6 +74,8 @@ export interface Staff {
   staffType: number;
 }
 
+export type ReadableStaff = Omit<Staff, 'staffRrn'>;
+
 export interface Principal {
   authorities: (
     | 'ROLE_AUTHONLY'
@@ -81,7 +83,7 @@ export interface Principal {
     | 'ROLE_STAFF'
     | 'ROLE_DOCTOR'
   )[];
-  staffVo: Staff;
+  staffVo: ReadableStaff;
   username: string;
   validationEmail: string;
 }
@@ -91,11 +93,68 @@ export interface Account {
   accessToken: string;
 }
 
-export interface Patient {
-  no: string;
-  name: string;
-  rnn: string;
-  birth: Date;
-  male: boolean;
-  image: string | null;
+interface Patient {
+  patientNo: number;
+  patientName: string;
+  patientRrn: string;
+  patientBirth: string;
+  patientMale: boolean;
 }
+
+export const isPatient = (data: unknown): data is Patient =>
+  typeof data === 'object' &&
+  data != null &&
+  'patientNo' in data &&
+  typeof data.patientNo === 'number' &&
+  'patientName' in data &&
+  typeof data.patientName === 'string' &&
+  'patientRrn' in data &&
+  typeof data.patientRrn === 'string' &&
+  'patientBirth' in data &&
+  typeof data.patientBirth === 'string' &&
+  'patientMale' in data &&
+  typeof data.patientMale === 'boolean';
+
+export type WritablePatient = Omit<Patient, 'patientNo'>;
+
+export type ReadablePatient = Omit<Patient, 'patientRrn'>;
+
+export const isReadablePatient = (data: unknown): data is ReadablePatient =>
+  typeof data === 'object' &&
+  data != null &&
+  isPatient({ ...data, patientRrn: '' });
+
+export type PatientReception = {
+  receptionNo: number;
+  receptionTime: string;
+  patient: ReadablePatient;
+};
+
+export type PatientReservation = {
+  reservationNo: number;
+  reservationTime: string;
+  patient: ReadablePatient;
+};
+
+export const isPatientReception = (data: unknown): data is PatientReception =>
+  typeof data === 'object' &&
+  data != null &&
+  'reservationNo' in data &&
+  typeof data.reservationNo === 'number' &&
+  'reservationTime' in data &&
+  typeof data.reservationTime === 'string' &&
+  'patient' in data &&
+  isReadablePatient(data.patient);
+
+export const isArray = <T>(
+  data: unknown,
+  typeGuard: (elem: unknown) => elem is T,
+): data is T[] => {
+  return (
+    Array.isArray(data) &&
+    data.length > 0 &&
+    data.every((elem) => {
+      return typeGuard(elem);
+    })
+  );
+};

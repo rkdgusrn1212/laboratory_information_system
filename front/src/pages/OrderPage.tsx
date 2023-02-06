@@ -1,12 +1,22 @@
-import PatientPicker from '../components/order/PatientPicker';
+import { forwardRef, useState } from 'react';
+
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme, Stack, Container } from '@mui/material';
-import Grid from '@mui/material/Grid';
+import { ThemeProvider, createTheme, Container } from '@mui/material';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import Button from '@mui/material/Button';
+
 import PrescriptionForm from '../components/order/PrescriptionForm';
-import { useState } from 'react';
-import { Patient } from '../services/types';
-import { Box } from '@mui/system';
+import { ReadablePatient } from '../services/types';
 import PrescriptionPicker from '../components/order/PrescriptionPicker';
+import PatientPicker from '../components/order/PatientPicker';
 
 const theme = createTheme({
   palette: {
@@ -29,37 +39,93 @@ const theme = createTheme({
   },
 });
 
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const OrderPage: React.FC = () => {
-  const [selected, setSelected] = useState<Patient | null>(null);
+  const [selected, setSelected] = useState<ReadablePatient | undefined>(
+    undefined,
+  );
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    data: ReadablePatient | undefined;
+  }>({
+    open: false,
+    data: undefined,
+  });
+
+  const handleSelected = (item: ReadablePatient | undefined) => {
+    if (item === undefined || (selected !== undefined && selected !== item)) {
+      setDialog({ open: true, data: item });
+    } else {
+      setSelected(item);
+    }
+  };
+
+  const handleAccept = () => {
+    setSelected(dialog.data);
+    setDialog({ open: false, data: undefined });
+  };
+
+  const handleClose = () => {
+    setDialog({ open: false, data: undefined });
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="stretch"
-        gap={1}
-        height="100%"
-      >
+      <Container maxWidth="xl" sx={{ height: '100%', py: 1 }}>
         <Stack
-          direction="column"
-          justifyContent="start"
+          height="100%"
+          width="100%"
+          direction="row"
           alignItems="stretch"
-          gap={1}
+          spacing={1}
         >
-          <Box sx={{ flexGrow: 1, height: 100 }}>
-            <PatientPicker
-              onSelected={(item) => {
-                setSelected(item);
-              }}
-            />
+          <Box flexGrow={1}>
+            <PatientPicker onSelected={handleSelected} selected={selected} />
           </Box>
-          <Box sx={{ flexGrow: 1, height: 100 }}>
+          <Box
+            flexGrow={2}
+            style={{
+              transition: theme.transitions.create('all', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.leavingScreen,
+              }),
+            }}
+          >
+            <PrescriptionForm patient={selected} />
+          </Box>
+          <Box flexGrow={1}>
             <PrescriptionPicker />
           </Box>
         </Stack>
-        <PrescriptionForm patient={selected} />
-      </Stack>
+        <Dialog
+          open={dialog.open}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleClose}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>{'현재 진료중인 환자가 있습니다'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              현재 진료중인 환자가 있습니다. 진료중인 기록을 제출하거나,
+              초기화하고 진행할 수 있습니다.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>취소</Button>
+            <Button onClick={handleAccept}>초기화</Button>
+            <Button onClick={handleAccept}>제출</Button>
+          </DialogActions>
+        </Dialog>
+      </Container>
     </ThemeProvider>
   );
 };

@@ -88,11 +88,15 @@ const PrescriptionPicker: React.FC = () => {
     createData('D0021', '호산구수(혈액)-[혈구세포-장비측정]'),
   ];
 
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+
   return (
     <Paper
       sx={{
         height: '100%',
         py: 3,
+        minWidth: 400,
       }}
     >
       <Stack
@@ -102,7 +106,7 @@ const PrescriptionPicker: React.FC = () => {
         height="100%"
       >
         <Typography variant="h6" ml={3} mb={2}>
-          처방 선택
+          처방 검색
         </Typography>
         <Stack
           direction="row"
@@ -142,7 +146,7 @@ const PrescriptionPicker: React.FC = () => {
             />
           </FormControl>
         </Stack>
-        <TableContainer sx={{ flexGrow: 1 }}>
+        <TableContainer>
           <Table
             stickyHeader
             aria-label="sticky table"
@@ -186,6 +190,15 @@ const PrescriptionPicker: React.FC = () => {
                     </TableRow>
                   );
                 })}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: 33 * emptyRows,
+                  }}
+                >
+                  <TableCell colSpan={2} />
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

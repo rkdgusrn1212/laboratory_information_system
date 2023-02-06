@@ -24,6 +24,7 @@ const stringAvatar = (name: string, size: number) => {
       bgcolor: stringToColor(name),
       width: size,
       height: size,
+      color: 'white',
     },
     children: name[0],
   };

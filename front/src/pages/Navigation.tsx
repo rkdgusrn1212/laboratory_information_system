@@ -7,6 +7,7 @@ import { useAppSelector } from '../hooks';
 import { selectAccount } from '../services/accountSlice';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Toolbar } from '@mui/material';
+import { Stack } from '@mui/system';
 
 export const drawerWidth = 240;
 
@@ -31,15 +32,17 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <>
       <CssBaseline />
       <TopBar position="fixed" open={open} onOpenIconClick={handleDrawerOpen} />
-      <SideDrawer open={open} onCloseIconClick={handleDrawerClose} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar variant="dense" />
-        <Outlet />
+      <Box display="flex" alignItems="stretch" height="100vh">
+        <SideDrawer open={open} onCloseIconClick={handleDrawerClose} />
+        <Stack flexGrow={1}>
+          <Toolbar variant="dense" />
+          <Outlet />
+        </Stack>
       </Box>
-    </Box>
+    </>
   );
 };
 export default Navigation;

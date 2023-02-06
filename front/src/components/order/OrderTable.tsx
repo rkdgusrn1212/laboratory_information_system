@@ -11,15 +11,16 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import Skeleton from '@mui/material/Skeleton';
+import { Stack } from '@mui/material';
+
+const tableMinWidth = 600;
 
 interface Data {
   no: string;
@@ -205,14 +206,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           {numSelected} 선택
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          처방 목록
-        </Typography>
+        <></>
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -231,12 +225,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   );
 }
 
-export default function EnhancedTable() {
+export default function EnhancedTable({ disabled }: { disabled: boolean }) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('no');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
@@ -288,10 +281,6 @@ export default function EnhancedTable() {
     setPage(0);
   };
 
-  const handleChangeDense = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked);
-  };
-
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -299,15 +288,22 @@ export default function EnhancedTable() {
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+    <Stack width="100%" height="100%">
+      {disabled ? (
+        <Skeleton sx={{ height: 40, m: 1 }} />
+      ) : (
         <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-          >
+      )}
+      {disabled ? (
+        <Skeleton
+          variant="rectangular"
+          sx={{ mb: 3, flexGrow: 1, minWidth: tableMinWidth }}
+        />
+      ) : (
+        <TableContainer
+          sx={{ flexGrow: 1, minWidth: tableMinWidth, height: 100 }}
+        >
+          <Table stickyHeader aria-labelledby="tableTitle" size="small">
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
@@ -358,7 +354,7 @@ export default function EnhancedTable() {
               {emptyRows > 0 && (
                 <TableRow
                   style={{
-                    height: (dense ? 33 : 53) * emptyRows,
+                    height: 33 * emptyRows,
                   }}
                 >
                   <TableCell colSpan={6} />
@@ -367,6 +363,14 @@ export default function EnhancedTable() {
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+      {disabled ? (
+        <Skeleton
+          sx={{ alignSelf: 'end', m: 1 }}
+          variant="rounded"
+          width={300}
+        />
+      ) : (
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -376,11 +380,7 @@ export default function EnhancedTable() {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
-      </Paper>
-      {/* <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      /> */}
-    </Box>
+      )}
+    </Stack>
   );
 }
