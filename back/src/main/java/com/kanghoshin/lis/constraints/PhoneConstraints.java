@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -15,16 +15,17 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Pattern;
+
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Size(min=1, max=40, message="이름은 1자이상 40자 이하만 가능합니다.")
-public @interface StaffNameConstraints {
-	String message() default "이름 값이 유효하지 않습니다.";
+@Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 맞지 않습니다.")
+public @interface PhoneConstraints {
+	String message() default "전화번호 값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
 }

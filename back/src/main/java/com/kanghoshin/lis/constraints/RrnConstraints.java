@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -17,15 +17,14 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.constraints.Pattern;
 
-
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 맞지 않습니다.")
-public @interface StaffPhoneConstraints {
-	String message() default "전화번호 값이 유효하지 않습니다.";
+@Pattern(regexp="^[0-9]{6}-[0-9]{7}$", message="주민번호 양식이 맞지 않습니다.")
+public @interface RrnConstraints {
+	String message() default "주민번호가 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
 }

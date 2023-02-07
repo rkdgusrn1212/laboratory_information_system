@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -16,14 +16,15 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.constraints.Size;
+
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Size(max=255, message="이미지 경로 최대 길이는 255")
-public @interface StaffImageConstraints {
-	String message() default "이미지 경로 값이 유효하지 않습니다.";
+@Size(min=1, max=40, message="이름은 1자이상 40자 이하만 가능합니다.")
+public @interface NameConstraints {
+	String message() default "이름 값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
 }

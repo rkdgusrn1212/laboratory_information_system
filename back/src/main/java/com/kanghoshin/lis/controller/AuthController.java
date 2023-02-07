@@ -68,6 +68,6 @@ public class AuthController {
 
 	@ExceptionHandler(WriteDetailsFailedException.class)
 	public ResponseEntity<WriteDetailsErrorVo> handleSignupFailedException(WriteDetailsFailedException exception) {
-		return new ResponseEntity<WriteDetailsErrorVo>(exception.getSignupErrorVo(),HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<WriteDetailsErrorVo>(exception.getWriteDetailErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 }

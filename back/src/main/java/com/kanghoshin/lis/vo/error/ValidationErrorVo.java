@@ -5,9 +5,13 @@ import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
-public class ValidationErrorVo implements GenericErrorVo{
+public class ValidationErrorVo extends GeneralErrorVo{
 
+	public ValidationErrorVo(ValidationErrorItemVo[] array) {
+		super("validation");
+		this.array = array;
+	}
+	
 	@AllArgsConstructor
 	@Getter
 	public static class ValidationErrorItemVo{
@@ -20,10 +24,5 @@ public class ValidationErrorVo implements GenericErrorVo{
 	
 	public ValidationErrorItemVo[] getArray() {
 		return Arrays.copyOf(array, array.length);
-	}
-	
-	@Override
-	public String getSubject() {
-		return "validation";
 	}
 }

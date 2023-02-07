@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints.patient;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -15,16 +15,15 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Pattern;
-
+import javax.validation.constraints.Size;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Pattern(regexp="^[0-9]{6}-[0-9]{7}$", message="주민번호 양식이 맞지 않습니다.")
-public @interface StaffRrnConstraints {
-	String message() default "주민번호 값이 유효하지 않습니다.";
+@Size(min = 1, max = 200, message="주소는 1자 이상 200자 이하입니다.")
+public @interface PatientAddressConstraints {
+	String message() default "주소값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
 }
