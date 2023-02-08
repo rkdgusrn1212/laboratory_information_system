@@ -45,6 +45,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
 		if(decodedJwt != null) {
 
 			ObjectMapper objectMapper = new ObjectMapper();
+			@SuppressWarnings("unchecked")
 			Map<String, Object> principalMap = decodedJwt.getClaim("principal").as(Map.class);
 			PrincipalDetails principalDetails = objectMapper.convertValue(principalMap, PrincipalDetails.class);
 			Authentication authentication =
