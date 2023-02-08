@@ -51,7 +51,16 @@ const SigninPage = () => {
   useEffect(() => {
     if (account) {
       if (account.principal.staffVo) {
-        navigate('/order', { replace: true });
+        switch (account.principal.staffVo.staffType) {
+          case 0:
+            navigate('/consultation', { replace: true });
+            break;
+          case 1:
+            navigate('/consultation', { replace: true });
+            break;
+          default:
+            break;
+        }
       } else {
         navigate('/signup', { replace: true });
       }
