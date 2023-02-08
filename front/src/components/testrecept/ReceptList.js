@@ -52,6 +52,38 @@ const columns = [
   },
 ];
 
+//const columns = [
+//   {
+//     width: 200,
+//     label: 'Dessert',
+//     dataKey: 'dessert',
+//   },
+//   {
+//     width: 120,
+//     label: 'Calories\u00A0(g)',
+//     dataKey: 'calories',
+//     numeric: true,
+//   },
+//   {
+//     width: 120,
+//     label: 'Fat\u00A0(g)',
+//     dataKey: 'fat',
+//     numeric: true,
+//   },
+//   {
+//     width: 120,
+//     label: 'Carbs\u00A0(g)',
+//     dataKey: 'carbs',
+//     numeric: true,
+//   },
+//   {
+//     width: 120,
+//     label: 'Protein\u00A0(g)',
+//     dataKey: 'protein',
+//     numeric: true,
+//   },
+// ];
+
 const rows = Array.from({ length: 200 }, (_, index) => {
   const randomSelection = sample[Math.floor(Math.random() * sample.length)];
   return createData(index, ...randomSelection);
@@ -102,9 +134,9 @@ function rowContent(_index, row) {
   );
 }
 
-export default function ReactVirtualizedTable() {
+export default function ReceptList() {
   return (
-    <Paper style={{ height: 475, width: '100%' }}>
+    <Paper style={{ height: 460, width: '100%' }}>
       <TableVirtuoso
         data={rows}
         components={VirtuosoTableComponents}

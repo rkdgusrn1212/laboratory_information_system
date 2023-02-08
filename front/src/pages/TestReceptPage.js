@@ -4,8 +4,8 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
-import * as React from 'react';
-import List from './list';
+import * as React from 'react'; 
+import ReceptList from '../components/testRecept/ReceptList';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -122,7 +122,7 @@ export default function Elevation() {
 
                                     <Box sx={{ flexGrow: 1, mt:3 }}>
                                         <Grid item xs={12} sx={{ display: 'flex', gap: 2 }}>
-                                            <List></List>
+                                            <ReceptList></ReceptList>
                                         </Grid>
                                     </Box>
 

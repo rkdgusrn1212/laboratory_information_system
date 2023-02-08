@@ -60,7 +60,7 @@ function preventDefault(event) {
   event.preventDefault();
 }
 
-export default function Orders() {
+export default function SelectedTestResult() {
   return (
     <React.Fragment>
       <Title>선택된 검사</Title>

@@ -5,7 +5,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
-export function BasicDateRangePicker() {
+export function ResultSearchDate() {
     const [value, setValue] = React.useState([null, null]);
 
     return (
@@ -29,7 +29,7 @@ export function BasicDateRangePicker() {
       </LocalizationProvider>
     );
 }
-export function BasicTextFields() {
+export function ResultSearchName() {
     return (
         <React.Fragment>
             <Box sx={{

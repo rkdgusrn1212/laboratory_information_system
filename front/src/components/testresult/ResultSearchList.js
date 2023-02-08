@@ -88,7 +88,7 @@ const rows = [
   { id: 2212110015, b: 'SRM A', c: 'no15', d: '줄리엔강', e: 'LB2130', f: 'WBC', g: '0', h: '보고', i: '2022/03/21' },
 ];
 
-export default function DataGridDemo() {
+export default function ResultSearchList() {
 
 
   return (

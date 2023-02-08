@@ -5,9 +5,9 @@ import Paper from '@mui/material/Paper';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
-import Chart from './chart/chart';
-import Input from './input';
-import List from './list';
+import ProgressChart from '../components/testResultInput/ProgressChart';
+import InputDialog from '../components/testResultInput/InputDialog';
+import ResultList from '../components/testResultInput/ResultList'; 
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -53,7 +53,7 @@ export default function Elevation() {
                                             />
                                         </Grid>
                                         <Grid xs={2} sx={{ display: 'flex', mx: 2, my: 1.5 }}>
-                                            <Input></Input>
+                                            <InputDialog></InputDialog>
                                         </Grid>
                                     </Grid>
                                 </Box>
@@ -69,10 +69,10 @@ export default function Elevation() {
                             }}
                         >
                             <Item key={1} elevation={6}>
-                                <List></List>
+                                <ResultList></ResultList>
                             </Item>
                             <Item key={2} elevation={6}>
-                                <Chart></Chart>
+                                <ProgressChart></ProgressChart>
                             </Item>
                         </Box>
                     </ThemeProvider>
