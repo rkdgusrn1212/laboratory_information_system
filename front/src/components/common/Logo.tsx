@@ -4,15 +4,16 @@ import { SxProps } from '@mui/system';
 import { Theme } from '@mui/material/styles';
 
 export interface LogoProps {
+  color?: string;
   darkMode?: boolean;
   size: number;
   sx?: SxProps<Theme>;
 }
 
-const Logo: React.FC<LogoProps> = ({ darkMode, size, sx }) => (
+const Logo: React.FC<LogoProps> = ({ color, darkMode, size, sx }) => (
   <Box sx={sx}>
     <Typography
-      color={darkMode ? 'light' : 'dark'}
+      color={color ? color : darkMode ? 'white' : 'black'}
       fontFamily="fantasy"
       textAlign="center"
       fontSize={size}
@@ -20,7 +21,7 @@ const Logo: React.FC<LogoProps> = ({ darkMode, size, sx }) => (
       <i>KHS</i>
     </Typography>
     <Typography
-      color={darkMode ? 'light' : 'dark'}
+      color={color ? color : darkMode ? 'white' : 'black'}
       fontFamily="fantasy"
       textAlign="center"
       fontSize={size * 0.618}

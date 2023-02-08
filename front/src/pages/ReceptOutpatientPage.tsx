@@ -1,19 +1,18 @@
-import { createTheme, ThemeProvider } from '@mui/material';
+import { useState } from 'react';
+
+import { createTheme, Stack, ThemeProvider, Typography } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
+import OutpatientForm from '../components/receptoutpatient/OutpatientForm';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlined';
+import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
-import Stack from '@mui/material/Stack';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Check from '@mui/icons-material/Check';
-import SettingsIcon from '@mui/icons-material/Settings';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import VideoLabelIcon from '@mui/icons-material/VideoLabel';
-import StepConnector, {
-  stepConnectorClasses,
-} from '@mui/material/StepConnector';
-import { StepIconProps } from '@mui/material/StepIcon';
+import Avatar from '@mui/material/Avatar';
+import Logo from '../components/common/Logo';
 
 const theme = createTheme({
   palette: {
@@ -30,92 +29,156 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     background: {
-      paper: '#FAFAFA',
-      default: '#B0BEC5',
+      default: '#white',
     },
   },
 });
 
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: 'calc(-50% + 16px)',
-    right: 'calc(50% + 16px)',
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
+  '& .MuiToggleButtonGroup-grouped': {
+    margin: 20,
+    height: 300,
+    border: 0,
+    backgroundColor: '#ffffff',
+    '&.Mui-disabled': {
+      border: 0,
+      backgroundColor: '#c0c0c0',
     },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
+    '&:not(:first-of-type)': {
+      borderRadius: theme.shape.borderRadius,
     },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor:
-      theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
-    borderTopWidth: 3,
-    borderRadius: 1,
+    '&:first-of-type': {
+      borderRadius: theme.shape.borderRadius,
+    },
+    '&:hover': {
+      backgroundColor: '#aacccc',
+    },
   },
 }));
 
-const QontoStepIconRoot = styled('div')<{ ownerState: { active?: boolean } }>(
-  ({ theme, ownerState }) => ({
-    color: theme.palette.mode === 'dark' ? theme.palette.grey[700] : '#eaeaf0',
-    display: 'flex',
-    height: 22,
-    alignItems: 'center',
-    ...(ownerState.active && {
-      color: '#784af4',
-    }),
-    '& .QontoStepIcon-completedIcon': {
-      color: '#784af4',
-      zIndex: 1,
-      fontSize: 18,
-    },
-    '& .QontoStepIcon-circle': {
-      width: 8,
-      height: 8,
-      borderRadius: '50%',
-      backgroundColor: 'currentColor',
-    },
-  }),
-);
-
-function QontoStepIcon(props: StepIconProps) {
-  const { active, completed, className } = props;
-
-  return (
-    <QontoStepIconRoot ownerState={{ active }} className={className}>
-      {completed ? (
-        <Check className="QontoStepIcon-completedIcon" />
-      ) : (
-        <div className="QontoStepIcon-circle" />
-      )}
-    </QontoStepIconRoot>
-  );
-}
-
-const steps = [
-  'Select campaign settings',
-  'Create an ad group',
-  'Create an ad',
-];
-
 const ReceptOutpatientPage: React.FC = () => {
+  const [selected, setSelected] = useState<number | undefined>(undefined);
+
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    value: any,
+  ) => {
+    setSelected(value);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container>
-        <Stepper alternativeLabel activeStep={1} connector={<QontoConnector />}>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel StepIconComponent={QontoStepIcon}>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
+      <Container sx={{ px: 2 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography
+            mb={3}
+            mt={5}
+            variant="h3"
+            textAlign="start"
+            color="skyblue"
+            fontWeight="bold"
+          >
+            외래환자 접수
+          </Typography>
+          <Logo size={24} />
+        </Box>
       </Container>
+      <Box sx={{ background: '#007bcb' }}>
+        <Container sx={{ p: 2 }}>
+          <Typography
+            mb={3}
+            mt={5}
+            fontFamily="sans-serif"
+            variant="h4"
+            textAlign="start"
+            color="white"
+            fontWeight="bold"
+          >
+            <ContactSupportOutlinedIcon fontSize="inherit" />
+            {'  '}진료를 접수하시겠습니까?
+          </Typography>
+
+          <Typography
+            my={2}
+            px={4}
+            fontFamily="sans-serif"
+            variant="h5"
+            textAlign="start"
+            color="white"
+          >
+            아래 항목을 선택해주세요
+          </Typography>
+          <Box my={5} display="flex" justifyContent="center" width="100%">
+            {selected === undefined ? (
+              <StyledToggleButtonGroup
+                fullWidth
+                color="standard"
+                value={selected}
+                exclusive
+                onChange={handleChange}
+              >
+                <ToggleButton value={0}>
+                  <Stack alignItems="center" spacing={3}>
+                    <Typography
+                      fontFamily="cafe-surround"
+                      fontWeight="bold"
+                      variant="h4"
+                      textAlign="center"
+                      color="darkblue"
+                    >
+                      초진 환자
+                    </Typography>
+                    <Avatar
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        color: 'white',
+                        bgcolor: 'green',
+                      }}
+                    >
+                      <HistoryEduIcon fontSize="large" />
+                    </Avatar>
+                    <Typography>
+                      <b>병원에 처음 방문한다면</b>
+                      <br /> 여기를 클릭하세요.
+                    </Typography>
+                  </Stack>
+                </ToggleButton>
+                <ToggleButton value={1}>
+                  <Stack alignItems="center" spacing={3}>
+                    <Typography
+                      fontFamily="cafe-surround"
+                      fontWeight="bold"
+                      variant="h4"
+                      textAlign="center"
+                      color="darkblue"
+                    >
+                      재진 환자
+                    </Typography>
+                    <Avatar
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        color: 'white',
+                        bgcolor: 'green',
+                      }}
+                    >
+                      <PersonSearchOutlinedIcon fontSize="large" />
+                    </Avatar>
+                    <Typography>
+                      <b>병원에 방문한 적이 있다면</b>
+                      <br /> 여기를 클릭하세요.
+                    </Typography>
+                  </Stack>
+                </ToggleButton>
+              </StyledToggleButtonGroup>
+            ) : (
+              <OutpatientForm isNew={selected === 1} />
+            )}
+          </Box>
+        </Container>
+      </Box>
     </ThemeProvider>
   );
 };
