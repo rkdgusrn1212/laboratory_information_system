@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
@@ -57,6 +57,7 @@ const pages = [
           </sup>
         </Box>
       ),
+      url: '/order',
     },
   ],
   [
@@ -78,6 +79,7 @@ const pages = [
           </sup>
         </Box>
       ),
+      url: '/collection/recept',
     },
     {
       name: '채혈 등록',
@@ -97,6 +99,7 @@ const pages = [
           </sup>
         </Box>
       ),
+      url: '/collection/collect',
     },
     {
       name: '부적합검체 등록',
@@ -116,6 +119,7 @@ const pages = [
           </sup>
         </Box>
       ),
+      url: '/collection/inadequate/submit',
     },
   ],
   [
@@ -137,6 +141,7 @@ const pages = [
           </sup>
         </Box>
       ),
+      url: '/collection/inadequate/submit',
     },
     {
       name: '검사결과 입력',
@@ -156,6 +161,7 @@ const pages = [
           </sup>
         </Box>
       ),
+      url: '/collection/inadequate/submit',
     },
     {
       name: '검사결과 조회',
@@ -173,6 +179,7 @@ const pages = [
           />
         </Box>
       ),
+      url: '/collection/inadequate/submit',
     },
   ],
 ];
@@ -251,6 +258,7 @@ const SideDrawer: React.FC<{
 }> = ({ open, onCloseIconClick }) => {
   const location = useLocation();
   const [expandList, setExpandList] = useState<number | undefined>(undefined);
+  const navigate = useNavigate();
 
   useEffect(() => {
     switch (location.pathname) {
@@ -272,6 +280,10 @@ const SideDrawer: React.FC<{
     (num: number) =>
     (event: React.SyntheticEvent<Element, Event>, expanded: boolean) => {
       setExpandList(expanded ? num : undefined);
+    };
+  const handleListItemClick =
+    (url: string) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      navigate(url);
     };
 
   return (
@@ -305,7 +317,10 @@ const SideDrawer: React.FC<{
               <AccordionDetails>
                 <List>
                   {pages[categoryIdx].map(
-                    ({ name: pageName, icon: pageIcon }, pageIdx) => (
+                    (
+                      { name: pageName, icon: pageIcon, url: pageUrl },
+                      pageIdx,
+                    ) => (
                       <ListItem
                         key={pageIdx}
                         disablePadding
@@ -317,6 +332,7 @@ const SideDrawer: React.FC<{
                             justifyContent: open ? 'initial' : 'center',
                             px: 2.5,
                           }}
+                          onClick={handleListItemClick(pageUrl)}
                         >
                           <ListItemIcon
                             sx={{
