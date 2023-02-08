@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 
-export default function AlertDialog() {
+export default function InputDialog() {
     const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {

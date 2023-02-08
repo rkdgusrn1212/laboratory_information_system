@@ -18,7 +18,7 @@ const data = [
   createData(undefined, undefined)
 ];
 
-export default function Chart() {
+export default function TimeSeriesChart() {
   const theme = useTheme();
 
   return (

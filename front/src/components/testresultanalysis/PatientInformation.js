@@ -7,7 +7,7 @@ function preventDefault(event) {
   event.preventDefault();
 }
 
-export default function Deposits() {
+export default function PatientInformation() {
   return (
     <React.Fragment>
       <Title>환자정보</Title>

@@ -19,9 +19,9 @@ import * as React from 'react';
 
 
 
-import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
+import TimeSeriesChart from '../components/testresultanalysis/TimeSeriesChart';
+import PatientInformation from '../components/testresultanalysis/PatientInformation';
+import SelectedTestResult from '../components/testresultanalysis/SelectedTestResult';
 
 function Copyright(props) {
   return (
@@ -86,7 +86,7 @@ const mdTheme = createTheme();
 
 
 
-function Dashboard() {
+export default function TestResultAnalysisPage() {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -171,7 +171,7 @@ function Dashboard() {
                     height: 240,
                   }}
                 >
-                  <Chart />
+                  <TimeSeriesChart></TimeSeriesChart> 
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
@@ -184,13 +184,13 @@ function Dashboard() {
                     height: 240,
                   }}
                 >
-                  <Deposits />
+                  <PatientInformation></PatientInformation>
                 </Paper>
               </Grid>
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                  <SelectedTestResult></SelectedTestResult>
                 </Paper>
               </Grid>
             </Grid>
@@ -202,4 +202,3 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;

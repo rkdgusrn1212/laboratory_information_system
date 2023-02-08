@@ -6,7 +6,7 @@ import { Card, CardHeader } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import ReactApexChart from 'react-apexcharts';
-import useChart from './usechart';
+import UseChart from './UseChart';
 
 // ----------------------------------------------------------------------
 const CHART_HEIGHT = 372;
@@ -42,7 +42,7 @@ function AppCurrentVisits({ title, subheader, chartColors, chartData, ...other }
 
     const chartSeries = chartData.map((i) => i.value);
 
-    const chartOptions = useChart({
+    const chartOptions = UseChart({
         colors: chartColors,
         labels: chartLabels,
         stroke: { colors: [theme.palette.background.paper] },
@@ -82,7 +82,7 @@ function fNumber(number) {
 
 // ----------------------------------------------------------------------
 
-export default function DashboardAppPage() {
+export default function ProgressChart() {
     const theme = useTheme();
 
     return (

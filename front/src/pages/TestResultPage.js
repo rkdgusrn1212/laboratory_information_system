@@ -4,16 +4,16 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { createTheme, styled, ThemeProvider } from '@mui/material/styles';
 import * as React from 'react';
-import List from './checkgrid';
-import { BasicDateRangePicker, BasicTextFields } from './date';
-
+import ResultSearchList from '../components/testresult/ResultSearchList';
+import { ResultSearchName, ResultSearchDate } from '../components/testresult/ResultSearch';
+ 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
     textAlign: 'center',
     color: theme.palette.text.secondary,
     height: 'flex',
     lineHeight: '60px',
-}));
+})); 
 
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 
@@ -39,13 +39,13 @@ export default function Elevation() {
                                         <h4>환자 이름</h4>
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <BasicTextFields></BasicTextFields>
+                                        <ResultSearchName></ResultSearchName>
                                     </Grid>
                                     <Grid item xs={1} sx={{ ml: 2 }}>
                                         <h4>접수 기간</h4>
                                     </Grid>
                                     <Grid item xs={5}>
-                                        <BasicDateRangePicker></BasicDateRangePicker>
+                                        <ResultSearchDate></ResultSearchDate>
                                     </Grid>
                                     <Grid item xs={1} sx={{
                                         mx: 2,
@@ -58,8 +58,7 @@ export default function Elevation() {
                                 </Grid>
                             </Item>
                             <Item key={1} elevation={6}>
-                                <List></List>
-                                
+                                <ResultSearchList></ResultSearchList>                       
                             </Item>
                         </Box>
                     </ThemeProvider>
