@@ -23,7 +23,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 
-export default function Inadequate() {
+export default function InadequatePage() {
   //----검색기능
   const [search, setSearch] = useState('');
   const [find, setFind] = useState('');

@@ -24,11 +24,11 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Grid from '@mui/material/Grid';
 //체크박스
 //다잉얼로그
-import ReceptCollectionDialog from './recept_collectiondialog';
+import ReceptCollectionDialog from '../components/receptCollection/ReceptCollectiondialog';
 //검색셜과 미리보기
 import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { fetchdata } from './fetchdata';
+import { fetchdata } from '../components/receptCollection/fetchdata';
 //그리드에 색깔 넣기
 import { darken, lighten } from '@mui/material/styles';
 
@@ -36,7 +36,7 @@ import { darken, lighten } from '@mui/material/styles';
 
 
 //-----------------------카드
-export default function ReceptCollection() {
+export default function ReceptCollectionPage() {
 
     const [search, setSearch] = useState("");//검색하는 단어
     const [callpatient, setCallpatient] = useState([]);//검색 결과 
@@ -110,15 +110,6 @@ export default function ReceptCollection() {
 
         console.log(callpatient.patients)
     }
-    //검색결과 따라서 환자의 처방정보 받아오기
-    const getBackgroundColor = (color, mode) =>
-        mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.6);
-
-    const getHoverBackgroundColor = (color, mode) =>
-        mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5);
-
-
-
     //받아온 json파일 전처리
     function rowsbeforesetting(rows) {
         rows.map((a) => {
@@ -310,9 +301,9 @@ export default function ReceptCollection() {
         setRows3(resetrow)//초기화
 
         // console.log("selectionModel1:" + selectionModel1)
-        selectionModel1.map((id, i) => {
+        selectionModel1.map((id) => {
             // console.log("id:" + id)//선택된 값들의 id들
-            rows.map((row, i) => {
+            rows.map((row) => {
                 if (row.id === id) {
                     // console.log("id:" + row.id)
                     rows2.push({
@@ -332,9 +323,9 @@ export default function ReceptCollection() {
     const rows4 = []
     function grid2buttonclick() {
         // console.log("selectionModel2:" + selectionModel2)
-        selectionModel2.map((id, i) => {
+        selectionModel2.map((id) => {
             // console.log("id:" + id)//선택된 값들의 id들
-            rows.map((row, i) => {
+            rows.map((row) => {
                 if (row.id === id) {
                     // console.log("id:" + row.id)
                     rows4.push({
