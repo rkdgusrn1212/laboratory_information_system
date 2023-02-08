@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -15,15 +15,15 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Min;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Size(max=255, message="이미지 경로 최대 길이는 255")
-public @interface StaffImageConstraints {
-	String message() default "이미지 경로 값이 유효하지 않습니다.";
+@Min(value=1, message="페이지 크기가 주어지지 않았습니다.")
+public @interface PageSizeConstraints {
+	String message() default "페이지 크기 값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
 }

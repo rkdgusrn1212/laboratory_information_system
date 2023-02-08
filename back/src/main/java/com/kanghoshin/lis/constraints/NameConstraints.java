@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
 @Documented
 @Constraint(validatedBy = { })
 @Size(min=1, max=40, message="이름은 1자이상 40자 이하만 가능합니다.")
-public @interface StaffNameConstraints {
+public @interface NameConstraints {
 	String message() default "이름 값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };

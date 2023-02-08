@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints.staff;
+package com.kanghoshin.lis.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
@@ -24,7 +24,7 @@ import javax.validation.constraints.Pattern;
 @Documented
 @Constraint(validatedBy = { })
 @Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 맞지 않습니다.")
-public @interface StaffPhoneConstraints {
+public @interface PhoneConstraints {
 	String message() default "전화번호 값이 유효하지 않습니다.";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };

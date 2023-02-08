@@ -61,6 +61,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
 		ObjectMapper objectMapper = new ObjectMapper();
+		@SuppressWarnings("unchecked")
 		Map<String, Object> principalMap = objectMapper.convertValue(principalDetails, Map.class);
 		String jwtToken = JWT.create()
 				.withSubject(principalDetails.getUsername())
