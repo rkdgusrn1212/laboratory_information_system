@@ -13,10 +13,10 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import Button from '@mui/material/Button';
 
-import PrescriptionForm from '../components/order/PrescriptionForm';
+import PrescriptionForm from '../components/consultation/PrescriptionForm';
 import { ReadablePatient } from '../services/types';
-import PrescriptionPicker from '../components/order/PrescriptionPicker';
-import PatientPicker from '../components/order/PatientPicker';
+import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
+import PatientPicker from '../components/consultation/PatientPicker';
 
 const theme = createTheme({
   palette: {
@@ -48,7 +48,7 @@ const Transition = forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const OrderPage: React.FC = () => {
+const ConsultationPage: React.FC = () => {
   const [selected, setSelected] = useState<ReadablePatient | undefined>(
     undefined,
   );
@@ -129,4 +129,4 @@ const OrderPage: React.FC = () => {
     </ThemeProvider>
   );
 };
-export default OrderPage;
+export default ConsultationPage;

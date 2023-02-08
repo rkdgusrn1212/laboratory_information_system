@@ -57,7 +57,7 @@ const pages = [
           </sup>
         </Box>
       ),
-      url: '/order',
+      url: '/consultation',
     },
   ],
   [
@@ -249,7 +249,7 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(0),
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
+  bconsultationTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
 const SideDrawer: React.FC<{
@@ -262,7 +262,7 @@ const SideDrawer: React.FC<{
 
   useEffect(() => {
     switch (location.pathname) {
-      case '/order':
+      case '/consultation':
         setExpandList(0);
         break;
       case '/collection':

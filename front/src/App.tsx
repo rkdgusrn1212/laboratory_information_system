@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import SigninPage from './pages/SigninPage';
 import SignupPage from './pages/SignupPage';
-import OrderPage from './pages/OrderPage';
+import ConsultationPage from './pages/ConsultationPage';
 import RedirectPage from './pages/RedirectPage';
 import Navigation from './pages/Navigation';
 import BloodCollectionPage from './pages/BloodCollectionPage';
@@ -14,7 +14,7 @@ const App: React.FC = () => {
       <Route path="" element={<SigninPage />}></Route>
       <Route path="signup" element={<SignupPage />}></Route>
       <Route path="" element={<Navigation />}>
-        <Route path="order" element={<OrderPage />}></Route>
+        <Route path="consultation" element={<ConsultationPage />}></Route>
         <Route path="collection">
           <Route path="collect" element={<BloodCollectionPage />}></Route>
           <Route path="recept" element={<ReceptCollectionPage />}></Route>
