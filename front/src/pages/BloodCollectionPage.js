@@ -19,12 +19,12 @@ import InputLabel from '@mui/material/InputLabel';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 //그리드
-import BloodcollectionsDialog from './bloodcollectiondialog';
+import BloodcollectionsDialog from '../components/bloodCollection/Bloodcollectiondialog';
 
 const testcodes = ['23012600001', '23012600002', '23012600003', '23012600004'];
 
 
-export default function Bloodcollection() {
+export default function BloodCollectionPage() {
     const [open, setOpen] = React.useState(false);
     const [selectedValue, setSelectedValue] = React.useState(testcodes[1]);
     //----검색기능
