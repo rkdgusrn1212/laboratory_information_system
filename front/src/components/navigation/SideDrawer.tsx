@@ -79,7 +79,7 @@ const pages = [
           </sup>
         </Box>
       ),
-      url: '/collection/recept',
+      url: '/collection',
     },
     {
       name: '채혈 등록',
@@ -141,7 +141,7 @@ const pages = [
           </sup>
         </Box>
       ),
-      url: '/collection/inadequate/submit',
+      url: '/test',
     },
     {
       name: '검사결과 입력',
@@ -161,7 +161,7 @@ const pages = [
           </sup>
         </Box>
       ),
-      url: '/collection/inadequate/submit',
+      url: '/test/input',
     },
     {
       name: '검사결과 조회',
@@ -179,7 +179,7 @@ const pages = [
           />
         </Box>
       ),
-      url: '/collection/inadequate/submit',
+      url: '/test/result',
     },
   ],
 ];

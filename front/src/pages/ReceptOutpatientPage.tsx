@@ -103,7 +103,7 @@ const steps = [
   'Create an ad',
 ];
 
-const ReceptOutpatient: React.FC = () => {
+const ReceptOutpatientPage: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -119,3 +119,4 @@ const ReceptOutpatient: React.FC = () => {
     </ThemeProvider>
   );
 };
+export default ReceptOutpatientPage;
