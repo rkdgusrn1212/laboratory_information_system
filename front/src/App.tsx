@@ -15,9 +15,13 @@ const App: React.FC = () => {
       <Route path="signup" element={<SignupPage />}></Route>
       <Route path="" element={<Navigation />}>
         <Route path="order" element={<OrderPage />}></Route>
-        <Route path="bloodcollection" element={<Bloodcollection />}></Route>
-        <Route path="receptcollection" element={<ReceptCollection />}></Route>
-        <Route path="inadequate" element={<Inadequate />}></Route>
+        <Route path="collection">
+          <Route path="collect" element={<Bloodcollection />}></Route>
+          <Route path="recept" element={<ReceptCollection />}></Route>
+          <Route path="inadequate">
+            <Route path="submit" element={<Inadequate />}></Route>
+          </Route>
+        </Route>
       </Route>
       <Route path="*" element={<RedirectPage />}></Route>
     </Routes>
