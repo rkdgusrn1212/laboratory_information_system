@@ -5,9 +5,9 @@ import SignupPage from './pages/SignupPage';
 import OrderPage from './pages/OrderPage';
 import RedirectPage from './pages/RedirectPage';
 import Navigation from './pages/Navigation';
-import Bloodcollection from './components/bloodcollection/bloodcollection';
-import ReceptCollection from './components/recept_collection/recept_collection';
-import Inadequate from './components/inadequate/inadequatesubmit';
+import Bloodcollection from './pages/BloodCollectionPage';
+import ReceptCollection from './pages/ReceptCollectionPage';
+import Inadequate from './pages/InadequatesubmitPage';
 const App: React.FC = () => {
   return (
     <Routes>

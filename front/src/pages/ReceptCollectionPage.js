@@ -24,11 +24,11 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Grid from '@mui/material/Grid';
 //체크박스
 //다잉얼로그
-import ReceptCollectionDialog from './recept_collectiondialog';
+import ReceptCollectionDialog from '../components/receptCollection/ReceptCollectiondialog';
 //검색셜과 미리보기
 import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { fetchdata } from './fetchdata';
+import { fetchdata } from '../components/receptCollection/fetchdata';
 //그리드에 색깔 넣기
 import { darken, lighten } from '@mui/material/styles';
 

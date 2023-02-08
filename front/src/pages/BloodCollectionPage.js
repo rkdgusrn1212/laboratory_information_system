@@ -19,7 +19,7 @@ import InputLabel from '@mui/material/InputLabel';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 //그리드
-import BloodcollectionsDialog from './bloodcollectiondialog';
+import BloodcollectionsDialog from '../components/bloodcollection/Bloodcollectiondialog';
 
 const testcodes = ['23012600001', '23012600002', '23012600003', '23012600004'];
 
