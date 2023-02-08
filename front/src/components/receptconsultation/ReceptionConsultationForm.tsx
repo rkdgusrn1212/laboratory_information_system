@@ -113,7 +113,7 @@ const steps = [
   '접수완료',
 ];
 
-const OutpatientForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
+const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   return (
     <Stack sx={{ width: '100%', p: 2 }} spacing={4}>
       <Stepper
@@ -132,4 +132,4 @@ const OutpatientForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
     </Stack>
   );
 };
-export default OutpatientForm;
+export default ReceptionConsultationForm;

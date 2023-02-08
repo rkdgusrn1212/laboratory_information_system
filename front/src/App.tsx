@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import SigninPage from './pages/SigninPage';
 import SignupPage from './pages/SignupPage';
-import ReceptOutpatientPage from './pages/ReceptOutpatientPage';
+import ReceptConsultationPage from './pages/ReceptConsultationPage';
 import ConsultationPage from './pages/ConsultationPage';
 import RedirectPage from './pages/RedirectPage';
 import Navigation from './pages/Navigation';
@@ -19,7 +19,10 @@ const App: React.FC = () => {
     <Routes>
       <Route path="" element={<SigninPage />}></Route>
       <Route path="signup" element={<SignupPage />}></Route>
-      <Route path="self-reception" element={<ReceptOutpatientPage />}></Route>
+      <Route
+        path="recept-consultation"
+        element={<ReceptConsultationPage />}
+      ></Route>
       <Route path="" element={<Navigation />}>
         <Route path="consultation">
           <Route path="" element={<ConsultationPage />}></Route>

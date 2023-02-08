@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { createTheme, Stack, ThemeProvider, Typography } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import OutpatientForm from '../components/receptoutpatient/OutpatientForm';
+import ReceptionConsultationForm from '../components/receptconsultation/ReceptionConsultationForm';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
@@ -56,7 +56,7 @@ const StyledToggleButtonGroup = styled(ToggleButtonGroup)(({ theme }) => ({
   },
 }));
 
-const ReceptOutpatientPage: React.FC = () => {
+const ReceptConsultationPage: React.FC = () => {
   const [selected, setSelected] = useState<number | undefined>(undefined);
 
   const handleChange = (
@@ -79,7 +79,7 @@ const ReceptOutpatientPage: React.FC = () => {
             color="skyblue"
             fontWeight="bold"
           >
-            외래환자 접수
+            진료 접수
           </Typography>
           <Logo size={24} />
         </Box>
@@ -127,7 +127,7 @@ const ReceptOutpatientPage: React.FC = () => {
                       textAlign="center"
                       color="darkblue"
                     >
-                      초진 환자
+                      초진 접수
                     </Typography>
                     <Avatar
                       sx={{
@@ -154,7 +154,7 @@ const ReceptOutpatientPage: React.FC = () => {
                       textAlign="center"
                       color="darkblue"
                     >
-                      재진 환자
+                      재진 접수
                     </Typography>
                     <Avatar
                       sx={{
@@ -174,7 +174,7 @@ const ReceptOutpatientPage: React.FC = () => {
                 </ToggleButton>
               </StyledToggleButtonGroup>
             ) : (
-              <OutpatientForm isNew={selected === 1} />
+              <ReceptionConsultationForm isNew={selected === 1} />
             )}
           </Box>
         </Container>
@@ -182,4 +182,4 @@ const ReceptOutpatientPage: React.FC = () => {
     </ThemeProvider>
   );
 };
-export default ReceptOutpatientPage;
+export default ReceptConsultationPage;
