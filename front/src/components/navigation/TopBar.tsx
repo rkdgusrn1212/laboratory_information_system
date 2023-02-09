@@ -108,7 +108,6 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
             <Logo
               size={20}
               sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}
-              darkMode={true}
             />
           </Box>
           <Tabs

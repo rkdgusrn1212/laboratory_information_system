@@ -72,7 +72,7 @@ const SigninPage = () => {
       <CssBaseline />
       <SigninContainer>
         <SigninInnerContainer>
-          <Logo darkMode={true} size={60} />
+          <Logo size={60} />
           <SigninForm />
         </SigninInnerContainer>
       </SigninContainer>
