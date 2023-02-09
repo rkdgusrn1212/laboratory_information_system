@@ -18,23 +18,21 @@ import orange from '@mui/material/colors/orange';
 import Link from '@mui/material/Link';
 
 import Logo from '../components/common/Logo';
+import { blueGrey, green, teal } from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
+    mode: 'dark',
     primary: {
-      light: '#69dbff',
-      main: '#00aaff',
-      dark: '#007bcb',
-      contrastText: '#fff',
+      main: '#ffffff',
+      contrastText: teal[600],
     },
     secondary: {
-      light: '#33ab9f',
-      main: '#009688',
-      dark: '#00695f',
-      contrastText: '#fff',
+      main: green[300],
+      contrastText: '#ffffff',
     },
     background: {
-      default: '#white',
+      default: '#ffffff',
     },
   },
 });
@@ -66,9 +64,9 @@ const ReceptConsultationPage: React.FC = () => {
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement, MouseEvent>,
-    value: any,
+    value: unknown,
   ) => {
-    setSelected(value);
+    setSelected(value as number | undefined);
   };
 
   return (
@@ -153,7 +151,7 @@ const ReceptConsultationPage: React.FC = () => {
                     >
                       <HistoryEduIcon fontSize="large" />
                     </Avatar>
-                    <Typography>
+                    <Typography color={blueGrey[800]}>
                       <b>병원에 처음 방문한다면</b>
                       <br /> 여기를 클릭하세요.
                     </Typography>
@@ -180,7 +178,7 @@ const ReceptConsultationPage: React.FC = () => {
                     >
                       <PersonSearchOutlinedIcon fontSize="large" />
                     </Avatar>
-                    <Typography>
+                    <Typography color={blueGrey[800]}>
                       <b>병원에 방문한 적이 있다면</b>
                       <br /> 여기를 클릭하세요.
                     </Typography>
