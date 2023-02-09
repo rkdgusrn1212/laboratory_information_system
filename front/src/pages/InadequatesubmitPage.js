@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //datagrid
 import { DataGrid, GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
 import { useDemoData } from '@mui/x-data-grid-generator';
@@ -22,12 +22,24 @@ import Grid from '@mui/material/Grid';
 import FormHelperText from '@mui/material/FormHelperText';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { fetchdata } from '../components/inadequate/fetchdata';
+
+
+
 
 export default function InadequatePage() {
   //----검색기능
   const [search, setSearch] = useState('');
   const [find, setFind] = useState('');
   const [plength, setPLength] = useState(0);
+  const [list, setList] = useState([]); //부적합 데이터 백에서 받아와서 저장
+
+  useEffect(() => {
+
+    fetchdata()
+      .then(res => setList(res))
+  }, [])
+
 
   const onSearchHandler = (event) => {
     setSearch(event.currentTarget.value);
@@ -62,6 +74,8 @@ export default function InadequatePage() {
     // setState(json);
     // setPLength(json.products.length);
     setFind(search);
+
+
   };
   //---검색끝
   // const Importiadeq = (event) => {
@@ -265,9 +279,10 @@ export default function InadequatePage() {
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
-                          <MenuItem value={10}>부적합 사유1</MenuItem>
-                          <MenuItem value={20}>부적합 사유2</MenuItem>
-                          <MenuItem value={30}>부적합 사유3</MenuItem>
+                          {list.map((inadequate_type, i) => {
+                            return <MenuItem value={i}>{inadequate_type.inadequate_type_code} - {inadequate_type.inadequate_type_name}</MenuItem>
+                          })}
+
                         </Select>
                         <FormHelperText>
                           부적합 사유를 선택하세요
@@ -275,14 +290,21 @@ export default function InadequatePage() {
                       </FormControl>
                     </Grid>
                     <Grid item xs={3} sx={{}}>
-                      <TextField
-                        disabled
-                        id="filled-disabled"
-                        label="부적합사유 상세"
-                        variant="filled"
-                        value={find}
-                        size="small"
-                      />
+
+                      {list.map((inadequate_type, i) => {
+                        if (i === reason)
+                          return <TextField
+                            disabled
+                            multiline
+                            id="filled-disabled"
+                            label="부적합사유 상세"
+                            variant="filled"
+                            value={inadequate_type.inadequate_type_brief_explanation}
+                            size="small"
+                          />
+                      })}
+
+
                     </Grid>
                     <Grid item xs={3} sx={{}}>
                       <FormControl
