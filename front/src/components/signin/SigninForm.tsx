@@ -146,9 +146,18 @@ const SigninForm = () => {
             )}
           </Box>
           <Stack gap={1}>
-            <Link color="secondary" href="#" variant="body2">
-              비밀번호를 잊으셨나요?
-            </Link>
+            <Box display="flex" justifyContent="space-between">
+              <Link color="secondary" href="#" variant="body2">
+                비밀번호를 잊으셨나요?
+              </Link>
+              <Link
+                color="secondary"
+                href="/recept-consultation"
+                variant="body2"
+              >
+                진료 접수화면
+              </Link>
+            </Box>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Typography variant="body2">계정이 없으신가요?</Typography>
               <Link href="/signup" variant="body2">
