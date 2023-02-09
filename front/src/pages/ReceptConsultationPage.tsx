@@ -81,7 +81,7 @@ const ReceptConsultationPage: React.FC = () => {
           >
             진료 접수
           </Typography>
-          <Logo size={24} />
+          <Logo size={24} color="" />
         </Box>
       </Container>
       <Box sx={{ background: '#007bcb' }}>

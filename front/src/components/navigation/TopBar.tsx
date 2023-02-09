@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import AppBar, { AppBarProps } from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,7 +9,6 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import styled from '@mui/material/styles/styled';
@@ -17,7 +16,6 @@ import styled from '@mui/material/styles/styled';
 import { drawerWidth } from '../../pages/Navigation';
 import Logo from '../common/Logo';
 import stringAvatar from '../../utils/stringAvatar';
-import { Account, Staff } from '../../services/types';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectAccount, signout } from '../../services/accountSlice';
 import { Tab, Tabs } from '@mui/material';
@@ -36,16 +34,17 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
   const staff = useAppSelector(selectAccount)?.principal.staffVo;
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    switch (location.pathname) {
-      case '/order':
+    switch (location.pathname.split('/')[1]) {
+      case 'consultation':
         setPageNum(0);
         break;
-      case '/collection':
+      case 'collection':
         setPageNum(1);
         break;
-      case '/test':
+      case 'test':
         setPageNum(2);
         break;
       default:
@@ -57,7 +56,17 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
     event: React.SyntheticEvent<Element, Event>,
     value: number,
   ) => {
-    setPageNum(value);
+    switch (value) {
+      case 0:
+        navigate('consultation');
+        break;
+      case 1:
+        navigate('collection');
+        break;
+      case 2:
+        navigate('test');
+        break;
+    }
   };
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
