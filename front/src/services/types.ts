@@ -99,6 +99,7 @@ interface Patient {
   patientRrn: string;
   patientBirth: string;
   patientMale: boolean;
+  patientPhone: string;
 }
 
 export const isPatient = (data: unknown): data is Patient =>
@@ -113,7 +114,9 @@ export const isPatient = (data: unknown): data is Patient =>
   'patientBirth' in data &&
   typeof data.patientBirth === 'string' &&
   'patientMale' in data &&
-  typeof data.patientMale === 'boolean';
+  typeof data.patientMale === 'boolean' &&
+  'patientPhone' in data &&
+  typeof data.patientPhone === 'string';
 
 export type WritablePatient = Omit<Patient, 'patientNo'>;
 

@@ -11,31 +11,8 @@ import StepConnector, {
   stepConnectorClasses,
 } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
-import { Paper } from '@mui/material';
-
-const QontoConnector = styled(StepConnector)(({ theme }) => ({
-  [`&.${stepConnectorClasses.alternativeLabel}`]: {
-    top: 10,
-    left: 'calc(-50% + 16px)',
-    right: 'calc(50% + 16px)',
-  },
-  [`&.${stepConnectorClasses.active}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`&.${stepConnectorClasses.completed}`]: {
-    [`& .${stepConnectorClasses.line}`]: {
-      borderColor: '#784af4',
-    },
-  },
-  [`& .${stepConnectorClasses.line}`]: {
-    borderColor:
-      theme.palette.mode === 'dark' ? theme.palette.grey[800] : '#eaeaf0',
-    borderTopWidth: 3,
-    borderRadius: 1,
-  },
-}));
+import { memo, useState, useCallback } from 'react';
+import StepRrn from './StepRrn';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -93,6 +70,8 @@ function ColorlibStepIcon(props: StepIconProps) {
     1: <SettingsIcon />,
     2: <GroupAddIcon />,
     3: <VideoLabelIcon />,
+    4: <VideoLabelIcon />,
+    5: <VideoLabelIcon />,
   };
 
   return (
@@ -113,12 +92,45 @@ const steps = [
   '접수완료',
 ];
 
+const InnerForm: React.FC<{ step: number; onNextClick: () => void }> = memo(
+  ({ step, onNextClick }) => {
+    switch (step) {
+      case 0:
+        return <StepRrn />;
+      case 1:
+        return <></>;
+      case 2:
+        return <></>;
+      case 3:
+        return <></>;
+      case 4:
+        return <></>;
+      default:
+        return null;
+    }
+  },
+);
+
 const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
+  const [step, setStep] = useState(0);
+
+  const handleNextClick = useCallback(() => {
+    if (step == 0) {
+      if (isNew) {
+        setStep(1);
+      } else {
+        setStep(3);
+      }
+    } else {
+      setStep(step + 1);
+    }
+  }, [step, setStep, isNew]);
+
   return (
     <Stack sx={{ width: '100%', p: 2 }} spacing={4}>
       <Stepper
         alternativeLabel
-        activeStep={1}
+        activeStep={step}
         connector={<ColorlibConnector />}
       >
         {steps.map((label) => (
@@ -129,6 +141,7 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
           </Step>
         ))}
       </Stepper>
+      <InnerForm step={step} onNextClick={handleNextClick} />
     </Stack>
   );
 };

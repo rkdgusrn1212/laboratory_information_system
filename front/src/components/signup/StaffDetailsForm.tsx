@@ -15,9 +15,7 @@ import {
 } from '@mui/material';
 import { WriteDetailsField } from '../../services/authApi';
 import { MappedValidationError } from '../../services/types';
-
-const PhonePattern = /^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$/;
-const RrnPattern = /^[0-9]{6}-[0-9]{7}$/;
+import { PhonePattern, RrnPattern } from '../../utils/patterns';
 
 export interface DetailsForm {
   staffBirth: string;
@@ -28,6 +26,7 @@ export interface DetailsForm {
 }
 
 const StaffDetailsForm: React.FC<{
+  // eslint-disable-next-line no-unused-vars
   onDetailFormComplete: (form: DetailsForm | undefined) => void;
   error: Omit<MappedValidationError<WriteDetailsField>, 'staffType'>;
 }> = ({ onDetailFormComplete, error }) => {

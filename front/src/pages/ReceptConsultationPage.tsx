@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-import { createTheme, Stack, ThemeProvider, Typography } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import ReceptionConsultationForm from '../components/receptconsultation/ReceptionConsultationForm';
@@ -12,6 +11,12 @@ import ContactSupportOutlinedIcon from '@mui/icons-material/ContactSupportOutlin
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import grey from '@mui/material/colors/grey';
+import orange from '@mui/material/colors/orange';
+import Link from '@mui/material/Link';
+
 import Logo from '../components/common/Logo';
 
 const theme = createTheme({
@@ -81,35 +86,44 @@ const ReceptConsultationPage: React.FC = () => {
           >
             진료 접수
           </Typography>
-          <Logo size={24} color="" />
+          <Logo size={24} color={grey['700']} />
         </Box>
       </Container>
       <Box sx={{ background: '#007bcb' }}>
         <Container sx={{ p: 2 }}>
-          <Typography
-            mb={3}
+          {selected === undefined && (
+            <Typography
+              mb={3}
+              mt={5}
+              fontFamily="sans-serif"
+              variant="h4"
+              textAlign="start"
+              color="white"
+              fontWeight="bold"
+            >
+              <ContactSupportOutlinedIcon fontSize="inherit" />
+              {'  '}진료를 접수하시겠습니까?
+            </Typography>
+          )}
+          {selected === undefined && (
+            <Typography
+              my={2}
+              px={4}
+              fontFamily="sans-serif"
+              variant="h5"
+              textAlign="start"
+              color="white"
+            >
+              아래 항목을 선택해주세요
+            </Typography>
+          )}
+          <Box
             mt={5}
-            fontFamily="sans-serif"
-            variant="h4"
-            textAlign="start"
-            color="white"
-            fontWeight="bold"
+            mb={2}
+            display="flex"
+            justifyContent="center"
+            width="100%"
           >
-            <ContactSupportOutlinedIcon fontSize="inherit" />
-            {'  '}진료를 접수하시겠습니까?
-          </Typography>
-
-          <Typography
-            my={2}
-            px={4}
-            fontFamily="sans-serif"
-            variant="h5"
-            textAlign="start"
-            color="white"
-          >
-            아래 항목을 선택해주세요
-          </Typography>
-          <Box my={5} display="flex" justifyContent="center" width="100%">
             {selected === undefined ? (
               <StyledToggleButtonGroup
                 fullWidth
@@ -161,7 +175,7 @@ const ReceptConsultationPage: React.FC = () => {
                         width: 60,
                         height: 60,
                         color: 'white',
-                        bgcolor: 'green',
+                        bgcolor: orange['500'],
                       }}
                     >
                       <PersonSearchOutlinedIcon fontSize="large" />
@@ -176,6 +190,11 @@ const ReceptConsultationPage: React.FC = () => {
             ) : (
               <ReceptionConsultationForm isNew={selected === 1} />
             )}
+          </Box>
+          <Box mb={1} display="flex" justifyContent="end">
+            <Link href="/" color={grey['50']}>
+              의료진용 화면 가기
+            </Link>
           </Box>
         </Container>
       </Box>
