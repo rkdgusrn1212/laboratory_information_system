@@ -38,7 +38,7 @@ const theme = createTheme({
       contrastText: '#ffffff',
     },
     background: {
-      default: '#ffffff',
+      default: '#22c1c3',
     },
     error: {
       main: deepOrange[300],
@@ -93,22 +93,36 @@ const ReceptConsultationPage: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container sx={{ px: 2 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography
-            mb={3}
-            mt={5}
-            variant="h3"
-            textAlign="start"
-            color="skyblue"
-            fontWeight="bold"
+      <Box sx={{ background: '#ffffff' }}>
+        <Container sx={{ px: 2, pb: 1 }}>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="end"
+            height={80}
           >
-            진료 접수
-          </Typography>
-          <Logo size={24} color={grey['700']} />
-        </Box>
-      </Container>
-      <Box sx={{ background: '#007bcb' }}>
+            <Typography
+              variant="h3"
+              textAlign="start"
+              color="#007bcb"
+              fontWeight="bold"
+            >
+              진료 접수
+            </Typography>
+            <Logo
+              size={20}
+              color={grey['700']}
+              sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}
+            />
+          </Box>
+        </Container>
+      </Box>
+      <Box
+        sx={{
+          background:
+            'linear-gradient(0deg, rgba(34,193,195,1) 0%, rgba(0,123,203,1) 100%)',
+        }}
+      >
         <Container sx={{ p: 2 }}>
           {selected === undefined && (
             <Typography
