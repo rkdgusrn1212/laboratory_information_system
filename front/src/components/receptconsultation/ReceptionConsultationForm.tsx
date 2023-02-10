@@ -15,6 +15,7 @@ import { StepIconProps } from '@mui/material/StepIcon';
 import StepRrn from './StepRrn';
 import { WritablePatient } from '../../services/types';
 import StepNameAndPhone from './StepNameAndPhone';
+import StepPrivacyPolicy from './StepPrivacyPolicy';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -89,7 +90,7 @@ function ColorlibStepIcon(props: StepIconProps) {
 const steps = [
   '주민번호 입력',
   '이름/ 휴대폰 번호 입력',
-  '개인정보수집 이용 제공동의',
+  '개인정보 수집·이용 제공동의',
   '진료의 선택',
   '접수완료',
 ];
@@ -107,7 +108,7 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
     case 1:
       return <StepNameAndPhone onStepAndPhoneSubmit={onNextClick} />;
     case 2:
-      return <></>;
+      return <StepPrivacyPolicy onAgree={onNextClick as any} />;
     case 3:
       return <></>;
     case 4:
