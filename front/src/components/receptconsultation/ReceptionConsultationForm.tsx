@@ -1,3 +1,4 @@
+import { memo, useState, useCallback } from 'react';
 import { styled } from '@mui/material/styles';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -6,13 +7,13 @@ import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import VideoLabelIcon from '@mui/icons-material/VideoLabel';
 import Stepper from '@mui/material/Stepper';
 import Stack from '@mui/material/Stack';
-
 import StepConnector, {
   stepConnectorClasses,
 } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
-import { memo, useState, useCallback } from 'react';
+
 import StepRrn from './StepRrn';
+import { WritablePatient } from '../../services/types';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -92,39 +93,54 @@ const steps = [
   '접수완료',
 ];
 
-const InnerForm: React.FC<{ step: number; onNextClick: () => void }> = memo(
-  ({ step, onNextClick }) => {
-    switch (step) {
-      case 0:
-        return <StepRrn />;
-      case 1:
-        return <></>;
-      case 2:
-        return <></>;
-      case 3:
-        return <></>;
-      case 4:
-        return <></>;
-      default:
-        return null;
-    }
-  },
-);
+interface InnerFormProps {
+  step: number;
+  // eslint-disable-next-line no-unused-vars
+  onNextClick: (data: unknown) => void;
+}
+
+const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
+  switch (step) {
+    case 0:
+      return <StepRrn onRrnSubmit={onNextClick} />;
+    case 1:
+      return <></>;
+    case 2:
+      return <></>;
+    case 3:
+      return <></>;
+    case 4:
+      return <></>;
+    default:
+      return null;
+  }
+});
 
 const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   const [step, setStep] = useState(0);
+  const [patient, setPatient] = useState<WritablePatient>({
+    patientName: '',
+    patientRrn: '',
+    patientBirth: '',
+    patientMale: false,
+    patientPhone: '',
+  });
 
-  const handleNextClick = useCallback(() => {
-    if (step == 0) {
-      if (isNew) {
-        setStep(1);
+  const handleNextClick = useCallback(
+    (data: unknown) => {
+      if (step == 0) {
+        setPatient({ ...patient, patientRrn: data as string });
+        if (isNew) {
+          setStep(1);
+        } else {
+          setStep(3);
+        }
       } else {
-        setStep(3);
+        setStep(step + 1);
       }
-    } else {
-      setStep(step + 1);
-    }
-  }, [step, setStep, isNew]);
+    },
+    [step, setStep, isNew, patient],
+  );
 
   return (
     <Stack sx={{ width: '100%', p: 2 }} spacing={4}>

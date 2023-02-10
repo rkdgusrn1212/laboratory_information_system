@@ -4,6 +4,7 @@ import { IMaskInput } from 'react-imask';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl, { FormControlProps } from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import { rrnMask } from '../../utils/masks';
 
@@ -33,36 +34,50 @@ const RrnMaskInput = forwardRef<HTMLElement, RrnMaskInputProps>(
   },
 );
 
-const RrnMaskedInput = forwardRef<string, FormControlProps & { label: string }>(
-  ({ label, ...props }, ref) => {
-    const [value, setValue] = useState('');
+const RrnMaskedInput = forwardRef<
+  string,
+  FormControlProps & {
+    label: string;
+    help?: string;
+  }
+>(({ label, help, ...props }, ref) => {
+  const [value, setValue] = useState('');
+  const [pure, setPure] = useState('');
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValue(event.target.value);
-    };
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
 
-    const handleBlur: React.FocusEventHandler<
-      HTMLTextAreaElement | HTMLInputElement
-    > = () => {
-      setValue(rrnMask(value));
-    };
+  const handleBlur: React.FocusEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  > = () => {
+    setPure(value);
+    setValue(rrnMask(value));
+  };
 
-    useImperativeHandle(ref, () => value);
+  const handleFocus: React.FocusEventHandler<
+    HTMLTextAreaElement | HTMLInputElement
+  > = () => {
+    setValue(pure);
+  };
 
-    return (
-      <FormControl {...props}>
-        <InputLabel htmlFor="rrn-mask-input">{label}</InputLabel>
-        <OutlinedInput
-          value={value}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          label={label}
-          id="rrn-mask-input"
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          inputComponent={RrnMaskInput as any}
-        />
-      </FormControl>
-    );
-  },
-);
+  useImperativeHandle(ref, () => pure);
+
+  return (
+    <FormControl {...props}>
+      <InputLabel htmlFor="rrn-mask-input">{label}</InputLabel>
+      <OutlinedInput
+        value={value}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        label={label}
+        id="rrn-mask-input"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        inputComponent={RrnMaskInput as any}
+      />
+      <FormHelperText>{help}</FormHelperText>
+    </FormControl>
+  );
+});
 export default RrnMaskedInput;

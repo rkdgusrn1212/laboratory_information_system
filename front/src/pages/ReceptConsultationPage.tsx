@@ -18,7 +18,7 @@ import orange from '@mui/material/colors/orange';
 import Link from '@mui/material/Link';
 
 import Logo from '../components/common/Logo';
-import { blueGrey, green, teal } from '@mui/material/colors';
+import { blueGrey, deepOrange, green, teal } from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
@@ -33,6 +33,9 @@ const theme = createTheme({
     },
     background: {
       default: '#ffffff',
+    },
+    error: {
+      main: deepOrange[300],
     },
   },
 });
