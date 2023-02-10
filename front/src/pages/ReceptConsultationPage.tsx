@@ -18,7 +18,13 @@ import orange from '@mui/material/colors/orange';
 import Link from '@mui/material/Link';
 
 import Logo from '../components/common/Logo';
-import { blueGrey, deepOrange, green, teal } from '@mui/material/colors';
+import {
+  blueGrey,
+  deepOrange,
+  green,
+  indigo,
+  teal,
+} from '@mui/material/colors';
 
 const theme = createTheme({
   palette: {
@@ -36,6 +42,18 @@ const theme = createTheme({
     },
     error: {
       main: deepOrange[300],
+    },
+    info: { main: indigo[600] },
+  },
+  components: {
+    MuiAlert: {
+      styleOverrides: {
+        standardInfo: {
+          background:
+            'linear-gradient(90deg, rgba(186,255,191,1) 61%, rgba(132,255,171,1) 100%)',
+          color: indigo[600],
+        },
+      },
     },
   },
 });
@@ -189,7 +207,7 @@ const ReceptConsultationPage: React.FC = () => {
                 </ToggleButton>
               </StyledToggleButtonGroup>
             ) : (
-              <ReceptionConsultationForm isNew={selected === 1} />
+              <ReceptionConsultationForm isNew={selected === 0} />
             )}
           </Box>
           <Box mb={1} display="flex" justifyContent="end">

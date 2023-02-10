@@ -14,6 +14,7 @@ import { StepIconProps } from '@mui/material/StepIcon';
 
 import StepRrn from './StepRrn';
 import { WritablePatient } from '../../services/types';
+import StepNameAndPhone from './StepNameAndPhone';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -104,7 +105,7 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
     case 0:
       return <StepRrn onRrnSubmit={onNextClick} />;
     case 1:
-      return <></>;
+      return <StepNameAndPhone onStepAndPhoneSubmit={onNextClick} />;
     case 2:
       return <></>;
     case 3:
