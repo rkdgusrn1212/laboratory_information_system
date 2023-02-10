@@ -8,10 +8,14 @@ import Button from '@mui/material/Button';
 
 import { PhonePattern } from '../../utils/patterns';
 import { Experimental_CssVarsProvider, TextField } from '@mui/material';
+import { WritablePatient } from '../../services/types';
 
 interface StepNameAndPhonePorps {
   // eslint-disable-next-line no-unused-vars
-  onStepAndPhoneSubmit: (name: string, phone: string) => void;
+  onStepAndPhoneSubmit: (
+    // eslint-disable-next-line no-unused-vars
+    data: Pick<WritablePatient, 'patientName' | 'patientPhone'>,
+  ) => void;
 }
 
 const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({
@@ -37,7 +41,7 @@ const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({
       setNameError(undefined);
     }
     if (hasError) return;
-    onStepAndPhoneSubmit(name, ref.current);
+    onStepAndPhoneSubmit({ patientName: name, patientPhone: ref.current });
   };
 
   const handleNameChange: ChangeEventHandler<

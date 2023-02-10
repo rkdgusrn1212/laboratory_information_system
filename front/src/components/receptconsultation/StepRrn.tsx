@@ -2,12 +2,13 @@ import { useRef, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import RrnMaskedInput from '../common/RrnMaskedInput';
-import { Button, FormHelperText, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import { RrnPattern } from '../../utils/patterns';
+import { WritablePatient } from '../../services/types';
 
 interface StepRrnProps {
   // eslint-disable-next-line no-unused-vars
-  onRrnSubmit: (rrn: string) => void;
+  onRrnSubmit: (data: Pick<WritablePatient, 'patientRrn'>) => void;
 }
 
 const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {
@@ -19,7 +20,7 @@ const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {
       setError('주민번호/외국인등록번호를 다시 한번 확인해 주세요.');
       return;
     }
-    onRrnSubmit(ref.current);
+    onRrnSubmit({ patientRrn: ref.current });
   };
 
   return (

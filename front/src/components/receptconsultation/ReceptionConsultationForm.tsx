@@ -97,7 +97,7 @@ const steps = [
 interface InnerFormProps {
   step: number;
   // eslint-disable-next-line no-unused-vars
-  onNextClick: (data: unknown) => void;
+  onNextClick: (data: Partial<WritablePatient>) => void;
 }
 
 const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
@@ -128,9 +128,9 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   });
 
   const handleNextClick = useCallback(
-    (data: unknown) => {
+    (data: Partial<WritablePatient>) => {
+      setPatient({ ...patient, ...data });
       if (step == 0) {
-        setPatient({ ...patient, patientRrn: data as string });
         if (isNew) {
           setStep(1);
         } else {
