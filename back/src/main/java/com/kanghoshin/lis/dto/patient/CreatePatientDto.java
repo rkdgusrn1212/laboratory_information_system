@@ -13,9 +13,9 @@ import com.kanghoshin.lis.constraints.patient.PatientAddressConstraints;
 import lombok.Data;
 
 @Data
-public class PatientDto {
+public class CreatePatientDto {
 
-	private int patientNo;
+	private int patientNo;//insert 후 key갱신용
 	
 	@NotBlank(message="이름이 비어있습니다.")
 	@NameConstraints
