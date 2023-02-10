@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
@@ -109,11 +110,13 @@ const ReceptConsultationPage: React.FC = () => {
             >
               진료 접수
             </Typography>
-            <Logo
-              size={20}
-              color={grey['700']}
-              sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}
-            />
+            <Link href="/">
+              <Logo
+                size={20}
+                color={grey['700']}
+                sx={{ display: 'flex', gap: 1, alignItems: 'baseline' }}
+              />
+            </Link>
           </Box>
         </Container>
       </Box>
@@ -124,10 +127,22 @@ const ReceptConsultationPage: React.FC = () => {
         }}
       >
         <Container sx={{ p: 2 }}>
+          {selected !== undefined && (
+            <Link
+              ml={1}
+              mt={2}
+              display="inline-block"
+              underline="hover"
+              color="inherit"
+              href="/recept-consultation"
+            >
+              &lt; 처음으로 돌아가기
+            </Link>
+          )}
           {selected === undefined && (
             <Typography
-              mb={3}
               mt={5}
+              mb={3}
               fontFamily="sans-serif"
               variant="h4"
               textAlign="start"
@@ -223,11 +238,6 @@ const ReceptConsultationPage: React.FC = () => {
             ) : (
               <ReceptionConsultationForm isNew={selected === 0} />
             )}
-          </Box>
-          <Box mb={1} display="flex" justifyContent="end">
-            <Link href="/" color={grey['50']}>
-              의료진용 화면 가기
-            </Link>
           </Box>
         </Container>
       </Box>

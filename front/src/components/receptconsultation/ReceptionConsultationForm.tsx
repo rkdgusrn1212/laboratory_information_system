@@ -145,7 +145,7 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   );
 
   return (
-    <Stack sx={{ width: '100%', p: 2 }} spacing={4}>
+    <Stack sx={{ width: '100%', px: 2 }} spacing={4}>
       <Stepper
         alternativeLabel
         activeStep={step}
