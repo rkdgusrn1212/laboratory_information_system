@@ -4,11 +4,11 @@ import Box from '@mui/material/Box';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import { Button, Typography } from '@mui/material';
 import { RrnPattern } from '../../utils/patterns';
-import { WritablePatient } from '../../services/types';
+import { CreatablePatient } from '../../services/types';
 
 interface StepRrnProps {
   // eslint-disable-next-line no-unused-vars
-  onRrnSubmit: (data: Pick<WritablePatient, 'patientRrn'>) => void;
+  onRrnSubmit: (data: Pick<CreatablePatient, 'patientRrn'>) => void;
 }
 
 const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {

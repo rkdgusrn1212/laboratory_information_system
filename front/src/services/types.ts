@@ -49,6 +49,7 @@ export const isValidationError = <T extends string>(
 };
 
 export type MappedValidationError<T extends string> = {
+  // eslint-disable-next-line no-unused-vars
   [key in T]: string | undefined;
 };
 
@@ -118,7 +119,7 @@ export const isPatient = (data: unknown): data is Patient =>
   'patientPhone' in data &&
   typeof data.patientPhone === 'string';
 
-export type WritablePatient = Omit<Patient, 'patientNo'>;
+export type CreatablePatient = Omit<Patient, 'patientNo'>;
 
 export type ReadablePatient = Omit<Patient, 'patientRrn'>;
 

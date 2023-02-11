@@ -13,9 +13,11 @@ import StepConnector, {
 import { StepIconProps } from '@mui/material/StepIcon';
 
 import StepRrn from './StepRrn';
-import { WritablePatient } from '../../services/types';
 import StepNameAndPhone from './StepNameAndPhone';
 import StepPrivacyPolicy from './StepPrivacyPolicy';
+import rrnParser from '../../utils/rrnParser';
+import { CreatablePatient } from '../../services/types';
+import { useCreatePatientMutation } from '../../services/patientApi';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -98,7 +100,7 @@ const steps = [
 interface InnerFormProps {
   step: number;
   // eslint-disable-next-line no-unused-vars
-  onNextClick: (data: Partial<WritablePatient>) => void;
+  onNextClick: (data: Partial<CreatablePatient>) => void;
 }
 
 const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
@@ -108,7 +110,7 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
     case 1:
       return <StepNameAndPhone onStepAndPhoneSubmit={onNextClick} />;
     case 2:
-      return <StepPrivacyPolicy onAgree={onNextClick as any} />;
+      return <StepPrivacyPolicy onAgree={onNextClick as () => void} />;
     case 3:
       return <></>;
     case 4:
@@ -120,17 +122,39 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
 
 const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   const [step, setStep] = useState(0);
-  const [patient, setPatient] = useState<WritablePatient>({
+  const [patient, setPatient] = useState<CreatablePatient>({
     patientName: '',
     patientRrn: '',
     patientBirth: '',
     patientMale: false,
     patientPhone: '',
   });
+  const [createPatient, createPatientState] = useCreatePatientMutation();
 
   const handleNextClick = useCallback(
-    (data: Partial<WritablePatient>) => {
-      setPatient({ ...patient, ...data });
+    (data: Partial<CreatablePatient>) => {
+      if (step == 2) {
+        const data = rrnParser(patient.patientRrn);
+        if (data) {
+          createPatient({
+            ...patient,
+            patientBirth: data.birth,
+            patientMale: data.male,
+          })
+            .unwrap()
+            .then((data) => {
+              data;
+              console.log('success');
+              setStep(3);
+            })
+            .catch((data) => {
+              console.log(data);
+            });
+        }
+        return;
+      } else {
+        setPatient({ ...patient, ...data });
+      }
       if (step == 0) {
         if (isNew) {
           setStep(1);
@@ -141,9 +165,10 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
         setStep(step + 1);
       }
     },
-    [step, setStep, isNew, patient],
+    [step, setStep, isNew, patient, createPatient],
   );
 
+  console.log(patient);
   return (
     <Stack sx={{ width: '100%', px: 2 }} spacing={4}>
       <Stepper

@@ -5,16 +5,16 @@ import PhoneMaskedInput from '../common/PhoneMaskedInput';
 import Alert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 import { PhonePattern } from '../../utils/patterns';
-import { Experimental_CssVarsProvider, TextField } from '@mui/material';
-import { WritablePatient } from '../../services/types';
+import { CreatablePatient } from '../../services/types';
 
 interface StepNameAndPhonePorps {
   // eslint-disable-next-line no-unused-vars
   onStepAndPhoneSubmit: (
     // eslint-disable-next-line no-unused-vars
-    data: Pick<WritablePatient, 'patientName' | 'patientPhone'>,
+    data: Pick<CreatablePatient, 'patientName' | 'patientPhone'>,
   ) => void;
 }
 
