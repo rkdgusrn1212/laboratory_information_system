@@ -43,6 +43,13 @@ export default (rrn: string): Result | void => {
     default:
       return;
   }
-  result.birth = century + splited[0];
+  const birthPart = splited[0];
+  result.birth =
+    century +
+    birthPart.substring(0, 2) +
+    '-' +
+    birthPart.substring(2, 4) +
+    '-' +
+    birthPart.substring(4, 6);
   return result;
 };

@@ -16,6 +16,7 @@ const dummyPatient = [
     patientBirth: '1995-11-11',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 2,
@@ -23,6 +24,7 @@ const dummyPatient = [
     patientBirth: '1996-08-08',
     patientMale: false,
     patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 3,
@@ -30,6 +32,7 @@ const dummyPatient = [
     patientBirth: '1996-03-03',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 4,
@@ -37,6 +40,7 @@ const dummyPatient = [
     patientBirth: '1995-03-13',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 5,
@@ -44,6 +48,7 @@ const dummyPatient = [
     patientBirth: '1996-02-12',
     patientMale: false,
     patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 6,
@@ -51,6 +56,7 @@ const dummyPatient = [
     patientBirth: '1996-09-09',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
 ];
 
