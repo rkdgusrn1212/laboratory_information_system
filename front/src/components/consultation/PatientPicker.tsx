@@ -15,36 +15,48 @@ const dummyPatient = [
     patientName: '강현구',
     patientBirth: '1995-11-11',
     patientMale: true,
+    patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 2,
     patientName: '류진',
     patientBirth: '1996-08-08',
     patientMale: false,
+    patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 3,
     patientName: '김동신',
     patientBirth: '1996-03-03',
     patientMale: true,
+    patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 4,
     patientName: '김덕배',
     patientBirth: '1995-03-13',
     patientMale: true,
+    patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 5,
     patientName: '이춘식',
     patientBirth: '1996-02-12',
     patientMale: false,
+    patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
   {
     patientNo: 6,
     patientName: '김만식',
     patientBirth: '1996-09-09',
     patientMale: true,
+    patientPhone: '010-1234-5678',
+    patientAddress: '',
   },
 ];
 
@@ -85,6 +97,7 @@ const dummyReservation = [
 ];
 
 const PatientPicker: React.FC<{
+  // eslint-disable-next-line no-unused-vars
   onSelected: (patient: ReadablePatient | undefined) => void;
   selected: ReadablePatient | undefined;
 }> = ({ onSelected, selected }) => {

@@ -13,10 +13,12 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { authApi } from './services/authApi';
 import accountSlice from './services/accountSlice';
+import patientApi from './services/patientApi';
 
 const rootReducer = combineReducers({
   account: accountSlice.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [patientApi.reducerPath]: patientApi.reducer,
 });
 
 const persistConfig = {
@@ -34,7 +36,9 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware),
+    })
+      .concat(authApi.middleware)
+      .concat(patientApi.middleware),
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import com.kanghoshin.lis.dto.patient.PatientDto;
+import com.kanghoshin.lis.dto.patient.CreatePatientDto;
 import com.kanghoshin.lis.dto.patient.ReadPatientListDto;
 import com.kanghoshin.lis.vo.entity.PatientVo;
 
@@ -27,13 +28,14 @@ public interface PatientMapper {
 	@Insert("INSERT INTO patient "
 			+ "(patient_no, patient_name, patient_male, patient_phone, patient_rrn, patient_birth, patient_address) "
 			+ "VALUES (null"
-			+ ", #{patientDto.patientName}"
-			+ ", #{patientDto.patientMale}"
-			+ ", #{patientDto.patientPhone}"
-			+ ", #{patientDto.patientRrn}"
-			+ ", #{patientDto.patientBirth}"
-			+ ", #{patientDto.patientAddress}) ")
-	int insert(@Param("patientDto") PatientDto patientDto);
+			+ ", #{createPatientDto.patientName}"
+			+ ", #{createPatientDto.patientMale}"
+			+ ", #{createPatientDto.patientPhone}"
+			+ ", #{createPatientDto.patientRrn}"
+			+ ", #{createPatientDto.patientBirth}"
+			+ ", #{createPatientDto.patientAddress}) ")
+	@Options(useGeneratedKeys=true,  keyProperty="createPatientDto.patientNo")
+	int insert(@Param("createPatientDto") CreatePatientDto createPatientDto);
 
 
 	@Select("<script>"

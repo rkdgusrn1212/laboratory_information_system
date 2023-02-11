@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-import { Avatar } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
 
 const StaffTypeForm: React.FC<{
   onChange: (event: React.MouseEvent<HTMLElement>, newType: number) => void;
