@@ -137,20 +137,9 @@ export default function BloodCollectionPage() {
       headerAlign: 'center',
     },
     {
-      field: 'visit_no',
-      headerName: '내원번호',
+      headerName: '검사명',
+      field: 'test_name',
       headerAlign: 'center',
-    },
-    {
-      field: 'visit_no',
-      headerName: '내원번호',
-      headerAlign: 'center',
-    },
-    {
-      field: 'order_date',
-      headerName: '오더일자',
-      headerAlign: 'center',
-      type: 'date',
     },
     {
       field: 'test_container',
@@ -158,20 +147,23 @@ export default function BloodCollectionPage() {
       headerAlign: 'center',
     },
     {
-      field: 'staff_name',
-      headerName: '담당의',
+      field: 'patientNO',
+      headerName: '환자번호',
       headerAlign: 'center',
+      type: 'date',
     },
     {
-      headerName: '진료과',
-      field: 'department_name',
+      headerName: '바코드 출력자',
+      field: 'staff_no',
       headerAlign: 'center',
-      width: 300,
+      width: 150,
     },
     {
-      headerName: '검사명',
-      field: 'test_name',
+      headerName: '바코드 출력일시',
+      field: 'specimen_date',
       headerAlign: 'center',
+      type: 'dateTime',
+      width: 200,
     },
     {
       headerName: '채혈자',

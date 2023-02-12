@@ -1,7 +1,7 @@
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 //datagrid
 import { DataGrid, GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
 import { useDemoData } from '@mui/x-data-grid-generator';
@@ -22,12 +22,29 @@ import Grid from '@mui/material/Grid';
 import FormHelperText from '@mui/material/FormHelperText';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { inadequate_typeList } from '../components/inadequate/InadequateTypeList';
+import { staffList } from '../components/inadequate/StaffList';
+
+
 
 export default function InadequatePage() {
   //----검색기능
   const [search, setSearch] = useState('');
   const [find, setFind] = useState('');
   const [plength, setPLength] = useState(0);
+
+  const [typelist, setTypelist] = useState([]); //부적합 데이터 백에서 받아와서 저장
+  const [stafflist, setStafflist] = useState([]);
+
+
+  useEffect(() => {
+    staffList()
+      .then(res => setStafflist(res))
+
+    inadequate_typeList()
+      .then(res => setTypelist(res))
+  }, [])
+
 
   const onSearchHandler = (event) => {
     setSearch(event.currentTarget.value);
@@ -62,6 +79,8 @@ export default function InadequatePage() {
     // setState(json);
     // setPLength(json.products.length);
     setFind(search);
+
+
   };
   //---검색끝
   // const Importiadeq = (event) => {
@@ -74,35 +93,123 @@ export default function InadequatePage() {
     maxColumns: 8,
   });
   const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+    {
+      //처방 정보
+      id: 2211150001,
+      visit_no: 1,
+      order_date: '22-11-15',
+      specimen_no: '2211150001',
+      test_container: '용기명1',
+      staff_name: '김의사',
+      department_name: '소화기내과(GI) - 제2병동',
+      test_name: '검사명1',
+    },
+    {
+      id: 2211150002,
+      visit_no: 1,
+      order_date: '22-11-15',
+      specimen_no: '2211150002',
+      test_container: '용기명2',
+      staff_name: '김의사',
+      department_name: '소화기내과(GI) - 제2병동',
+      test_name: '검사명2',
+    },
+    {
+      id: 2212160003,
+      visit_no: 2,
+      order_date: '22-12-16',
+      specimen_no: '2212160003',
+      test_container: '용기명3',
+      staff_name: '김의사',
+      department_name: '소화기내과(GI) - 제2병동',
+      test_name: '검사명3',
+    },
+    {
+      id: 2301050004,
+      visit_no: 3,
+      order_date: '23-01-05',
+      specimen_no: '2301050004',
+      test_container: '용기명4',
+      staff_name: '나의사',
+      department_name: '신경외과(NS) - 제1병동',
+      test_name: '검사명5',
+    },
+    {
+      id: 2301180005,
+      visit_no: 4,
+      order_date: '23-01-18',
+      specimen_no: '2301180005',
+      test_container: '용기명4',
+      staff_name: '나의사',
+      department_name: '신경외과(NS) - 제1병동',
+      test_name: '검사명5',
+    },
+    {
+      id: 2301870003,
+      visit_no: 5,
+      order_date: '23-01-27',
+      specimen_no: '2301870003',
+      test_container: '용기명3',
+      staff_name: '김의사',
+      department_name: '소화기내과(GI) - 제2병동',
+      test_name: '검사명3',
+    },
   ];
-  const columns = React.useMemo(
-    () => [
-      ...data.columns,
-      {
-        ...GRID_CHECKBOX_SELECTION_COL_DEF,
-        width: 100,
-      },
-    ],
-    [data.columns],
-  );
+  const columns = [
+    {
+      field: 'id',
+      headerName: '검체번호',
+      headerAlign: 'center',
+    },
+    {
+      field: 'test_container',
+      headerName: '용기명',
+      headerAlign: 'center',
+    },
+    {
+      headerName: '검사명',
+      field: 'test_name',
+      headerAlign: 'center',
+    },
+    {
+      headerName: '부적합사유 코드',
+      field: 'Inadequate_type_code',
+      headerAlign: 'center',
+    },
+    {
+      headerName: '통보자',
+      field: 'Submit_Inadequate_from',
+      headerAlign: 'center',
+    },
+    {
+      headerName: '피통보자',
+      field: 'Submit_Inadequate_to',
+      headerAlign: 'center',
+    },
 
-  const bull = (
-    <Box
-      component="span"
-      sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-    >
-      •
-    </Box>
-  );
+    {
+      headerName: '채혈자',
+      field: 'collect_staff_no',
+      headerAlign: 'center',
+    },
+    {
+      headerName: '채혈일시',
+      field: 'collect_date',
+      headerAlign: 'center',
+      type: 'dateTime',
+    }, {
+      field: 'staff_name',
+      headerName: '담당의',
+      headerAlign: 'center',
+    },
+    {
+      headerName: '진료과',
+      field: 'department_name',
+      headerAlign: 'center',
+      width: 300,
+    },
+
+  ];
 
   //  셀렉트
   const [reason, setReason] = React.useState('');
@@ -265,9 +372,10 @@ export default function InadequatePage() {
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
-                          <MenuItem value={10}>부적합 사유1</MenuItem>
-                          <MenuItem value={20}>부적합 사유2</MenuItem>
-                          <MenuItem value={30}>부적합 사유3</MenuItem>
+                          {typelist.map((inadequateType, i) => {
+                            return <MenuItem value={i}>{inadequateType.inadequateTypeCode} - {inadequateType.inadequateTypeName}</MenuItem>
+                          })}
+
                         </Select>
                         <FormHelperText>
                           부적합 사유를 선택하세요
@@ -275,14 +383,21 @@ export default function InadequatePage() {
                       </FormControl>
                     </Grid>
                     <Grid item xs={3} sx={{}}>
-                      <TextField
-                        disabled
-                        id="filled-disabled"
-                        label="부적합사유 상세"
-                        variant="filled"
-                        value={find}
-                        size="small"
-                      />
+
+                      {typelist.map((inadequateType, i) => {
+                        if (i === reason)
+                          return <TextField
+                            disabled
+                            multiline
+                            id="filled-disabled"
+                            label="부적합사유 상세"
+                            variant="filled"
+                            value={inadequateType.inadequateTypeBriefExplanation}
+                            size="small"
+                          />
+                      })}
+
+
                     </Grid>
                     <Grid item xs={3} sx={{}}>
                       <FormControl
@@ -304,30 +419,36 @@ export default function InadequatePage() {
                           <MenuItem value="">
                             <em>None</em>
                           </MenuItem>
-                          <MenuItem value={10}>김의사</MenuItem>
-                          <MenuItem value={20}>박의사</MenuItem>
-                          <MenuItem value={30}>나의사</MenuItem>
+                          {stafflist.map((staff, i) => {
+                            return <MenuItem value={i}>{staff.staffName} - {staff.staffType}</MenuItem>
+                          })}
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={3} sx={{ display: 'flex' }}>
-                      <TextField
-                        disabled
-                        id="filled-disabled"
-                        label="통보자"
-                        variant="filled"
-                        value={find}
-                        size="small"
-                      />
-                      <TextField
-                        disabled
-                        id="filled-disabled"
-                        label="통보자코드"
-                        variant="filled"
-                        value={find}
-                        size="small"
-                      />
-                    </Grid>
+
+                    {stafflist.map((staff, i) => {
+                      if (i === listener)
+                        return <Grid item xs={3} sx={{ display: 'flex' }}>
+                          <TextField
+                            disabled
+                            id="filled-disabled"
+                            label="통보자"
+                            variant="filled"
+                            value={staff.staffName}
+                            size="small"
+                          />
+                          <TextField
+                            disabled
+                            id="filled-disabled"
+                            label="통보자코드"
+                            variant="filled"
+                            value={staff.staffNo}
+                            size="small"
+                          />
+                        </Grid>
+
+                    })}
+
                     <Grid item xs={3} sx={{ textAlign: 'right' }}>
                       <Button
                         sx={{ mx: 1, minWidth: 120, width: '100%' }}
@@ -361,7 +482,6 @@ export default function InadequatePage() {
                   pageSize={7}
                   rowsPerPageOptions={[7]}
                   experimentalFeatures={{ newEditingApi: true }}
-                  {...data}
                 />
               </Grid>
             </Box>
