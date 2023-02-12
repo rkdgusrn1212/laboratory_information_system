@@ -9,7 +9,6 @@ import com.kanghoshin.lis.constraints.NameConstraints;
 import com.kanghoshin.lis.constraints.NoConstraints;
 import com.kanghoshin.lis.constraints.PhoneConstraints;
 import com.kanghoshin.lis.constraints.RrnConstraints;
-import com.kanghoshin.lis.constraints.patient.PatientAddressConstraints;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,8 +36,4 @@ public class PatientVo {
 	
 	@NotNull(message="생일이 비어있습니다.")
 	private Date patientBirth;
-	
-	@NotBlank(message = "주소가 비어있습니다.")
-	@PatientAddressConstraints
-	private String patientAddress;
 }

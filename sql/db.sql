@@ -33,6 +33,19 @@ CREATE TABLE IF NOT EXISTS `auth` (
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
+-- 테이블 kanghoshin_lis.patient 구조 내보내기
+CREATE TABLE IF NOT EXISTS `patient` (
+  `patient_no` int(11) NOT NULL AUTO_INCREMENT,
+  `patient_name` varchar(40) NOT NULL,
+  `patient_male` bit(1) NOT NULL,
+  `patient_rrn` char(14) NOT NULL,
+  `patient_birth` date NOT NULL,
+  `patient_phone` varchar(13) NOT NULL,
+  PRIMARY KEY (`patient_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
 -- 테이블 kanghoshin_lis.staff 구조 내보내기
 CREATE TABLE IF NOT EXISTS `staff` (
   `staff_no` int(11) NOT NULL AUTO_INCREMENT,
@@ -45,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `staff_admitted` bit(1) NOT NULL DEFAULT b'0',
   `staff_type` tinyint(4) NOT NULL,
   PRIMARY KEY (`staff_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
