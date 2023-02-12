@@ -25,8 +25,6 @@ import Select from '@mui/material/Select';
 import { inadequate_typeList } from '../components/inadequate/InadequateTypeList';
 import { staffList } from '../components/inadequate/StaffList';
 
-
-
 export default function InadequatePage() {
   //----검색기능
   const [search, setSearch] = useState('');
@@ -36,15 +34,11 @@ export default function InadequatePage() {
   const [typelist, setTypelist] = useState([]); //부적합 데이터 백에서 받아와서 저장
   const [stafflist, setStafflist] = useState([]);
 
-
   useEffect(() => {
-    staffList()
-      .then(res => setStafflist(res))
+    staffList().then((res) => setStafflist(res));
 
-    inadequate_typeList()
-      .then(res => setTypelist(res))
-  }, [])
-
+    inadequate_typeList().then((res) => setTypelist(res));
+  }, []);
 
   const onSearchHandler = (event) => {
     setSearch(event.currentTarget.value);
@@ -79,8 +73,6 @@ export default function InadequatePage() {
     // setState(json);
     // setPLength(json.products.length);
     setFind(search);
-
-
   };
   //---검색끝
   // const Importiadeq = (event) => {
@@ -197,7 +189,8 @@ export default function InadequatePage() {
       field: 'collect_date',
       headerAlign: 'center',
       type: 'dateTime',
-    }, {
+    },
+    {
       field: 'staff_name',
       headerName: '담당의',
       headerAlign: 'center',
@@ -208,7 +201,6 @@ export default function InadequatePage() {
       headerAlign: 'center',
       width: 300,
     },
-
   ];
 
   //  셀렉트
@@ -373,9 +365,13 @@ export default function InadequatePage() {
                             <em>None</em>
                           </MenuItem>
                           {typelist.map((inadequateType, i) => {
-                            return <MenuItem value={i}>{inadequateType.inadequateTypeCode} - {inadequateType.inadequateTypeName}</MenuItem>
+                            return (
+                              <MenuItem value={i}>
+                                {inadequateType.inadequateTypeCode} -{' '}
+                                {inadequateType.inadequateTypeName}
+                              </MenuItem>
+                            );
                           })}
-
                         </Select>
                         <FormHelperText>
                           부적합 사유를 선택하세요
@@ -383,21 +379,22 @@ export default function InadequatePage() {
                       </FormControl>
                     </Grid>
                     <Grid item xs={3} sx={{}}>
-
                       {typelist.map((inadequateType, i) => {
                         if (i === reason)
-                          return <TextField
-                            disabled
-                            multiline
-                            id="filled-disabled"
-                            label="부적합사유 상세"
-                            variant="filled"
-                            value={inadequateType.inadequateTypeBriefExplanation}
-                            size="small"
-                          />
+                          return (
+                            <TextField
+                              disabled
+                              multiline
+                              id="filled-disabled"
+                              label="부적합사유 상세"
+                              variant="filled"
+                              value={
+                                inadequateType.inadequateTypeBriefExplanation
+                              }
+                              size="small"
+                            />
+                          );
                       })}
-
-
                     </Grid>
                     <Grid item xs={3} sx={{}}>
                       <FormControl
@@ -420,7 +417,11 @@ export default function InadequatePage() {
                             <em>None</em>
                           </MenuItem>
                           {stafflist.map((staff, i) => {
-                            return <MenuItem value={i}>{staff.staffName} - {staff.staffType}</MenuItem>
+                            return (
+                              <MenuItem value={i}>
+                                {staff.staffName} - {staff.staffType}
+                              </MenuItem>
+                            );
                           })}
                         </Select>
                       </FormControl>
@@ -428,25 +429,26 @@ export default function InadequatePage() {
 
                     {stafflist.map((staff, i) => {
                       if (i === listener)
-                        return <Grid item xs={3} sx={{ display: 'flex' }}>
-                          <TextField
-                            disabled
-                            id="filled-disabled"
-                            label="통보자"
-                            variant="filled"
-                            value={staff.staffName}
-                            size="small"
-                          />
-                          <TextField
-                            disabled
-                            id="filled-disabled"
-                            label="통보자코드"
-                            variant="filled"
-                            value={staff.staffNo}
-                            size="small"
-                          />
-                        </Grid>
-
+                        return (
+                          <Grid item xs={3} sx={{ display: 'flex' }}>
+                            <TextField
+                              disabled
+                              id="filled-disabled"
+                              label="통보자"
+                              variant="filled"
+                              value={staff.staffName}
+                              size="small"
+                            />
+                            <TextField
+                              disabled
+                              id="filled-disabled"
+                              label="통보자코드"
+                              variant="filled"
+                              value={staff.staffNo}
+                              size="small"
+                            />
+                          </Grid>
+                        );
                     })}
 
                     <Grid item xs={3} sx={{ textAlign: 'right' }}>

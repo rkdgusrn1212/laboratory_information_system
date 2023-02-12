@@ -1,9 +1,10 @@
 import axios from 'axios';
+import 'swiper/css';
 
-export const inadequate_typeList = async () => {
+export const PatientList = async () => {
   try {
     const response = await axios.get(
-      'http://localhost:8080/api/collect/inadequate_typeList',
+      'http://localhost:8080/api/collect/patient',
     );
     return response.data;
   } catch (error) {
