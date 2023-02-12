@@ -128,7 +128,6 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
     patientBirth: '',
     patientMale: false,
     patientPhone: '',
-    patientAddress: '',
   });
   const [createPatient, createPatientState] = useCreatePatientMutation();
 
@@ -141,7 +140,6 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
             ...patient,
             patientBirth: data.birth,
             patientMale: data.male,
-            patientAddress: '기본주소',
           })
             .unwrap()
             .then((data) => {

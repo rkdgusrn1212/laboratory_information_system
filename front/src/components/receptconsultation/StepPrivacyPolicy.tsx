@@ -46,8 +46,7 @@ const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
         2. 수집하려는 개인정보의 항목
       </Typography>
       <Typography variant="body2" my={1}>
-        ○ 필수항목 : 성명, 주민등록번호, 성별, 나이, 주소,
-        연락처(휴대폰번호/전화번호)
+        ○ 필수항목 : 성명, 주민등록번호, 성별, 나이, 연락처(휴대폰번호/전화번호)
       </Typography>
       <Typography variant="body2" my={1}>
         3. 개인정보의 보유 및 이용기간

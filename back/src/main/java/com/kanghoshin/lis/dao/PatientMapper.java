@@ -21,19 +21,17 @@ public interface PatientMapper {
 			+ ", patient_phone as patientPhone"
 			+ ", patient_rrn as patientRrn"
 			+ ", patient_birth as patientBirth"
-			+ ", patient_address as patientAddress FROM patient "
-			+ "WHERE patient_no = #{patient_no}")
+			+ " FROM patient WHERE patient_no = #{patient_no}")
 	PatientVo findByPatientNo(@Param("patient_no") int patientNo);
 
 	@Insert("INSERT INTO patient "
-			+ "(patient_no, patient_name, patient_male, patient_phone, patient_rrn, patient_birth, patient_address) "
+			+ "(patient_no, patient_name, patient_male, patient_phone, patient_rrn, patient_birth) "
 			+ "VALUES (null"
 			+ ", #{createPatientDto.patientName}"
 			+ ", #{createPatientDto.patientMale}"
 			+ ", #{createPatientDto.patientPhone}"
 			+ ", #{createPatientDto.patientRrn}"
-			+ ", #{createPatientDto.patientBirth}"
-			+ ", #{createPatientDto.patientAddress}) ")
+			+ ", #{createPatientDto.patientBirth})")
 	@Options(useGeneratedKeys=true,  keyProperty="createPatientDto.patientNo")
 	int insert(@Param("createPatientDto") CreatePatientDto createPatientDto);
 
@@ -45,7 +43,7 @@ public interface PatientMapper {
 			+ ", patient_phone as patientPhone"
 			+ ", patient_rrn as patientRrn"
 			+ ", patient_birth as patientBirth"
-			+ ", patient_address as patientAddress FROM patient "
+			+ " FROM patient "
 			+ "<where>"
 
 			+ "<if test='readPatientListDto.patientNoStart &gt; 0'>"

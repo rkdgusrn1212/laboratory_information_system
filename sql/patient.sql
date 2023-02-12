@@ -17,18 +17,15 @@
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
--- 테이블 kanghoshin_lis.staff 구조 내보내기
-CREATE TABLE IF NOT EXISTS `staff` (
-  `staff_no` int(11) NOT NULL AUTO_INCREMENT,
-  `staff_name` varchar(40) NOT NULL,
-  `staff_birth` date NOT NULL,
-  `staff_male` bit(1) NOT NULL,
-  `staff_phone` varchar(13) NOT NULL,
-  `staff_image` varchar(255) DEFAULT NULL,
-  `staff_rrn` char(14) NOT NULL,
-  `staff_admitted` bit(1) NOT NULL DEFAULT b'0',
-  `staff_type` tinyint(4) NOT NULL,
-  PRIMARY KEY (`staff_no`)
+-- 테이블 kanghoshin_lis.patient 구조 내보내기
+CREATE TABLE IF NOT EXISTS `patient` (
+  `patient_no` int(11) NOT NULL AUTO_INCREMENT,
+  `patient_name` varchar(40) NOT NULL,
+  `patient_male` bit(1) NOT NULL,
+  `patient_rrn` char(14) NOT NULL,
+  `patient_birth` date NOT NULL,
+  `patient_phone` varchar(13) NOT NULL,
+  PRIMARY KEY (`patient_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
