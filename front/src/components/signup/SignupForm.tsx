@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -16,6 +16,7 @@ import Divider from '@mui/material/Divider';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
+import teal from '@mui/material/colors/teal';
 
 import Logo from '../common/Logo';
 import CreateAuthForm from './CreateAuthForm';
@@ -249,12 +250,25 @@ const SignupForm: React.FC = () => {
 
   return (
     <Paper elevation={2} sx={{ p: 3 }}>
-      <Logo size={30} sx={{ mt: 3 }} />
-      <Box sx={{ mt: 3, display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-        <AssignmentIndIcon fontSize="large" />
-        <Typography variant="h5">가입신청</Typography>
+      <Box
+        mt={3}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        px={1}
+      >
+        <Typography
+          color={teal[300]}
+          variant="h5"
+          display="inline-flex"
+          alignItems="center"
+          gap={1}
+        >
+          <AssignmentIndIcon htmlColor={teal[300]} fontSize="medium" />
+          가입신청
+        </Typography>
+        <Logo size={20} color={teal[300]} />
       </Box>
-      <Divider />
       <Stepper activeStep={step} alternativeLabel sx={{ mt: 3 }}>
         {steps.map((label) => {
           const stepProps: { completed?: boolean } = {};
