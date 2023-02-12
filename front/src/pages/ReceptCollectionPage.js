@@ -24,7 +24,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Grid from '@mui/material/Grid';
 //체크박스
 //다잉얼로그
-import ReceptCollectionDialog from '../components/receptcollection/ReceptCollectiondialog';
+import ReceptCollectionDialog from '../components/receptcollection/ReceptCollectionDialog';
 //검색셜과 미리보기
 import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
