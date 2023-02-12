@@ -1,3 +1,16 @@
+export const isArray = <T>(
+  data: unknown,
+  typeGuard: (elem: unknown) => elem is T,
+): data is T[] => {
+  return (
+    Array.isArray(data) &&
+    data.length > 0 &&
+    data.every((elem) => {
+      return typeGuard(elem);
+    })
+  );
+};
+
 export interface GeneralError {
   status: number;
   data: {
@@ -75,7 +88,23 @@ export interface Staff {
   staffType: number;
 }
 
-export type ReadableStaff = Omit<Staff, 'staffRrn'>;
+export const isStaff = (data: unknown): data is Staff =>
+  typeof data === 'object' &&
+  data != null &&
+  'staffNo' in data &&
+  typeof data.staffNo === 'number' &&
+  'staffName' in data &&
+  typeof data.staffName === 'string' &&
+  'staffBirth' in data &&
+  typeof data.staffBirth === 'string' &&
+  'staffMale' in data &&
+  typeof data.staffMale === 'boolean' &&
+  'staffPhone' in data &&
+  typeof data.staffPhone === 'string' &&
+  'staffAdmitted' in data &&
+  typeof data.staffAdmitted === 'boolean' &&
+  'staffType' in data &&
+  typeof data.staffType === 'number';
 
 export interface Principal {
   authorities: (
@@ -84,7 +113,7 @@ export interface Principal {
     | 'ROLE_STAFF'
     | 'ROLE_DOCTOR'
   )[];
-  staffVo: ReadableStaff;
+  staffVo: Staff;
   username: string;
   validationEmail: string;
 }
@@ -94,7 +123,7 @@ export interface Account {
   accessToken: string;
 }
 
-interface Patient {
+export interface Patient {
   patientNo: number;
   patientName: string;
   patientRrn: string;
@@ -119,46 +148,64 @@ export const isPatient = (data: unknown): data is Patient =>
   'patientPhone' in data &&
   typeof data.patientPhone === 'string';
 
-export type CreatablePatient = Omit<Patient, 'patientNo'>;
+export interface Department {
+  departmentCode: string;
+  departmentName: string;
+}
 
-export type ReadablePatient = Omit<Patient, 'patientRrn'>;
+export interface Doctor extends Staff {
+  doctorCertification: number;
+  departmentCode: string;
+}
 
-export const isReadablePatient = (data: unknown): data is ReadablePatient =>
-  typeof data === 'object' &&
-  data != null &&
-  isPatient({ ...data, patientRrn: '' });
+export const isDoctor = (data: unknown): data is Doctor =>
+  isStaff(data) &&
+  'doctorCertification' in data &&
+  typeof data.doctorCertification === 'number' &&
+  'departmentCode' in data &&
+  typeof data.departmentCode === 'string';
 
-export type PatientReception = {
-  receptionNo: number;
-  receptionTime: string;
-  patient: ReadablePatient;
-};
+export interface ConsultationReception {
+  consultationReceptionNo: number;
+  consultationReceptionTime: string;
+  doctor: Doctor;
+  patient: Patient;
+  consultation: null;
+}
 
-export type PatientReservation = {
-  reservationNo: number;
-  reservationTime: string;
-  patient: ReadablePatient;
-};
-
-export const isPatientReception = (data: unknown): data is PatientReception =>
-  typeof data === 'object' &&
-  data != null &&
-  'reservationNo' in data &&
-  typeof data.reservationNo === 'number' &&
-  'reservationTime' in data &&
-  typeof data.reservationTime === 'string' &&
-  'patient' in data &&
-  isReadablePatient(data.patient);
-
-export const isArray = <T>(
+export const isConsultationReception = (
   data: unknown,
-  typeGuard: (elem: unknown) => elem is T,
-): data is T[] => {
-  return (
-    Array.isArray(data) &&
-    data.length > 0 &&
-    data.every((elem) => {
-      return typeGuard(elem);
-    })
-  );
-};
+): data is ConsultationReception =>
+  typeof data === 'object' &&
+  data != null &&
+  'consultationReceptionNo' in data &&
+  typeof data.consultationReceptionNo === 'number' &&
+  'consultationReceptionTime' in data &&
+  typeof data.consultationReceptionTime === 'string' &&
+  'doctor' in data &&
+  isDoctor(data.doctor) &&
+  'patient' in data &&
+  isPatient(data.patient) &&
+  'consultation' in data; //후에 consultation 타입 검사추가 필요
+
+export interface ConsultationWalkIn extends ConsultationReception {
+  consultationWalkInWaitingNo: number;
+}
+
+export const isConsultationWalkIn = (
+  data: unknown,
+): data is ConsultationWalkIn =>
+  isConsultationReception(data) &&
+  'consultationWalkInWaitingNo' in data &&
+  typeof data.consultationWalkInWaitingNo === 'number';
+
+export interface ConsultationAppointment extends ConsultationReception {
+  consultationAppointmentTime: string;
+}
+
+export const isConsultationAppointment = (
+  data: unknown,
+): data is ConsultationAppointment =>
+  isConsultationReception(data) &&
+  'consultationAppointmentTime' in data &&
+  typeof data.consultationAppointmentTime === 'string';

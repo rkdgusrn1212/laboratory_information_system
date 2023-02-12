@@ -8,13 +8,13 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 import { PhonePattern } from '../../utils/patterns';
-import { CreatablePatient } from '../../services/types';
+import { CreatePatientRequest } from '../../services/patientApi';
 
 interface StepNameAndPhonePorps {
   // eslint-disable-next-line no-unused-vars
   onStepAndPhoneSubmit: (
     // eslint-disable-next-line no-unused-vars
-    data: Pick<CreatablePatient, 'patientName' | 'patientPhone'>,
+    data: Pick<CreatePatientRequest, 'patientName' | 'patientPhone'>,
   ) => void;
 }
 

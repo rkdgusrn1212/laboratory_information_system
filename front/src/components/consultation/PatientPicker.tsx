@@ -6,7 +6,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Stack from '@mui/material/Stack';
 
-import { ReadablePatient } from '../../services/types';
+import { Doctor, Patient } from '../../services/types';
 import { useState } from 'react';
 
 const dummyPatient = [
@@ -16,6 +16,7 @@ const dummyPatient = [
     patientBirth: '1995-11-11',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientRrn: '951111-1●●●●●●',
   },
   {
     patientNo: 2,
@@ -23,6 +24,7 @@ const dummyPatient = [
     patientBirth: '1996-08-08',
     patientMale: false,
     patientPhone: '010-1234-5678',
+    patientRrn: '960909-2●●●●●●',
   },
   {
     patientNo: 3,
@@ -30,6 +32,7 @@ const dummyPatient = [
     patientBirth: '1996-03-03',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientRrn: '960303-1●●●●●●',
   },
   {
     patientNo: 4,
@@ -37,64 +40,98 @@ const dummyPatient = [
     patientBirth: '1995-03-13',
     patientMale: true,
     patientPhone: '010-1234-5678',
-    patientAddress: '',
+    patientRrn: '950313-1●●●●●●',
   },
   {
     patientNo: 5,
-    patientName: '이춘식',
+    patientName: '이춘자',
     patientBirth: '1996-02-12',
     patientMale: false,
     patientPhone: '010-1234-5678',
+    patientRrn: '960212-2●●●●●●',
   },
   {
     patientNo: 6,
     patientName: '김만식',
-    patientBirth: '1996-09-09',
+    patientBirth: '1976-09-09',
     patientMale: true,
     patientPhone: '010-1234-5678',
+    patientRrn: '760909-1●●●●●●',
   },
 ];
 
+const dummyDoctor: Doctor = {
+  staffNo: 1,
+  staffName: '김덕철',
+  staffImage: null,
+  staffMale: true,
+  staffBirth: '1988-06-21',
+  staffRrn: '880621-1●●●●●●',
+  staffPhone: '010-2577-2577',
+  staffAdmitted: true,
+  staffType: 1,
+  departmentCode: 'NS',
+  doctorCertification: 38463,
+};
+
 const dummyReception = [
   {
-    receptionNo: 1,
-    receptionTime: new Date().toJSON(),
+    consultationReceptionNo: 1,
+    consultationReceptionTime: new Date().toJSON(),
+    consultationWalkInNo: 34,
+    consultation: null,
+    doctor: dummyDoctor,
     patient: dummyPatient[0],
   },
   {
-    receptionNo: 2,
-    receptionTime: new Date().toJSON(),
+    consultationReceptionNo: 3,
+    consultationReceptionTime: new Date().toJSON(),
+    consultationWalkInNo: 35,
+    consultation: null,
+    doctor: dummyDoctor,
     patient: dummyPatient[1],
   },
   {
-    receptionNo: 3,
-    receptionTime: new Date().toJSON(),
+    consultationReceptionNo: 4,
+    consultationReceptionTime: new Date().toJSON(),
+    consultationWalkInNo: 36,
+    consultation: null,
+    doctor: dummyDoctor,
     patient: dummyPatient[4],
   },
 ];
 
 const dummyReservation = [
   {
-    reservationNo: 1,
-    reservationTime: new Date().toJSON(),
+    consultationReceptionNo: 2,
+    consultationReceptionTime: new Date().toJSON(),
+    consultationAppointmentTime: new Date().toJSON(),
+    consultation: null,
+    doctor: dummyDoctor,
     patient: dummyPatient[2],
   },
   {
-    reservationNo: 2,
-    reservationTime: new Date().toJSON(),
+    consultationReceptionNo: 5,
+    consultationReceptionTime: new Date().toJSON(),
+    consultationAppointmentTime: new Date().toJSON(),
+    consultation: null,
+    doctor: dummyDoctor,
     patient: dummyPatient[3],
   },
   {
-    reservationNo: 3,
-    reservationTime: new Date().toJSON(),
+    consultationReceptionNo: 6,
+    consultationReceptionTime: new Date().toJSON(),
+    consultationAppointmentTime: new Date().toJSON(),
+    consultation: null,
+    doctor: dummyDoctor,
     patient: dummyPatient[5],
   },
 ];
 
 const PatientPicker: React.FC<{
   // eslint-disable-next-line no-unused-vars
-  onSelected: (patient: ReadablePatient | undefined) => void;
-  selected: ReadablePatient | undefined;
+  onSelected: (patient: Patient | undefined) => void;
+  selected: Patient | undefined;
 }> = ({ onSelected, selected }) => {
   const [tabValue, setTabValue] = useState(0);
 
