@@ -1,7 +1,7 @@
-import React from "react";
+
 import axios from "axios";
 
-export const fetchdata = async () => {
+export const inadequate_typeList = async () => {
   try {
     const response = await axios.get("http://localhost:8080/api/collect/inadequate_typeList");
     return response.data;
