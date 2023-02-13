@@ -14,9 +14,9 @@ import { TransitionProps } from '@mui/material/transitions';
 import Button from '@mui/material/Button';
 
 import PrescriptionForm from '../components/consultation/PrescriptionForm';
-import { ReadablePatient } from '../services/types';
 import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
 import PatientPicker from '../components/consultation/PatientPicker';
+import { Patient } from '../services/types';
 
 const theme = createTheme({
   palette: {
@@ -41,7 +41,7 @@ const theme = createTheme({
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & {
-    children: React.ReactElement<any, any>;
+    children: React.ReactElement;
   },
   ref: React.Ref<unknown>,
 ) {
@@ -49,18 +49,16 @@ const Transition = forwardRef(function Transition(
 });
 
 const ConsultationPage: React.FC = () => {
-  const [selected, setSelected] = useState<ReadablePatient | undefined>(
-    undefined,
-  );
+  const [selected, setSelected] = useState<Patient | undefined>(undefined);
   const [dialog, setDialog] = useState<{
     open: boolean;
-    data: ReadablePatient | undefined;
+    data: Patient | undefined;
   }>({
     open: false,
     data: undefined,
   });
 
-  const handleSelected = (item: ReadablePatient | undefined) => {
+  const handleSelected = (item: Patient | undefined) => {
     if (item === undefined || (selected !== undefined && selected !== item)) {
       setDialog({ open: true, data: item });
     } else {

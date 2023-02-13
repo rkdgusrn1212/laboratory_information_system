@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import server from '../server.json';
-import { CreatablePatient } from './types';
+import { Patient } from './types';
 
-export type CreatePatientRequest = CreatablePatient;
+export type CreatePatientRequest = Omit<Patient, 'patientNo'>;
 
 export const patientApi = createApi({
   baseQuery: fetchBaseQuery({

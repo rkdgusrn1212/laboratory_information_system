@@ -1,7 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import server from '../server.json';
-import { Account, GeneralErrorWithMessage, isGeneralError } from './types';
+import {
+  Account,
+  Doctor,
+  GeneralErrorWithMessage,
+  isGeneralError,
+  Staff,
+} from './types';
 
 export type SigninResponse = Account;
 
@@ -63,15 +69,7 @@ export type WriteDetailsField =
   | 'staffRrn'
   | 'staffType';
 
-export interface WriteDetailsRequest {
-  staffName: string;
-  staffBirth: string;
-  staffMale: boolean;
-  staffPhone: string;
-  staffImage: string;
-  staffRrn: string;
-  staffType: number;
-}
+export type WriteDetailsRequest = Omit<Staff, 'staffNo' | 'staffAdmitted'>;
 
 type WriteDetailsError = {
   data: {

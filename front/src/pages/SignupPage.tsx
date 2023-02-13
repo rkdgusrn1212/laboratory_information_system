@@ -1,5 +1,5 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { ThemeProvider, createTheme, Box } from '@mui/material';
 import Container from '@mui/material/Container';
 import SignupForm from '../components/signup/SignupForm';
 
@@ -20,7 +20,7 @@ const theme = createTheme({
     },
     background: {
       paper: '#FAFAFA',
-      default: '#B0BEC5',
+      default: '#ff6b42',
     },
   },
 });
@@ -29,17 +29,19 @@ const SignupPage = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Container
-        component="main"
-        maxWidth="sm"
+      <Box
+        position="fixed"
+        width="100%"
+        height="100%"
         sx={{
-          width: '100%',
-          mt: 5,
-          mb: 5,
+          background:
+            'linear-gradient(180deg,rgba(255,255,255,1) 80%, rgba(0,170,255,1) 100%)',
         }}
       >
-        <SignupForm />
-      </Container>
+        <Container component="main" maxWidth="md">
+          <SignupForm />
+        </Container>
+      </Box>
     </ThemeProvider>
   );
 };

@@ -16,8 +16,11 @@ import StepRrn from './StepRrn';
 import StepNameAndPhone from './StepNameAndPhone';
 import StepPrivacyPolicy from './StepPrivacyPolicy';
 import rrnParser from '../../utils/rrnParser';
-import { CreatablePatient } from '../../services/types';
-import { useCreatePatientMutation } from '../../services/patientApi';
+import {
+  useCreatePatientMutation,
+  CreatePatientRequest,
+} from '../../services/patientApi';
+import StepSelectDoctor from './StepSelectDoctor';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -100,7 +103,7 @@ const steps = [
 interface InnerFormProps {
   step: number;
   // eslint-disable-next-line no-unused-vars
-  onNextClick: (data: Partial<CreatablePatient>) => void;
+  onNextClick: (data: Partial<CreatePatientRequest>) => void;
 }
 
 const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
@@ -112,7 +115,7 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
     case 2:
       return <StepPrivacyPolicy onAgree={onNextClick as () => void} />;
     case 3:
-      return <></>;
+      return <StepSelectDoctor />;
     case 4:
       return <></>;
     default:
@@ -122,7 +125,7 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
 
 const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   const [step, setStep] = useState(0);
-  const [patient, setPatient] = useState<CreatablePatient>({
+  const [patient, setPatient] = useState<CreatePatientRequest>({
     patientName: '',
     patientRrn: '',
     patientBirth: '',
@@ -132,7 +135,7 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
   const [createPatient, createPatientState] = useCreatePatientMutation();
 
   const handleNextClick = useCallback(
-    (data: Partial<CreatablePatient>) => {
+    (data: Partial<CreatePatientRequest>) => {
       if (step == 2) {
         const data = rrnParser(patient.patientRrn);
         if (data) {

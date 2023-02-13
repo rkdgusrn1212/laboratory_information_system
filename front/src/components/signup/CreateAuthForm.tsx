@@ -3,8 +3,9 @@ import {
   useCallback,
   ChangeEventHandler,
   MouseEventHandler,
-  useEffect,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -15,24 +16,22 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import {
-  issueValidationCodeRequest,
   isIssueValidationCodeError,
   useIssueValidationCodeMutation,
-  CreateAuthRequest,
   CreateAuthField,
+  useCreateAuthMutation,
+  isCreateAuthError,
+  useSigninMutation,
 } from '../../services/authApi';
 import { Stack } from '@mui/system';
-import { isValidationError, MappedValidationError } from '../../services/types';
-
-const validationEmailPattern =
-  /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
-const passwordPattern =
-  /^(?=.*[A-Za-z])(?=.*[0-9])(?=.*[@$!%*#?&^])[A-Za-z0-9@$!%*#?&^]{9,40}$/;
-
+import { isValidationError, mapValidationError } from '../../services/types';
+import { PasswordPattern, ValidationEmailPattern } from '../../utils/patterns';
 const CreateAuthForm: React.FC<{
-  onCreateAuthFormComplete: (form: CreateAuthRequest | undefined) => void;
-  error: MappedValidationError<CreateAuthField>;
-}> = ({ onCreateAuthFormComplete, error }) => {
+  onSuccess: () => void;
+  onException: () => void; //컴포넌트 내에서 처리 못한 애러 발생
+}> = ({ onSuccess, onException }) => {
+  const [createAuth, createAuthState] = useCreateAuthMutation();
+  const [signin] = useSigninMutation();
   const [validationEmail, setValidationEmail] = useState('');
   const [issueValidationCode, issueValidationCodeState] =
     useIssueValidationCodeMutation();
@@ -40,55 +39,89 @@ const CreateAuthForm: React.FC<{
   const [authPassword, setAuthPassword] = useState('');
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
   const [validationCode, setValidationCode] = useState('');
-  const [validationEmailHelp, setValidationEmailHelp] = useState<
-    string | undefined
-  >(undefined);
-  const [authIdHelp, setAuthIdHelp] = useState<string | undefined>(undefined);
-  const [authPasswordHelp, setAuthPasswordHelp] = useState<string | undefined>(
-    undefined,
+  const [validationEmailHelp, setValidationEmailHelp] = useState<string | null>(
+    null,
   );
-  const [validationCodeHelp, setValidationCodeHelp] = useState<
-    string | undefined
-  >(undefined);
+  const [authIdHelp, setAuthIdHelp] = useState<string | null>(null);
+  const [authPasswordHelp, setAuthPasswordHelp] = useState<string | null>(null);
+  const [validationCodeHelp, setValidationCodeHelp] = useState<string | null>(
+    null,
+  );
+  const navigate = useNavigate();
 
-  const handleEmailChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setValidationEmail(event.target.value);
+  const handleCreateAuthClick = () => {
+    createAuth({
+      authId,
+      authPassword,
+      validationEmail,
+      validationCode,
+    })
+      .unwrap()
+      .then(() => {
+        signin({ authId, authPassword })
+          .unwrap()
+          .then(() => onSuccess())
+          .catch(() => navigate('/', { replace: true }));
+      })
+      .catch((error) => {
+        if (isCreateAuthError(error)) {
+          switch (error.data.code) {
+            case 'DUPLICATED_ID':
+              setAuthIdHelp(error.data.message);
+              break;
+            case 'EMAIL_NOT_EXIST':
+              setValidationEmailHelp(error.data.message);
+              break;
+            case 'WRONG_CODE':
+              setValidationCodeHelp(error.data.message);
+              break;
+            default:
+              onException();
+          }
+        } else if (isValidationError<CreateAuthField>(error)) {
+          const validationError = mapValidationError<CreateAuthField>(error);
+          if (validationError.validationEmail)
+            setValidationEmailHelp(validationError.validationEmail);
+          if (validationError.authId) setAuthIdHelp(validationError.authId);
+          if (validationError.authPassword)
+            setAuthPasswordHelp(validationError.authPassword);
+          if (validationError.validationCode)
+            setValidationCodeHelp(validationError.validationCode);
+        } else {
+          onException();
+        }
+      });
   };
 
-  useEffect(() => {
-    if (validationEmail.length < 1) {
+  const handleEmailChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const value = event.target.value;
+    setValidationEmail(value);
+    if (value.length < 1) {
       setValidationEmailHelp('이메일이 비어있습니다.');
       return;
-    }
-    if (!validationEmailPattern.test(validationEmail)) {
+    } else if (!ValidationEmailPattern.test(value)) {
       setValidationEmailHelp('이메일 형식이 안맞습니다.');
       return;
+    } else {
+      setValidationEmailHelp(null);
     }
-    if (issueValidationCodeState.isError) {
-      const error = issueValidationCodeState.error;
-      if (isIssueValidationCodeError(error)) {
-        setValidationEmailHelp(error.data.message);
-      } else if (isValidationError(error)) {
-        setValidationEmailHelp(error.data.array[0]?.message);
-      } else {
-        setValidationEmailHelp('알수없는 오류가 발생했습니다.');
-      }
-      return;
-    }
-    setValidationEmailHelp(undefined);
-  }, [
-    validationEmail,
-    issueValidationCodeState.error,
-    issueValidationCodeState.isError,
-  ]);
+  };
 
-  const handleIssueClick = useCallback<
-    MouseEventHandler<HTMLButtonElement>
-  >(() => {
+  const handleIssueClick: MouseEventHandler<HTMLButtonElement> = () => {
     issueValidationCode({
       validationEmail: validationEmail,
-    } as issueValidationCodeRequest);
-  }, [validationEmail, issueValidationCode]);
+    })
+      .unwrap()
+      .catch((error) => {
+        if (isIssueValidationCodeError(error)) {
+          setValidationEmailHelp(error.data.message);
+        } else if (isValidationError(error)) {
+          setValidationEmailHelp(error.data.array[0]?.message);
+        } else {
+          setValidationEmailHelp('알수없는 오류가 발생했습니다.');
+        }
+      });
+  };
 
   const handleCancelClick = useCallback<
     MouseEventHandler<HTMLButtonElement>
@@ -100,217 +133,203 @@ const CreateAuthForm: React.FC<{
   }, [issueValidationCodeState]);
 
   const handleIdChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setAuthId(event.target.value);
-  };
-
-  useEffect(() => {
-    if (authId.length < 1 || authId.length > 40) {
+    const value = event.target.value;
+    setAuthId(value);
+    if (value.length < 1 || value.length > 40) {
       setAuthIdHelp('아이디는 1자 이상 40자 이하입니다.');
-      return;
+    } else {
+      setAuthIdHelp(null);
     }
-    setAuthIdHelp(undefined);
-  }, [authId]);
-
-  useEffect(() => {
-    setValidationEmailHelp((state) => error.validationEmail || state);
-    setAuthIdHelp((state) => error.authId || state);
-    setAuthPasswordHelp((state) => error.authPassword || state);
-    setValidationCodeHelp((state) => error.validationCode || state);
-  }, [
-    error.validationEmail,
-    error.authId,
-    error.authPassword,
-    error.validationCode,
-  ]);
+  };
 
   const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (
     event,
   ) => {
-    setAuthPassword(event.target.value);
-  };
-
-  useEffect(() => {
-    if (!passwordPattern.test(authPassword)) {
+    const value = event.target.value;
+    setAuthPassword(value);
+    if (!PasswordPattern.test(value)) {
       setAuthPasswordHelp(
         '영문, 숫자, 특수문자가 각각 하나이상 포함된 9자 이상 40자 이하의 문자열을 입력하세요.',
       );
-      return;
+    } else {
+      setAuthPasswordHelp(null);
     }
-    setAuthPasswordHelp(undefined);
-  }, [authPassword]);
-
-  const handleMouseUpAndLeaveVisibility = useCallback(
-    () => setPasswordVisibility(false),
-    [],
-  );
-
-  const handleMouseDownVisibility = useCallback(
-    () => setPasswordVisibility(true),
-    [],
-  );
-
-  const handleCodeChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setValidationCode(event.target.value);
   };
 
-  useEffect(() => {
-    if (validationCode.length < 1) {
-      setValidationCodeHelp('인증번호가 비어있습니다');
-      return;
-    }
-    setValidationCodeHelp(undefined);
-  }, [validationCode]);
+  const handleMouseUpAndLeaveVisibility = () => setPasswordVisibility(false);
 
-  useEffect(() => {
-    if (
-      !validationEmailHelp &&
-      !authIdHelp &&
-      !authPasswordHelp &&
-      !validationCodeHelp
-    ) {
-      onCreateAuthFormComplete({
-        authId,
-        authPassword,
-        validationCode,
-        validationEmail,
-      });
+  const handleMouseDownVisibility = () => setPasswordVisibility(true);
+
+  const handleCodeChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const value = event.target.value;
+    setValidationCode(value);
+    if (value.length < 1) {
+      setValidationCodeHelp('인증번호가 비어있습니다');
     } else {
-      onCreateAuthFormComplete(undefined);
+      setValidationCodeHelp(null);
     }
-  }, [
-    onCreateAuthFormComplete,
-    authId,
-    authPassword,
-    validationCode,
-    validationEmail,
-    validationEmailHelp,
-    authIdHelp,
-    authPasswordHelp,
-    validationCodeHelp,
-  ]);
+  };
 
   return (
-    <Stack sx={{ mt: 3 }} gap={2}>
-      <TextField
-        required
-        fullWidth
-        id="email"
-        label="이메일"
-        name="email"
-        value={validationEmail}
-        onChange={handleEmailChange}
-        autoComplete="email"
-        helperText={validationEmailHelp}
-        error={validationEmailHelp !== undefined}
-        disabled={issueValidationCodeState.isSuccess}
-      />
-      {issueValidationCodeState.isSuccess || (
-        <Box sx={{ position: 'relative' }}>
-          <Button
-            fullWidth
-            color="secondary"
-            variant="contained"
-            onClick={handleIssueClick}
-            disabled={issueValidationCodeState.isLoading}
-          >
-            인증번호 발급
-          </Button>
-          {issueValidationCodeState.isLoading && (
-            <CircularProgress
-              size={24}
-              sx={{
-                color: 'primary',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                marginTop: '-12px',
-                marginLeft: '-12px',
-              }}
-            />
-          )}
-        </Box>
-      )}
-      {issueValidationCodeState.isSuccess && (
-        <Box sx={{ display: 'flex' }}>
-          <Grow in={issueValidationCodeState.isSuccess}>
-            <Stack gap={1} width="100%">
-              <TextField
-                required
-                fullWidth
-                label="아이디"
-                error={authIdHelp !== undefined}
-                helperText={authIdHelp}
-                value={authId}
-                onChange={handleIdChange}
-                autoComplete="username"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Button
-                        size="small"
-                        sx={{ whiteSpace: 'nowrap' }}
-                        variant="text"
-                        color="secondary"
-                      >
-                        중복확인
-                      </Button>
-                    </InputAdornment>
-                  ),
+    <Box display="flex" justifyContent="center">
+      <Stack sx={{ my: 3 }} gap={2} width="100%" maxWidth={600}>
+        <TextField
+          required
+          size="small"
+          fullWidth
+          id="email"
+          label="이메일"
+          name="email"
+          value={validationEmail}
+          onChange={handleEmailChange}
+          autoComplete="email"
+          helperText={validationEmailHelp}
+          error={validationEmailHelp !== undefined}
+          disabled={issueValidationCodeState.isSuccess}
+        />
+        {issueValidationCodeState.isSuccess || (
+          <Box sx={{ position: 'relative' }}>
+            <Button
+              fullWidth
+              color="secondary"
+              variant="contained"
+              onClick={handleIssueClick}
+              disabled={issueValidationCodeState.isLoading}
+            >
+              인증번호 발급
+            </Button>
+            {issueValidationCodeState.isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: 'primary',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
                 }}
               />
-              <TextField
-                required
-                fullWidth
-                label="비밀번호"
-                value={authPassword}
-                onChange={handlePasswordChange}
-                error={authPasswordHelp !== undefined}
-                helperText={authPasswordHelp}
-                type={passwordVisiblity ? 'text' : 'password'}
-                autoComplete="new-password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onMouseLeave={handleMouseUpAndLeaveVisibility}
-                        onMouseUp={handleMouseUpAndLeaveVisibility}
-                        onMouseDown={handleMouseDownVisibility}
-                      >
-                        {passwordVisiblity ? (
-                          <VisibilityIcon />
-                        ) : (
-                          <VisibilityOffIcon />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                required
-                fullWidth
-                label="인증번호"
-                error={validationCodeHelp !== undefined}
-                helperText={validationCodeHelp}
-                value={validationCode}
-                autoComplete="one-time-code"
-                onChange={handleCodeChange}
-              />
-              <Box sx={{ display: 'flex', justifyContent: 'right' }}>
-                <Button
-                  color="secondary"
-                  variant="text"
-                  sx={{ mt: 1, mb: 2 }}
-                  onClick={handleCancelClick}
-                >
-                  취소
-                </Button>
-              </Box>
-            </Stack>
-          </Grow>
-        </Box>
-      )}
-    </Stack>
+            )}
+          </Box>
+        )}
+        {issueValidationCodeState.isSuccess && (
+          <Box sx={{ display: 'flex' }}>
+            <Grow in={issueValidationCodeState.isSuccess}>
+              <Stack gap={1} width="100%">
+                <TextField
+                  required
+                  fullWidth
+                  label="아이디"
+                  error={authIdHelp !== undefined}
+                  helperText={authIdHelp}
+                  value={authId}
+                  onChange={handleIdChange}
+                  autoComplete="username"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          size="small"
+                          sx={{ whiteSpace: 'nowrap' }}
+                          variant="text"
+                          color="secondary"
+                        >
+                          중복확인
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  required
+                  fullWidth
+                  label="비밀번호"
+                  value={authPassword}
+                  onChange={handlePasswordChange}
+                  error={authPasswordHelp !== undefined}
+                  helperText={authPasswordHelp}
+                  type={passwordVisiblity ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onMouseLeave={handleMouseUpAndLeaveVisibility}
+                          onMouseUp={handleMouseUpAndLeaveVisibility}
+                          onMouseDown={handleMouseDownVisibility}
+                        >
+                          {passwordVisiblity ? (
+                            <VisibilityIcon />
+                          ) : (
+                            <VisibilityOffIcon />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  required
+                  fullWidth
+                  label="인증번호"
+                  error={validationCodeHelp !== undefined}
+                  helperText={validationCodeHelp}
+                  value={validationCode}
+                  autoComplete="one-time-code"
+                  onChange={handleCodeChange}
+                />
+                <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+                  <Button
+                    color="secondary"
+                    variant="text"
+                    sx={{ mt: 1, mb: 2 }}
+                    onClick={handleCancelClick}
+                  >
+                    취소
+                  </Button>
+                </Box>
+              </Stack>
+            </Grow>
+          </Box>
+        )}
+        {issueValidationCodeState.isSuccess && (
+          <Box display="flex" width="100%" justifyContent="flex-end">
+            <Box sx={{ position: 'relative' }}>
+              <Button
+                variant="contained"
+                onClick={handleCreateAuthClick}
+                disabled={
+                  validationEmail.length < 1 ||
+                  authId.length < 1 ||
+                  authPassword.length < 1 ||
+                  validationCode.length < 1 ||
+                  validationEmailHelp != null ||
+                  authIdHelp != null ||
+                  authPasswordHelp != null ||
+                  validationCodeHelp != null
+                }
+              >
+                아이디 생성
+              </Button>
+              {createAuthState.isLoading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: 'primary',
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-12px',
+                    marginLeft: '-12px',
+                  }}
+                />
+              )}
+            </Box>
+          </Box>
+        )}
+      </Stack>
+    </Box>
   );
 };
 export default CreateAuthForm;

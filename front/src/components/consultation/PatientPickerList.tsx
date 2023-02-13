@@ -1,31 +1,26 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { TransitionProps } from '@mui/material/transitions';
 
 import {
+  ConsultationAppointment,
+  ConsultationReception,
+  ConsultationWalkIn,
   isArray,
-  isPatientReception,
-  PatientReception,
-  PatientReservation,
-  ReadablePatient,
+  isConsultationWalkIn,
+  Patient,
 } from '../../services/types';
 import stringAvatar from '../../utils/stringAvatar';
 import dayjs from 'dayjs';
 
 export type PatientPickerListProps = {
-  onSelected: (patient: ReadablePatient | undefined) => void;
-  selected: ReadablePatient | undefined;
-  data: PatientReception[] | PatientReservation[];
+  // eslint-disable-next-line no-unused-vars
+  onSelected: (patient: Patient | undefined) => void;
+  selected: Patient | undefined;
+  data: ConsultationReception[];
 };
 
 const PatientPickerList: React.FC<PatientPickerListProps> = ({
@@ -34,7 +29,7 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
   selected,
 }) => {
   const isReceptionData = useMemo(
-    () => isArray<PatientReception>(data, isPatientReception),
+    () => isArray<ConsultationWalkIn>(data, isConsultationWalkIn),
     [data],
   );
 
@@ -80,9 +75,11 @@ const PatientPickerList: React.FC<PatientPickerListProps> = ({
                       <small>
                         {(isReceptionData ? '접수시간 : ' : '예약시간 : ') +
                           (isReceptionData
-                            ? (item as PatientReception).receptionTime
+                            ? (item as ConsultationWalkIn)
+                                .consultationReceptionTime
                             : dayjs(
-                                (item as PatientReservation).reservationTime,
+                                (item as ConsultationAppointment)
+                                  .consultationAppointmentTime,
                               ).format('HH:mm:ss'))}
                       </small>
                     </Typography>

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
@@ -51,8 +50,16 @@ const theme = createTheme({
       styleOverrides: {
         standardInfo: {
           background:
-            'linear-gradient(90deg, rgba(186,255,191,1) 61%, rgba(132,255,171,1) 100%)',
+            'linear-gradient(90deg, rgba(186,255,191,1) 60%, rgba(132,255,171,1) 100%)',
           color: indigo[600],
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          background:
+            'linear-gradient(90deg, rgba(46,22,125,0.99) 80%, rgba(22,14,79,1) 100%)',
         },
       },
     },

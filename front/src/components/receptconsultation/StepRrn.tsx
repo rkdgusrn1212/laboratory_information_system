@@ -4,23 +4,26 @@ import Box from '@mui/material/Box';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import { Button, Typography } from '@mui/material';
 import { RrnPattern } from '../../utils/patterns';
-import { CreatablePatient } from '../../services/types';
+import { CreatePatientRequest } from '../../services/patientApi';
 
 interface StepRrnProps {
   // eslint-disable-next-line no-unused-vars
-  onRrnSubmit: (data: Pick<CreatablePatient, 'patientRrn'>) => void;
+  onRrnSubmit: (data: Pick<CreatePatientRequest, 'patientRrn'>) => void;
 }
 
 const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {
-  const ref = useRef('');
+  const [rrn, setRrn] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const handleClick = () => {
-    if (!RrnPattern.test(ref.current)) {
+  const handleValueSet = (value: string) => {
+    setRrn(value);
+    if (!RrnPattern.test(value)) {
       setError('주민번호/외국인등록번호를 다시 한번 확인해 주세요.');
-      return;
     }
-    onRrnSubmit({ patientRrn: ref.current });
+  };
+
+  const handleClick = () => {
+    onRrnSubmit({ patientRrn: rrn });
   };
 
   return (
@@ -48,10 +51,10 @@ const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {
           <RrnMaskedInput
             fullWidth
             label="주민번호/외국인등록번호"
-            ref={ref}
+            onValueSet={handleValueSet}
             size="small"
             error={error !== undefined}
-            help={error}
+            helpText={error}
           />
           <Button
             sx={{ height: '100%' }}
