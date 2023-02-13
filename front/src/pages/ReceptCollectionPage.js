@@ -738,7 +738,7 @@ export default function ReceptCollectionPage() {
           </Card>
         </Grid>
         {ordern.order &&
-          ordern.order.map((id, i) => {
+          ordern.order.map(() => {
             if (!ordern.order) {
               return <Grid>no data</Grid>;
             } else {
