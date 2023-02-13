@@ -27,11 +27,22 @@ CREATE TABLE IF NOT EXISTS `staff` (
   `staff_image` varchar(255) DEFAULT NULL,
   `staff_rrn` char(14) NOT NULL,
   `staff_admitted` bit(1) NOT NULL DEFAULT b'0',
-  `staff_type` tinyint(4) NOT NULL,
+  `staff_type` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`staff_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 트리거 kanghoshin_lis.staff_before_insert 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `staff_before_insert` BEFORE INSERT ON `staff` FOR EACH ROW BEGIN
+IF NEW.staff_type != 0 THEN
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DO NOT INSERT staff_type VALUE';
+END IF;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
