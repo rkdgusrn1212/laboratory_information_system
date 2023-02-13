@@ -33,6 +33,27 @@ CREATE TABLE IF NOT EXISTS `auth` (
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
+-- 테이블 kanghoshin_lis.department 구조 내보내기
+CREATE TABLE IF NOT EXISTS `department` (
+  `department_code` char(2) NOT NULL DEFAULT '0',
+  `department_name` varchar(40) NOT NULL,
+  PRIMARY KEY (`department_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 kanghoshin_lis.doctor 구조 내보내기
+CREATE TABLE IF NOT EXISTS `doctor` (
+  `staff_no` int(11) NOT NULL,
+  `doctor_certification` int(11) NOT NULL,
+  `department_code` char(2) DEFAULT '',
+  PRIMARY KEY (`staff_no`),
+  KEY `FK_doctor_department` (`department_code`),
+  CONSTRAINT `FK_doctor_department` FOREIGN KEY (`department_code`) REFERENCES `department` (`department_code`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
 -- 테이블 kanghoshin_lis.patient 구조 내보내기
 CREATE TABLE IF NOT EXISTS `patient` (
   `patient_no` int(11) NOT NULL AUTO_INCREMENT,

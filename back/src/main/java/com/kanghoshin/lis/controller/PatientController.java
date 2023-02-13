@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.lang.Nullable;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("api/patient")
 @RequiredArgsConstructor
-@Validated
 public class PatientController {
 
 	private final PatientService patientService;
@@ -41,7 +38,7 @@ public class PatientController {
 	}
 	
 	@GetMapping("list")
-	public List<PatientVo> readPatientList(@Nullable @Valid ReadPatientListDto readPatientListDto){
+	public List<PatientVo> readPatientList(@Valid ReadPatientListDto readPatientListDto){
 		return patientService.readPatientList(readPatientListDto);
 	}
 }
