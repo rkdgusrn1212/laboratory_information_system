@@ -1,4 +1,4 @@
-import { forwardRef, RefCallback, useImperativeHandle, useState } from 'react';
+import { forwardRef, RefCallback, useState } from 'react';
 
 import { IMaskInput } from 'react-imask';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -29,26 +29,25 @@ const PhoneIMaskInput = forwardRef<HTMLElement, PhoneIMaskInputProps>(
             },
           })
         }
-        overwrite
       />
     );
   },
 );
 
-const PhoneInput = forwardRef<
-  string,
+const PhoneInput: React.FC<
   FormControlProps & {
     label: string;
-    help?: string;
+    helpText?: string | null;
+    // eslint-disable-next-line no-unused-vars
+    onValueSet: (value: string) => void;
   }
->(({ label, help, ...props }, ref) => {
-  const [value, setValue] = useState('010-');
+> = ({ label, helpText, onValueSet, ...props }) => {
+  const [value, setValue] = useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
+    onValueSet(event.target.value);
   };
-
-  useImperativeHandle(ref, () => value);
 
   return (
     <FormControl {...props}>
@@ -61,8 +60,8 @@ const PhoneInput = forwardRef<
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         inputComponent={PhoneIMaskInput as any}
       />
-      <FormHelperText>{help}</FormHelperText>
+      <FormHelperText>{helpText}</FormHelperText>
     </FormControl>
   );
-});
+};
 export default PhoneInput;

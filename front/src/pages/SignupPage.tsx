@@ -30,13 +30,12 @@ const SignupPage = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box
+        position="fixed"
         width="100%"
         height="100%"
         sx={{
           background:
-            'linear-gradient(0deg, rgba(255,107,66,1) 0%, rgba(255,250,152,1) 100%)',
-          pt: 5,
-          pb: 5,
+            'linear-gradient(180deg,rgba(255,255,255,1) 80%, rgba(0,170,255,1) 100%)',
         }}
       >
         <Container component="main" maxWidth="md">

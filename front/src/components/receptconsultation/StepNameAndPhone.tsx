@@ -21,27 +21,27 @@ interface StepNameAndPhonePorps {
 const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({
   onStepAndPhoneSubmit,
 }) => {
-  const ref = useRef('');
+  const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
-  const [nameError, setNameError] = useState<string | undefined>(undefined);
-  const [phoneError, setPhoneError] = useState<string | undefined>(undefined);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
 
-  const handleClick = () => {
-    let hasError = false;
-    if (!PhonePattern.test(ref.current)) {
+  const handleValueSet = (value: string) => {
+    setPhone(value);
+    if (!PhonePattern.test(phone)) {
       setPhoneError('휴대폰 번호를 다시 한번 확인해 주세요.');
-      hasError = true;
     } else {
-      setPhoneError(undefined);
+      setPhoneError(null);
     }
     if (name.length > 40 || name.length < 0) {
       setNameError('이름을 다시한번 확인해 주세요.');
-      hasError = true;
     } else {
-      setNameError(undefined);
+      setNameError(null);
     }
-    if (hasError) return;
-    onStepAndPhoneSubmit({ patientName: name, patientPhone: ref.current });
+  };
+
+  const handleSubmit = () => {
+    onStepAndPhoneSubmit({ patientName: name, patientPhone: phone });
   };
 
   const handleNameChange: ChangeEventHandler<
@@ -84,22 +84,22 @@ const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({
             size="small"
             value={name}
             onChange={handleNameChange}
-            error={nameError !== undefined}
+            error={nameError != null}
             helperText={nameError}
           />
           <PhoneMaskedInput
             fullWidth
             label="휴대폰 번호"
-            ref={ref}
+            onValueSet={handleValueSet}
             size="small"
-            error={phoneError !== undefined}
-            help={phoneError}
+            error={phoneError !== null}
+            helpText={phoneError}
           />
           <Button
             sx={{ height: '100%' }}
             variant="contained"
             color="secondary"
-            onClick={handleClick}
+            onClick={handleSubmit}
           >
             입력
           </Button>

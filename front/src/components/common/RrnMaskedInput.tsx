@@ -1,4 +1,4 @@
-import { forwardRef, RefCallback, useImperativeHandle, useState } from 'react';
+import { forwardRef, RefCallback, useState } from 'react';
 
 import { IMaskInput } from 'react-imask';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -34,13 +34,14 @@ const RrnIMaskInput = forwardRef<HTMLElement, RrnIMaskInputProps>(
   },
 );
 
-const RrnMaskedInput = forwardRef<
-  string,
+const RrnMaskedInput: React.FC<
   FormControlProps & {
     label: string;
-    help?: string;
+    helpText?: string | null;
+    // eslint-disable-next-line no-unused-vars
+    onValueSet: (value: string) => void;
   }
->(({ label, help, ...props }, ref) => {
+> = ({ label, helpText, onValueSet, ...props }) => {
   const [value, setValue] = useState('');
   const [pure, setPure] = useState('');
 
@@ -53,6 +54,7 @@ const RrnMaskedInput = forwardRef<
   > = () => {
     setPure(value);
     setValue(rrnMask(value));
+    onValueSet(value);
   };
 
   const handleFocus: React.FocusEventHandler<
@@ -60,8 +62,6 @@ const RrnMaskedInput = forwardRef<
   > = () => {
     setValue(pure);
   };
-
-  useImperativeHandle(ref, () => pure);
 
   return (
     <FormControl {...props}>
@@ -76,8 +76,8 @@ const RrnMaskedInput = forwardRef<
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         inputComponent={RrnIMaskInput as any}
       />
-      <FormHelperText>{help}</FormHelperText>
+      <FormHelperText>{helpText}</FormHelperText>
     </FormControl>
   );
-});
+};
 export default RrnMaskedInput;

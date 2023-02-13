@@ -1,258 +1,244 @@
-import { useState, ChangeEventHandler, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEventHandler } from 'react';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
-import dayjs, { Dayjs } from 'dayjs';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import {
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Radio,
-  RadioGroup,
-} from '@mui/material';
-import { WriteDetailsField } from '../../services/authApi';
-import { MappedValidationError } from '../../services/types';
-import { PhonePattern, RrnPattern } from '../../utils/patterns';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
+import Avatar from '@mui/material/Avatar';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 
-export interface DetailsForm {
-  staffBirth: string;
-  staffName: string;
-  staffMale: boolean;
-  staffPhone: string;
-  staffRrn: string;
-}
+import {
+  isWriteDetailsError,
+  useWriteDetailsMutation,
+  WriteDetailsField,
+  WriteDetailsRequest,
+} from '../../services/authApi';
+import { isValidationError, mapValidationError } from '../../services/types';
+import { PhonePattern, RrnPattern } from '../../utils/patterns';
+import rrnParser from '../../utils/rrnParser';
+import RrnMaskedInput from '../common/RrnMaskedInput';
+import PhoneInput from '../common/PhoneMaskedInput';
 
 const StaffDetailsForm: React.FC<{
-  // eslint-disable-next-line no-unused-vars
-  onDetailFormComplete: (form: DetailsForm | undefined) => void;
-  error: Omit<MappedValidationError<WriteDetailsField>, 'staffType'>;
-}> = ({ onDetailFormComplete, error }) => {
-  const [staffBirth, setStaffBirth] = useState<Dayjs | null>(null);
-  const [staffName, setStaffName] = useState<string>('');
-  const [staffMale, setStaffMale] = useState<boolean | undefined>(undefined);
-  const [staffPhone, setStaffPhone] = useState<string>('');
-  const [staffRrn, setStaffRrn] = useState<string>('');
+  onSuccess: () => void;
+  onException: () => void;
+}> = ({ onSuccess, onException }) => {
+  const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
+  const [staffName, setStaffName] = useState('');
+  const [staffType, setStaffType] = useState<number | null>(null);
+  const [staffPhone, setStaffPhone] = useState('');
+  const [staffRrn, setStaffRrn] = useState('');
+  const [doctorCertification, setDoctorCertification] = useState('');
+  const [doctorDepartmentCode, setDoctorDepartmentCode] = useState('');
+  const [staffNameHelp, setStaffNameHelp] = useState<string | null>(null);
+  const [staffPhoneHelp, setStaffPhoneHelp] = useState<string | null>(null);
+  const [staffRrnHelp, setStaffRrnHelp] = useState<string | null>(null);
 
-  const [staffBirthHelp, setStaffBirthHelp] = useState<string | undefined>(
-    undefined,
-  );
-  const [staffNameHelp, setStaffNameHelp] = useState<string | undefined>(
-    undefined,
-  );
-  const [staffMaleHelp, setStaffMaleHelp] = useState<string | undefined>(
-    undefined,
-  );
-  const [staffPhoneHelp, setStaffPhoneHelp] = useState<string | undefined>(
-    undefined,
-  );
-  const [staffRrnHelp, setStaffRrnHelp] = useState<string | undefined>(
-    undefined,
-  );
-
-  useEffect(() => {
-    setStaffPhoneHelp((state) => error.staffPhone || state);
-    setStaffBirthHelp((state) => error.staffBirth || state);
-    setStaffRrnHelp((state) => error.staffRrn || state);
-    setStaffMaleHelp((state) => error.staffMale || state);
-    setStaffNameHelp((state) => error.staffName || state);
-  }, [
-    error.staffBirth,
-    error.staffMale,
-    error.staffName,
-    error.staffPhone,
-    error.staffRrn,
-  ]);
-
-  const handleBirthChange = (
-    newValue: React.SetStateAction<dayjs.Dayjs | null>,
-  ) => {
-    setStaffBirth(newValue);
-  };
-
-  useEffect(() => {
-    if (staffBirth == null) {
-      setStaffBirthHelp('생년월알이 비어있습니다.');
-    } else if (staffBirth.diff(Date.now(), 'day') > 0) {
-      setStaffBirthHelp('생년월알이 미래일 순 없습니다.');
-    } else {
-      setStaffBirthHelp(undefined);
+  const handleSubmitClick = () => {
+    const parsedRrn = rrnParser(staffRrn);
+    if (!parsedRrn) setStaffRrnHelp('주민번호를 확인해주세요');
+    else {
+      writeDetails({
+        staffName,
+        staffRrn,
+        staffBirth: parsedRrn.birth,
+        staffMale: parsedRrn.male,
+        staffPhone,
+        staffImage: null,
+        staffType,
+      } as WriteDetailsRequest)
+        .unwrap()
+        .then(() => onSuccess())
+        .catch((error) => {
+          if (isWriteDetailsError(error)) {
+            onException();
+          } else if (isValidationError<WriteDetailsField>(error)) {
+            const validationError =
+              mapValidationError<WriteDetailsField>(error);
+            if (validationError.staffPhone)
+              setStaffPhoneHelp(validationError.staffPhone);
+            if (validationError.staffRrn)
+              setStaffRrnHelp(validationError.staffRrn);
+            if (validationError.staffMale || validationError.staffBirth)
+              setStaffRrnHelp('주민번호를 확인해주세요');
+            if (validationError.staffName)
+              setStaffNameHelp(validationError.staffName);
+          } else {
+            onException();
+          }
+        });
     }
-  }, [staffBirth]);
+  };
 
   const handleNameChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setStaffName(event.target.value);
-  };
-
-  useEffect(() => {
-    if (staffName.length < 1) {
+    const value = event.target.value;
+    setStaffName(value);
+    if (value.length < 1) {
       setStaffNameHelp('이름이 비어있습니다.');
-    } else if (staffName.length > 40) {
+    } else if (value.length > 40) {
       setStaffNameHelp('이름은 40자를 넘을 수 없습니다.');
     } else {
-      setStaffNameHelp(undefined);
+      setStaffNameHelp(null);
     }
-  }, [staffName]);
-
-  const handlePhoneChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setStaffPhone(event.target.value);
   };
 
-  useEffect(() => {
-    if (staffPhone.length < 1) {
+  const handlePhoneValueSet = (value: string) => {
+    setStaffPhone(value);
+    if (value.length < 1) {
       setStaffPhoneHelp('전화번호가 비어있습니다.');
-    } else if (!PhonePattern.test(staffPhone)) {
+    } else if (!PhonePattern.test(value)) {
       setStaffPhoneHelp('전화번호 형식에 맞지 않습니다.');
     } else {
-      setStaffPhoneHelp(undefined);
+      setStaffPhoneHelp(null);
     }
-  }, [staffPhone]);
-
-  const handleRrnChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setStaffRrn(event.target.value);
   };
 
-  useEffect(() => {
-    if (staffRrn.length < 1) {
+  const handleRrnValueSet = (value: string) => {
+    setStaffRrn(value);
+    if (value.length < 1) {
       setStaffRrnHelp('주민번호가 비어있습니다.');
-    } else if (!RrnPattern.test(staffRrn)) {
+    } else if (!RrnPattern.test(value)) {
       setStaffRrnHelp('주민번호 형식에 맞지 않습니다.');
     } else {
-      setStaffRrnHelp(undefined);
+      setStaffRrnHelp(null);
     }
-  }, [staffRrn]);
-
-  const handleMaleChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    value: string,
-  ) => {
-    setStaffMale(value === 'male');
   };
 
-  useEffect(() => {
-    if (staffMale == undefined) {
-      setStaffMaleHelp('성별이 선택되지 않았습니다.');
-    } else {
-      setStaffMaleHelp(undefined);
-    }
-  }, [staffMale]);
-
-  useEffect(() => {
-    if (
-      staffBirthHelp === undefined &&
-      staffMaleHelp === undefined &&
-      staffNameHelp === undefined &&
-      staffPhoneHelp === undefined &&
-      staffRrnHelp === undefined
-    ) {
-      onDetailFormComplete({
-        staffBirth: staffBirth?.toJSON(),
-        staffName,
-        staffMale,
-        staffRrn,
-        staffPhone,
-      } as DetailsForm);
-    } else {
-      onDetailFormComplete(undefined);
-    }
-  }, [
-    staffBirthHelp,
-    staffMaleHelp,
-    staffNameHelp,
-    staffPhoneHelp,
-    staffRrnHelp,
-    staffBirth,
-    staffMale,
-    staffName,
-    staffPhone,
-    staffRrn,
-    onDetailFormComplete,
-  ]);
+  const handleTypeChange = (
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    value: number | null,
+  ) => {
+    setStaffType(value);
+  };
 
   return (
-    <Box component="form" noValidate sx={{ mt: 3 }}>
-      <Grid container spacing={2}>
-        <Grid item xs={5}>
+    <Box display="flex" justifyContent="center">
+      <Box width="100%" maxWidth={600}>
+        <Box sx={{ mt: 2 }} display="flex" alignItems="baseline" gap={2}>
           <TextField
             autoComplete="name"
+            size="small"
             required
-            fullWidth
             onChange={handleNameChange}
             label="성명"
             helperText={staffNameHelp}
-            error={staffNameHelp !== undefined}
+            error={staffNameHelp != null}
             value={staffName}
           />
-        </Grid>
-        <Grid item xs={7}>
-          <TextField
+          <RrnMaskedInput
+            size="small"
             required
             fullWidth
-            onChange={handleRrnChange}
-            value={staffRrn}
-            helperText={staffRrnHelp}
-            error={staffRrnHelp !== undefined}
+            onValueSet={handleRrnValueSet}
+            helpText={staffRrnHelp}
+            error={staffRrnHelp != null}
             label="주민번호"
           />
-        </Grid>
-        <Grid item xs={6}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              disableFuture
-              label="생년월일"
-              openTo="year"
-              value={staffBirth}
-              views={['year', 'month', 'day']}
-              onChange={handleBirthChange}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  fullWidth
-                  {...params}
-                  error={staffBirthHelp !== undefined}
-                  helperText={staffBirthHelp}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </Grid>
+        </Box>
+        <PhoneInput
+          sx={{ mt: 1 }}
+          size="small"
+          required
+          fullWidth
+          label="전화번호"
+          onValueSet={handlePhoneValueSet}
+          helpText={staffPhoneHelp}
+          error={staffPhoneHelp != null}
+        />
+        <ToggleButtonGroup
+          fullWidth
+          sx={{ mt: 2 }}
+          color="standard"
+          value={staffType}
+          exclusive
+          onChange={handleTypeChange}
+        >
+          <ToggleButton value={0}>
+            <Box sx={{ display: 'block', p: 1 }}>
+              <Avatar
+                src="/images/nurse_icon.png"
+                sx={{
+                  margin: 'auto',
+                  p: 1,
+                  bgcolor: 'skyblue',
+                  width: 56,
+                  height: 56,
+                }}
+              />
+              간호사
+            </Box>
+          </ToggleButton>
+          <ToggleButton value={1}>
+            <Box sx={{ display: 'block', p: 1 }}>
+              <Avatar
+                src="/images/doctor_icon.png"
+                sx={{
+                  margin: 'auto',
+                  p: 1,
+                  bgcolor: 'orange',
+                  width: 56,
+                  height: 56,
+                }}
+              />
+              의사
+            </Box>
+          </ToggleButton>
+        </ToggleButtonGroup>
 
-        <Grid item xs={6}>
-          <FormLabel id="male-radio-buttons-group-label">성별</FormLabel>
-          <FormHelperText id="male-radio-button-group-error">
-            {staffMaleHelp}
-          </FormHelperText>
-          <RadioGroup
-            row
-            aria-errormessage="male-radio-button-group-error"
-            aria-labelledby="male-radio-buttons-group-label"
-            value={
-              staffMale === undefined
-                ? undefined
-                : staffMale
-                ? 'male'
-                : 'female'
-            }
-            onChange={handleMaleChange}
-          >
-            <FormControlLabel value="male" control={<Radio />} label="남성" />
-            <FormControlLabel value="female" control={<Radio />} label="여성" />
-          </RadioGroup>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            autoComplete="tel"
-            required
-            fullWidth
-            value={staffPhone}
-            label="전화번호"
-            onChange={handlePhoneChange}
-            helperText={staffPhoneHelp}
-            error={staffPhoneHelp !== undefined}
-          />
-        </Grid>
-      </Grid>
+        {staffType === 1 && (
+          <>
+            <TextField
+              sx={{ mt: 1 }}
+              label="의사면허"
+              fullWidth
+              size="small"
+              variant="outlined"
+              margin="dense"
+            />
+            <TextField
+              sx={{ mt: 1 }}
+              label="진료과"
+              fullWidth
+              size="small"
+              variant="outlined"
+              margin="dense"
+            />
+          </>
+        )}
+        <Box display="flex" my={2} width="100%" justifyContent="flex-end">
+          <Box sx={{ position: 'relative' }}>
+            <Button
+              variant="contained"
+              onClick={handleSubmitClick}
+              disabled={
+                staffName.length < 1 ||
+                staffPhone.length < 1 ||
+                staffRrn.length < 1 ||
+                staffType == null ||
+                staffNameHelp != null ||
+                staffPhoneHelp != null ||
+                staffRrnHelp != null
+              }
+              color="secondary"
+            >
+              등록
+            </Button>
+            {writeDetailsState.isLoading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: 'primary',
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+            )}
+          </Box>
+        </Box>
+      </Box>
     </Box>
   );
 };
