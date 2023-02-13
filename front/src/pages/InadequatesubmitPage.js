@@ -25,12 +25,14 @@ import { inadequate_typeList } from '../components/inadequate/InadequateTypeList
 import { staffList } from '../components/inadequate/StaffList';
 import { SubmitInadequateList } from '../components/inadequate/SubmitInadequateList';
 
+import axios from 'axios';
+
 export default function InadequatePage() {
   //----검색기능
   const [search, setSearch] = useState(''); //검색하는 검체번호
   const [find, setFind] = useState(1); //검색 결과
+  const [flag, setFlag] = useState(1); //검색 결과다라 화면 변화
 
-  const [flag, setFlag] = useState(1); //검색 결과
   const [typelist, setTypelist] = useState([]); //부적합 데이터 백에서 받아와서 저장
   const [stafflist, setStafflist] = useState([]); //스태프 리스트
   const [submitInadequateList, setSubmitInadequateList] = useState([]); //스태프 리스트
@@ -110,6 +112,12 @@ export default function InadequatePage() {
       headerAlign: 'center',
     },
     {
+      headerName: '통보시간',
+      field: 'receptInadequateDate',
+      headerAlign: 'center',
+      width: 200,
+    },
+    {
       headerName: '피통보자',
       field: 'submitInadequateTo',
       headerAlign: 'center',
@@ -125,6 +133,7 @@ export default function InadequatePage() {
       field: 'collectDate',
       headerAlign: 'center',
       type: 'dateTime',
+      width: 200,
     },
     {
       field: 'staff_name',
@@ -135,7 +144,7 @@ export default function InadequatePage() {
       headerName: '진료과',
       field: 'department_name',
       headerAlign: 'center',
-      width: 300,
+      width: 250,
     },
   ];
 
@@ -149,6 +158,32 @@ export default function InadequatePage() {
   const handleChange2 = (event) => {
     setListener(event.target.value);
   };
+
+  //입력 결과 post로 보내기
+  function postdata() {
+    fetch(`http://localhost:8080/api/collect/insertsubmitinadequate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        specimenNo: find.specimenNo,
+        inadequateTypeCode: reason,
+        submitInadequateFrom: '72', //현재 로그인정보
+        submitInadequateTo: listener,
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          alert('생성이 완료되었습니다.');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    SubmitInadequateList().then((res) => setSubmitInadequateList(res));
+  }
 
   return (
     <Grid>
@@ -399,7 +434,7 @@ export default function InadequatePage() {
                               <Button
                                 sx={{ mx: 1, minWidth: 120, width: '100%' }}
                                 variant="contained"
-                                onClick={null}
+                                onClick={postdata}
                               >
                                 입력
                               </Button>
