@@ -102,8 +102,8 @@ public interface PatientMapper {
 			+ "<if test='readPatientListDto.excludePatientFemale'>"
 			+ "AND patient_male"
 			+ "</if>"
-
 			+ "</where>"
+			+ "limit #{readPatientListDto.pageStart}, #{readPatientListDto.pageSize}"
 			+ "</script>")
 	List<PatientVo> select(@Param("readPatientListDto") ReadPatientListDto readPatientListDto);
 
