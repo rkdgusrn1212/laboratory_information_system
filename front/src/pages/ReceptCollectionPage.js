@@ -44,6 +44,8 @@ export default function ReceptCollectionPage() {
   const [nawon, setNawon] = useState([]); // 내원 검색 결과
   const [selectedn, setSelectedn] = useState(0); //선택한 내원정보
   const [ordern, setOrder] = useState([]); //반응형 그리드를 만들기위한 변수설정
+  const [pagestarter, setPagestarter] = useState([]); //반응형 그리드를 만들기위한 변수설정
+
   const [rows3, setRows3] = useState([]); //첫번째 그리드에서 선택한 값들
   const [rows5, setRows5] = useState([]); //바코드를 출력할 처방정보
   const [selectionModel1, setSelectionModel1] = React.useState([]); // 첫번째 그리드에서 선택한 값들
@@ -60,6 +62,9 @@ export default function ReceptCollectionPage() {
   //검색창 미리보기 구현
   useEffect(() => {
     PatientList().then((res) => setpatientlist(res));
+    setPagestarter({
+      pagestart: { id: 1 },
+    });
   }, []);
   const handleInput = (e) => {
     console.log(e.target.value);
@@ -77,8 +82,11 @@ export default function ReceptCollectionPage() {
   };
 
   function onP() {
+    var sampleTimestamp = Date.now();
+    var date = new Date(sampleTimestamp);
+
     fetch(
-      `http://localhost:8080/api/collect/patientbyname?patientName=${search}`,
+      `http://localhost:8080/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
       {
         method: 'GET',
       },
@@ -89,13 +97,16 @@ export default function ReceptCollectionPage() {
       .then((data) => {
         //전처리
         data.map((patient) => {
-          patient.patientAge += '세';
-
           if (patient.patientMale === '1') patient.patientMale = '남자';
           else {
             patient.patientMale = '여자';
           }
+          const today = new Date();
+          const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
+
+          patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
         });
+
         setCallpatient({
           patients: data,
         });
@@ -384,454 +395,459 @@ export default function ReceptCollectionPage() {
 
   return (
     <Grid>
-      <p></p>
-      <Grid sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Card sx={{ minWidth: 275, width: '95%' }}>
-          <CardContent>
-            <Box
-              component="form"
-              sx={{
-                '& .MuiTextField-root': { m: 1, width: '25ch' },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <Grid sx={{ maxHeight: '500px', overflowY: 'scroll' }}>
-                <h3>&nbsp; 환자 정보 검색창</h3>
-                <Grid sx={{ textAlign: 'right' }}>
-                  <Autocomplete
-                    onKeyPress={handleOnKeyPress}
-                    disablePortal
-                    id="combo-box-demo"
-                    options={patientlist.map((item) => item.patientName)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="이름으로 검색"
-                        onSelect={handleInput}
-                        sx={{
-                          width: 350,
-                          margin: '10px auto',
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    mx: 3,
-                  }}
-                >
-                  <FormControl variant="standard">
-                    <Grid>
-                      <InputLabel htmlFor="input-with-icon-adornment">
-                        환자정보 검색
-                      </InputLabel>
-                      <Input
-                        sx={{ m: 1, width: '50ch' }}
-                        id="input-with-icon-adornment"
-                        startAdornment={
-                          <InputAdornment position="start">
-                            <AccountCircle />
-                          </InputAdornment>
-                        }
-                        label="Required"
-                        value={search}
-                        placeholder="환자이름, 번호, 주민번호"
-                        onChange={onSearchHandler}
-                        onKeyPress={handleOnKeyPress}
-                      />
-                    </Grid>
-                  </FormControl>
-                </Grid>
-                <Grid sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontSize: 14 }}>
-                    {find} (으)로 검색된 환자 총 {plength}건입니다.
-                  </Typography>
-                </Grid>
-                {callpatient.patients &&
-                  callpatient.patients.map((patient, i) => {
-                    if (!callpatient.patients) {
-                      return <Grid>no data</Grid>;
-                    } else if (selectedp === i + 1)
-                      return (
-                        <Grid
-                          sx={{
-                            textAlign: 'center',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            mx: 3,
-
-                            // backgroundColor: '#99CBED'
-                          }}
-                        >
-                          <Grid>
-                            <CheckIcon fontSize="large" sx={{ my: 2 }} />
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="환자이름"
-                              defaultValue=""
-                              variant="filled"
-                              value={patient.patientName}
-                              size="small"
-                            />
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="성별/나이"
-                              defaultValue=""
-                              variant="filled"
-                              value={
-                                patient.patientMale + '/' + patient.patientAge
-                              }
-                              size="small"
-                            />{' '}
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="주민번호"
-                              defaultValue=""
-                              variant="filled"
-                              value={patient.patientRrn}
-                              size="small"
-                            />
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="환자번호"
-                              defaultValue=""
-                              variant="filled"
-                              //value={find}
-                              value={patient.patientNo}
-                              size="small"
-                            />
-                          </Grid>
-                          <Grid>
-                            <CheckIcon fontSize="large" sx={{ my: 2 }} />
-                          </Grid>
-                        </Grid>
-                      );
-                    else if (selectedp === -100) {
-                      return (
-                        <Grid
-                          sx={{
-                            textAlign: 'center',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            mx: 3,
-                            '&:hover': {
-                              backgroundColor: '#a0a0a0',
-                            },
-                          }}
-                          onClick={(e) => selectpatient(i + 1)}
-                        >
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="환자이름"
-                              defaultValue="검색창에 값을 입력하세요"
-                              variant="filled"
-                              value={patient.patientName}
-                              size="small"
-                            />
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="성별/나이"
-                              defaultValue="검색창에 값을 입력하세요"
-                              variant="filled"
-                              value={
-                                patient.patientMale + '/' + patient.patientAge
-                              }
-                              size="small"
-                            />{' '}
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="주민번호"
-                              defaultValue="검색창에 값을 입력하세요"
-                              variant="filled"
-                              value={patient.patientRrn}
-                              size="small"
-                            />
-                          </Grid>
-                          <Grid item xs={3} sx={{}}>
-                            <TextField
-                              disabled
-                              id="filled-disabled"
-                              label="환자번호"
-                              defaultValue="검색창에 값을 입력하세요"
-                              variant="filled"
-                              //value={find}
-                              value={patient.patientNo}
-                              size="small"
-                            />
-                          </Grid>
-                        </Grid>
-                      );
-                    }
-                  })}
-              </Grid>
-            </Box>
-          </CardContent>
-        </Card>
-      </Grid>
-      {/* ----------------------------------------------------------------- 내원 사이드 */}
-      <Grid sx={{ minWidth: ' 1450px' }}>
-        <Grid sx={{ width: '18%', float: 'left', mx: 1 }}>
-          <Card
-            sx={{
-              height: '700px',
-              minWidth: 275,
-              width: '95%',
-              mx: 1,
-              overflowY: 'scroll',
-            }}
-          >
+      <Grid>
+        <p></p>
+        <Grid sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Card sx={{ minWidth: 275, width: '95%' }}>
             <CardContent>
-              <h3>내원정보</h3>
-              {nawon.visits &&
-                nawon.visits.map((visit, i) => {
-                  if (!nawon.visits) {
-                    return <Grid>no data</Grid>;
-                  } else {
-                    if (selectedn === i + 1) {
-                      return (
-                        <>
-                          <Card
-                            className="nawoncard"
-                            onClick={(e) => clickcard(i)}
-                            variant="outlined"
+              <Box
+                component="form"
+                sx={{
+                  '& .MuiTextField-root': { m: 1, width: '25ch' },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <Grid sx={{ maxHeight: '500px', overflowY: 'scroll' }}>
+                  <h3>&nbsp; 환자 정보 검색창</h3>
+                  <Grid sx={{ textAlign: 'right' }}>
+                    <Autocomplete
+                      onKeyPress={handleOnKeyPress}
+                      disablePortal
+                      id="combo-box-demo"
+                      options={patientlist.map((item) => item.patientName)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="이름으로 검색"
+                          onSelect={handleInput}
+                          sx={{
+                            width: 350,
+                            margin: '10px auto',
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid
+                    sx={{
+                      textAlign: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      mx: 3,
+                    }}
+                  >
+                    <FormControl variant="standard">
+                      <Grid>
+                        <InputLabel htmlFor="input-with-icon-adornment">
+                          환자정보 검색
+                        </InputLabel>
+                        <Input
+                          sx={{ m: 1, width: '50ch' }}
+                          id="input-with-icon-adornment"
+                          startAdornment={
+                            <InputAdornment position="start">
+                              <AccountCircle />
+                            </InputAdornment>
+                          }
+                          label="Required"
+                          value={search}
+                          placeholder="환자이름, 번호, 주민번호"
+                          onChange={onSearchHandler}
+                          onKeyPress={handleOnKeyPress}
+                        />
+                      </Grid>
+                    </FormControl>
+                  </Grid>
+                  <Grid sx={{ textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: 14 }}>
+                      {find} (으)로 검색된 환자 총 {plength}건입니다.
+                    </Typography>
+                  </Grid>
+                  {callpatient.patients &&
+                    callpatient.patients.map((patient, i) => {
+                      if (!callpatient.patients) {
+                        return <Grid>no data</Grid>;
+                      } else if (selectedp === i + 1)
+                        return (
+                          <Grid
                             sx={{
-                              minWidth: 200,
-                              backgroundColor: '#ABCBAD',
-                              borderColor: '#000',
-                              '&:hover': {
-                                backgroundColor: '#96BE98',
-                              },
+                              textAlign: 'center',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              mx: 3,
+
+                              // backgroundColor: '#99CBED'
                             }}
                           >
-                            <CardContent
-                              sx={{
-                                alignItems: 'self-end',
-                                justifyContent: 'flex-end',
-                                background:
-                                  'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
-                                borderColor: '#000',
-                              }}
-                            >
-                              <Grid>
-                                <Grid sx={{ display: 'flex' }}>
-                                  <Grid sx={{ float: 'left' }}>
-                                    <Typography sx={{ fontSize: 14 }}>
-                                      {i + 1}번째
-                                    </Typography>
-                                  </Grid>
-                                  <Grid sx={{ float: 'right' }}>
-                                    <Typography
-                                      sx={{ fontSize: 14 }}
-                                      color="text.secondary"
-                                      gutterBottom
-                                    >
-                                      내원일자: {visit.visit_date}
-                                    </Typography>
-                                  </Grid>
-                                </Grid>
-                                <Typography variant="body2" component="div">
-                                  내원과:{visit.department_name}
-                                </Typography>
-                                <Typography
-                                  sx={{ fontSize: 14 }}
-                                  color="text.secondary"
-                                >
-                                  진료의: {visit.v_doc}
-                                </Typography>
-                              </Grid>
-                            </CardContent>
-                          </Card>
-                          <p />
-                        </>
-                      );
-                    } else {
-                      return (
-                        <>
-                          <Card
-                            className="nawoncard"
-                            onClick={(e) => clickcard(i)}
-                            variant="outlined"
+                            <Grid>
+                              <CheckIcon fontSize="large" sx={{ my: 2 }} />
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="환자이름"
+                                defaultValue=""
+                                variant="filled"
+                                value={patient.patientName}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="성별/나이"
+                                defaultValue=""
+                                variant="filled"
+                                value={patient.patientMale + '/' + patient.age}
+                                size="small"
+                              />{' '}
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="주민번호"
+                                defaultValue=""
+                                variant="filled"
+                                value={patient.patientRrn}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="환자번호"
+                                defaultValue=""
+                                variant="filled"
+                                //value={find}
+                                value={patient.patientNo}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid>
+                              <CheckIcon fontSize="large" sx={{ my: 2 }} />
+                            </Grid>
+                          </Grid>
+                        );
+                      else if (selectedp === -100) {
+                        return (
+                          <Grid
                             sx={{
-                              minWidth: 200,
-                              backgroundColor: '#fff',
-                              borderColor: '#000',
+                              textAlign: 'center',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              mx: 3,
                               '&:hover': {
                                 backgroundColor: '#a0a0a0',
                               },
-                              // '&:height_scroll': {
-                              //     height: '800px',
-                              //     overflowX: 'hidden',
-                              //     overflowY: 'auto'
-                              // },
                             }}
+                            onClick={(e) => selectpatient(i + 1)}
                           >
-                            <CardContent
-                              sx={{
-                                alignItems: 'self-end',
-                                justifyContent: 'flex-end',
-                                background:
-                                  'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
-                                borderColor: '#000',
-                              }}
-                            >
-                              <Grid>
-                                <Grid sx={{ display: 'flex' }}>
-                                  <Grid sx={{ float: 'left' }}>
-                                    <Typography sx={{ fontSize: 14 }}>
-                                      {i + 1}번째
-                                    </Typography>
-                                  </Grid>
-                                  <Grid sx={{ float: 'right' }}>
-                                    <Typography
-                                      sx={{ fontSize: 14 }}
-                                      color="text.secondary"
-                                      gutterBottom
-                                    >
-                                      내원일자: {visit.visit_date}
-                                    </Typography>
-                                  </Grid>
-                                </Grid>
-                                <Typography variant="body2" component="div">
-                                  내원과:{visit.department_name}
-                                </Typography>
-                                <Typography
-                                  sx={{ fontSize: 14 }}
-                                  color="text.secondary"
-                                >
-                                  진료의: {visit.v_doc}
-                                </Typography>
-                              </Grid>
-                            </CardContent>
-                          </Card>
-                          <p />
-                        </>
-                      );
-                    }
-                  }
-                })}
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="환자이름"
+                                defaultValue="검색창에 값을 입력하세요"
+                                variant="filled"
+                                value={patient.patientName}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="성별/나이"
+                                defaultValue="검색창에 값을 입력하세요"
+                                variant="filled"
+                                value={patient.patientMale + '/' + patient.age}
+                                size="small"
+                              />{' '}
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="주민번호"
+                                defaultValue="검색창에 값을 입력하세요"
+                                variant="filled"
+                                value={patient.patientRrn}
+                                size="small"
+                              />
+                            </Grid>
+                            <Grid item xs={3} sx={{}}>
+                              <TextField
+                                disabled
+                                id="filled-disabled"
+                                label="환자번호"
+                                defaultValue="검색창에 값을 입력하세요"
+                                variant="filled"
+                                //value={find}
+                                value={patient.patientNo}
+                                size="small"
+                              />
+                            </Grid>
+                          </Grid>
+                        );
+                      }
+                    })}
+                </Grid>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
-        {ordern.order &&
-          ordern.order.map(() => {
-            if (!ordern.order) {
-              return <Grid>no data</Grid>;
-            } else {
-              return (
-                <Card sx={{ minWidth: '1100px', width: '80%', marginleft: 20 }}>
-                  <CardContent sx={{ minWidth: 500 }}>
-                    <Box
-                      sx={{
-                        height: 500,
-                        width: '38%',
-                        float: 'right',
-                      }}
-                    >
-                      <h3>채취할 처방정보</h3>
-                      <DataGrid
-                        rows={rows3}
-                        columns={columns2}
-                        pageSize={7}
-                        rowsPerPageOptions={[7]}
-                        checkboxSelection
-                        onSelectionModelChange={(newSelectionModel) => {
-                          setSelectionModel2(newSelectionModel);
+        );
+        {/* ----------------------------------------------------------------- 내원 사이드 */}
+        <Grid sx={{ minWidth: ' 1450px' }}>
+          <Grid sx={{ width: '18%', float: 'left', mx: 1 }}>
+            <Card
+              sx={{
+                height: '700px',
+                minWidth: 275,
+                width: '95%',
+                mx: 1,
+                overflowY: 'scroll',
+              }}
+            >
+              <CardContent>
+                <h3>내원정보</h3>
+                {nawon.visits &&
+                  nawon.visits.map((visit, i) => {
+                    if (!nawon.visits) {
+                      return <Grid>no data</Grid>;
+                    } else {
+                      if (selectedn === i + 1) {
+                        return (
+                          <>
+                            <Card
+                              className="nawoncard"
+                              onClick={(e) => clickcard(i)}
+                              variant="outlined"
+                              sx={{
+                                minWidth: 200,
+                                backgroundColor: '#ABCBAD',
+                                borderColor: '#000',
+                                '&:hover': {
+                                  backgroundColor: '#96BE98',
+                                },
+                              }}
+                            >
+                              <CardContent
+                                sx={{
+                                  alignItems: 'self-end',
+                                  justifyContent: 'flex-end',
+                                  background:
+                                    'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
+                                  borderColor: '#000',
+                                }}
+                              >
+                                <Grid>
+                                  <Grid sx={{ display: 'flex' }}>
+                                    <Grid sx={{ float: 'left' }}>
+                                      <Typography sx={{ fontSize: 14 }}>
+                                        {i + 1}번째
+                                      </Typography>
+                                    </Grid>
+                                    <Grid sx={{ float: 'right' }}>
+                                      <Typography
+                                        sx={{ fontSize: 14 }}
+                                        color="text.secondary"
+                                        gutterBottom
+                                      >
+                                        내원일자: {visit.visit_date}
+                                      </Typography>
+                                    </Grid>
+                                  </Grid>
+                                  <Typography variant="body2" component="div">
+                                    내원과:{visit.department_name}
+                                  </Typography>
+                                  <Typography
+                                    sx={{ fontSize: 14 }}
+                                    color="text.secondary"
+                                  >
+                                    진료의: {visit.v_doc}
+                                  </Typography>
+                                </Grid>
+                              </CardContent>
+                            </Card>
+                            <p />
+                          </>
+                        );
+                      } else {
+                        return (
+                          <>
+                            <Card
+                              className="nawoncard"
+                              onClick={(e) => clickcard(i)}
+                              variant="outlined"
+                              sx={{
+                                minWidth: 200,
+                                backgroundColor: '#fff',
+                                borderColor: '#000',
+                                '&:hover': {
+                                  backgroundColor: '#a0a0a0',
+                                },
+                                // '&:height_scroll': {
+                                //     height: '800px',
+                                //     overflowX: 'hidden',
+                                //     overflowY: 'auto'
+                                // },
+                              }}
+                            >
+                              <CardContent
+                                sx={{
+                                  alignItems: 'self-end',
+                                  justifyContent: 'flex-end',
+                                  background:
+                                    'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
+                                  borderColor: '#000',
+                                }}
+                              >
+                                <Grid>
+                                  <Grid sx={{ display: 'flex' }}>
+                                    <Grid sx={{ float: 'left' }}>
+                                      <Typography sx={{ fontSize: 14 }}>
+                                        {i + 1}번째
+                                      </Typography>
+                                    </Grid>
+                                    <Grid sx={{ float: 'right' }}>
+                                      <Typography
+                                        sx={{ fontSize: 14 }}
+                                        color="text.secondary"
+                                        gutterBottom
+                                      >
+                                        내원일자: {visit.visit_date}
+                                      </Typography>
+                                    </Grid>
+                                  </Grid>
+                                  <Typography variant="body2" component="div">
+                                    내원과:{visit.department_name}
+                                  </Typography>
+                                  <Typography
+                                    sx={{ fontSize: 14 }}
+                                    color="text.secondary"
+                                  >
+                                    진료의: {visit.v_doc}
+                                  </Typography>
+                                </Grid>
+                              </CardContent>
+                            </Card>
+                            <p />
+                          </>
+                        );
+                      }
+                    }
+                  })}
+              </CardContent>
+            </Card>
+          </Grid>
+          {ordern.order &&
+            ordern.order.map(() => {
+              if (!ordern.order) {
+                return <Grid>no data</Grid>;
+              } else {
+                return (
+                  <Card
+                    sx={{
+                      minWidth: '1100px',
+                      width: '80%',
+                      marginleft: 20,
+                    }}
+                  >
+                    <CardContent sx={{ minWidth: 500 }}>
+                      <Box
+                        sx={{
+                          height: 500,
+                          width: '38%',
+                          float: 'right',
                         }}
-                        selectionModel={selectionModel2}
-                      />
-                      <br />
-                      <Button
-                        sx={{ width: '100%' }}
-                        variant="contained"
-                        onClick={handleClickOpen}
                       >
-                        채취버튼
-                      </Button>
-                      <ReceptCollectionDialog
-                        open={open}
-                        onClose={handleClose}
-                      />
-                    </Box>
-                    <Grid sx={{ my: 40, float: 'right' }}>
-                      <ArrowForwardIcon />
-                      &nbsp;&nbsp;
-                    </Grid>
+                        <h3>채취할 처방정보</h3>
+                        <DataGrid
+                          rows={rows3}
+                          columns={columns2}
+                          pageSize={7}
+                          rowsPerPageOptions={[7]}
+                          checkboxSelection
+                          onSelectionModelChange={(newSelectionModel) => {
+                            setSelectionModel2(newSelectionModel);
+                          }}
+                          selectionModel={selectionModel2}
+                        />
+                        <br />
+                        <Button
+                          sx={{ width: '100%' }}
+                          variant="contained"
+                          onClick={handleClickOpen}
+                        >
+                          채취버튼
+                        </Button>
+                        <ReceptCollectionDialog
+                          open={open}
+                          onClose={handleClose}
+                        />
+                      </Box>
+                      <Grid sx={{ my: 40, float: 'right' }}>
+                        <ArrowForwardIcon />
+                        &nbsp;&nbsp;
+                      </Grid>
 
-                    <Box
-                      sx={{
-                        height: 500,
-                        width: '58%',
-                        float: 'left',
-                        '& .super-app-theme--1': {
-                          bgcolor: '#ABCBAD',
-                          '&:hover': {
-                            bgcolor: '#96BE98',
+                      <Box
+                        sx={{
+                          height: 500,
+                          width: '58%',
+                          float: 'left',
+                          '& .super-app-theme--1': {
+                            bgcolor: '#ABCBAD',
+                            '&:hover': {
+                              bgcolor: '#96BE98',
+                            },
                           },
-                        },
-                      }}
-                    >
-                      <h3>처방정보</h3>
-
-                      <DataGrid
-                        rows={rows1}
-                        columns={columns}
-                        // getRowClassName={(params) => {
-                        //     if (selectedn === `${params.row.id}`) {
-                        //         return 'super-app-theme--1'
-                        //     }
-                        // }}
-                        getRowClassName={(params) =>
-                          `super-app-theme--${params.row.status}`
-                        }
-                        pageSize={7}
-                        rowsPerPageOptions={[7]}
-                        checkboxSelection
-                        // isRowSelectable={(params) => params.row.specimen_no < 50000}// 나중에 구현 할것 오른쪽에 넘어간 값 받아오는것
-                        onSelectionModelChange={(newSelectionModel) => {
-                          setSelectionModel1(newSelectionModel);
                         }}
-                        selectionModel={selectionModel1}
-                      />
-
-                      <br />
-                      <Button
-                        sx={{ width: '100%' }}
-                        variant="outlined"
-                        onClick={grid1buttonclick}
                       >
-                        리스트 등록
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
-              );
-            }
-          })}
+                        <h3>처방정보</h3>
+
+                        <DataGrid
+                          rows={rows1}
+                          columns={columns}
+                          // getRowClassName={(params) => {
+                          //     if (selectedn === `${params.row.id}`) {
+                          //         return 'super-app-theme--1'
+                          //     }
+                          // }}
+                          getRowClassName={(params) =>
+                            `super-app-theme--${params.row.status}`
+                          }
+                          pageSize={7}
+                          rowsPerPageOptions={[7]}
+                          checkboxSelection
+                          // isRowSelectable={(params) => params.row.specimen_no < 50000}// 나중에 구현 할것 오른쪽에 넘어간 값 받아오는것
+                          onSelectionModelChange={(newSelectionModel) => {
+                            setSelectionModel1(newSelectionModel);
+                          }}
+                          selectionModel={selectionModel1}
+                        />
+
+                        <br />
+                        <Button
+                          sx={{ width: '100%' }}
+                          variant="outlined"
+                          onClick={grid1buttonclick}
+                        >
+                          리스트 등록
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                );
+              }
+            })}
+        </Grid>
       </Grid>
     </Grid>
   );
