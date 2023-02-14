@@ -24,7 +24,8 @@ CREATE TABLE IF NOT EXISTS `doctor` (
   `department_code` char(2) DEFAULT '',
   PRIMARY KEY (`staff_no`),
   KEY `FK_doctor_department` (`department_code`),
-  CONSTRAINT `FK_doctor_department` FOREIGN KEY (`department_code`) REFERENCES `department` (`department_code`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_doctor_department` FOREIGN KEY (`department_code`) REFERENCES `department` (`department_code`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_doctor_staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
@@ -46,6 +47,7 @@ UPDATE staff SET staff_type = 1 WHERE staff_no = NEW.staff_no;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
+
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
