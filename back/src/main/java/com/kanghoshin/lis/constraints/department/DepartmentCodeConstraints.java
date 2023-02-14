@@ -1,4 +1,5 @@
-package com.kanghoshin.lis.constraints;
+package com.kanghoshin.lis.constraints.department;
+
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
@@ -14,17 +15,16 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Pattern;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Positive(message="식별자가 비어있습니다.")
-public @interface NoConstraints {
+@Pattern(regexp = "^[0-9]{2}$", message = "진료과 코드 형식이 맞지 않습니다.")
+public @interface DepartmentCodeConstraints {
 	String message() default "";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
-
 }

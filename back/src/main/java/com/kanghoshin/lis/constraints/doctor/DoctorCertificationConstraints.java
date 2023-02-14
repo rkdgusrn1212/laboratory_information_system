@@ -1,4 +1,4 @@
-package com.kanghoshin.lis.constraints;
+package com.kanghoshin.lis.constraints.doctor;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;
@@ -14,17 +14,18 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Positive(message="식별자가 비어있습니다.")
-public @interface NoConstraints {
+@Min(value=1000, message = "의사면허는 최소 4자리여야 합니다.")
+@Max(value=999999, message="의사면허는 최대 6자리여야 합니다.")
+public @interface DoctorCertificationConstraints {
 	String message() default "";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
-
 }
