@@ -120,7 +120,7 @@ GET
 
 ### Response body
 
-{
+[{
 "staffNo": number,
 "staffName": string,
 "staffMale": boolean,
@@ -130,4 +130,38 @@ GET
 "staffBirth": string ex)"1914-10-12T15:00:00.000+00:00",
 "staffAdmitted": boolean,
 "staffType": number
-}
+}, ...]
+
+## Read Staff
+
+### endpoint
+
+{no}
+
+- no
+
+  읽을 staff의 staff_no값.
+
+### Method
+
+GET
+
+### Response Body
+
+- 존재할 때
+
+  {
+  "staffNo": number,
+  "staffName": string,
+  "staffBirth": string, ex) "1995-12-11T15:00:00.000+00:00"
+  "staffMale": boolean,
+  "staffPhone": string, ex) "010-1234-5678"
+  "staffImage": string|null, desc)URL 주소
+  "staffRrn": string, ex) "951212-1234567"
+  "staffAdmitted": boolean,
+  "staffType": number
+  }
+
+- 없을 때
+
+empty

@@ -96,11 +96,11 @@ GET
 
 ### Response body
 
-{
+[{
 "patientNo": number,
 "patientName": string,
 "patientMale": boolean,
 "patientPhone": string ex) "010-1234-5678",
 "patientRrn": string ex) "951212-1231231",
 "patientBirth": string ex)"1914-10-12T15:00:00.000+00:00"
-}
+},...]
