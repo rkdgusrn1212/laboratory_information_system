@@ -53,7 +53,7 @@ const SigninForm = () => {
             break;
           case 'ROLE_STAFF':
             if (account.principal.authorities[1] === 'ROLE_DOCTOR') {
-              navigate('/order', { replace: true });
+              navigate('/consultation', { replace: true });
             } else {
               navigate('/collection', { replace: true });
             }
