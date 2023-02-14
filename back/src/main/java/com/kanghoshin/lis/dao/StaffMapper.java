@@ -21,14 +21,13 @@ public interface StaffMapper {
 	@Insert("INSERT INTO staff(staff_name, "
 			+ "staff_birth, staff_male, "
 			+ "staff_phone, staff_image, "
-			+ "staff_rrn, staff_type) VALUES("
+			+ "staff_rrn) VALUES("
 			+ " #{detailsDto.staffName},"
 			+ " #{detailsDto.staffBirth},"
 			+ " #{detailsDto.staffMale},"
 			+ " #{detailsDto.staffPhone},"
 			+ " #{detailsDto.staffImage},"
-			+ " #{detailsDto.staffRrn},"
-			+ " #{detailsDto.staffType})")
+			+ " #{detailsDto.staffRrn})")
 	@Options(useGeneratedKeys=true,  keyProperty="detailsDto.staffNo")
 	int insertDetailsDto(@Param("detailsDto") DetailsDto detailsDto);
 }

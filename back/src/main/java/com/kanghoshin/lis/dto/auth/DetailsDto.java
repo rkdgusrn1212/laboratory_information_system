@@ -9,8 +9,6 @@ import com.kanghoshin.lis.constraints.RrnConstraints;
 import com.kanghoshin.lis.constraints.PhoneConstraints;
 import com.kanghoshin.lis.constraints.ImageConstraints;
 import com.kanghoshin.lis.constraints.NameConstraints;
-import com.kanghoshin.lis.constraints.staff.StaffTypeConstraints;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,7 +39,4 @@ public class DetailsDto {
 	@NotBlank(message="주민번호가 비어있습니다.")
 	@RrnConstraints
 	private String staffRrn;
-
-	@StaffTypeConstraints
-	private int staffType;
 }
