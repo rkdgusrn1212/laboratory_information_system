@@ -2,6 +2,7 @@ package com.kanghoshin.lis.dto.patient;
 
 import java.util.Date;
 
+import com.kanghoshin.lis.constraints.OrderConstraints;
 import com.kanghoshin.lis.dto.ReadListDto;
 
 import lombok.Data;
@@ -13,26 +14,23 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=false)
 public class ReadPatientListDto extends ReadListDto {
 	
-	private int patientNoStart;
-	private int patientNoEnd;
 	private String patientNoKey;
-	
-	private String patientNameStart;
+	@OrderConstraints
+	private String patientNoOrder;
 	private String patientNameKey;
-	private String patientNameEnd;
-	
-	private boolean excludePatientMale;
-	private boolean excludePatientFemale;
-
-	private String patientPhoneStart;
+	@OrderConstraints
+	private String patientNameOrder;
+	private String patientMaleKey;
+	@OrderConstraints
+	private String patientMaleOrder;
 	private String patientPhoneKey;
-	private String patientPhoneEnd;
-	
-	private String patientRrnStart;
-	private String patientRrnEnd;
+	@OrderConstraints
+	private String patientPhoneOrder;
 	private String patientRrnKey;
-	
+	@OrderConstraints
+	private String patientRrnOrder;
 	private Date patientBirthStart;
 	private Date patientBirthEnd;
-	private Date patientBirthKey;
+	@OrderConstraints
+	private String patientBirthOrder;
 }

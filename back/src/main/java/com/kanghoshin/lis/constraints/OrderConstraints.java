@@ -17,14 +17,13 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.constraints.Pattern;
 
-
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Pattern(regexp ="^[0-9]{2,3}-[0-9]{3,4}-[0-9]{3,4}$", message="전화번호 양식이 맞지 않습니다.")
-public @interface PhoneConstraints {
+@Pattern(regexp = "(ASC)|(DESC)", message="정렬 인자값이 형식에 맞지 않습니다.")
+public @interface OrderConstraints {
 	String message() default "";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
