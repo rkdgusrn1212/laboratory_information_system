@@ -75,11 +75,13 @@
 /front/src/components/order/ @rkdgusrn1212
 
 # 인증관련 리덕스 & 리덕스 설정
-/front/src/services/accountSlice.ts
-/front/src/services/authApi.ts
-/front/src/services/types.ts
-/front/src/hooks/index.ts
+/front/src/services/accountSlice.ts @rkdgusrn1212
+/front/src/services/authApi.ts @rkdgusrn1212
+/front/src/services/types.ts @rkdgusrn1212
+/front/src/hooks/index.ts @rkdgusrn1212
 
 # stirngAvatar 유틸
-/front/src/utils/stringAvatar.ts
+/front/src/utils/stringAvatar.ts @rkdgusrn1212
 
+# document 소유
+/document/StaffAPI.md @rkdgusrn1212
