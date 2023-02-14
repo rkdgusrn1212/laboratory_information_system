@@ -240,7 +240,7 @@ export default function ReceptCollectionPage() {
       headerName: '검사명',
       field: 'test_name',
       headerAlign: 'center',
-      width: 300,
+      width: 200,
     },
     {
       field: 'test_container',
@@ -738,7 +738,7 @@ export default function ReceptCollectionPage() {
           </Card>
         </Grid>
         {ordern.order &&
-          ordern.order.map((id, i) => {
+          ordern.order.map(() => {
             if (!ordern.order) {
               return <Grid>no data</Grid>;
             } else {
