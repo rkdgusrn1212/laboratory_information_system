@@ -1,4 +1,4 @@
-import { useState, ChangeEventHandler } from 'react';
+import React, { useState, ChangeEventHandler } from 'react';
 import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -18,6 +18,7 @@ import { PhonePattern, RrnPattern } from '../../utils/patterns';
 import rrnParser from '../../utils/rrnParser';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import PhoneInput from '../common/PhoneMaskedInput';
+import DoctorCertificationMaskedInput from '../common/DoctorCertificationMaskedInput';
 
 const StaffDetailsForm: React.FC<{
   onSuccess: () => void;
@@ -33,6 +34,9 @@ const StaffDetailsForm: React.FC<{
   const [staffNameHelp, setStaffNameHelp] = useState<string | null>(null);
   const [staffPhoneHelp, setStaffPhoneHelp] = useState<string | null>(null);
   const [staffRrnHelp, setStaffRrnHelp] = useState<string | null>(null);
+  const [doctorCertificationHelp, setDoctorCertificationHelp] = useState<
+    string | null
+  >(null);
 
   const handleSubmitClick = () => {
     const parsedRrn = rrnParser(staffRrn);
@@ -111,6 +115,16 @@ const StaffDetailsForm: React.FC<{
     setStaffType(value);
   };
 
+  const handleCertificationSet = (value: string) => {
+    setDoctorCertification(value);
+    const num = parseInt(value);
+    if (num < 1000 || num > 999999) {
+      setDoctorCertificationHelp('4-6자리의 의사면허를 입력해주세요');
+    } else {
+      setDoctorCertificationHelp(null);
+    }
+  };
+
   return (
     <Box display="flex" justifyContent="center">
       <Box width="100%" maxWidth={600}>
@@ -187,13 +201,14 @@ const StaffDetailsForm: React.FC<{
 
         {staffType === 1 && (
           <>
-            <TextField
+            <DoctorCertificationMaskedInput
               sx={{ mt: 1 }}
               label="의사면허"
               fullWidth
               size="small"
-              variant="outlined"
-              margin="dense"
+              onValueSet={handleCertificationSet}
+              error={doctorCertificationHelp != null}
+              helpText={doctorCertificationHelp}
             />
             <TextField
               sx={{ mt: 1 }}
@@ -201,7 +216,6 @@ const StaffDetailsForm: React.FC<{
               fullWidth
               size="small"
               variant="outlined"
-              margin="dense"
             />
           </>
         )}
