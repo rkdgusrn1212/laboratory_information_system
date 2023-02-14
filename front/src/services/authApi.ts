@@ -3,7 +3,6 @@ import { RootState } from '../store';
 import server from '../server.json';
 import {
   Account,
-  Doctor,
   GeneralErrorWithMessage,
   isGeneralError,
   Staff,
@@ -39,11 +38,7 @@ export interface CreateAuthRequest {
   validationCode: string;
 }
 
-export type CreateAuthField =
-  | 'authId'
-  | 'authPassword'
-  | 'validationEmail'
-  | 'validationCode';
+export type CreateAuthField = keyof CreateAuthRequest;
 
 type CreateAuthError = {
   data: {
@@ -60,16 +55,12 @@ export function isCreateAuthError(error: unknown): error is CreateAuthError {
   return isGeneralError(error) && error.data.subject === 'createAuth';
 }
 
-export type WriteDetailsField =
-  | 'staffName'
-  | 'staffBirth'
-  | 'staffMale'
-  | 'staffPhone'
-  | 'staffImage'
-  | 'staffRrn'
-  | 'staffType';
+export type WriteDetailsRequest = Omit<
+  Staff,
+  'staffNo' | 'staffAdmitted' | 'staffType'
+>;
 
-export type WriteDetailsRequest = Omit<Staff, 'staffNo' | 'staffAdmitted'>;
+export type WriteDetailsField = keyof WriteDetailsRequest;
 
 type WriteDetailsError = {
   data: {
@@ -83,7 +74,7 @@ export function isWriteDetailsError(
   return isGeneralError(error) && error.data.subject === 'writeDetails';
 }
 
-export const authApi = createApi({
+const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/auth/`,
     prepareHeaders: (headers, { getState }) => {

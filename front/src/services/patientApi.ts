@@ -5,7 +5,7 @@ import { Patient } from './types';
 
 export type CreatePatientRequest = Omit<Patient, 'patientNo'>;
 
-export const patientApi = createApi({
+const patientApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/patient`,
     prepareHeaders: (headers, { getState }) => {
