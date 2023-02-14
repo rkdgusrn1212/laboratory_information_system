@@ -53,7 +53,7 @@ const SigninPage = () => {
       if (account.principal.staffVo) {
         switch (account.principal.staffVo.staffType) {
           case 0:
-            navigate('/consultation', { replace: true });
+            navigate('/collection', { replace: true });
             break;
           case 1:
             navigate('/consultation', { replace: true });
