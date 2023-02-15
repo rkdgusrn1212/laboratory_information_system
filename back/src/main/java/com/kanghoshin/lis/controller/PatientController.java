@@ -27,7 +27,7 @@ public class PatientController {
 	private final PatientService patientService;
 	
 	@PostMapping
-	public void createPatient(@Valid @RequestBody CreatePatientDto patientDto) {		
+	public void createPatient(@Valid @RequestBody CreatePatientDto patientDto) {
 		patientService.createPatient(patientDto);
 	}
 	

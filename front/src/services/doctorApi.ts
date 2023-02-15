@@ -1,12 +1,20 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import server from '../server.json';
 import { RootState } from '../store';
-import { Doctor } from './types';
+import { Department, Doctor, ListOrder, ListRequest } from './types';
 
 export type CreateDoctorRequest = Pick<
   Doctor,
   'staffNo' | 'departmentCode' | 'doctorCertification'
 >;
+
+export interface ReadDoctorListWithDepartmentRequest extends ListRequest {
+  departmentCodeKey?: string;
+  departmentCodeOrder?: ListOrder;
+  departmentNameKey?: string;
+  departmentNameOrder?: ListOrder;
+}
+export type ReadDoctorListWithDepartmentResponse = (Doctor & Department)[];
 
 const doctorApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -28,7 +36,18 @@ const doctorApi = createApi({
         url: '',
       }),
     }),
+    readDoctorListWithDepartment: builder.query<
+      ReadDoctorListWithDepartmentResponse,
+      ReadDoctorListWithDepartmentRequest
+    >({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: 'list-with-department',
+      }),
+    }),
   }),
 });
 export default doctorApi;
-export const { useCreateDoctorMutation } = doctorApi;
+export const { useCreateDoctorMutation, useReadDoctorListWithDepartmentQuery } =
+  doctorApi;

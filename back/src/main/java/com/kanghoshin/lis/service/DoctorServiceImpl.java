@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.kanghoshin.lis.dao.DoctorMapper;
 import com.kanghoshin.lis.dto.doctor.CreateDoctorDto;
+import com.kanghoshin.lis.dto.doctor.ReadDoctorListWithDepartmentDto;
+import com.kanghoshin.lis.vo.doctor.DoctorWithDepartmentVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,4 +22,11 @@ public class DoctorServiceImpl implements DoctorService{
 	public void createDoctor(@NotNull @Valid CreateDoctorDto createDoctorDto) {
 		doctorMapper.insert(createDoctorDto);
 	}
+
+	@Override
+	public DoctorWithDepartmentVo[] readDoctorListWithDepartment(
+			@Valid ReadDoctorListWithDepartmentDto readDoctorListWithDepartmentDto) {
+		return doctorMapper.selectWithDepartment(readDoctorListWithDepartmentDto);
+	}
+
 }

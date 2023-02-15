@@ -219,3 +219,5 @@ export interface ListRequest {
   pageSize: number;
   pageStart: number;
 }
+
+export type ListOrder = 'DESC' | 'ASC';
