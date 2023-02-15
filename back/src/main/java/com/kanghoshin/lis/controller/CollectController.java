@@ -16,7 +16,6 @@ import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.service.collect.CollectService;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
-import com.kanghoshin.lis.vo.collect.CollectPatientVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -35,18 +34,6 @@ public class CollectController {
 	public List<StaffVo> allstaffall() {
 		List<StaffVo> staffnameall = CollectService.getallstafflistall();
 		return staffnameall;
-	}
-
-	@GetMapping("/patient")
-	public List<CollectPatientVo> patientall() {
-		List<CollectPatientVo> getpatientList = CollectService.getPatientall();
-		return getpatientList;
-	}
-
-	@GetMapping("/patientbyname")
-	public List<CollectPatientVo> patientbyname(@Valid @Param("patientName") String patientName) {
-		List<CollectPatientVo> getpatientbyidList = CollectService.getPatientbyname(patientName);
-		return getpatientbyidList;
 	}
 
 	@GetMapping("/insertspecimen")
@@ -136,7 +123,6 @@ public class CollectController {
 
 	@PostMapping("/insertsubmitinadequate")
 	public void insertsubmitinadequate(@Valid @RequestBody SubmitInadequateDto siDto) {
-		System.out.println(siDto.toString());
 		CollectService.insertSubmitInadequate(siDto);
 	}
 }

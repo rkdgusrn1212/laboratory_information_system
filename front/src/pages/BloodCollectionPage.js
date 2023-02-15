@@ -17,23 +17,53 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
 //그리드
 import BloodcollectionsDialog from '../components/bloodcollection/BloodcollectionDialog';
+import { collectlist } from '../components/bloodcollection/CollectList';
 
 const testcodes = ['23012600001', '23012600002', '23012600003', '23012600004'];
 
 export default function BloodCollectionPage() {
   const [open, setOpen] = React.useState(false);
   const [selectedValue, setSelectedValue] = React.useState(testcodes[1]);
+  const [inputlist, setInputlist] = useState([]);
+  const [list, setList] = useState([]); //get
   //----검색기능
   const [search, setSearch] = useState(''); //검색하는 단어
   const [state, setState] = useState([]); //검색 결과
-  const [find, setFind] = useState(''); //검색하는 단어
+  const [pagestarter, setPagestarter] = useState([]); //반응형 그리드를 만들기위한 변수설정
 
   useEffect(() => {
-    //기존의 채혈정보 불러오기
-  });
+    try {
+      collectlist().then((res) => setList(res));
+    } catch {
+      return <h1>no backend</h1>;
+    }
+    setPagestarter({
+      starter: [{ id: 1 }],
+    });
+  }, []);
+
+  function postdata() {
+    fetch(`http://localhost:8080/api/collect/insertcollectbypost`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        specimenNo: search,
+        staffNo: '72',
+      }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          alert('생성이 완료되었습니다.');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   const onSearchHandler = (event) => {
     setSearch(event.currentTarget.value);
@@ -45,14 +75,31 @@ export default function BloodCollectionPage() {
   };
 
   const onSearch = (event) => {
-    setState({});
-    setFind(search);
+    fetch(
+      `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${search}`,
+      {
+        method: 'GET',
+      },
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        //전처리
+        setFlag(3);
+        submitInadequateList.map((a) => {
+          if (a.specimenNo == search) setFlag(4);
+        });
+        setFind(data);
+        console.log(data);
+      });
 
-    //ROW에 검체번호를 기준으로 내원번호,오더일자,용기명,담담의 이름,진료과,검사명를 불러
-    //행을 추가하고 색깔을 넣어준다
+    console.log(falg);
   };
-
+  //post 방식으로 제출
   const handleClickOpen = () => {
+    postdata();
+
     setOpen(true);
   };
 
@@ -67,82 +114,20 @@ export default function BloodCollectionPage() {
     });
   }
 
-  const rows1 = [
-    {
-      //처방 정보
-      id: 2211150001,
-      visit_no: 1,
-      order_date: '22-11-15',
-      specimen_no: '2211150001',
-      test_container: '용기명1',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명1',
-    },
-    {
-      id: 2211150002,
-      visit_no: 1,
-      order_date: '22-11-15',
-      specimen_no: '2211150002',
-      test_container: '용기명2',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명2',
-    },
-    {
-      id: 2212160003,
-      visit_no: 2,
-      order_date: '22-12-16',
-      specimen_no: '2212160003',
-      test_container: '용기명3',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명3',
-    },
-    {
-      id: 2301050004,
-      visit_no: 3,
-      order_date: '23-01-05',
-      specimen_no: '2301050004',
-      test_container: '용기명4',
-      staff_name: '나의사',
-      department_name: '신경외과(NS) - 제1병동',
-      test_name: '검사명5',
-    },
-    {
-      id: 2301180005,
-      visit_no: 4,
-      order_date: '23-01-18',
-      specimen_no: '2301180005',
-      test_container: '용기명4',
-      staff_name: '나의사',
-      department_name: '신경외과(NS) - 제1병동',
-      test_name: '검사명5',
-    },
-    {
-      id: 2301870003,
-      visit_no: 5,
-      order_date: '23-01-27',
-      specimen_no: '2301870003',
-      test_container: '용기명3',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명3',
-    },
-  ];
   const columns = [
     {
       field: 'id',
       headerName: '검체번호',
       headerAlign: 'center',
+      width: 80,
     },
     {
       headerName: '검사명',
-      field: 'test_name',
+      field: 'testName',
       headerAlign: 'center',
     },
     {
-      field: 'test_container',
+      field: 'testContainer',
       headerName: '용기명',
       headerAlign: 'center',
     },
@@ -150,30 +135,36 @@ export default function BloodCollectionPage() {
       field: 'patientNO',
       headerName: '환자번호',
       headerAlign: 'center',
-      type: 'date',
+    },
+    {
+      field: 'fieldName',
+      headerName: '검사분야명',
+      headerAlign: 'center',
     },
     {
       headerName: '바코드 출력자',
-      field: 'staff_no',
+      field: 'printstaffNo',
       headerAlign: 'center',
-      width: 150,
+      width: 60,
     },
     {
       headerName: '바코드 출력일시',
-      field: 'specimen_date',
+      field: 'specimenDate',
       headerAlign: 'center',
       type: 'dateTime',
       width: 200,
     },
     {
       headerName: '채혈자',
-      field: 'collect_staff_no',
+      field: 'staffNo',
       headerAlign: 'center',
+      width: 60,
     },
     {
       headerName: '채혈일시',
-      field: 'collect_date',
+      field: 'collectDate',
       headerAlign: 'center',
+      width: 200,
       type: 'dateTime',
     },
   ];
@@ -255,22 +246,26 @@ export default function BloodCollectionPage() {
             noValidate
             autoComplete="off"
           >
-            <Grid sx={{ height: '400px', width: '98%', mx: 2 }}>
-              <BloodcollectionsDialog
-                selectedValue={selectedValue}
-                open={open}
-                onClose={handleClose}
-              />
-              <DataGrid
-                rows={rows1}
-                columns={columns}
-                pageSize={7}
-                rowsPerPageOptions={[7]}
-                disableSelectionOnClick //셀렉트 금지
-                components={{
-                  Toolbar: GridToolbar,
-                }}
-              />
+            <Grid sx={{ height: '500px', width: '98%', mx: 2 }}>
+              {pagestarter.starter &&
+                pagestarter.starter.map(() => {
+                  if (!pagestarter.starter) {
+                    return <Grid>no data</Grid>;
+                  } else {
+                    return (
+                      <DataGrid
+                        rows={list}
+                        columns={columns}
+                        pageSize={7}
+                        rowsPerPageOptions={[7]}
+                        disableSelectionOnClick //셀렉트 금지
+                        components={{
+                          Toolbar: GridToolbar,
+                        }}
+                      />
+                    );
+                  }
+                })}
             </Grid>
             <br />
             <Grid
@@ -281,6 +276,11 @@ export default function BloodCollectionPage() {
                 mx: 3,
               }}
             >
+              <BloodcollectionsDialog
+                selectedValue={selectedValue}
+                open={open}
+                onClose={handleClose}
+              />
               <Button
                 variant="contained"
                 sx={{ width: '100%', mx: 2 }}

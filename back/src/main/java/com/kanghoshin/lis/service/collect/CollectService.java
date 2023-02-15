@@ -10,7 +10,6 @@ import com.kanghoshin.lis.dto.collect.BloodCollectDto;
 import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
-import com.kanghoshin.lis.vo.collect.CollectPatientVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -18,11 +17,8 @@ import com.kanghoshin.lis.vo.entity.StaffVo;
 
 @Validated
 public interface CollectService {
-	// 삭제예정
-	List<CollectPatientVo> getPatientall();
 
-	List<CollectPatientVo> getPatientbyname(String patient_name);
-	//
+
 
 	List<StaffVo> getallstafflistall();
 
@@ -42,6 +38,7 @@ public interface CollectService {
 
 	List<BloodCollectVo> getCollectall();
 
+	
 	BloodCollectVo getCollectbyno(String specimenNo);
 
 	List<SubmitInadequateVo> getSubmitInadequatelist();

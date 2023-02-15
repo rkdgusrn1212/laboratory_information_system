@@ -15,7 +15,6 @@ import com.kanghoshin.lis.dto.collect.BloodCollectDto;
 import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
-import com.kanghoshin.lis.vo.collect.CollectPatientVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -29,17 +28,7 @@ public class CollectServiceImpl implements CollectService {
 	private final CollectMapper collectMapper;
 	private final PlatformTransactionManager transactionManager;
 
-	@Override
-	public List<CollectPatientVo> getPatientall() {
-		List<CollectPatientVo> patientslist = collectMapper.listpatientall();
-		return patientslist;
-	}
 
-	@Override
-	public List<CollectPatientVo> getPatientbyname(String patientName) {
-		List<CollectPatientVo> getPatientbynamelist = collectMapper.findByPatientname(patientName);
-		return getPatientbynamelist;
-	}
 
 	@Override
 	public List<StaffVo> getallstafflistall() {
@@ -149,7 +138,12 @@ public class CollectServiceImpl implements CollectService {
 
 	@Override
 	public List<BloodCollectVo> getCollectall() {
-		List<BloodCollectVo> Specimenlist = collectMapper.listcollectall();
+		List<BloodCollectVo> Specimenlist = new ArrayList<BloodCollectVo>();
+		try {
+			Specimenlist = collectMapper.listcollectall();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return Specimenlist;
 	}
 
