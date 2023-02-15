@@ -209,3 +209,13 @@ export const isConsultationAppointment = (
   isConsultationReception(data) &&
   'consultationAppointmentTime' in data &&
   typeof data.consultationAppointmentTime === 'string';
+
+export interface Department {
+  departmentCode: string;
+  departmentName: string;
+}
+
+export interface ListRequest {
+  pageSize: number;
+  pageStart: number;
+}

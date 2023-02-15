@@ -19,6 +19,8 @@ import rrnParser from '../../utils/rrnParser';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import PhoneInput from '../common/PhoneMaskedInput';
 import DoctorCertificationMaskedInput from '../common/DoctorCertificationMaskedInput';
+import DepartmentSelectInput from '../common/DepartmentSelectInput';
+import { SelectChangeEvent } from '@mui/material';
 
 const StaffDetailsForm: React.FC<{
   onSuccess: () => void;
@@ -125,6 +127,10 @@ const StaffDetailsForm: React.FC<{
     }
   };
 
+  const handleDepartmentChange = (event: SelectChangeEvent) => {
+    setDoctorDepartmentCode(event.target.value);
+  };
+
   return (
     <Box display="flex" justifyContent="center">
       <Box width="100%" maxWidth={600}>
@@ -210,10 +216,12 @@ const StaffDetailsForm: React.FC<{
               error={doctorCertificationHelp != null}
               helpText={doctorCertificationHelp}
             />
-            <TextField
+            <DepartmentSelectInput
               sx={{ mt: 1 }}
               label="진료과"
+              value={doctorDepartmentCode}
               fullWidth
+              onChange={handleDepartmentChange}
               size="small"
               variant="outlined"
             />
