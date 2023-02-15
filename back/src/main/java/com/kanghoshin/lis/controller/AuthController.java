@@ -61,9 +61,9 @@ public class AuthController {
 	
 
 	@PostMapping("write-details")
-	public void writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
+	public int writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
 			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException {
-		authService.writeDetails(principalDetasils, detailsDto);
+		return authService.writeDetails(principalDetasils, detailsDto);
 	}
 
 	@ExceptionHandler(WriteDetailsFailedException.class)
