@@ -20,7 +20,7 @@ public class DepartmentController {
 	
 	private final DepartmentService departmentService;
 	
-	@GetMapping
+	@GetMapping("list")
 	public DepartmentVo[] readDepartmentList(@NotNull @Valid ReadDepartmentDto readDepartmentDto) {
 		return departmentService.readDepartmentList(readDepartmentDto);
 	}

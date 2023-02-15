@@ -108,7 +108,7 @@ const authApi = createApi({
         url: 'create-auth',
       }),
     }),
-    writeDetails: builder.mutation<unknown, WriteDetailsRequest>({
+    writeDetails: builder.mutation<number, WriteDetailsRequest>({
       query: (body) => ({
         body: body,
         method: 'POST',

@@ -19,18 +19,22 @@ import rrnParser from '../../utils/rrnParser';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import PhoneInput from '../common/PhoneMaskedInput';
 import DoctorCertificationMaskedInput from '../common/DoctorCertificationMaskedInput';
+import DepartmentSelectInput from '../common/DepartmentSelectInput';
+import { SelectChangeEvent } from '@mui/material';
+import { useCreateDoctorMutation } from '../../services/doctorApi';
 
 const StaffDetailsForm: React.FC<{
   onSuccess: () => void;
   onException: () => void;
 }> = ({ onSuccess, onException }) => {
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
+  const [createDoctor] = useCreateDoctorMutation();
   const [staffName, setStaffName] = useState('');
   const [staffType, setStaffType] = useState<number | null>(null);
   const [staffPhone, setStaffPhone] = useState('');
   const [staffRrn, setStaffRrn] = useState('');
   const [doctorCertification, setDoctorCertification] = useState('');
-  const [doctorDepartmentCode, setDoctorDepartmentCode] = useState('');
+  const [departmentCode, setDepartmentCode] = useState('');
   const [staffNameHelp, setStaffNameHelp] = useState<string | null>(null);
   const [staffPhoneHelp, setStaffPhoneHelp] = useState<string | null>(null);
   const [staffRrnHelp, setStaffRrnHelp] = useState<string | null>(null);
@@ -52,7 +56,18 @@ const StaffDetailsForm: React.FC<{
         staffType,
       } as WriteDetailsRequest)
         .unwrap()
-        .then(() => onSuccess())
+        .then((response) => {
+          createDoctor({
+            staffNo: response,
+            departmentCode,
+            doctorCertification: parseInt(doctorCertification),
+          })
+            .unwrap()
+            .then(() => onSuccess())
+            .catch(() => {
+              onException();
+            });
+        })
         .catch((error) => {
           if (isWriteDetailsError(error)) {
             onException();
@@ -123,6 +138,10 @@ const StaffDetailsForm: React.FC<{
     } else {
       setDoctorCertificationHelp(null);
     }
+  };
+
+  const handleDepartmentChange = (event: SelectChangeEvent) => {
+    setDepartmentCode(event.target.value);
   };
 
   return (
@@ -210,10 +229,12 @@ const StaffDetailsForm: React.FC<{
               error={doctorCertificationHelp != null}
               helpText={doctorCertificationHelp}
             />
-            <TextField
+            <DepartmentSelectInput
               sx={{ mt: 1 }}
               label="진료과"
+              value={departmentCode}
               fullWidth
+              onChange={handleDepartmentChange}
               size="small"
               variant="outlined"
             />
