@@ -13,10 +13,14 @@ interface StepPrivacyPolicyProps {
 
 const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
   const [checked, setChecked] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
     setChecked(event.target.checked);
+    if (checked) {
+      setError(null);
+    }
   };
 
   const handleNextClick = () => {
@@ -67,7 +71,7 @@ const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
         개인정보 보호책임자를 통해 요구할 수 있습니다.
       </Typography>
       <Box display="flex" justifyContent="end" alignItems="baseline">
-        <FormControl error={error !== undefined}>
+        <FormControl error={error != null}>
           <FormControlLabel
             control={<Checkbox checked={checked} onChange={handleChange} />}
             label="동의합니다"

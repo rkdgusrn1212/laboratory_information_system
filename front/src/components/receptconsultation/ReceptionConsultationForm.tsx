@@ -11,6 +11,8 @@ import StepConnector, {
   stepConnectorClasses,
 } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import StepRrn from './StepRrn';
 import StepNameAndPhone from './StepNameAndPhone';
@@ -102,11 +104,12 @@ const steps = [
 
 interface InnerFormProps {
   step: number;
+  patientName: string;
   // eslint-disable-next-line no-unused-vars
   onNextClick: (data: Partial<CreatePatientRequest>) => void;
 }
 
-const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
+const InnerForm = memo(({ step, patientName, onNextClick }: InnerFormProps) => {
   switch (step) {
     case 0:
       return <StepRrn onRrnSubmit={onNextClick} />;
@@ -115,7 +118,7 @@ const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
     case 2:
       return <StepPrivacyPolicy onAgree={onNextClick as () => void} />;
     case 3:
-      return <StepSelectDoctor />;
+      return <StepSelectDoctor patientName={patientName} />;
     case 4:
       return <></>;
     default:
@@ -132,7 +135,11 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
     patientMale: false,
     patientPhone: '',
   });
-  const [createPatient, createPatientState] = useCreatePatientMutation();
+  const [createPatient] = useCreatePatientMutation();
+  const [toastOpen, setToastOpen] = useState<{
+    state: boolean;
+    message?: string;
+  }>({ state: false });
 
   const handleNextClick = useCallback(
     (data: Partial<CreatePatientRequest>) => {
@@ -147,12 +154,14 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
             .unwrap()
             .then((data) => {
               data;
-              console.log('success');
               setStep(3);
             })
-            .catch((data) => {
-              console.log(data);
+            .catch(() => {
+              setToastOpen({ state: true });
             });
+        } else {
+          setToastOpen({ state: true, message: '주민번호를 확인해 주세요' });
+          setStep(0);
         }
         return;
       } else {
@@ -171,6 +180,16 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
     [step, setStep, isNew, patient, createPatient],
   );
 
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToastOpen((prev) => ({ ...prev, state: false }));
+  };
+
   return (
     <Stack sx={{ width: '100%', px: 2 }} spacing={4}>
       <Stepper
@@ -186,7 +205,24 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
           </Step>
         ))}
       </Stepper>
-      <InnerForm step={step} onNextClick={handleNextClick} />
+      <InnerForm
+        step={step}
+        patientName={patient.patientName}
+        onNextClick={handleNextClick}
+      />
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={toastOpen.state}
+        autoHideDuration={4000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          {toastOpen.message
+            ? toastOpen.message
+            : '알수없는 오류가 발생했습니다.'}
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 };
