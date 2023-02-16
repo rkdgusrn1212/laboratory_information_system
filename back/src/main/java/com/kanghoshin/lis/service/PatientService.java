@@ -3,6 +3,7 @@ package com.kanghoshin.lis.service;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.validation.annotation.Validated;
 
@@ -14,7 +15,7 @@ import com.kanghoshin.lis.vo.entity.PatientVo;
 @Validated
 public interface PatientService {
 	
-	void createPatient(@Valid CreatePatientDto patientDto);
+	int createPatient(@NotNull @Valid CreatePatientDto patientDto);
 	
 	PatientVo readPatientByPatientNo(@NoConstraints int patientNo);
 	

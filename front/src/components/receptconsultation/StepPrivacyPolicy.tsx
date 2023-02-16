@@ -6,17 +6,35 @@ import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
+import CircularProgress from '@mui/material/CircularProgress';
+import {
+  CreatePatientRequest,
+  useCreatePatientMutation,
+} from '../../services/patientApi';
+import { Patient } from '../../services/types';
 
 interface StepPrivacyPolicyProps {
-  onAgree: () => void;
+  patient: CreatePatientRequest;
+  // eslint-disable-next-line no-unused-vars
+  onSuccess: (data: { patient: Patient }) => void;
+  onException: () => void;
 }
 
-const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
+const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({
+  patient,
+  onSuccess,
+  onException,
+}) => {
   const [checked, setChecked] = useState(false);
-  const [error, setError] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
+  const [createPatient, createPatientState] = useCreatePatientMutation();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
     setChecked(event.target.checked);
+    if (checked) {
+      setError(null);
+    }
   };
 
   const handleNextClick = () => {
@@ -24,7 +42,14 @@ const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
       setError('개인정보 수집·이용 목적에 동의를 해야 진행할 수 있습니다.');
       return;
     }
-    onAgree();
+    createPatient(patient)
+      .unwrap()
+      .then((data) => {
+        onSuccess({ patient: { ...patient, patientNo: data } });
+      })
+      .catch(() => {
+        onException();
+      });
   };
 
   return (
@@ -67,7 +92,7 @@ const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
         개인정보 보호책임자를 통해 요구할 수 있습니다.
       </Typography>
       <Box display="flex" justifyContent="end" alignItems="baseline">
-        <FormControl error={error !== undefined}>
+        <FormControl error={error != null}>
           <FormControlLabel
             control={<Checkbox checked={checked} onChange={handleChange} />}
             label="동의합니다"
@@ -75,10 +100,29 @@ const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({ onAgree }) => {
           />
           <FormHelperText>{error}</FormHelperText>
         </FormControl>
-
-        <Button onClick={handleNextClick} variant="contained" color="secondary">
-          다음
-        </Button>
+        <Box sx={{ position: 'relative' }}>
+          <Button
+            variant="contained"
+            onClick={handleNextClick}
+            disabled={createPatientState.isLoading}
+            color="secondary"
+          >
+            다음
+          </Button>
+          {createPatientState.isLoading && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: 'primary',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          )}
+        </Box>
       </Box>
     </Box>
   );
