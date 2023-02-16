@@ -69,7 +69,8 @@ const RenderRow: React.FC<
 };
 
 const StepSelectDoctor: React.FC<{
-  onSuccess: () => void;
+  // eslint-disable-next-line no-unused-vars
+  onSuccess: (data: { doctor: Doctor & Department }) => void;
   onException: () => void;
   patient: Patient;
 }> = ({ patient, onSuccess, onException }) => {
@@ -85,7 +86,7 @@ const StepSelectDoctor: React.FC<{
       patientNo: patient.patientNo,
     })
       .unwrap()
-      .then(() => onSuccess())
+      .then(() => onSuccess({ doctor }))
       .catch(() => onException());
   };
 

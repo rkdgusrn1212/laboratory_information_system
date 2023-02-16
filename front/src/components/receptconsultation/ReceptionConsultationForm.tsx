@@ -18,8 +18,9 @@ import StepRrn from './StepRrn';
 import StepNameAndPhone from './StepNameAndPhone';
 import StepPrivacyPolicy from './StepPrivacyPolicy';
 import StepSelectDoctor from './StepSelectDoctor';
-import { Patient } from '../../services/types';
+import { Department, Doctor, Patient } from '../../services/types';
 import { CreatePatientRequest } from '../../services/patientApi';
+import StepFinish from './StepFinsish';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -101,15 +102,19 @@ const steps = [
 
 interface InnerFormProps {
   step: number;
-  // eslint-disable-next-line no-unused-vars
-  onSuccess: (data: Partial<Patient>) => void;
+  onSuccess: // eslint-disable-next-line no-unused-vars
+  (data: { patient?: Partial<Patient>; doctor?: Doctor & Department }) => void;
   onException: () => void;
+  onReset: () => void;
   patient: Partial<Patient>;
+  doctor: Partial<Doctor & Department>;
 }
 
 const InnerForm = ({
   step,
   patient,
+  doctor,
+  onReset,
   onSuccess,
   onException,
 }: InnerFormProps) => {
@@ -122,7 +127,7 @@ const InnerForm = ({
       return (
         <StepPrivacyPolicy
           patient={patient as CreatePatientRequest}
-          onSuccess={onSuccess as () => void}
+          onSuccess={onSuccess}
           onException={onException}
         />
       );
@@ -130,24 +135,38 @@ const InnerForm = ({
       return (
         <StepSelectDoctor
           patient={patient as Patient}
-          onSuccess={onSuccess as () => void}
+          onSuccess={onSuccess}
           onException={onException}
         />
       );
     case 4:
-      return <></>;
+      return (
+        <StepFinish
+          patient={patient as Patient}
+          doctor={doctor as Doctor & Department}
+          onReset={onReset}
+        />
+      );
     default:
       return null;
   }
 };
 
-const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
+const ReceptionConsultationForm: React.FC<{
+  isNew: boolean;
+  onReset: () => void;
+}> = ({ isNew, onReset }) => {
   const [step, setStep] = useState(0);
   const [patient, setPatient] = useState<Partial<Patient>>({});
   const [toastOpen, setToastOpen] = useState(false);
+  const [doctor, setDoctor] = useState<Partial<Doctor & Department>>({});
 
-  const handleSuccess = (data: Partial<Patient>) => {
-    setPatient({ ...patient, ...data });
+  const handleSuccess = (data: {
+    patient?: Partial<Patient>;
+    doctor?: Doctor & Department;
+  }) => {
+    if (data.patient) setPatient({ ...patient, ...data.patient });
+    if (data.doctor) setDoctor(data.doctor);
     switch (step) {
       case 0:
         if (isNew) {
@@ -175,6 +194,13 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
     setToastOpen(true);
   };
 
+  const handleReset = () => {
+    setStep(0);
+    setPatient({});
+    setDoctor({});
+    onReset();
+  };
+
   return (
     <Stack sx={{ width: '100%', px: 2 }} spacing={4}>
       <Stepper
@@ -193,6 +219,8 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
       <InnerForm
         step={step}
         patient={patient}
+        doctor={doctor}
+        onReset={handleReset}
         onSuccess={handleSuccess}
         onException={handleException}
       />
