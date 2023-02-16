@@ -27,7 +27,9 @@ public interface CollectService {
 	CollectSpecimenVo createSpecimen(@Valid SpecimenDto specimenDto);
 
 	List<CollectSpecimenVo> getSpecimenall();
-
+	CollectSpecimenVo getSpecimenbyno(String specimenNo);
+	
+	
 	List<InadequateTypeVo> getInadequate_typeall();
 
 	List<BloodCollectVo> createCollectmulti(@Valid List<BloodCollectDto> collectDtolist);

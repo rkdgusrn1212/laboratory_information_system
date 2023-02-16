@@ -96,10 +96,11 @@ export default function ReceptCollectionPage() {
       })
       .then((data) => {
         //전처리
+        console.log(data);
         data.map((patient) => {
-          if (patient.patientMale === '1') patient.patientMale = '남자';
+          if (patient.patientMale === true) patient.patientMale = '남';
           else {
-            patient.patientMale = '여자';
+            patient.patientMale = '여';
           }
           const today = new Date();
           const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
@@ -401,7 +402,6 @@ export default function ReceptCollectionPage() {
           <Card sx={{ minWidth: 275, width: '95%' }}>
             <CardContent>
               <Box
-                component="form"
                 sx={{
                   '& .MuiTextField-root': { m: 1, width: '25ch' },
                 }}
@@ -414,7 +414,6 @@ export default function ReceptCollectionPage() {
                     <Autocomplete
                       onKeyPress={handleOnKeyPress}
                       disablePortal
-                      id="combo-box-demo"
                       options={patientlist.map((item) => item.patientName)}
                       renderInput={(params) => (
                         <TextField
@@ -444,7 +443,6 @@ export default function ReceptCollectionPage() {
                         </InputLabel>
                         <Input
                           sx={{ m: 1, width: '50ch' }}
-                          id="input-with-icon-adornment"
                           startAdornment={
                             <InputAdornment position="start">
                               <AccountCircle />
@@ -486,7 +484,6 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="환자이름"
                                 defaultValue=""
                                 variant="filled"
@@ -497,18 +494,16 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="성별/나이"
                                 defaultValue=""
                                 variant="filled"
                                 value={patient.patientMale + '/' + patient.age}
                                 size="small"
-                              />{' '}
+                              />
                             </Grid>
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="주민번호"
                                 defaultValue=""
                                 variant="filled"
@@ -519,7 +514,6 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="환자번호"
                                 defaultValue=""
                                 variant="filled"
@@ -550,7 +544,6 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="환자이름"
                                 defaultValue="검색창에 값을 입력하세요"
                                 variant="filled"
@@ -561,7 +554,6 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="성별/나이"
                                 defaultValue="검색창에 값을 입력하세요"
                                 variant="filled"
@@ -572,7 +564,6 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="주민번호"
                                 defaultValue="검색창에 값을 입력하세요"
                                 variant="filled"
@@ -583,7 +574,6 @@ export default function ReceptCollectionPage() {
                             <Grid item xs={3} sx={{}}>
                               <TextField
                                 disabled
-                                id="filled-disabled"
                                 label="환자번호"
                                 defaultValue="검색창에 값을 입력하세요"
                                 variant="filled"
@@ -601,7 +591,6 @@ export default function ReceptCollectionPage() {
             </CardContent>
           </Card>
         </Grid>
-        );
         {/* ----------------------------------------------------------------- 내원 사이드 */}
         <Grid sx={{ minWidth: ' 1450px' }}>
           <Grid sx={{ width: '18%', float: 'left', mx: 1 }}>
@@ -631,7 +620,6 @@ export default function ReceptCollectionPage() {
                               sx={{
                                 minWidth: 200,
                                 backgroundColor: '#ABCBAD',
-                                borderColor: '#000',
                                 '&:hover': {
                                   backgroundColor: '#96BE98',
                                 },
@@ -643,7 +631,6 @@ export default function ReceptCollectionPage() {
                                   justifyContent: 'flex-end',
                                   background:
                                     'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
-                                  borderColor: '#000',
                                 }}
                               >
                                 <Grid>
@@ -688,7 +675,7 @@ export default function ReceptCollectionPage() {
                               sx={{
                                 minWidth: 200,
                                 backgroundColor: '#fff',
-                                borderColor: '#000',
+
                                 '&:hover': {
                                   backgroundColor: '#a0a0a0',
                                 },
@@ -705,7 +692,6 @@ export default function ReceptCollectionPage() {
                                   justifyContent: 'flex-end',
                                   background:
                                     'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
-                                  borderColor: '#000',
                                 }}
                               >
                                 <Grid>
@@ -836,7 +822,8 @@ export default function ReceptCollectionPage() {
                         <br />
                         <Button
                           sx={{ width: '100%' }}
-                          variant="outlined"
+                          variant="contained"
+                          color="success"
                           onClick={grid1buttonclick}
                         >
                           리스트 등록

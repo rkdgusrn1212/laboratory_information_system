@@ -11,11 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CollectSpecimenVo {
 
-	private String specimenNo;// 자동입력값
+	private String specimenNo;
 
-
-	private String staffNo;
-
-	private String specimenDate;
+	private String testName;//검사명
+	private String testContainer;//용기명
+	private String patientNo;//환자번호
+	private String fieldName;//검사분야명
+	private String printstaffNo;//바코드 출력자
+	private String specimenDate;//바코드 출력시간
 
 }

@@ -26,11 +26,11 @@ public interface CollectMapper {
 	List<StaffVo> getallstafflistall();
 
 
-	@Select("SELECT specimen_no as specimenNo ,staff_no as staffNo, DATE_FORMAT(specimen_date,'%Y-%m-%d-%H:%i:%s')AS specimenDate FROM `kanghoshin_lis`.`specimen` ORDER BY `specimen_date` DESC")
+	@Select("SELECT specimen_no as specimenNo ,staff_no as printstaffNo, DATE_FORMAT(specimen_date,'%Y-%m-%d-%H:%i:%s')AS specimenDate FROM `kanghoshin_lis`.`specimen` ORDER BY `specimen_date` DESC")
 	List<CollectSpecimenVo> listspecimenall();
 
-	@Select("SELECT  specimen_no as specimenNo, staff_no as staffNo, specimen_date as specimenDate"
-			+ "FROM specimen WHERE specimen_no = #{specimenNo}")
+	@Select("SELECT specimen_no as specimenNo, staff_no as printstaffNo, DATE_FORMAT(specimen_date,'%Y-%m-%d-%H:%i:%s')AS specimenDate"
+			+ " FROM specimen WHERE specimen_no = #{specimenNo}")
 	CollectSpecimenVo findByspecimenno(@Param("specimenNo") String specimenNo);
 
 	@Insert("INSERT INTO specimen(staff_no,specimen_date) VALUES ( #{specimenDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")

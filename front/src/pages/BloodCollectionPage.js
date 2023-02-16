@@ -21,17 +21,32 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import BloodcollectionsDialog from '../components/bloodcollection/BloodcollectionDialog';
 import { collectlist } from '../components/bloodcollection/CollectList';
 
+//UI통일성을 위한 배경
+import Paper from '@mui/material/Paper';
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import axios from 'axios';
+
 const testcodes = ['23012600001', '23012600002', '23012600003', '23012600004'];
+const Item = styled(Paper)(({ theme }) => ({
+  ...theme.typography.body2,
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  height: 60,
+  lineHeight: '60px',
+}));
+
+const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 export default function BloodCollectionPage() {
   const [open, setOpen] = React.useState(false);
-  const [selectedValue, setSelectedValue] = React.useState(testcodes[1]);
+
   const [inputlist, setInputlist] = useState([]);
   const [list, setList] = useState([]); //get
   //----검색기능
   const [search, setSearch] = useState(''); //검색하는 단어
   const [state, setState] = useState([]); //검색 결과
   const [pagestarter, setPagestarter] = useState([]); //반응형 그리드를 만들기위한 변수설정
+  const [flag, setFlag] = useState(1);
 
   useEffect(() => {
     try {
@@ -45,24 +60,24 @@ export default function BloodCollectionPage() {
   }, []);
 
   function postdata() {
-    fetch(`http://localhost:8080/api/collect/insertcollectbypost`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        specimenNo: search,
-        staffNo: '72',
-      }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          alert('생성이 완료되었습니다.');
-        }
+    inputlist.map((input) => {
+      // POST 요청 전송
+      axios({
+        method: 'post',
+        url: `http://localhost:8080/api/collect/insertcollectbypost`,
+        data: {
+          specimenNo: input,
+          staffNo: '72', //로그인 정보로 받아오기
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then(function () {
+          collectlist().then((res) => setList(res));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+    alert('생성이 완료되었습니다.');
   }
 
   const onSearchHandler = (event) => {
@@ -75,8 +90,10 @@ export default function BloodCollectionPage() {
   };
 
   const onSearch = (event) => {
+    setFlag(2); //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
+
     fetch(
-      `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${search}`,
+      `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
       {
         method: 'GET',
       },
@@ -85,19 +102,40 @@ export default function BloodCollectionPage() {
         return response.json();
       })
       .then((data) => {
-        //전처리
-        setFlag(3);
-        submitInadequateList.map((a) => {
-          if (a.specimenNo == search) setFlag(4);
-        });
-        setFind(data);
-        console.log(data);
-      });
+        if (data) {
+          data.id = data.specimenNo;
 
-    console.log(falg);
+          list.map((list) => {
+            if (list.id == search) {
+              setFlag(4);
+
+              console.log('겹침');
+              console.log('4 flag: ' + flag);
+            }
+          });
+
+          inputlist.map((input) => {
+            if (input.id == search) {
+              setFlag(4);
+              console.log('겹침22');
+              console.log('4-2 flag: ' + flag);
+            }
+          });
+
+          if (flag == 2) {
+            setFlag(3);
+            inputlist.push(search);
+            setList([data, ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
+            console.log(inputlist);
+            console.log('flag: ' + flag);
+          }
+        }
+      });
   };
   //post 방식으로 제출
   const handleClickOpen = () => {
+    console.log(inputlist);
+
     postdata();
 
     setOpen(true);
@@ -171,127 +209,246 @@ export default function BloodCollectionPage() {
 
   return (
     <Grid>
-      <br />
-      <Card sx={{ minWidth: 275, width: '95%', mx: 3 }}>
-        <CardContent>
-          <Box
-            component="form"
-            sx={{
-              '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <h3>채혈정보</h3>
-            <Box
-              component="form"
-              sx={{
-                '& .MuiTextField-root': { m: 1, width: '25ch' },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <Grid sx={{ float: 'left' }}>
-                <Typography variant="subtitle1" component="div">
-                  바코드 수기입력
-                </Typography>
-                <Typography variant="subtitle2" component="div">
-                  입력된 바코드 : {find}
-                </Typography>
-              </Grid>
+      <Grid>
+        <Grid container spacing={2}>
+          {[lightTheme].map((theme, index) => (
+            <Grid item xs={6} key={index}>
+              <ThemeProvider theme={theme}>
+                <Box
+                  xs={12}
+                  sx={{
+                    p: 2,
+                    bgcolor: 'background.default',
+                    display: 'grid',
+                    gridTemplateColumns: { md: '1fr 1fr' },
+                    gap: 2,
+                  }}
+                >
+                  <Paper
+                    xs={12}
+                    sx={{ minWidth: '500px', m: 1, width: '140vh' }}
+                    elevation={4}
+                  >
+                    <Grid item xs={4}>
+                      <h3> 채혈정보</h3>
+                    </Grid>
 
-              <Grid sx={{ float: 'right' }}>
-                <Button variant="outlined" onClick={onSearch}>
-                  입력
-                </Button>
-                {/* 왜인지 모르만 인풋이 없으면 엔터시 페이지가 초기화된다.*/}
-                {/* <input className="search" type="hidden" value={search} onChange={onSearchHandler} onKeyPress={handleOnKeyPress} /> */}
-              </Grid>
-              <Grid sx={{ display: 'flex', justifyContent: 'right', mx: 3 }}>
-                <FormControl variant="standard">
-                  <Grid>
-                    <InputLabel htmlFor="input-with-icon-adornment">
-                      검체정보 검색
-                    </InputLabel>
-                    <Input
-                      sx={{ m: 1, width: '50ch' }}
-                      id="input-with-icon-adornment"
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <VaccinesIcon />
-                        </InputAdornment>
-                      }
-                      label="Required"
-                      value={search}
-                      placeholder="검체번호(바코드번호)"
-                      onChange={onSearchHandler}
-                      onKeyPress={handleOnKeyPress}
-                    />
-                  </Grid>
-                </FormControl>
-              </Grid>
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
+                    <Box
+                      sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <Grid sx={{ float: 'left' }}>
+                        <Typography variant="subtitle1">
+                          &nbsp;바코드 수기입력
+                        </Typography>
+                        {pagestarter.starter &&
+                          pagestarter.starter.map(() => {
+                            if (!pagestarter.starter) {
+                              return <Grid>no data</Grid>;
+                            } else {
+                              if (flag == 1) {
+                                return (
+                                  <Typography variant="subtitle2">
+                                    &nbsp;검색을 진행하여 주세요
+                                  </Typography>
+                                );
+                              } else if (flag == 2) {
+                                return (
+                                  <>
+                                    <Typography variant="subtitle2">
+                                      &nbsp;잘못된 검체 번호입니다.
+                                    </Typography>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        textAlign: 'center',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      &nbsp;현재 입력된 검체번호 :{' '}
+                                      {inputlist.map((input, i) => {
+                                        if (i == 0) {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              {input}
+                                            </Typography>
+                                          );
+                                        } else {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              ,{input}
+                                            </Typography>
+                                          );
+                                        }
+                                      })}
+                                    </Typography>
+                                  </>
+                                );
+                              } else if (flag == 3) {
+                                return (
+                                  <>
+                                    <Typography variant="subtitle2">
+                                      &nbsp;검체가 입력되었습니다.
+                                    </Typography>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        textAlign: 'center',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      &nbsp;현재 입력된 검체번호 :{' '}
+                                      {inputlist.map((input, i) => {
+                                        if (i == 0) {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              {input}
+                                            </Typography>
+                                          );
+                                        } else {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              ,{input}
+                                            </Typography>
+                                          );
+                                        }
+                                      })}
+                                    </Typography>
+                                  </>
+                                );
+                              } else if (flag == 4) {
+                                return (
+                                  <>
+                                    <Typography variant="subtitle2">
+                                      &nbsp;이미 채혈이 완료된 검체입니다.
+                                    </Typography>
 
-      <br />
-      <Card sx={{ minWidth: 275, width: '95%', mx: 3 }}>
-        <CardContent>
-          <Box
-            component="form"
-            sx={{
-              '& .MuiTextField-root': { m: 1, width: '25ch' },
-            }}
-            noValidate
-            autoComplete="off"
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        textAlign: 'center',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      &nbsp;현재 입력된 검체번호 :{' '}
+                                      {inputlist.map((input, i) => {
+                                        if (i == 0) {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              {input}
+                                            </Typography>
+                                          );
+                                        } else {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              ,{input}
+                                            </Typography>
+                                          );
+                                        }
+                                      })}
+                                    </Typography>
+                                  </>
+                                );
+                              }
+                            }
+                          })}
+                      </Grid>
+
+                      <Grid
+                        sx={{ display: 'flex', justifyContent: 'right', mx: 3 }}
+                      >
+                        <FormControl variant="standard">
+                          <Grid>
+                            <InputLabel htmlFor="input-with-icon-adornment">
+                              검체정보 검색
+                            </InputLabel>
+                            <Input
+                              sx={{ m: 1, width: '50ch' }}
+                              id="input-with-icon-adornment"
+                              startAdornment={
+                                <InputAdornment position="start">
+                                  <VaccinesIcon />
+                                </InputAdornment>
+                              }
+                              label="Required"
+                              value={search}
+                              placeholder="검체번호(바코드번호)"
+                              onChange={onSearchHandler}
+                              onKeyPress={handleOnKeyPress}
+                              required
+                            />
+                          </Grid>
+                        </FormControl>
+                        <Grid sx={{ float: 'right' }}>
+                          <Button
+                            variant="contained"
+                            color="success"
+                            onClick={onSearch}
+                          >
+                            입력
+                          </Button>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </Paper>
+                </Box>
+              </ThemeProvider>
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
+      <Paper sx={{ minWidth: '500px', mx: 3, width: '140vh' }} elevation={4}>
+        <Grid sx={{ height: '500px', width: '100%' }}>
+          {pagestarter.starter &&
+            pagestarter.starter.map(() => {
+              if (!pagestarter.starter) {
+                return <Grid>no data</Grid>;
+              } else {
+                return (
+                  <DataGrid
+                    rows={list}
+                    columns={columns}
+                    pageSize={7}
+                    rowsPerPageOptions={[7]}
+                    disableSelectionOnClick //셀렉트 금지
+                    components={{
+                      Toolbar: GridToolbar,
+                    }}
+                  />
+                );
+              }
+            })}
+        </Grid>
+        <br />
+        <Grid
+          sx={{
+            textAlign: 'center',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <BloodcollectionsDialog
+            selectedValue={inputlist}
+            open={open}
+            onClose={handleClose}
+          />
+          <Button
+            color="success"
+            variant="contained"
+            sx={{ width: '100%' }}
+            onClick={handleClickOpen}
           >
-            <Grid sx={{ height: '500px', width: '98%', mx: 2 }}>
-              {pagestarter.starter &&
-                pagestarter.starter.map(() => {
-                  if (!pagestarter.starter) {
-                    return <Grid>no data</Grid>;
-                  } else {
-                    return (
-                      <DataGrid
-                        rows={list}
-                        columns={columns}
-                        pageSize={7}
-                        rowsPerPageOptions={[7]}
-                        disableSelectionOnClick //셀렉트 금지
-                        components={{
-                          Toolbar: GridToolbar,
-                        }}
-                      />
-                    );
-                  }
-                })}
-            </Grid>
-            <br />
-            <Grid
-              sx={{
-                textAlign: 'center',
-                display: 'flex',
-                justifyContent: 'center',
-                mx: 3,
-              }}
-            >
-              <BloodcollectionsDialog
-                selectedValue={selectedValue}
-                open={open}
-                onClose={handleClose}
-              />
-              <Button
-                variant="contained"
-                sx={{ width: '100%', mx: 2 }}
-                onClick={handleClickOpen}
-              >
-                채혈자 및 채혈시간 업데이트
-              </Button>
-            </Grid>
-          </Box>
-        </CardContent>
-      </Card>
+            채혈자 및 채혈시간 업데이트
+          </Button>
+        </Grid>
+      </Paper>
+      <p />
     </Grid>
   );
 }
