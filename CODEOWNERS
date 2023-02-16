@@ -7,38 +7,72 @@
 # 메인 설정 파일 소유
 /* @rkdgusrn1212
 
-# 백엔드 설정 파일 소유
+# 설정 및 루트 파일 소유
 /back/* @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/* @rkdgusrn1212
 /back/src/main/resources/application.properties @rkdgusrn1212
 
-# 백엔드 인증 관련 파일 소유
+# 인증 관련 파일 소유
 /back/src/main/java/com/kanghoshin/lis/config/CorsConfig.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/SecurityConfig.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/jwt/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/principal/ @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
-
-/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dao/ValidationMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dto/auth/ @rkdgusrn1212
-
-/back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
 
 # constraint 소유
 
 /back/src/main/java/com/kanghoshin/lis/constraints/ @rkdgusrn1212
 
-# 백 직원 모듈 소유
+# 서비스 소유
+/back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DepartmentService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DepartmentServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DoctorService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DoctorServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/PatientService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/PatientServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/StaffService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/StaffServiceImpl.java @rkdgusrn1212
 
-/back/src/main/java/com/kanghoshin/lis/dao/StaffMapper.java @rkdgusrn1212
 
-# 백 환자 모듈 보유
+# 컨트롤러
+/back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/ConsultationReceptionController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/DepartmentController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/DoctorController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/PatientController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/StaffController.java @rkdgusrn1212
 
+# 컨트롤러어드바이스 소유
+/back/src/main/java/com/kanghoshin/lis/controller/advice/GlobalExceptionHandler.java @rkdgusrn1212
+
+# DAO 소유
+/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/ConsultationReceptionMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/DepartmentMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/DoctorMapper.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/dao/PatientMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/StaffMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/ValidationMapper.java @rkdgusrn1212
+
+# DTO 소유
+/back/src/main/java/com/kanghoshin/lis/dto/auth/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/consultationreception/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/department/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/doctor/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/dto/patient/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/dto/ReadListDto.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/staff/ @rkdgusrn1212
 
+# Exception 소유
+/back/src/main/java/com/kanghoshin/lis/exception/auth/ @rkdgusrn1212
+
+# VO 소유
+/back/src/main/java/com/kanghoshin/lis/vo/doctor/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/vo/entity/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/vo/error/ @rkdgusrn1212
 
 # sql 파일 소유
 /sql/ @rkdgusrn1212
@@ -88,23 +122,12 @@
 /document/StaffAPI.md @rkdgusrn1212
 
 # Consultation Reception API 관련
-/back/src/main/java/com/kanghoshin/lis/controller/ConsultationReceptionController.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dao/ConsultationReceptionMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dto/consultationreception/CreateConsultationWalkInDto.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionService.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionServiceImpl.java @rkdgusrn1212
 /sql/consultation_reception.sql @rkdgusrn1212
 /sql/consultation_walk_in.sql @rkdgusrn1212
 
-# Consultation Reception API 관련
-/back/src/main/java/com/kanghoshin/lis/controller/PatientController.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/service/PatientService.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/service/PatientServiceImpl.java @rkdgusrn1212
-/front/src/components/receptconsultation/ReceptionConsultationForm.tsx @rkdgusrn1212
-/front/src/components/receptconsultation/StepNameAndPhone.tsx @rkdgusrn1212
-/front/src/components/receptconsultation/StepPrivacyPolicy.tsx @rkdgusrn1212
-/front/src/components/receptconsultation/StepRrn.tsx @rkdgusrn1212
-/front/src/components/receptconsultation/StepSelectDoctor.tsx @rkdgusrn1212
-/front/src/services/consultationReceptionApi.ts
+/front/src/components/receptconsultation @rkdgusrn1212
+
+# 프론트 서비스 소유
+/front/src/services/consultationReceptionApi.ts @rkdgusrn1212
 /front/src/services/patientApi.ts @rkdgusrn1212
 /front/src/store.ts @rkdgusrn1212
