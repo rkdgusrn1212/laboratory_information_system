@@ -95,3 +95,16 @@
 /back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionServiceImpl.java @rkdgusrn1212
 /sql/consultation_reception.sql @rkdgusrn1212
 /sql/consultation_walk_in.sql @rkdgusrn1212
+
+# Consultation Reception API 관련
+/back/src/main/java/com/kanghoshin/lis/controller/PatientController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/PatientService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/PatientServiceImpl.java @rkdgusrn1212
+/front/src/components/receptconsultation/ReceptionConsultationForm.tsx @rkdgusrn1212
+/front/src/components/receptconsultation/StepNameAndPhone.tsx @rkdgusrn1212
+/front/src/components/receptconsultation/StepPrivacyPolicy.tsx @rkdgusrn1212
+/front/src/components/receptconsultation/StepRrn.tsx @rkdgusrn1212
+/front/src/components/receptconsultation/StepSelectDoctor.tsx @rkdgusrn1212
+/front/src/services/consultationReceptionApi.ts
+/front/src/services/patientApi.ts @rkdgusrn1212
+/front/src/store.ts @rkdgusrn1212
