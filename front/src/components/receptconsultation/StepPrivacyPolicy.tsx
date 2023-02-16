@@ -16,7 +16,7 @@ import { Patient } from '../../services/types';
 interface StepPrivacyPolicyProps {
   patient: CreatePatientRequest;
   // eslint-disable-next-line no-unused-vars
-  onSuccess: (patient: Patient) => void;
+  onSuccess: (data: { patient: Patient }) => void;
   onException: () => void;
 }
 
@@ -45,7 +45,7 @@ const StepPrivacyPolicy: React.FC<StepPrivacyPolicyProps> = ({
     createPatient(patient)
       .unwrap()
       .then((data) => {
-        onSuccess({ ...patient, patientNo: data });
+        onSuccess({ patient: { ...patient, patientNo: data } });
       })
       .catch(() => {
         onException();

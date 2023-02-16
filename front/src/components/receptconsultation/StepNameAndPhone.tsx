@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useRef, useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import PhoneMaskedInput from '../common/PhoneMaskedInput';
@@ -14,7 +14,9 @@ interface StepNameAndPhonePorps {
   // eslint-disable-next-line no-unused-vars
   onSuccess: (
     // eslint-disable-next-line no-unused-vars
-    data: Pick<CreatePatientRequest, 'patientName' | 'patientPhone'>,
+    data: {
+      patient: Pick<CreatePatientRequest, 'patientName' | 'patientPhone'>;
+    },
   ) => void;
 }
 
@@ -39,7 +41,7 @@ const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({ onSuccess }) => {
   };
 
   const handleSubmit = () => {
-    onSuccess({ patientName: name, patientPhone: phone });
+    onSuccess({ patient: { patientName: name, patientPhone: phone } });
   };
 
   const handleNameChange: ChangeEventHandler<

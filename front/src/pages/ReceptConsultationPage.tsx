@@ -98,6 +98,10 @@ const ReceptConsultationPage: React.FC = () => {
     setSelected(value as number | undefined);
   };
 
+  const handleReset = () => {
+    setSelected(undefined);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -141,7 +145,7 @@ const ReceptConsultationPage: React.FC = () => {
               display="inline-block"
               underline="hover"
               color="inherit"
-              href="/recept-consultation"
+              onClick={handleReset}
             >
               &lt; 처음으로 돌아가기
             </Link>
@@ -243,7 +247,10 @@ const ReceptConsultationPage: React.FC = () => {
                 </ToggleButton>
               </StyledToggleButtonGroup>
             ) : (
-              <ReceptionConsultationForm isNew={selected === 0} />
+              <ReceptionConsultationForm
+                onReset={handleReset}
+                isNew={selected === 0}
+              />
             )}
           </Box>
         </Container>

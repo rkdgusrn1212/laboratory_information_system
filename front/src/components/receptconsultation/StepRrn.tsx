@@ -10,10 +10,12 @@ import rrnParser from '../../utils/rrnParser';
 const StepRrn: React.FC<{
   onSuccess: (
     // eslint-disable-next-line no-unused-vars
-    data: Pick<
-      CreatePatientRequest,
-      'patientRrn' | 'patientBirth' | 'patientMale'
-    >,
+    data: {
+      patient: Pick<
+        CreatePatientRequest,
+        'patientRrn' | 'patientBirth' | 'patientMale'
+      >;
+    },
   ) => void;
 }> = ({ onSuccess }) => {
   const [rrn, setRrn] = useState('');
@@ -30,9 +32,11 @@ const StepRrn: React.FC<{
     const data = rrnParser(rrn);
     if (data) {
       onSuccess({
-        patientRrn: rrn,
-        patientBirth: data.birth,
-        patientMale: data.male,
+        patient: {
+          patientRrn: rrn,
+          patientBirth: data.birth,
+          patientMale: data.male,
+        },
       });
     } else {
       setError('주민번호/외국인등록번호를 다시 한번 확인해 주세요.');
