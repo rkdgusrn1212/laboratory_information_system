@@ -108,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
 
 
 	@Override
-	public void writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException {
+	public int writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException {
 		TransactionStatus txStatus =
 				transactionManager.getTransaction(new DefaultTransactionDefinition());
 		try {
@@ -123,6 +123,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
 		}
 		transactionManager.commit(txStatus);
+		return detailsDto.getStaffNo();
 	}
 
 	@Override

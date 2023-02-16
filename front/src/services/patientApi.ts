@@ -1,9 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
 import server from '../server.json';
-import { Patient } from './types';
+import { Patient, ListOrder } from './types';
 
 export type CreatePatientRequest = Omit<Patient, 'patientNo'>;
+
+export interface ReadPatientListRequest {
+  patientNoKey: string;
+  patientNoOrder: ListOrder;
+  patientNameKey: string;
+  patientNameOrder: ListOrder;
+  patientMaleKey: string;
+  patientMaleOrder: ListOrder;
+  patientPhoneKey: string;
+  patientPhoneOrder: ListOrder;
+  patientRrnKey: string;
+  patientRrnOrder: ListOrder;
+  patientBirthStart: string;
+  patientBirthEnd: string;
+  patientBirthOrder: ListOrder;
+}
+
+export type ReadPatientListResponse = Patient[];
 
 const patientApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -18,14 +36,24 @@ const patientApi = createApi({
   }),
   reducerPath: 'patientApi',
   endpoints: (builder) => ({
-    createPatient: builder.mutation<unknown, CreatePatientRequest>({
+    createPatient: builder.mutation<number, CreatePatientRequest>({
       query: (data) => ({
-        body: { ...data },
+        body: data,
         method: 'POST',
         url: '',
+      }),
+    }),
+    readPatientList: builder.query<
+      ReadPatientListResponse,
+      ReadPatientListRequest
+    >({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: 'list',
       }),
     }),
   }),
 });
 export default patientApi;
-export const { useCreatePatientMutation } = patientApi;
+export const { useCreatePatientMutation, useReadPatientListQuery } = patientApi;

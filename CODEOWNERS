@@ -7,38 +7,73 @@
 # 메인 설정 파일 소유
 /* @rkdgusrn1212
 
-# 백엔드 설정 파일 소유
+# 설정 및 루트 파일 소유
 /back/* @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/* @rkdgusrn1212
 /back/src/main/resources/application.properties @rkdgusrn1212
 
-# 백엔드 인증 관련 파일 소유
+# 인증 관련 파일 소유
 /back/src/main/java/com/kanghoshin/lis/config/CorsConfig.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/SecurityConfig.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/jwt/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/config/principal/ @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
-
-/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dao/ValidationMapper.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/dto/auth/ @rkdgusrn1212
-
-/back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
-/back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
 
 # constraint 소유
 
 /back/src/main/java/com/kanghoshin/lis/constraints/ @rkdgusrn1212
 
-# 백 직원 모듈 소유
+# 서비스 소유
+/back/src/main/java/com/kanghoshin/lis/service/AuthService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/AuthServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DepartmentService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DepartmentServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DoctorService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/DoctorServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/PatientService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/PatientServiceImpl.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/StaffService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/StaffServiceImpl.java @rkdgusrn1212
 
-/back/src/main/java/com/kanghoshin/lis/dao/StaffMapper.java @rkdgusrn1212
 
-# 백 환자 모듈 보유
+# 컨트롤러
+/back/src/main/java/com/kanghoshin/lis/controller/AuthController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/ConsultationReceptionController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/DepartmentController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/DoctorController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/PatientController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/controller/StaffController.java @rkdgusrn1212
 
+# 컨트롤러어드바이스 소유
+/back/src/main/java/com/kanghoshin/lis/controller/advice/GlobalExceptionHandler.java @rkdgusrn1212
+
+# DAO 소유
+/back/src/main/java/com/kanghoshin/lis/dao/AuthMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/ConsultationReceptionMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/DepartmentMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/DoctorMapper.java @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/dao/PatientMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/StaffMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/ValidationMapper.java @rkdgusrn1212
+
+# DTO 소유
+/back/src/main/java/com/kanghoshin/lis/dto/auth/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/consultationreception/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/department/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/doctor/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/dto/patient/ @rkdgusrn1212
 /back/src/main/java/com/kanghoshin/lis/dto/ReadListDto.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/staff/ @rkdgusrn1212
 
+# Exception 소유
+/back/src/main/java/com/kanghoshin/lis/exception/auth/ @rkdgusrn1212
+
+# VO 소유
+/back/src/main/java/com/kanghoshin/lis/vo/consultationreception/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/vo/doctor/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/vo/entity/ @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/vo/error/ @rkdgusrn1212
 
 # sql 파일 소유
 /sql/ @rkdgusrn1212
@@ -46,42 +81,55 @@
 # Front 앱 설정 파일 및 기본 스크립트 소유
 /front/* @rkdgusrn1212
 
-# 프론트 index, 라우팅(app)파일등의 루트파일
-
+# 프론트 index, 라우팅, store 등의 전역 설정파일
 /front/src/* @rkdgusrn1212
+/front/src/hooks/index.ts
 
-# 프론트 인증 API
-
+# 프론트 서비스
+/front/src/srevices/accountSlice.ts @rkdgusrn1212
 /front/src/services/authApi.ts @rkdgusrn1212
-/front/src/services/authSlice.ts @rkdgusrn1212
+/front/src/srevices/consultationReceptionApi.ts @rkdgusrn1212
+/front/src/srevices/departmentApi.ts @rkdgusrn1212
+/front/src/services/doctorApi.ts @rkdgusrn1212
+/front/src/services/patientApi.ts @rkdgusrn1212
+/front/src/services/types.ts @rkdgusrn1212
 
-# 로그인 페이지
-/front/src/components/signin/ @rkdgusrn1212
+# 프론트 페이지
+/front/src/pages/ConsultationPage.tsx @rkdgusrn1212
+/front/src/pages/Navigation.tsx @rkdgusrn1212
+/front/src/pages/ReceptConsultationPage.tsx @rkdgusrn1212
+/front/src/pages/RedirectPage.tsx @rkdgusrn1212
 /front/src/pages/SigninPage.tsx @rkdgusrn1212
-
-# 로고
-/front/src/components/common/Logo.tsx @rkdgusrn1212
-
-# 회원가입 페이지
 /front/src/pages/SignupPage.tsx @rkdgusrn1212
+
+# 프론트 컴포넌트
+/front/src/components/common/DepartmentSelectInput.tsx @rkdgusrn1212
+/front/src/components/common/DoctorCertificationMaskedInput.tsx @rkdgusrn1212
+/front/src/components/common/Logo.tsx @rkdgusrn1212
+/front/src/components/common/PhoneMaskedInput.tsx @rkdgusrn1212
+/front/src/components/common/RrnMaskedInput.tsx @rkdgusrn1212
+/front/src/components/consultation/ @rkdgusrn1212
+/front/src/components/navigation/ @rkdgusrn1212
+/front/src/components/receptconsultation/ @rkdgusrn1212
+/front/src/components/signin/ @rkdgusrn1212
 /front/src/components/signup/ @rkdgusrn1212
 
-# 네비게이션
-/front/src/pages/Navigation.tsx @rkdgusrn1212
-/front/src/components/navigation/ @rkdgusrn1212
-
-# 진료
-/front/src/pages/OrderPage.tsx @rkdgusrn1212
-/front/src/components/order/ @rkdgusrn1212
-
-# 인증관련 리덕스 & 리덕스 설정
-/front/src/services/accountSlice.ts @rkdgusrn1212
-/front/src/services/authApi.ts @rkdgusrn1212
-/front/src/services/types.ts @rkdgusrn1212
-/front/src/hooks/index.ts @rkdgusrn1212
-
-# stirngAvatar 유틸
+# 프론트 유틸
+/front/src/utils/masks.ts @rkdgusrn1212
+/front/src/utils/patterns.ts @rkdgusrn1212
+/front/src/utils/rrnParser.ts @rkdgusrn1212
 /front/src/utils/stringAvatar.ts @rkdgusrn1212
+
+# 프론트 static 파일 소유
+/front/src/fonts/Cafe24Classictype.ttf @rkdgusrn1212
+/front/src/fonts/Cafe24Simplehae.ttf @rkdgusrn1212
+/front/src/fonts/Cafe24SsurroundAir.ttf @rkdgusrn1212
+/front/src/fonts/digital-7.ttf @rkdgusrn1212
+/front/public/images/doctor_icon.png @rkdgusrn1212
+/front/public/images/idcard.png @rkdgusrn1212
+/front/public/images/main_bg.jpg @rkdgusrn1212
+/front/public/images/nurse_icon.png @rkdgusrn1212
+/front/public/images/phone.png @rkdgusrn1212
 
 # document 소유
 /document/PatientAPI.md @rkdgusrn1212

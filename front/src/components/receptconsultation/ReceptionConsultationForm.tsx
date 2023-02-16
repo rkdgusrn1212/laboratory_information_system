@@ -1,4 +1,4 @@
-import { memo, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -11,16 +11,16 @@ import StepConnector, {
   stepConnectorClasses,
 } from '@mui/material/StepConnector';
 import { StepIconProps } from '@mui/material/StepIcon';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 import StepRrn from './StepRrn';
 import StepNameAndPhone from './StepNameAndPhone';
 import StepPrivacyPolicy from './StepPrivacyPolicy';
-import rrnParser from '../../utils/rrnParser';
-import {
-  useCreatePatientMutation,
-  CreatePatientRequest,
-} from '../../services/patientApi';
 import StepSelectDoctor from './StepSelectDoctor';
+import { Department, Doctor, Patient } from '../../services/types';
+import { CreatePatientRequest } from '../../services/patientApi';
+import StepFinish from './StepFinsish';
 
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -102,74 +102,104 @@ const steps = [
 
 interface InnerFormProps {
   step: number;
-  // eslint-disable-next-line no-unused-vars
-  onNextClick: (data: Partial<CreatePatientRequest>) => void;
+  onSuccess: // eslint-disable-next-line no-unused-vars
+  (data: { patient?: Partial<Patient>; doctor?: Doctor & Department }) => void;
+  onException: () => void;
+  onReset: () => void;
+  patient: Partial<Patient>;
+  doctor: Partial<Doctor & Department>;
 }
 
-const InnerForm = memo(({ step, onNextClick }: InnerFormProps) => {
+const InnerForm = ({
+  step,
+  patient,
+  doctor,
+  onReset,
+  onSuccess,
+  onException,
+}: InnerFormProps) => {
   switch (step) {
     case 0:
-      return <StepRrn onRrnSubmit={onNextClick} />;
+      return <StepRrn onSuccess={onSuccess} />;
     case 1:
-      return <StepNameAndPhone onStepAndPhoneSubmit={onNextClick} />;
+      return <StepNameAndPhone onSuccess={onSuccess} />;
     case 2:
-      return <StepPrivacyPolicy onAgree={onNextClick as () => void} />;
+      return (
+        <StepPrivacyPolicy
+          patient={patient as CreatePatientRequest}
+          onSuccess={onSuccess}
+          onException={onException}
+        />
+      );
     case 3:
-      return <StepSelectDoctor />;
+      return (
+        <StepSelectDoctor
+          patient={patient as Patient}
+          onSuccess={onSuccess}
+          onException={onException}
+        />
+      );
     case 4:
-      return <></>;
+      return (
+        <StepFinish
+          patient={patient as Patient}
+          doctor={doctor as Doctor & Department}
+          onReset={onReset}
+        />
+      );
     default:
       return null;
   }
-});
+};
 
-const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
+const ReceptionConsultationForm: React.FC<{
+  isNew: boolean;
+  onReset: () => void;
+}> = ({ isNew, onReset }) => {
   const [step, setStep] = useState(0);
-  const [patient, setPatient] = useState<CreatePatientRequest>({
-    patientName: '',
-    patientRrn: '',
-    patientBirth: '',
-    patientMale: false,
-    patientPhone: '',
-  });
-  const [createPatient, createPatientState] = useCreatePatientMutation();
+  const [patient, setPatient] = useState<Partial<Patient>>({});
+  const [toastOpen, setToastOpen] = useState(false);
+  const [doctor, setDoctor] = useState<Partial<Doctor & Department>>({});
 
-  const handleNextClick = useCallback(
-    (data: Partial<CreatePatientRequest>) => {
-      if (step == 2) {
-        const data = rrnParser(patient.patientRrn);
-        if (data) {
-          createPatient({
-            ...patient,
-            patientBirth: data.birth,
-            patientMale: data.male,
-          })
-            .unwrap()
-            .then((data) => {
-              data;
-              console.log('success');
-              setStep(3);
-            })
-            .catch((data) => {
-              console.log(data);
-            });
-        }
-        return;
-      } else {
-        setPatient({ ...patient, ...data });
-      }
-      if (step == 0) {
+  const handleSuccess = (data: {
+    patient?: Partial<Patient>;
+    doctor?: Doctor & Department;
+  }) => {
+    if (data.patient) setPatient({ ...patient, ...data.patient });
+    if (data.doctor) setDoctor(data.doctor);
+    switch (step) {
+      case 0:
         if (isNew) {
           setStep(1);
         } else {
           setStep(3);
         }
-      } else {
+        break;
+      default:
         setStep(step + 1);
-      }
-    },
-    [step, setStep, isNew, patient, createPatient],
-  );
+    }
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setToastOpen(false);
+  };
+
+  const handleException = () => {
+    setToastOpen(true);
+  };
+
+  const handleReset = () => {
+    setStep(0);
+    setPatient({});
+    setDoctor({});
+    onReset();
+  };
 
   return (
     <Stack sx={{ width: '100%', px: 2 }} spacing={4}>
@@ -186,7 +216,24 @@ const ReceptionConsultationForm: React.FC<{ isNew: boolean }> = ({ isNew }) => {
           </Step>
         ))}
       </Stepper>
-      <InnerForm step={step} onNextClick={handleNextClick} />
+      <InnerForm
+        step={step}
+        patient={patient}
+        doctor={doctor}
+        onReset={handleReset}
+        onSuccess={handleSuccess}
+        onException={handleException}
+      />
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={toastOpen}
+        autoHideDuration={4000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          알수없는 오류가 발생했습니다.
+        </Alert>
+      </Snackbar>
     </Stack>
   );
 };
