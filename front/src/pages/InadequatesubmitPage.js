@@ -153,29 +153,23 @@ export default function InadequatePage() {
 
   //입력 결과 post로 보내기
   function postdata() {
-    fetch(`http://localhost:8080/api/collect/insertsubmitinadequate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/api/collect/insertsubmitinadequate`,
+      data: {
         specimenNo: find.specimenNo,
         inadequateTypeCode: reason,
         submitInadequateFrom: '72', //현재 로그인정보
         submitInadequateTo: listener,
-      }),
+      },
     })
-      .then((res) => {
-        if (res.ok) {
-          alert('생성이 완료되었습니다.');
-          SubmitInadequateList().then((res) => setSubmitInadequateList(res));
-        }
+      .then(function () {
+        alert('생성이 완료되었습니다.');
+        SubmitInadequateList().then((res) => setSubmitInadequateList(res));
       })
       .catch((error) => {
         console.log(error);
       });
-
-    //보냈으면 보낸걸 받아올것
   }
 
   return (
@@ -327,7 +321,7 @@ export default function InadequatePage() {
                                   value={reason}
                                   label="부적합사유 코드"
                                   onChange={handleChange1}
-                                  ssize="small"
+                                  size="small"
                                 >
                                   <MenuItem value="">
                                     <em>None</em>

@@ -91,46 +91,39 @@ export default function BloodCollectionPage() {
 
   const onSearch = (event) => {
     setFlag(2); //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
+    }).then(function (response) {
+      if (response.data != '') {
+        response.data.id = response.data.specimenNo;
 
-    fetch(
-      `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
-      {
-        method: 'GET',
-      },
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        if (data) {
-          data.id = data.specimenNo;
+        list.map((list) => {
+          if (list.id == search) {
+            setFlag(4);
 
-          list.map((list) => {
-            if (list.id == search) {
-              setFlag(4);
-
-              console.log('겹침');
-              console.log('4 flag: ' + flag);
-            }
-          });
-
-          inputlist.map((input) => {
-            if (input.id == search) {
-              setFlag(4);
-              console.log('겹침22');
-              console.log('4-2 flag: ' + flag);
-            }
-          });
-
-          if (flag == 2) {
-            setFlag(3);
-            inputlist.push(search);
-            setList([data, ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
-            console.log(inputlist);
-            console.log('flag: ' + flag);
+            console.log('겹침');
+            console.log('4 flag: ' + flag);
           }
+        });
+
+        inputlist.map((input) => {
+          if (input.id == search) {
+            setFlag(4);
+            console.log('겹침22');
+            console.log('4-2 flag: ' + flag);
+          }
+        });
+
+        if (flag == 2) {
+          setFlag(3);
+          inputlist.push(search);
+          setList([response.data, ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
+          console.log(inputlist);
+          console.log('flag: ' + flag);
         }
-      });
+      }
+    });
   };
   //post 방식으로 제출
   const handleClickOpen = () => {

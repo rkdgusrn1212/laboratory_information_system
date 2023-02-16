@@ -8,7 +8,6 @@ import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
 import { DataGrid } from '@mui/x-data-grid';
 import * as React from 'react';
-
 // 여기까진 데이타 그리드 +검색
 import Button from '@mui/material/Button';
 // Import Swiper React components
@@ -29,8 +28,8 @@ import ReceptCollectionDialog from '../components/receptcollection/ReceptCollect
 import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
 //그리드에 색깔 넣기
-
 import { PatientList } from '../components/receptcollection/PatientList';
+import axios from 'axios';
 
 //-----------------------카드
 export default function ReceptCollectionPage() {
@@ -82,22 +81,13 @@ export default function ReceptCollectionPage() {
   };
 
   function onP() {
-    var sampleTimestamp = Date.now();
-    var date = new Date(sampleTimestamp);
-
-    fetch(
-      `http://localhost:8080/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
-      {
-        method: 'GET',
-      },
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        //전처리
-        console.log(data);
-        data.map((patient) => {
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
+    }).then(function (response) {
+      if (response.data != '') {
+        console.log(response.data);
+        response.data.map((patient) => {
           if (patient.patientMale === true) patient.patientMale = '남';
           else {
             patient.patientMale = '여';
@@ -109,10 +99,11 @@ export default function ReceptCollectionPage() {
         });
 
         setCallpatient({
-          patients: data,
+          patients: response.data,
         });
-        setPLength(data.length);
-      });
+        setPLength(response.data.length);
+      }
+    });
   }
 
   const onSearch = (event) => {
@@ -120,7 +111,6 @@ export default function ReceptCollectionPage() {
     // setState(json);
     // setPLength(json.products.length);
     setFind(search);
-    console.log(callpatient.patients);
   };
   //받아온 json파일 전처리
   function rowsbeforesetting(rows) {
@@ -774,6 +764,7 @@ export default function ReceptCollectionPage() {
                           채취버튼
                         </Button>
                         <ReceptCollectionDialog
+                          selectedValue={rows5}
                           open={open}
                           onClose={handleClose}
                         />
