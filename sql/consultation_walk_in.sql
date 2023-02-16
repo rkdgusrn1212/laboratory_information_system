@@ -20,19 +20,19 @@ USE `kanghoshin_lis`;
 -- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
 -- VIEW 종속성 오류를 극복하기 위해 임시 테이블을 생성합니다.
 CREATE TABLE `consultation_walk_in` (
-	`order` BIGINT(21) NOT NULL,
 	`consultation_reception_no` INT(11) NOT NULL,
 	`consultation_reception_time` DATETIME NOT NULL,
 	`staff_no` INT(11) NOT NULL,
 	`patient_no` INT(11) NOT NULL,
-	`consultation_no` INT(11) NULL,
-	`consultation_appointment` DATETIME NULL
+	`consultation_no` INT(11) NOT NULL,
+	`consultation_reception_appointment` DATETIME NULL,
+	`consultation_walk_in_order` BIGINT(21) NOT NULL
 ) ENGINE=MyISAM;
 
 -- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `consultation_walk_in`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `order`,`consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_no` AS `consultation_no`,`consultation_reception`.`consultation_appointment` AS `consultation_appointment` from `consultation_reception` where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and `consultation_reception`.`consultation_appointment` is null;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select `consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_no` AS `consultation_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment`,row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `consultation_walk_in_order` from `consultation_reception` where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and `consultation_reception`.`consultation_reception_appointment` is null;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
