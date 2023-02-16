@@ -14,10 +14,16 @@ import {
   useReadDoctorListWithDepartmentQuery,
 } from '../../services/doctorApi';
 import stringAvatar from '../../utils/stringAvatar';
+import { Department, Doctor, Patient } from '../../services/types';
+import { useCreateConsultationWalkInMutation } from '../../services/consultationReceptionApi';
 
 const RenderRow: React.FC<
-  ListChildComponentProps<ReadDoctorListWithDepartmentResponse>
-> = ({ index, style, data }) => {
+  ListChildComponentProps<{
+    data: ReadDoctorListWithDepartmentResponse;
+    // eslint-disable-next-line no-unused-vars
+    handleClickItem: (doctor: Doctor & Department) => void;
+  }>
+> = ({ index, style, data: { data, handleClickItem } }) => {
   return (
     <ListItem
       style={style}
@@ -26,7 +32,10 @@ const RenderRow: React.FC<
       disablePadding
     >
       <Paper sx={{ width: '100%' }} elevation={5}>
-        <ListItemButton sx={{ height: 60 }}>
+        <ListItemButton
+          sx={{ height: 60 }}
+          onClick={() => handleClickItem(data[index])}
+        >
           <ListItemAvatar>
             {data[index].staffImage ? (
               <Avatar
@@ -59,19 +68,32 @@ const RenderRow: React.FC<
   );
 };
 
-const StepSelectDoctor: React.FC<{ patientName: string }> = ({
-  patientName,
-}) => {
+const StepSelectDoctor: React.FC<{
+  onSuccess: () => void;
+  onException: () => void;
+  patient: Patient;
+}> = ({ patient, onSuccess, onException }) => {
   const doctorListWithDepartment = useReadDoctorListWithDepartmentQuery({
     pageSize: 100,
     pageStart: 0,
   }).data;
+  const [createConsultationWalkIn] = useCreateConsultationWalkInMutation();
+
+  const handleClickItem = (doctor: Doctor & Department) => {
+    createConsultationWalkIn({
+      staffNo: doctor.staffNo,
+      patientNo: patient.patientNo,
+    })
+      .unwrap()
+      .then(() => onSuccess())
+      .catch(() => onException());
+  };
 
   return (
     <Box width="100%" display="flex" justifyContent="space-between">
       <Box mr={2}>
         <Typography mb={2} variant="h5">
-          어서오세요 <b>{patientName}</b>님
+          어서오세요 <b>{patient.patientName}</b>님
         </Typography>
         <Typography variant="h6">
           우측의 목록에서 진료 받기를 희망하는 의사를 선택해주세요.
@@ -86,7 +108,11 @@ const StepSelectDoctor: React.FC<{ patientName: string }> = ({
             doctorListWithDepartment ? doctorListWithDepartment.length : 0
           }
           overscanCount={5}
-          itemData={doctorListWithDepartment}
+          itemData={
+            doctorListWithDepartment
+              ? { data: doctorListWithDepartment, handleClickItem }
+              : undefined
+          }
         >
           {RenderRow}
         </FixedSizeList>

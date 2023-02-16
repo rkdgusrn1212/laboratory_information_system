@@ -12,15 +12,13 @@ import { CreatePatientRequest } from '../../services/patientApi';
 
 interface StepNameAndPhonePorps {
   // eslint-disable-next-line no-unused-vars
-  onStepAndPhoneSubmit: (
+  onSuccess: (
     // eslint-disable-next-line no-unused-vars
     data: Pick<CreatePatientRequest, 'patientName' | 'patientPhone'>,
   ) => void;
 }
 
-const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({
-  onStepAndPhoneSubmit,
-}) => {
+const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({ onSuccess }) => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState<string | null>(null);
@@ -41,7 +39,7 @@ const StepNameAndPhone: React.FC<StepNameAndPhonePorps> = ({
   };
 
   const handleSubmit = () => {
-    onStepAndPhoneSubmit({ patientName: name, patientPhone: phone });
+    onSuccess({ patientName: name, patientPhone: phone });
   };
 
   const handleNameChange: ChangeEventHandler<

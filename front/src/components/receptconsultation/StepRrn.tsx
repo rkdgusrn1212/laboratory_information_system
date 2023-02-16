@@ -1,17 +1,21 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import { Button, Typography } from '@mui/material';
 import { RrnPattern } from '../../utils/patterns';
 import { CreatePatientRequest } from '../../services/patientApi';
+import rrnParser from '../../utils/rrnParser';
 
-interface StepRrnProps {
-  // eslint-disable-next-line no-unused-vars
-  onRrnSubmit: (data: Pick<CreatePatientRequest, 'patientRrn'>) => void;
-}
-
-const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {
+const StepRrn: React.FC<{
+  onSuccess: (
+    // eslint-disable-next-line no-unused-vars
+    data: Pick<
+      CreatePatientRequest,
+      'patientRrn' | 'patientBirth' | 'patientMale'
+    >,
+  ) => void;
+}> = ({ onSuccess }) => {
   const [rrn, setRrn] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -23,7 +27,16 @@ const StepRrn: React.FC<StepRrnProps> = ({ onRrnSubmit }) => {
   };
 
   const handleClick = () => {
-    onRrnSubmit({ patientRrn: rrn });
+    const data = rrnParser(rrn);
+    if (data) {
+      onSuccess({
+        patientRrn: rrn,
+        patientBirth: data.birth,
+        patientMale: data.male,
+      });
+    } else {
+      setError('주민번호/외국인등록번호를 다시 한번 확인해 주세요.');
+    }
   };
 
   return (

@@ -139,6 +139,51 @@ END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
 
+
+-- 테이블 kanghoshin_lis.consultation_reception 구조 내보내기
+CREATE TABLE IF NOT EXISTS `consultation_reception` (
+  `consultation_reception_no` int(11) NOT NULL AUTO_INCREMENT,
+  `consultation_reception_time` datetime NOT NULL,
+  `staff_no` int(11) NOT NULL,
+  `patient_no` int(11) NOT NULL,
+  `consultation_no` int(11) DEFAULT NULL,
+  `consultation_appointment` datetime DEFAULT NULL,
+  PRIMARY KEY (`consultation_reception_no`) USING BTREE,
+  KEY `FK__doctor` (`staff_no`),
+  KEY `FK__patient` (`patient_no`),
+  CONSTRAINT `FK__doctor` FOREIGN KEY (`staff_no`) REFERENCES `doctor` (`staff_no`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK__patient` FOREIGN KEY (`patient_no`) REFERENCES `patient` (`patient_no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 트리거 kanghoshin_lis.consultation_reception_before_insert 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `consultation_reception_before_insert` BEFORE INSERT ON `consultation_reception` FOR EACH ROW BEGIN
+SET NEW.consultation_reception_time = NOW();
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+
+-- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
+-- VIEW 종속성 오류를 극복하기 위해 임시 테이블을 생성합니다.
+CREATE TABLE `consultation_walk_in` (
+	`order` BIGINT(21) NOT NULL,
+	`consultation_reception_no` INT(11) NOT NULL,
+	`consultation_reception_time` DATETIME NOT NULL,
+	`staff_no` INT(11) NOT NULL,
+	`patient_no` INT(11) NOT NULL,
+	`consultation_no` INT(11) NULL,
+	`consultation_appointment` DATETIME NULL
+) ENGINE=MyISAM;
+
+-- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
+-- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
+DROP TABLE IF EXISTS `consultation_walk_in`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `order`,`consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_no` AS `consultation_no`,`consultation_reception`.`consultation_appointment` AS `consultation_appointment` from `consultation_reception` where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and `consultation_reception`.`consultation_appointment` is null;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
