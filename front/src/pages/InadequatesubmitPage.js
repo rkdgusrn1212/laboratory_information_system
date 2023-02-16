@@ -36,14 +36,11 @@ export default function InadequatePage() {
   const [typelist, setTypelist] = useState([]); //부적합 데이터 백에서 받아와서 저장
   const [stafflist, setStafflist] = useState([]); //스태프 리스트
   const [submitInadequateList, setSubmitInadequateList] = useState([]); //스태프 리스트
-
   const [make, setMake] = useState([]); //반응형 그리드를 만들기위한 변수설정
 
   useEffect(() => {
     SubmitInadequateList().then((res) => setSubmitInadequateList(res));
-
     staffList().then((res) => setStafflist(res));
-
     inadequate_typeList().then((res) => setTypelist(res));
 
     setMake({
@@ -63,26 +60,21 @@ export default function InadequatePage() {
   const onSearch = (event) => {
     setFlag(2);
 
-    fetch(
-      `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${search}`,
-      {
-        method: 'GET',
-      },
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        //전처리
-        setFlag(3);
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${search}`,
+    }).then(function (response) {
+      if (response.data != '') {
+        setFlag(3); //검색 결과가 있음
         submitInadequateList.map((a) => {
           if (a.specimenNo == search) setFlag(4);
         });
-        setFind(data);
-        console.log(data);
-      });
-
-    console.log(falg);
+        setFind(response.data);
+        console.log(response.data);
+      } else {
+        setFlag(2);
+      }
+    });
   };
 
   const columns = [
@@ -161,28 +153,23 @@ export default function InadequatePage() {
 
   //입력 결과 post로 보내기
   function postdata() {
-    fetch(`http://localhost:8080/api/collect/insertsubmitinadequate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/api/collect/insertsubmitinadequate`,
+      data: {
         specimenNo: find.specimenNo,
         inadequateTypeCode: reason,
         submitInadequateFrom: '72', //현재 로그인정보
         submitInadequateTo: listener,
-      }),
+      },
     })
-      .then((res) => {
-        if (res.ok) {
-          alert('생성이 완료되었습니다.');
-        }
+      .then(function () {
+        alert('생성이 완료되었습니다.');
+        SubmitInadequateList().then((res) => setSubmitInadequateList(res));
       })
       .catch((error) => {
         console.log(error);
       });
-
-    SubmitInadequateList().then((res) => setSubmitInadequateList(res));
   }
 
   return (
@@ -191,7 +178,6 @@ export default function InadequatePage() {
       <Card sx={{ minWidth: 275, width: '95%', mx: 3 }}>
         <CardContent>
           <Box
-            component="form"
             sx={{
               '& .MuiTextField-root': { m: 1, width: '25ch' },
             }}
@@ -200,7 +186,6 @@ export default function InadequatePage() {
           >
             <h3>검체조회</h3>
             <Box
-              component="form"
               sx={{
                 '& .MuiTextField-root': { m: 1, width: '25ch' },
               }}
@@ -208,20 +193,16 @@ export default function InadequatePage() {
               autoComplete="off"
             >
               <Grid sx={{ float: 'left' }}>
-                <Typography variant="subtitle1" component="div">
-                  바코드 수기입력
-                </Typography>
-                <Typography variant="subtitle2" component="div">
+                <Typography variant="subtitle1">바코드 수기입력</Typography>
+                <Typography variant="subtitle2">
                   입력된 바코드 : {search}
                 </Typography>
               </Grid>
 
               <Grid sx={{ float: 'right' }}>
-                <Button variant="outlined" onClick={onSearch}>
+                <Button variant="contained" color="success" onClick={onSearch}>
                   입력
                 </Button>
-                {/* 왜인지 모르만 인풋이 없으면 엔터시 페이지가 초기화된다.*/}
-                {/* <input className="search" type="hidden" value={search} onChange={onSearchHandler} onKeyPress={handleOnKeyPress} /> */}
               </Grid>
               <Grid sx={{ display: 'flex', justifyContent: 'right', mx: 3 }}>
                 <FormControl variant="standard">
@@ -242,6 +223,15 @@ export default function InadequatePage() {
                       placeholder="검체번호(바코드 번호)"
                       onChange={onSearchHandler}
                       onKeyPress={handleOnKeyPress}
+                      // onSubmit={false}
+                    />
+                    {/*  인풋이 없으면 엔터시 페이지가 초기화된다.*/}
+                    <input
+                      className="search"
+                      type="hidden"
+                      value={search}
+                      onChange={onSearchHandler}
+                      onKeyPress={handleOnKeyPress}
                     />
                   </Grid>
                 </FormControl>
@@ -256,7 +246,6 @@ export default function InadequatePage() {
           <Card>
             <CardContent>
               <Box
-                component="form"
                 sx={{
                   '& .MuiTextField-root': { m: 1, width: '98%' },
                 }}
@@ -265,9 +254,9 @@ export default function InadequatePage() {
               >
                 <h3>부적합 검체 등록</h3>
                 {make.specimen &&
-                  make.specimen.map((sapecimen) => {
+                  make.specimen.map((spec) => {
                     if (!make.specimen) {
-                      return <Grid>no data</Grid>;
+                      return <Grid key={spec}>no data</Grid>;
                     }
                     if (flag === 1) {
                       return <Grid>검색을 진행하세요</Grid>;
@@ -332,7 +321,7 @@ export default function InadequatePage() {
                                   value={reason}
                                   label="부적합사유 코드"
                                   onChange={handleChange1}
-                                  size="medium"
+                                  size="small"
                                 >
                                   <MenuItem value="">
                                     <em>None</em>
@@ -390,7 +379,7 @@ export default function InadequatePage() {
                                   value={listener}
                                   label="부적합사유"
                                   onChange={handleChange2}
-                                  size="medium"
+                                  size="small"
                                 >
                                   <MenuItem value="">
                                     <em>None</em>
@@ -454,7 +443,6 @@ export default function InadequatePage() {
         <Card sx={{ float: 'right', width: '70%', mx: 2 }}>
           <CardContent>
             <Box
-              component="form"
               sx={{
                 '& .MuiTextField-root': { m: 1, width: '25ch' },
               }}

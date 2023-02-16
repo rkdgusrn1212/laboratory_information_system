@@ -54,10 +54,6 @@ export default function ReceptCollectionDialog(props) {
     onClose(selectedValue);
   };
 
-  const handleListItemClick = (value) => {
-    onClose(value);
-  };
-
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>채혈 바코드 출력</DialogTitle>
@@ -75,8 +71,9 @@ export default function ReceptCollectionDialog(props) {
           modules={[Pagination, Navigation]}
           className="mySwiper"
         >
-          {testcodes.map((testcode, i) => (
+          {selectedValue.map((pre, i) => (
             <SwiperSlide>
+              {pre.id}
               <div className="testcodetop">
                 <Grid
                   sx={{
@@ -189,6 +186,6 @@ export default function ReceptCollectionDialog(props) {
 ReceptCollectionDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  selectedValue: PropTypes.string.isRequired,
+  selectedValue: PropTypes.any.isRequired,
 };
 //------------------------다이얼로그

@@ -65,6 +65,14 @@ public class CollectController {
 		return specimenlist;
 	}
 
+	@GetMapping("/specimenbyno")
+	public CollectSpecimenVo specimenbyno(@Valid @Param("specimenNo") String specimenNo) {
+		CollectSpecimenVo specimen = CollectService.getSpecimenbyno(specimenNo);
+		return specimen;
+	}
+	
+	
+	
 	@GetMapping("/inadequate_typeList")
 	public List<InadequateTypeVo> inadequate_typeall() {
 		List<InadequateTypeVo> inadequate_typelist = CollectService.getInadequate_typeall();
@@ -80,9 +88,14 @@ public class CollectController {
 		BloodCollectVo createspecimen = CollectService.createCollect(CollectDto);
 		return createspecimen;
 	}
+	
+	
+	
+	
 
 	@PostMapping("/insertcollectbypost")
 	public void insertcollectbypost(@Valid @RequestBody BloodCollectDto CollectDTO) {
+		System.out.println(CollectDTO);
 		CollectService.createCollectPost(CollectDTO);
 	}
 

@@ -71,15 +71,21 @@ public class CollectServiceImpl implements CollectService {
 
 	@Override
 	public List<CollectSpecimenVo> getSpecimenall() {
-		List<CollectSpecimenVo> Specimenlist = new ArrayList<CollectSpecimenVo>();
-		try {
-			Specimenlist = collectMapper.listspecimenall();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
+		List<CollectSpecimenVo> Specimenlist = collectMapper.listspecimenall();
 		return Specimenlist;
 	}
 
+	
+	
+	
+	@Override
+	public CollectSpecimenVo getSpecimenbyno(String specimenNo) {
+		CollectSpecimenVo Specimenbyno = collectMapper.findByspecimenno(specimenNo);
+		return Specimenbyno;
+	}
+	
+	
+	
 	@Override
 	public List<InadequateTypeVo> getInadequate_typeall() {
 		List<InadequateTypeVo> inadequate_typelist = new ArrayList<InadequateTypeVo>();
