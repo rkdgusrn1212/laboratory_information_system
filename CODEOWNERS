@@ -86,3 +86,12 @@
 # document 소유
 /document/PatientAPI.md @rkdgusrn1212
 /document/StaffAPI.md @rkdgusrn1212
+
+# Consultation Reception API 관련
+/back/src/main/java/com/kanghoshin/lis/controller/ConsultationReceptionController.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dao/ConsultationReceptionMapper.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/dto/consultationreception/CreateConsultationWalkInDto.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionService.java @rkdgusrn1212
+/back/src/main/java/com/kanghoshin/lis/service/ConsultationReceptionServiceImpl.java @rkdgusrn1212
+/sql/consultation_reception.sql @rkdgusrn1212
+/sql/consultation_walk_in.sql @rkdgusrn1212
