@@ -3,6 +3,7 @@ package com.kanghoshin.lis.service;
 import java.util.List;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Service;
 import com.kanghoshin.lis.constraints.NoConstraints;
@@ -20,9 +21,9 @@ public class PatientServiceImpl implements PatientService{
 	private final PatientMapper patientMapper;
 
 	@Override
-	public void createPatient(@Valid CreatePatientDto patientDto) {
+	public int createPatient(@NotNull @Valid CreatePatientDto patientDto) {
 		patientMapper.insert(patientDto);
-		
+		return patientDto.getPatientNo();
 	}
 
 	@Override

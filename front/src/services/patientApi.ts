@@ -18,9 +18,9 @@ const patientApi = createApi({
   }),
   reducerPath: 'patientApi',
   endpoints: (builder) => ({
-    createPatient: builder.mutation<unknown, CreatePatientRequest>({
+    createPatient: builder.mutation<number, CreatePatientRequest>({
       query: (data) => ({
-        body: { ...data },
+        body: data,
         method: 'POST',
         url: '',
       }),
