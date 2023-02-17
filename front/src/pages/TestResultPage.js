@@ -24,7 +24,7 @@ export default function TestResultPage() {
   return (
     <Grid container spacing={2}>
       {[lightTheme].map((theme, index) => (
-        <Grid item xs={10} key={index}>
+        <Grid item xs={12} key={index}>
           <ThemeProvider theme={theme}>
             <Box
               sx={{
