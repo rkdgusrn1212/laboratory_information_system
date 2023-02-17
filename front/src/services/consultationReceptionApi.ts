@@ -1,10 +1,26 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import server from '../server.json';
 import { RootState } from '../store';
-import { Doctor, Patient } from './types';
+import {
+  Doctor,
+  ListOrder,
+  Patient,
+  ListRequest,
+  ConsultationReception,
+} from './types';
 
 export type CreateConsultationWalkInRequest = Pick<Doctor, 'staffNo'> &
   Pick<Patient, 'patientNo'>;
+
+export interface ReadConsultationWalkInRequest extends ListRequest {
+  staffNo?: number;
+  staffNoOrder?: ListOrder;
+  consultationWalkInStart?: number;
+  consultationWalkInEnd?: number;
+  consultationWalkInOrderOrder?: ListOrder;
+}
+
+export type ReadConsultationWalkInResponse = ConsultationReception[];
 
 const consultationReceptionApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -29,8 +45,22 @@ const consultationReceptionApi = createApi({
         url: 'walk-in',
       }),
     }),
+    readConsultationWalkInList: builder.query<
+      ReadConsultationWalkInResponse,
+      ReadConsultationWalkInRequest
+    >({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: 'walk-in/list',
+      }),
+    }),
   }),
 });
 
 export default consultationReceptionApi;
-export const { useCreateConsultationWalkInMutation } = consultationReceptionApi;
+export const {
+  useCreateConsultationWalkInMutation,
+  useReadConsultationWalkInListQuery,
+  useLazyReadConsultationWalkInListQuery,
+} = consultationReceptionApi;

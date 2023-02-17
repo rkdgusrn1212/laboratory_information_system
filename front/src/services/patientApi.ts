@@ -23,6 +23,9 @@ export interface ReadPatientListRequest {
 
 export type ReadPatientListResponse = Patient[];
 
+export type ReadPatientByPatientNoRequest = number;
+export type ReadPatientByPatientNoResponse = Patient;
+
 const patientApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/patient`,
@@ -53,7 +56,22 @@ const patientApi = createApi({
         url: 'list',
       }),
     }),
+    readPatientByPatientNo: builder.query<
+      ReadPatientByPatientNoResponse,
+      ReadPatientByPatientNoRequest
+    >({
+      query: (data) => ({
+        method: 'GET',
+        url: data.toString(),
+      }),
+    }),
   }),
 });
 export default patientApi;
-export const { useCreatePatientMutation, useReadPatientListQuery } = patientApi;
+export const {
+  useCreatePatientMutation,
+  useReadPatientListQuery,
+  useLazyReadPatientListQuery,
+  useReadPatientByPatientNoQuery,
+  useLazyReadPatientByPatientNoQuery,
+} = patientApi;

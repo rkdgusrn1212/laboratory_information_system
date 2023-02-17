@@ -17,6 +17,9 @@ public class ReadConsultationWalkInListDto extends ReadListDto{
 	@OrderConstraints
 	private String staffNoOrder;
 	
+	private int consultationWalkInOrderStart;
+	private int consultationWalkInOrderEnd;
+	
 	@OrderConstraints
 	private String consultationWalkInOrderOrder;
 }
