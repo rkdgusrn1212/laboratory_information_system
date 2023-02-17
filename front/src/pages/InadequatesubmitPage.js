@@ -24,8 +24,10 @@ import Select from '@mui/material/Select';
 import { inadequate_typeList } from '../components/inadequate/InadequateTypeList';
 import { staffList } from '../components/inadequate/StaffList';
 import { SubmitInadequateList } from '../components/inadequate/SubmitInadequateList';
-
+import ScaleLoader from 'react-spinners/ScaleLoader';
 import axios from 'axios';
+import { selectAccount } from '../services/accountSlice';
+import { useAppSelector } from '../hooks';
 
 export default function InadequatePage() {
   //----검색기능
@@ -38,10 +40,15 @@ export default function InadequatePage() {
   const [submitInadequateList, setSubmitInadequateList] = useState([]); //스태프 리스트
   const [make, setMake] = useState([]); //반응형 그리드를 만들기위한 변수설정
 
+  const [loginstaffno, setLoginstaffno] = useState(1);
+  const account = useAppSelector(selectAccount); //로그인한  계정 정보
+
   useEffect(() => {
     SubmitInadequateList().then((res) => setSubmitInadequateList(res));
     staffList().then((res) => setStafflist(res));
     inadequate_typeList().then((res) => setTypelist(res));
+
+    setLoginstaffno(account.principal.staffVo.staffNo);
 
     setMake({
       specimen: [{ id: 1 }],
@@ -159,7 +166,7 @@ export default function InadequatePage() {
       data: {
         specimenNo: find.specimenNo,
         inadequateTypeCode: reason,
-        submitInadequateFrom: '72', //현재 로그인정보
+        submitInadequateFrom: loginstaffno,
         submitInadequateTo: listener,
       },
     })
@@ -184,7 +191,9 @@ export default function InadequatePage() {
             noValidate
             autoComplete="off"
           >
-            <h3>검체조회</h3>
+            <Grid sx={{ mx: 7 }}>
+              <h3>검체조회</h3>
+            </Grid>
             <Box
               sx={{
                 '& .MuiTextField-root': { m: 1, width: '25ch' },
@@ -192,21 +201,24 @@ export default function InadequatePage() {
               noValidate
               autoComplete="off"
             >
-              <Grid sx={{ float: 'left' }}>
+              <Grid sx={{ mx: 5, float: 'left' }}>
                 <Typography variant="subtitle1">바코드 수기입력</Typography>
                 <Typography variant="subtitle2">
                   입력된 바코드 : {search}
                 </Typography>
               </Grid>
-
-              <Grid sx={{ float: 'right' }}>
-                <Button variant="contained" color="success" onClick={onSearch}>
-                  입력
-                </Button>
-              </Grid>
-              <Grid sx={{ display: 'flex', justifyContent: 'right', mx: 3 }}>
-                <FormControl variant="standard">
-                  <Grid>
+              <Grid sx={{ mx: 10 }}>
+                <Grid sx={{ my: 1, float: 'right' }}>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    onClick={onSearch}
+                  >
+                    입력
+                  </Button>
+                </Grid>
+                <Grid sx={{ display: 'flex', justifyContent: 'right', mx: 6 }}>
+                  <FormControl variant="standard">
                     <InputLabel htmlFor="input-with-icon-adornment">
                       검체정보 검색
                     </InputLabel>
@@ -225,16 +237,8 @@ export default function InadequatePage() {
                       onKeyPress={handleOnKeyPress}
                       // onSubmit={false}
                     />
-                    {/*  인풋이 없으면 엔터시 페이지가 초기화된다.*/}
-                    <input
-                      className="search"
-                      type="hidden"
-                      value={search}
-                      onChange={onSearchHandler}
-                      onKeyPress={handleOnKeyPress}
-                    />
-                  </Grid>
-                </FormControl>
+                  </FormControl>
+                </Grid>
               </Grid>
             </Box>
           </Box>
@@ -452,14 +456,34 @@ export default function InadequatePage() {
               <Grid>부적합 검체 리스트</Grid>
               <Grid sx={{ height: '600px', width: '100%', float: 'left' }}>
                 <DataGrid
-                  rows={submitInadequateList}
-                  columns={columns}
-                  pageSize={7}
-                  rowsPerPageOptions={[7]}
-                  experimentalFeatures={{ newEditingApi: true }}
                   components={{
                     Toolbar: GridToolbar,
+                    NoRowsOverlay: () => (
+                      <Grid container spacing={2}>
+                        <Grid
+                          sx={{
+                            textAlign: 'center',
+                            justifyContent: 'center',
+                            width: '120%',
+                            my: 30,
+                          }}
+                        >
+                          <ScaleLoader color="#36d7b7" />
+                          <Typography
+                            sx={{ fontSize: 14 }}
+                            color="text.secondary"
+                          >
+                            연결 중
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    ),
                   }}
+                  rows={submitInadequateList}
+                  columns={columns}
+                  pageSize={10}
+                  rowsPerPageOptions={[10]}
+                  experimentalFeatures={{ newEditingApi: true }}
                 />
               </Grid>
             </Box>

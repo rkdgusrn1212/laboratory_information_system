@@ -42,6 +42,7 @@ public class CollectServiceImpl implements CollectService {
 		CollectSpecimenVo findbyspecimenno = null;
 		try {
 			collectMapper.specimeninsertbsystaffno(specimenDto);
+			
 			findbyspecimenno = collectMapper.findByspecimenno(specimenDto.getSpecimenNo());
 		} catch (Exception e) {
 			System.out.println(e);

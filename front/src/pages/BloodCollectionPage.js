@@ -25,8 +25,7 @@ import { collectlist } from '../components/bloodcollection/CollectList';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 import axios from 'axios';
-
-const testcodes = ['23012600001', '23012600002', '23012600003', '23012600004'];
+import ScaleLoader from 'react-spinners/ScaleLoader';
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   textAlign: 'center',
@@ -36,6 +35,9 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const lightTheme = createTheme({ palette: { mode: 'light' } });
+//로그인한 계정 정보 받아오기
+import { selectAccount } from '../services/accountSlice';
+import { useAppSelector } from '../hooks';
 
 export default function BloodCollectionPage() {
   const [open, setOpen] = React.useState(false);
@@ -47,13 +49,19 @@ export default function BloodCollectionPage() {
   const [state, setState] = useState([]); //검색 결과
   const [pagestarter, setPagestarter] = useState([]); //반응형 그리드를 만들기위한 변수설정
   const [flag, setFlag] = useState(1);
+  //db연결 오류
+  const [error, setError] = useState(1);
+  const account = useAppSelector(selectAccount); //로그인한  계정 정보
+  const [loginstaffno, setLoginstaffno] = useState(1);
 
   useEffect(() => {
-    try {
-      collectlist().then((res) => setList(res));
-    } catch {
-      return <h1>no backend</h1>;
-    }
+    collectlist().then((res) => {
+      if (res.data == 'error') {
+        setError(-100);
+      }
+      setList(res);
+    });
+    setLoginstaffno(account.principal.staffVo.staffNo);
     setPagestarter({
       starter: [{ id: 1 }],
     });
@@ -67,7 +75,7 @@ export default function BloodCollectionPage() {
         url: `http://localhost:8080/api/collect/insertcollectbypost`,
         data: {
           specimenNo: input,
-          staffNo: '72', //로그인 정보로 받아오기
+          staffNo: loginstaffno, //로그인 정보로 받아오기
         },
       })
         .then(function () {
@@ -127,11 +135,13 @@ export default function BloodCollectionPage() {
   };
   //post 방식으로 제출
   const handleClickOpen = () => {
-    console.log(inputlist);
+    if (error == 1) {
+      console.log(inputlist);
 
-    postdata();
+      postdata();
 
-    setOpen(true);
+      setOpen(true);
+    }
   };
 
   const handleClose = (value) => {
@@ -222,7 +232,7 @@ export default function BloodCollectionPage() {
                     sx={{ minWidth: '500px', m: 1, width: '140vh' }}
                     elevation={4}
                   >
-                    <Grid item xs={4}>
+                    <Grid item xs={4} sx={{ mx: 7 }}>
                       <h3> 채혈정보</h3>
                     </Grid>
 
@@ -233,11 +243,12 @@ export default function BloodCollectionPage() {
                       noValidate
                       autoComplete="off"
                     >
-                      <Grid sx={{ float: 'left' }}>
+                      <Grid sx={{ mx: 5, float: 'left' }}>
                         <Typography variant="subtitle1">
                           &nbsp;바코드 수기입력
                         </Typography>
-                        {pagestarter.starter &&
+                        {error == 1 &&
+                          pagestarter.starter &&
                           pagestarter.starter.map(() => {
                             if (!pagestarter.starter) {
                               return <Grid>no data</Grid>;
@@ -354,7 +365,7 @@ export default function BloodCollectionPage() {
                       </Grid>
 
                       <Grid
-                        sx={{ display: 'flex', justifyContent: 'right', mx: 3 }}
+                        sx={{ display: 'flex', justifyContent: 'right', mx: 5 }}
                       >
                         <FormControl variant="standard">
                           <Grid>
@@ -378,7 +389,7 @@ export default function BloodCollectionPage() {
                             />
                           </Grid>
                         </FormControl>
-                        <Grid sx={{ float: 'right' }}>
+                        <Grid sx={{ my: 1, float: 'right' }}>
                           <Button
                             variant="contained"
                             color="success"
@@ -405,14 +416,34 @@ export default function BloodCollectionPage() {
               } else {
                 return (
                   <DataGrid
-                    rows={list}
-                    columns={columns}
-                    pageSize={7}
-                    rowsPerPageOptions={[7]}
-                    disableSelectionOnClick //셀렉트 금지
                     components={{
                       Toolbar: GridToolbar,
+                      NoRowsOverlay: () => (
+                        <Grid container spacing={2}>
+                          <Grid
+                            sx={{
+                              textAlign: 'center',
+                              justifyContent: 'center',
+                              width: '120%',
+                              my: 30,
+                            }}
+                          >
+                            <ScaleLoader color="#36d7b7" />
+                            <Typography
+                              sx={{ fontSize: 14 }}
+                              color="text.secondary"
+                            >
+                              연결 중
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      ),
                     }}
+                    rows={list}
+                    columns={columns}
+                    pageSize={10}
+                    rowsPerPageOptions={[10]}
+                    disableSelectionOnClick //셀렉트 금지
                   />
                 );
               }
