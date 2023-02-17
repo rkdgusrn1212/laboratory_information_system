@@ -16,6 +16,7 @@ import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
+import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
@@ -177,4 +178,10 @@ public class CollectServiceImpl implements CollectService {
 		collectMapper.SubmitInadequatebyDto(SubmitInadequateDto);
 	}
 
+	
+	@Override
+	public List<CollectVisitVo> getvisitbypatientno(String patientNo){
+		List<CollectVisitVo> visitlist = collectMapper.findVisitByPatientNo(patientNo);
+		return visitlist;
+	}	
 }

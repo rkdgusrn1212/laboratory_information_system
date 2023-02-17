@@ -13,6 +13,7 @@ import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
+import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
@@ -58,4 +59,11 @@ public interface CollectMapper {
 	@Insert("INSERT INTO submit_inadequate (specimen_no,Inadequate_type_code,Submit_Inadequate_to,Submit_Inadequate_from,recept_Inadequate_date)VALUES(#{SubmitInadequateDto.specimenNo}, #{SubmitInadequateDto.inadequateTypeCode}, #{SubmitInadequateDto.submitInadequateTo},#{SubmitInadequateDto.submitInadequateFrom}, DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
 	void SubmitInadequatebyDto(@Param("SubmitInadequateDto") SubmitInadequateDto SubmitInadequateDto);
 
+	@Select("SELECT visit.visit_no AS visitNo,visit.patient_no AS patientNo, visit.visit_date AS visitDate,"
+			+"staff.staff_name AS visitDoctor,department.department_name as departmentName "
+			+"FROM patient, visit, doctor, staff, department "
+			+"WHERE doctor.department_code = department.department_code "
+			+"and doctor.staff_no = staff.staff_no AND staff.staff_no = visit.visit_doctor "
+			+"and patient.patient_no = visit.patient_no AND patient.patient_no = #{patientNo} order BY visit.visit_date ")
+	List<CollectVisitVo> findVisitByPatientNo(@Param("patientNo") String patientNo);
 }

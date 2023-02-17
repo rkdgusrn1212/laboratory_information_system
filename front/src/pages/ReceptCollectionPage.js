@@ -91,6 +91,7 @@ export default function ReceptCollectionPage() {
   };
 
   function onP() {
+    //이름으로 환자 볼러오기
     axios({
       method: 'get',
       url: `http://localhost:8080/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
@@ -117,10 +118,27 @@ export default function ReceptCollectionPage() {
     });
   }
 
+  function onvisit(patientNo) {
+    //환자no로  내원 볼러오기
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/collect/visitbypatientno?patientNo=${patientNo}`,
+    }).then(function (response) {
+      if (response.data != '') {
+        console.log(response.data);
+        error == 1 &&
+          response.data.map((visit) => {
+            visit.id = visit.visitNo;
+          });
+
+        setNawon(response.data);
+      }
+    });
+  }
+
   const onSearch = (event) => {
-    onP();
-    // setState(json);
-    // setPLength(json.products.length);
+    onP(); //환자를 받아옴
+
     setFind(search);
   };
   //받아온 json파일 전처리
@@ -130,20 +148,107 @@ export default function ReceptCollectionPage() {
         a.status = 0;
       });
   }
-  // //받아온 환자 json파일 전처리
-  // function onPbeforesetting() {
-  //     console.log("onPbeforesetting")
-  //     callpatient.patients.map((a) => {
-  //         if (a.patientmale === "1") {
-  //             a.patientmale = "male"
-  //             console.log("onPbeforesetting1")
-  //         }
-  //         else {
-  //             console.log("onPbeforesetting2")
-  //             a.patientmale = "female"
-  //         }
-  //     })
-  // }
+  // -------------다이얼로그
+
+  const handleClickOpen = () => {
+    if (error == 1) {
+      grid2buttonclick();
+      setOpen(true);
+    }
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+  };
+
+  //환자 선택
+  const selectpatient = (i) => {
+    setSelectedp(i);
+    console.log(callpatient.patients[i - 1].patientNo); //내가 선택한 환자의 환자 번호
+    //axios get 환자번호로 처방 정보
+
+    rowsbeforesetting(rows); //전처리
+    setRows1(rows); //입력
+    //
+
+    // 선택한 환자번호로 내원 받아오기
+    onvisit(callpatient.patients[i - 1].patientNo);
+    setOrder({
+      order: [{ id: 1 }],
+    });
+  };
+
+  //내원정보 카드 글릭시 내원카드 선택
+  const clickcard = (i) => {
+    console.log(nawon);
+    setSelectedn(i + 1); //i는 0부터 시작 로넘은 1부터 시작함
+    error == 1 &&
+      rows.map((a, b) => {
+        if (nawon[i].visitNo === a.visit_no) {
+          rows[b].status = 1;
+          //그리드 객체에서
+          //getRowClassName={(params) => `super-app-theme--${params.row.status}`}
+        }
+      });
+    //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
+    setRows1(rows);
+  };
+
+  function grid1buttonclick() {
+    // rows2 = resetrow;
+    setRows3(resetrow); //초기화
+
+    // console.log("selectionModel1:" + selectionModel1)
+    error == 1 &&
+      selectionModel1.map((id) => {
+        // console.log("id:" + id)//선택된 값들의 id들
+        error == 1 &&
+          rows.map((row) => {
+            if (row.id === id) {
+              // console.log("id:" + row.id)
+              rows2.push({
+                p_code: row.p_code,
+                id: row.id,
+                visit_no: row.visit_no,
+                order_date: row.order_date,
+                test_container: row.test_container,
+                staff_name: row.staff_name,
+                department_name: row.department_name,
+                test_name: row.test_name,
+              });
+            }
+          });
+      });
+    setRows3(rows2);
+  }
+
+  //선택한 그리드2의 값들로 다이얼로그를 통해 바코드 생성
+  const rows4 = [];
+  function grid2buttonclick() {
+    // console.log("selectionModel2:" + selectionModel2)
+    selectionModel2.map((id) => {
+      // console.log("id:" + id)//선택된 값들의 id들
+      rows.map((row) => {
+        if (row.id === id) {
+          // console.log("id:" + row.id)
+          rows4.push({
+            id: row.id,
+            visit_no: row.visit_no,
+            order_date: row.order_date,
+            specimen_no: row.specimen_no,
+            test_container: row.test_container,
+            staff_name: row.staff_name,
+            department_name: row.department_name,
+            test_name: row.test_name,
+          });
+        }
+      });
+    });
+
+    setRows5(rows4);
+    //바코드 출력시간의 현재시간으로 입력해야 함
+    //db에 이정보들을 입력하여야 함
+  }
 
   const rows = [
     {
@@ -267,139 +372,6 @@ export default function ReceptCollectionPage() {
       headerAlign: 'center',
     },
   ];
-
-  // -------------다이얼로그
-
-  const handleClickOpen = () => {
-    if (error == 1) {
-      grid2buttonclick();
-      setOpen(true);
-    }
-  };
-
-  const handleClose = (value) => {
-    setOpen(false);
-  };
-
-  //환자 선택
-  const selectpatient = (i) => {
-    rowsbeforesetting(rows); //전처리
-    setRows1(rows); //입력
-
-    setSelectedp(i);
-    // 선택한 환자로 내원 받아오기
-    setNawon({
-      visits: [
-        {
-          visitno: 1,
-          v_doc: '김의사',
-          department_name: '소화기내과(GI) - 제2병동',
-          visit_date: '22-11-15',
-        },
-        {
-          visitno: 2,
-          v_doc: '김의사',
-          department_name: '소화기내과(GI) - 제2병동',
-          visit_date: '22-12-16',
-        },
-        {
-          visitno: 3,
-          v_doc: '나의사',
-          department_name: '신경외과(NS) - 제1병동',
-          visit_date: '23-01-5',
-        },
-        {
-          visitno: 4,
-          v_doc: '나의사',
-          department_name: '신경외과(NS) - 제1병동',
-          visit_date: '23-01-18',
-        },
-        {
-          visitno: 5,
-          v_doc: '김의사',
-          department_name: '소화기내과(GI) - 제2병동',
-          visit_date: '23-01-27',
-        },
-      ],
-    });
-    // 선택한 환자로 처방 받아오기
-
-    //반응형 그리드를 만들기위한 변수설정
-    setOrder({
-      order: [{ id: 1 }],
-    });
-  };
-
-  //내원정보 카드 글릭시 내원카드 선택
-  const clickcard = (i) => {
-    setSelectedn(i + 1); //i는 0부터 시작 로넘은 1부터 시작함
-    error == 1 &&
-      rows.map((a, b) => {
-        if (nawon.visits[i].visitno === a.visit_no) {
-          rows[b].status = 1;
-          //그리드 객체에서
-          //getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-        }
-      });
-    //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
-    setRows1(rows);
-  };
-
-  function grid1buttonclick() {
-    // rows2 = resetrow;
-    setRows3(resetrow); //초기화
-
-    // console.log("selectionModel1:" + selectionModel1)
-    error == 1 &&
-      selectionModel1.map((id) => {
-        // console.log("id:" + id)//선택된 값들의 id들
-        error == 1 &&
-          rows.map((row) => {
-            if (row.id === id) {
-              // console.log("id:" + row.id)
-              rows2.push({
-                p_code: row.p_code,
-                id: row.id,
-                visit_no: row.visit_no,
-                order_date: row.order_date,
-                test_container: row.test_container,
-                staff_name: row.staff_name,
-                department_name: row.department_name,
-                test_name: row.test_name,
-              });
-            }
-          });
-      });
-    setRows3(rows2);
-  }
-
-  //선택한 그리드2의 값들로 다이얼로그를 통해 바코드 생성
-  const rows4 = [];
-  function grid2buttonclick() {
-    // console.log("selectionModel2:" + selectionModel2)
-    selectionModel2.map((id) => {
-      // console.log("id:" + id)//선택된 값들의 id들
-      rows.map((row) => {
-        if (row.id === id) {
-          // console.log("id:" + row.id)
-          rows4.push({
-            id: row.id,
-            visit_no: row.visit_no,
-            order_date: row.order_date,
-            specimen_no: row.specimen_no,
-            test_container: row.test_container,
-            staff_name: row.staff_name,
-            department_name: row.department_name,
-            test_name: row.test_name,
-          });
-        }
-      });
-    });
-
-    setRows5(rows4);
-    //바코드 출력시간의 현재시간으로 입력해야 함
-    //db에 이정보들을 입력하여야 함
-  }
 
   return (
     <Grid>
@@ -618,9 +590,9 @@ export default function ReceptCollectionPage() {
               <CardContent>
                 <h3>내원정보</h3>
                 {error == 1 &&
-                  nawon.visits &&
-                  nawon.visits.map((visit, i) => {
-                    if (!nawon.visits) {
+                  nawon &&
+                  nawon.map((visit, i) => {
+                    if (!nawon) {
                       return <Grid>no data</Grid>;
                     } else {
                       if (selectedn === i + 1) {
@@ -650,7 +622,7 @@ export default function ReceptCollectionPage() {
                                   <Grid sx={{ display: 'flex' }}>
                                     <Grid sx={{ float: 'left' }}>
                                       <Typography sx={{ fontSize: 14 }}>
-                                        {i + 1}번째
+                                        내원번호 : {visit.visitNo}
                                       </Typography>
                                     </Grid>
                                     <Grid sx={{ float: 'right' }}>
@@ -659,18 +631,18 @@ export default function ReceptCollectionPage() {
                                         color="text.secondary"
                                         gutterBottom
                                       >
-                                        내원일자: {visit.visit_date}
+                                        내원일자: {visit.visitDate}
                                       </Typography>
                                     </Grid>
                                   </Grid>
                                   <Typography variant="body2" component="div">
-                                    내원과:{visit.department_name}
+                                    내원과:{visit.departmentName}
                                   </Typography>
                                   <Typography
                                     sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                   >
-                                    진료의: {visit.v_doc}
+                                    진료의: {visit.visitDoctor}
                                   </Typography>
                                 </Grid>
                               </CardContent>
@@ -711,7 +683,7 @@ export default function ReceptCollectionPage() {
                                   <Grid sx={{ display: 'flex' }}>
                                     <Grid sx={{ float: 'left' }}>
                                       <Typography sx={{ fontSize: 14 }}>
-                                        {i + 1}번째
+                                        내원번호 : {visit.visitNo}
                                       </Typography>
                                     </Grid>
                                     <Grid sx={{ float: 'right' }}>
@@ -720,18 +692,18 @@ export default function ReceptCollectionPage() {
                                         color="text.secondary"
                                         gutterBottom
                                       >
-                                        내원일자: {visit.visit_date}
+                                        내원일자: {visit.visitDate}
                                       </Typography>
                                     </Grid>
                                   </Grid>
                                   <Typography variant="body2" component="div">
-                                    내원과:{visit.department_name}
+                                    내원과:{visit.departmentName}
                                   </Typography>
                                   <Typography
                                     sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                   >
-                                    진료의: {visit.v_doc}
+                                    진료의: {visit.visitDoctor}
                                   </Typography>
                                 </Grid>
                               </CardContent>
