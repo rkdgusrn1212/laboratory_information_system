@@ -6,7 +6,7 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import TextField from '@mui/material/TextField';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import * as React from 'react';
 // 여기까진 데이타 그리드 +검색
 import Button from '@mui/material/Button';
@@ -30,6 +30,7 @@ import { useEffect, useState } from 'react';
 //그리드에 색깔 넣기
 import { PatientList } from '../components/receptcollection/PatientList';
 import axios from 'axios';
+import ScaleLoader from 'react-spinners/ScaleLoader';
 
 //-----------------------카드
 export default function ReceptCollectionPage() {
@@ -57,12 +58,21 @@ export default function ReceptCollectionPage() {
   const resetrow = [];
   //선택한 그리드1의 값들 그리드 2로 이동
   const rows2 = [];
-
   //검색창 미리보기 구현
+
+  //db연결 오류
+  const [error, setError] = useState(1); //
+
   useEffect(() => {
-    PatientList().then((res) => setpatientlist(res));
+    PatientList().then((res) => {
+      if (res.data == 'error') {
+        setError(-100);
+      }
+      setpatientlist(res);
+    });
+
     setPagestarter({
-      pagestart: { id: 1 },
+      starter: [{ id: 1 }],
     });
   }, []);
   const handleInput = (e) => {
@@ -87,16 +97,17 @@ export default function ReceptCollectionPage() {
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
-        response.data.map((patient) => {
-          if (patient.patientMale === true) patient.patientMale = '남';
-          else {
-            patient.patientMale = '여';
-          }
-          const today = new Date();
-          const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
+        error == 1 &&
+          response.data.map((patient) => {
+            if (patient.patientMale === true) patient.patientMale = '남';
+            else {
+              patient.patientMale = '여';
+            }
+            const today = new Date();
+            const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
 
-          patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
-        });
+            patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
+          });
 
         setCallpatient({
           patients: response.data,
@@ -114,9 +125,10 @@ export default function ReceptCollectionPage() {
   };
   //받아온 json파일 전처리
   function rowsbeforesetting(rows) {
-    rows.map((a) => {
-      a.status = 0;
-    });
+    error == 1 &&
+      rows.map((a) => {
+        a.status = 0;
+      });
   }
   // //받아온 환자 json파일 전처리
   // function onPbeforesetting() {
@@ -259,8 +271,10 @@ export default function ReceptCollectionPage() {
   // -------------다이얼로그
 
   const handleClickOpen = () => {
-    grid2buttonclick();
-    setOpen(true);
+    if (error == 1) {
+      grid2buttonclick();
+      setOpen(true);
+    }
   };
 
   const handleClose = (value) => {
@@ -319,13 +333,14 @@ export default function ReceptCollectionPage() {
   //내원정보 카드 글릭시 내원카드 선택
   const clickcard = (i) => {
     setSelectedn(i + 1); //i는 0부터 시작 로넘은 1부터 시작함
-    rows.map((a, b) => {
-      if (nawon.visits[i].visitno === a.visit_no) {
-        rows[b].status = 1;
-        //그리드 객체에서
-        //getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-      }
-    });
+    error == 1 &&
+      rows.map((a, b) => {
+        if (nawon.visits[i].visitno === a.visit_no) {
+          rows[b].status = 1;
+          //그리드 객체에서
+          //getRowClassName={(params) => `super-app-theme--${params.row.status}`}
+        }
+      });
     //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
     setRows1(rows);
   };
@@ -335,24 +350,26 @@ export default function ReceptCollectionPage() {
     setRows3(resetrow); //초기화
 
     // console.log("selectionModel1:" + selectionModel1)
-    selectionModel1.map((id) => {
-      // console.log("id:" + id)//선택된 값들의 id들
-      rows.map((row) => {
-        if (row.id === id) {
-          // console.log("id:" + row.id)
-          rows2.push({
-            p_code: row.p_code,
-            id: row.id,
-            visit_no: row.visit_no,
-            order_date: row.order_date,
-            test_container: row.test_container,
-            staff_name: row.staff_name,
-            department_name: row.department_name,
-            test_name: row.test_name,
+    error == 1 &&
+      selectionModel1.map((id) => {
+        // console.log("id:" + id)//선택된 값들의 id들
+        error == 1 &&
+          rows.map((row) => {
+            if (row.id === id) {
+              // console.log("id:" + row.id)
+              rows2.push({
+                p_code: row.p_code,
+                id: row.id,
+                visit_no: row.visit_no,
+                order_date: row.order_date,
+                test_container: row.test_container,
+                staff_name: row.staff_name,
+                department_name: row.department_name,
+                test_name: row.test_name,
+              });
+            }
           });
-        }
       });
-    });
     setRows3(rows2);
   }
 
@@ -400,11 +417,14 @@ export default function ReceptCollectionPage() {
               >
                 <Grid sx={{ maxHeight: '500px', overflowY: 'scroll' }}>
                   <h3>&nbsp; 환자 정보 검색창</h3>
-                  <Grid sx={{ textAlign: 'right' }}>
+                  {/* <Grid sx={{ textAlign: 'right' }}>
                     <Autocomplete
                       onKeyPress={handleOnKeyPress}
                       disablePortal
-                      options={patientlist.map((item) => item.patientName)}
+                      options={
+                        error == 1 &&
+                        patientlist.map((item) => item.patientName)
+                      }
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -417,7 +437,7 @@ export default function ReceptCollectionPage() {
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid
                     sx={{
                       textAlign: 'center',
@@ -452,7 +472,9 @@ export default function ReceptCollectionPage() {
                       {find} (으)로 검색된 환자 총 {plength}건입니다.
                     </Typography>
                   </Grid>
-                  {callpatient.patients &&
+
+                  {error == 1 &&
+                    callpatient.patients &&
                     callpatient.patients.map((patient, i) => {
                       if (!callpatient.patients) {
                         return <Grid>no data</Grid>;
@@ -595,7 +617,8 @@ export default function ReceptCollectionPage() {
             >
               <CardContent>
                 <h3>내원정보</h3>
-                {nawon.visits &&
+                {error == 1 &&
+                  nawon.visits &&
                   nawon.visits.map((visit, i) => {
                     if (!nawon.visits) {
                       return <Grid>no data</Grid>;
@@ -722,109 +745,238 @@ export default function ReceptCollectionPage() {
               </CardContent>
             </Card>
           </Grid>
-          {ordern.order &&
-            ordern.order.map(() => {
-              if (!ordern.order) {
-                return <Grid>no data</Grid>;
-              } else {
-                return (
-                  <Card
-                    sx={{
-                      minWidth: '1100px',
-                      width: '80%',
-                      marginleft: 20,
-                    }}
-                  >
-                    <CardContent sx={{ minWidth: 500 }}>
-                      <Box
-                        sx={{
-                          height: 500,
-                          width: '38%',
-                          float: 'right',
-                        }}
-                      >
-                        <h3>채취할 처방정보</h3>
-                        <DataGrid
-                          rows={rows3}
-                          columns={columns2}
-                          pageSize={7}
-                          rowsPerPageOptions={[7]}
-                          checkboxSelection
-                          onSelectionModelChange={(newSelectionModel) => {
-                            setSelectionModel2(newSelectionModel);
-                          }}
-                          selectionModel={selectionModel2}
-                        />
-                        <br />
-                        <Button
-                          sx={{ width: '100%' }}
-                          variant="contained"
-                          onClick={handleClickOpen}
-                        >
-                          채취버튼
-                        </Button>
-                        <ReceptCollectionDialog
-                          selectedValue={rows5}
-                          open={open}
-                          onClose={handleClose}
-                        />
-                      </Box>
-                      <Grid sx={{ my: 40, float: 'right' }}>
-                        <ArrowForwardIcon />
-                        &nbsp;&nbsp;
-                      </Grid>
+          <Card
+            sx={{
+              minWidth: '1100px',
+              width: '80%',
+              marginleft: 20,
+            }}
+          >
+            <CardContent sx={{ minWidth: 500 }}>
+              <Box
+                sx={{
+                  height: 500,
+                  width: '38%',
+                  float: 'right',
+                }}
+              >
+                <h3>채취할 처방정보</h3>
+                {pagestarter.starter &&
+                  pagestarter.starter.map(() => {
+                    if (!pagestarter.starter) {
+                      return <Grid>no data</Grid>;
+                    } else {
+                      if (error == 1) {
+                        //1은정상그리드 -100은 로딩 그리드
+                        return (
+                          <DataGrid
+                            components={{
+                              NoRowsOverlay: () => (
+                                <Grid container spacing={2}>
+                                  <Grid
+                                    sx={{
+                                      textAlign: 'center',
+                                      justifyContent: 'center',
+                                      width: '120%',
+                                      my: 25,
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{ fontSize: 14 }}
+                                      color="text.secondary"
+                                    >
+                                      왼쪽 표에서 출력할 처방 정보를 선택하세요
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+                              ),
+                            }}
+                            rows={rows3}
+                            columns={columns2}
+                            pageSize={7}
+                            rowsPerPageOptions={[7]}
+                            checkboxSelection
+                            onSelectionModelChange={(newSelectionModel) => {
+                              setSelectionModel2(newSelectionModel);
+                            }}
+                            selectionModel={selectionModel2}
+                          />
+                        );
+                      } else {
+                        return (
+                          <DataGrid
+                            components={{
+                              NoRowsOverlay: () => (
+                                <Grid container spacing={2}>
+                                  <Grid
+                                    sx={{
+                                      textAlign: 'center',
+                                      justifyContent: 'center',
+                                      width: '120%',
+                                      my: 25,
+                                    }}
+                                  >
+                                    <ScaleLoader color="#36d7b7" />
+                                    <Typography
+                                      sx={{ fontSize: 14 }}
+                                      color="text.secondary"
+                                    >
+                                      연결 중
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+                              ),
+                            }}
+                            rows={rows3}
+                            columns={columns2}
+                            pageSize={7}
+                            rowsPerPageOptions={[7]}
+                            checkboxSelection
+                            onSelectionModelChange={(newSelectionModel) => {
+                              setSelectionModel2(newSelectionModel);
+                            }}
+                            selectionModel={selectionModel2}
+                          />
+                        );
+                      }
+                    }
+                  })}
 
-                      <Box
-                        sx={{
-                          height: 500,
-                          width: '58%',
-                          float: 'left',
-                          '& .super-app-theme--1': {
-                            bgcolor: '#ABCBAD',
-                            '&:hover': {
-                              bgcolor: '#96BE98',
-                            },
-                          },
-                        }}
-                      >
-                        <h3>처방정보</h3>
+                <br />
+                <Button
+                  sx={{ width: '100%' }}
+                  variant="contained"
+                  onClick={handleClickOpen}
+                >
+                  채취버튼
+                </Button>
+                <ReceptCollectionDialog
+                  selectedValue={rows5}
+                  open={open}
+                  onClose={handleClose}
+                />
+              </Box>
+              <Grid sx={{ my: 40, float: 'right' }}>
+                <ArrowForwardIcon />
+                &nbsp;&nbsp;
+              </Grid>
 
-                        <DataGrid
-                          rows={rows1}
-                          columns={columns}
-                          // getRowClassName={(params) => {
-                          //     if (selectedn === `${params.row.id}`) {
-                          //         return 'super-app-theme--1'
-                          //     }
-                          // }}
-                          getRowClassName={(params) =>
-                            `super-app-theme--${params.row.status}`
-                          }
-                          pageSize={7}
-                          rowsPerPageOptions={[7]}
-                          checkboxSelection
-                          // isRowSelectable={(params) => params.row.specimen_no < 50000}// 나중에 구현 할것 오른쪽에 넘어간 값 받아오는것
-                          onSelectionModelChange={(newSelectionModel) => {
-                            setSelectionModel1(newSelectionModel);
-                          }}
-                          selectionModel={selectionModel1}
-                        />
+              <Box
+                sx={{
+                  position: 'relative',
+                  height: 500,
+                  width: '58%',
+                  float: 'left',
+                  '& .super-app-theme--1': {
+                    bgcolor: '#ABCBAD',
+                    '&:hover': {
+                      bgcolor: '#96BE98',
+                    },
+                  },
+                }}
+              >
+                <h3>처방정보</h3>
+                {pagestarter.starter &&
+                  pagestarter.starter.map(() => {
+                    if (!pagestarter.starter) {
+                      return <Grid>no data</Grid>;
+                    } else {
+                      if (error == 1) {
+                        //1은정상그리드 -100은 로딩 그리드
+                        return (
+                          <DataGrid
+                            rows={rows1}
+                            columns={columns}
+                            getRowClassName={(params) =>
+                              `super-app-theme--${params.row.status}`
+                            }
+                            pageSize={10}
+                            rowsPerPageOptions={[10]}
+                            checkboxSelection
+                            onSelectionModelChange={(newSelectionModel) => {
+                              setSelectionModel1(newSelectionModel);
+                            }}
+                            selectionModel={selectionModel1}
+                            components={{
+                              Toolbar: GridToolbar,
+                              NoRowsOverlay: () => (
+                                <Grid container spacing={2}>
+                                  <Grid
+                                    sx={{
+                                      textAlign: 'center',
+                                      justifyContent: 'center',
+                                      width: '120%',
+                                      my: 20,
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{ fontSize: 14 }}
+                                      color="text.secondary"
+                                    >
+                                      환자 정보를 검색하세요
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+                              ),
+                            }}
+                          />
+                        );
+                      } else {
+                        return (
+                          <DataGrid
+                            rows={rows1}
+                            columns={columns}
+                            getRowClassName={(params) =>
+                              `super-app-theme--${params.row.status}`
+                            }
+                            pageSize={10}
+                            rowsPerPageOptions={[10]}
+                            checkboxSelection
+                            onSelectionModelChange={(newSelectionModel) => {
+                              setSelectionModel1(newSelectionModel);
+                            }}
+                            selectionModel={selectionModel1}
+                            components={{
+                              Toolbar: GridToolbar,
+                              NoRowsOverlay: () => (
+                                <Grid container spacing={2}>
+                                  <Grid
+                                    sx={{
+                                      textAlign: 'center',
+                                      justifyContent: 'center',
+                                      width: '120%',
+                                      my: 20,
+                                    }}
+                                  >
+                                    <ScaleLoader color="#36d7b7" />
+                                    <Typography
+                                      sx={{ fontSize: 14 }}
+                                      color="text.secondary"
+                                    >
+                                      연결 중
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+                              ),
+                            }}
+                          />
+                        );
+                      }
+                    }
+                  })}
 
-                        <br />
-                        <Button
-                          sx={{ width: '100%' }}
-                          variant="contained"
-                          color="success"
-                          onClick={grid1buttonclick}
-                        >
-                          리스트 등록
-                        </Button>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                );
-              }
-            })}
+                <br />
+                <Button
+                  sx={{ width: '100%' }}
+                  variant="contained"
+                  color="success"
+                  onClick={grid1buttonclick}
+                >
+                  리스트 등록
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </Grid>

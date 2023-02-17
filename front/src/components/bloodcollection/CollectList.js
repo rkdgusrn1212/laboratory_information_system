@@ -13,6 +13,7 @@ export const collectlist = async () => {
 
     return response.data;
   } catch (error) {
-    console.log(error);
+    const response = { data: 'error' };
+    return response;
   }
 };
