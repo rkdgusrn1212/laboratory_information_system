@@ -61,7 +61,11 @@ const ConsultationPage: React.FC = () => {
   });
 
   const handleSelected = (item: ConsultationReception | undefined) => {
-    if (item === undefined || (selected !== undefined && selected !== item)) {
+    if (
+      item === undefined ||
+      (selected !== undefined &&
+        selected.consultationReceptionNo !== item.consultationReceptionNo)
+    ) {
       setDialog({ open: true, data: item });
     } else {
       setSelected(item);
@@ -102,7 +106,7 @@ const ConsultationPage: React.FC = () => {
               }),
             }}
           >
-            <PrescriptionForm patient={undefined} />
+            <PrescriptionForm consultationReception={selected} />
           </Box>
           <Box flexGrow={1}>
             <PrescriptionPicker />

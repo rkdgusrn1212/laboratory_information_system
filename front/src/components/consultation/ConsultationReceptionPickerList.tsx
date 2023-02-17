@@ -138,7 +138,7 @@ const ConsultationReceptionCard: React.FC<{
 export type ConsultationReceptionPickerListProps = {
   onSelected: (
     // eslint-disable-next-line no-unused-vars
-    consultationReception: ConsultationReception,
+    consultationReception: ConsultationReception | undefined,
   ) => void;
   selected: ConsultationReception | undefined;
   data: ConsultationReception[] | undefined;
@@ -147,6 +147,16 @@ export type ConsultationReceptionPickerListProps = {
 const ConsultationReceptionPickerList: React.FC<
   ConsultationReceptionPickerListProps
 > = ({ onSelected, data, selected }) => {
+  const handleClick = (consultationReception: ConsultationReception) => () => {
+    if (
+      consultationReception.consultationReceptionNo ===
+      selected?.consultationReceptionNo
+    ) {
+      onSelected(undefined);
+    } else {
+      onSelected(consultationReception);
+    }
+  };
   return (
     <Stack gap={1} my={1} width={400}>
       {data ? (
@@ -160,7 +170,7 @@ const ConsultationReceptionPickerList: React.FC<
                   selected.consultationReceptionNo
                 : false
             }
-            onClick={() => onSelected(consultationReception)}
+            onClick={handleClick(consultationReception)}
           />
         ))
       ) : (

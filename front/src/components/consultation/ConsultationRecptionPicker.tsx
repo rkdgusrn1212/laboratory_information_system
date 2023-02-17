@@ -15,7 +15,7 @@ import { selectAccount } from '../../services/accountSlice';
 const ConsultationReceptionPicker: React.FC<{
   onSelected: (
     // eslint-disable-next-line no-unused-vars
-    consultaionReception: ConsultationReception,
+    consultaionReception: ConsultationReception | undefined,
   ) => void;
   selected: ConsultationReception | undefined;
 }> = ({ onSelected, selected }) => {

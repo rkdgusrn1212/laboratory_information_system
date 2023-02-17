@@ -11,26 +11,32 @@ import Skeleton from '@mui/material/Skeleton';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
-import { Patient } from '../../services/types';
+import { ConsultationReception } from '../../services/types';
 import OrderTable from './OrderTable';
+import { useReadPatientByPatientNoQuery } from '../../services/patientApi';
 
-const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
-  patient,
-}) => {
+const PrescriptionForm: React.FC<{
+  consultationReception: ConsultationReception | undefined;
+}> = ({ consultationReception }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const startTime = useMemo<number>(() => Date.now(), [patient]);
+  const startTime = useMemo<number>(() => Date.now(), [consultationReception]);
   const [during, setDuring] = useState<string>('00:00');
+  const findPatientByPatientIdResult = useReadPatientByPatientNoQuery(
+    consultationReception ? consultationReception.patientNo : 0,
+    { skip: consultationReception === undefined, pollingInterval: 20 },
+  );
 
   const age = useMemo(() => {
-    if (patient) {
+    if (findPatientByPatientIdResult.data) {
       return (
         new Date(
-          new Date().getTime() - new Date(patient.patientBirth).getTime(),
+          new Date().getTime() -
+            new Date(findPatientByPatientIdResult.data.patientBirth).getTime(),
         ).getFullYear() - 1970
       );
     }
     return undefined;
-  }, [patient]);
+  }, [findPatientByPatientIdResult.data]);
 
   useEffect(() => {
     setDuring('00:00');
@@ -65,7 +71,11 @@ const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
             alignItems="start"
           >
             <Typography variant="h6" ml={3} mb={2}>
-              {patient ? '새 진료기록' : <Skeleton width={120} />}
+              {findPatientByPatientIdResult.data ? (
+                '새 진료기록'
+              ) : (
+                <Skeleton width={120} />
+              )}
             </Typography>
             <Stack direction="column" alignItems="start">
               <Stack
@@ -75,17 +85,21 @@ const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
                 justifyContent="start"
                 spacing={1}
               >
-                {patient ? (
+                {findPatientByPatientIdResult.data ? (
                   <AccessTimeIcon />
                 ) : (
                   <Skeleton width={24} height={24} variant="circular" />
                 )}
                 <Typography fontSize={24} fontFamily="digital-clock-font">
-                  {patient ? during : <Skeleton width={120} />}
+                  {findPatientByPatientIdResult.data ? (
+                    during
+                  ) : (
+                    <Skeleton width={120} />
+                  )}
                 </Typography>
               </Stack>
               <Typography fontSize={12} textAlign="end" mr={2}>
-                {patient ? (
+                {findPatientByPatientIdResult.data ? (
                   '진료 시작: ' + new Date(startTime).toLocaleString()
                 ) : (
                   <Skeleton width={120} />
@@ -94,39 +108,45 @@ const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
             </Stack>
           </Stack>
           <Typography variant="subtitle1" ml={2} mb={1}>
-            {patient ? '환자 정보' : <Skeleton width={120} />}
+            {findPatientByPatientIdResult.data ? (
+              '환자 정보'
+            ) : (
+              <Skeleton width={120} />
+            )}
           </Typography>
           <Stack direction="row" spacing={2} px={1} mb={2}>
             <Box width={100}>
-              {patient ? (
+              {findPatientByPatientIdResult.data ? (
                 <TextField
                   fullWidth
                   size="small"
                   type="text"
                   label="차트번호"
                   disabled
-                  value={patient.patientNo.toString().padStart(6, '0')}
+                  value={findPatientByPatientIdResult.data.patientNo
+                    .toString()
+                    .padStart(6, '0')}
                 />
               ) : (
                 <Skeleton variant="rounded" height={40} />
               )}
             </Box>
             <Box flexGrow={1}>
-              {patient ? (
+              {findPatientByPatientIdResult.data ? (
                 <TextField
                   fullWidth
                   size="small"
                   type="text"
                   label="성명"
                   disabled
-                  value={patient.patientName}
+                  value={findPatientByPatientIdResult.data.patientName}
                 />
               ) : (
                 <Skeleton variant="rounded" height={40} />
               )}
             </Box>
             <Box width={80}>
-              {patient ? (
+              {findPatientByPatientIdResult.data ? (
                 <TextField
                   fullWidth
                   type="text"
@@ -140,28 +160,38 @@ const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
               )}
             </Box>
             <Box width={60}>
-              {patient ? (
+              {findPatientByPatientIdResult.data ? (
                 <TextField
                   fullWidth
                   type="text"
                   size="small"
                   label="성별"
                   disabled
-                  value={patient ? (patient.patientMale ? '남' : '여') : ''}
+                  value={
+                    findPatientByPatientIdResult.data
+                      ? findPatientByPatientIdResult.data.patientMale
+                        ? '남'
+                        : '여'
+                      : ''
+                  }
                 />
               ) : (
                 <Skeleton variant="rounded" height={40} />
               )}
             </Box>
             <Box width={120}>
-              {patient ? (
+              {findPatientByPatientIdResult.data ? (
                 <TextField
                   fullWidth
                   type="text"
                   size="small"
                   label="생년월일"
                   disabled
-                  value={patient ? patient.patientBirth : ''}
+                  value={
+                    findPatientByPatientIdResult.data
+                      ? findPatientByPatientIdResult.data.patientBirth
+                      : ''
+                  }
                 />
               ) : (
                 <Skeleton variant="rounded" height={40} />
@@ -169,12 +199,18 @@ const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
             </Box>
           </Stack>
           <Typography variant="subtitle1" ml={2}>
-            {patient ? '처방 목록' : <Skeleton width={120} />}
+            {findPatientByPatientIdResult.data ? (
+              '처방 목록'
+            ) : (
+              <Skeleton width={120} />
+            )}
           </Typography>
           <Box sx={{ flexGrow: 1 }}>
-            <OrderTable disabled={patient === undefined} />
+            <OrderTable
+              disabled={findPatientByPatientIdResult.data === undefined}
+            />
           </Box>
-          {patient ? (
+          {findPatientByPatientIdResult.data ? (
             <Button variant="contained" sx={{ mr: 1, alignSelf: 'end' }}>
               진료기록 제출
             </Button>
@@ -187,7 +223,7 @@ const PrescriptionForm: React.FC<{ patient: Patient | undefined }> = ({
             />
           )}
         </Stack>
-        {patient ? null : (
+        {findPatientByPatientIdResult.data ? null : (
           <Alert
             sx={{
               width: '80%',
