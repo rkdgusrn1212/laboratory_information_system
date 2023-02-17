@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 
 import PrescriptionForm from '../components/consultation/PrescriptionForm';
 import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
-import ConsultationReceptionPicker from '../components/consultation/ConsultationPicker';
+import ConsultationReceptionPicker from '../components/consultation/ConsultationRecptionPicker';
 import { ConsultationReception } from '../services/types';
 
 const theme = createTheme({

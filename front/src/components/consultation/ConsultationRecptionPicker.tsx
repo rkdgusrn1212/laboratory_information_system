@@ -47,7 +47,6 @@ const ConsultationReceptionPicker: React.FC<{
       sx={{
         height: '100%',
         py: 3,
-        minWidth: 400,
       }}
     >
       <Stack
@@ -55,9 +54,8 @@ const ConsultationReceptionPicker: React.FC<{
         justifyContent="start"
         flexDirection="column"
         height="100%"
-        gap={2}
       >
-        <Typography variant="h6" ml={3}>
+        <Typography variant="h6" ml={3} mb={2}>
           환자 선택
         </Typography>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -70,24 +68,19 @@ const ConsultationReceptionPicker: React.FC<{
             <Tab label="예약 환자" />
           </Tabs>
         </Box>
-        {(tabValue === 0 && !readConsultationWalkInListState.isSuccess) ||
-        tabValue == 1 ? (
-          <LinearProgress />
-        ) : (
-          <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
-            <Box sx={{ minHeight: 0, px: 1 }}>
-              <ConsultationReceptionPickerList
-                onSelected={onSelected}
-                selected={selected}
-                data={
-                  tabValue === 0
-                    ? (readConsultationWalkInListState.data as ConsultationReception[])
-                    : []
-                }
-              />
-            </Box>
+        <Box sx={{ flexGrow: 1, overflowY: 'scroll' }}>
+          <Box sx={{ minHeight: 0, px: 1 }}>
+            <ConsultationReceptionPickerList
+              onSelected={onSelected}
+              selected={selected}
+              data={
+                tabValue === 0
+                  ? readConsultationWalkInListState.data
+                  : undefined
+              }
+            />
           </Box>
-        )}
+        </Box>
       </Stack>
     </Paper>
   );
