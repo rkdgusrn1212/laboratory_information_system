@@ -224,7 +224,7 @@ const Drawer = styled(MuiDrawer, {
 
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({}));
+))(({}) => ({}));
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
@@ -281,10 +281,9 @@ const SideDrawer: React.FC<{
     (event: React.SyntheticEvent<Element, Event>, expanded: boolean) => {
       setExpandList(expanded ? num : undefined);
     };
-  const handleListItemClick =
-    (url: string) => (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      navigate(url);
-    };
+  const handleListItemClick = (url: string) => () => {
+    navigate(url);
+  };
 
   return (
     <Drawer variant="permanent" open={open}>

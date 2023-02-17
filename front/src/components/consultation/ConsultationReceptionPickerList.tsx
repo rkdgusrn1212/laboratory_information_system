@@ -5,6 +5,7 @@ import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
+import Box from '@mui/material/Box';
 
 import {
   ConsultationAppointment,
@@ -16,8 +17,6 @@ import {
 import stringAvatar from '../../utils/stringAvatar';
 import dayjs from 'dayjs';
 import { useReadPatientByPatientNoQuery } from '../../services/patientApi';
-import { Box } from '@mui/material';
-import { indigo } from '@mui/material/colors';
 
 const ConsultationReceptionCard: React.FC<{
   consultationReception?: ConsultationReception;
@@ -153,7 +152,7 @@ const ConsultationReceptionPickerList: React.FC<
       {data ? (
         data.map((consultationReception) => (
           <ConsultationReceptionCard
-            key={consultationReception.consultationNo}
+            key={consultationReception.consultationReceptionNo}
             consultationReception={consultationReception}
             selected={
               selected

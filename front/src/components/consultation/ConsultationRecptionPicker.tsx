@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import ConsultationReceptionPickerList from './ConsultationReceptionPickerList';
@@ -5,8 +6,7 @@ import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Stack from '@mui/material/Stack';
-import LinearProgress from '@mui/material/LinearProgress';
-import { useEffect, useState } from 'react';
+
 import { ConsultationReception } from '../../services/types';
 import { useLazyReadConsultationWalkInListQuery } from '../../services/consultationReceptionApi';
 import { useAppSelector } from '../../hooks';
@@ -20,27 +20,27 @@ const ConsultationReceptionPicker: React.FC<{
   selected: ConsultationReception | undefined;
 }> = ({ onSelected, selected }) => {
   const Account = useAppSelector(selectAccount);
-  if (!Account?.principal.staffVo.staffNo)
-    throw new Error(
-      'ConsultationReceptionPickerList: 로그인된 직원 계정 정보가 없습니다.',
-    );
   const [tabValue, setTabValue] = useState(0);
   const [readConsultationWalkInList, readConsultationWalkInListState] =
-    useLazyReadConsultationWalkInListQuery();
+    useLazyReadConsultationWalkInListQuery({ pollingInterval: 20 });
+
+  useEffect(() => {
+    if (Account?.principal.staffVo.staffNo && tabValue === 0) {
+      readConsultationWalkInList({
+        pageSize: 10,
+        pageStart: 0,
+        staffNo: Account?.principal.staffVo.staffNo,
+      });
+    }
+  }, [
+    Account?.principal.staffVo.staffNo,
+    readConsultationWalkInList,
+    tabValue,
+  ]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
-
-  useEffect(() => {
-    if (tabValue === 0) {
-      readConsultationWalkInList({
-        pageSize: 10,
-        pageStart: 0,
-        staffNo: Account.principal.staffVo.staffNo,
-      });
-    }
-  }, [Account.principal.staffVo.staffNo, readConsultationWalkInList, tabValue]);
 
   return (
     <Paper
