@@ -15,8 +15,8 @@ import Button from '@mui/material/Button';
 
 import PrescriptionForm from '../components/consultation/PrescriptionForm';
 import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
-import PatientPicker from '../components/consultation/PatientPicker';
-import { Patient } from '../services/types';
+import ConsultationReceptionPicker from '../components/consultation/ConsultationRecptionPicker';
+import { ConsultationReception } from '../services/types';
 
 const theme = createTheme({
   palette: {
@@ -49,17 +49,23 @@ const Transition = forwardRef(function Transition(
 });
 
 const ConsultationPage: React.FC = () => {
-  const [selected, setSelected] = useState<Patient | undefined>(undefined);
+  const [selected, setSelected] = useState<ConsultationReception | undefined>(
+    undefined,
+  );
   const [dialog, setDialog] = useState<{
     open: boolean;
-    data: Patient | undefined;
+    data: ConsultationReception | undefined;
   }>({
     open: false,
     data: undefined,
   });
 
-  const handleSelected = (item: Patient | undefined) => {
-    if (item === undefined || (selected !== undefined && selected !== item)) {
+  const handleSelected = (item: ConsultationReception | undefined) => {
+    if (
+      item === undefined ||
+      (selected !== undefined &&
+        selected.consultationReceptionNo !== item.consultationReceptionNo)
+    ) {
       setDialog({ open: true, data: item });
     } else {
       setSelected(item);
@@ -86,7 +92,10 @@ const ConsultationPage: React.FC = () => {
           spacing={1}
         >
           <Box flexGrow={1}>
-            <PatientPicker onSelected={handleSelected} selected={selected} />
+            <ConsultationReceptionPicker
+              onSelected={handleSelected}
+              selected={selected}
+            />
           </Box>
           <Box
             flexGrow={2}
@@ -97,7 +106,7 @@ const ConsultationPage: React.FC = () => {
               }),
             }}
           >
-            <PrescriptionForm patient={selected} />
+            <PrescriptionForm consultationReception={selected} />
           </Box>
           <Box flexGrow={1}>
             <PrescriptionPicker />

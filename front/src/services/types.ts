@@ -168,9 +168,10 @@ export const isDoctor = (data: unknown): data is Doctor =>
 export interface ConsultationReception {
   consultationReceptionNo: number;
   consultationReceptionTime: string;
-  doctor: Doctor;
-  patient: Patient;
-  consultation: null;
+  doctorNo: number;
+  patientNo: number;
+  consultationNo: number;
+  consultationReceptionAppointment: string | null;
 }
 
 export const isConsultationReception = (
@@ -182,33 +183,36 @@ export const isConsultationReception = (
   typeof data.consultationReceptionNo === 'number' &&
   'consultationReceptionTime' in data &&
   typeof data.consultationReceptionTime === 'string' &&
-  'doctor' in data &&
-  isDoctor(data.doctor) &&
-  'patient' in data &&
-  isPatient(data.patient) &&
-  'consultation' in data; //후에 consultation 타입 검사추가 필요
+  'doctorNo' in data &&
+  typeof data.doctorNo === 'number' &&
+  'patientNo' in data &&
+  typeof data.patientNo === 'number' &&
+  'consultationNo' in data &&
+  typeof data.consultationNo === 'number' &&
+  'consultationReceptionAppointment' in data &&
+  (typeof data.consultationReceptionAppointment === 'string' ||
+    data.consultationReceptionAppointment == null);
 
 export interface ConsultationWalkIn extends ConsultationReception {
-  consultationWalkInWaitingNo: number;
+  consultationWalkInOrder: number;
 }
 
 export const isConsultationWalkIn = (
   data: unknown,
 ): data is ConsultationWalkIn =>
   isConsultationReception(data) &&
-  'consultationWalkInWaitingNo' in data &&
-  typeof data.consultationWalkInWaitingNo === 'number';
+  'consultationWalkInOrder' in data &&
+  typeof data.consultationWalkInOrder === 'number';
 
 export interface ConsultationAppointment extends ConsultationReception {
-  consultationAppointmentTime: string;
+  consultationReceptionAppointment: string;
 }
 
 export const isConsultationAppointment = (
   data: unknown,
 ): data is ConsultationAppointment =>
   isConsultationReception(data) &&
-  'consultationAppointmentTime' in data &&
-  typeof data.consultationAppointmentTime === 'string';
+  data.consultationReceptionAppointment != null;
 
 export interface Department {
   departmentCode: string;
