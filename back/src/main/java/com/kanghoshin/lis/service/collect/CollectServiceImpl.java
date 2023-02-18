@@ -15,9 +15,11 @@ import com.kanghoshin.lis.dto.collect.BloodCollectDto;
 import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
+import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
 
@@ -28,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class CollectServiceImpl implements CollectService {
 	private final CollectMapper collectMapper;
 	private final PlatformTransactionManager transactionManager;
-
-
 
 	@Override
 	public List<StaffVo> getallstafflistall() {
@@ -43,8 +43,8 @@ public class CollectServiceImpl implements CollectService {
 		CollectSpecimenVo findbyspecimenno = null;
 		try {
 			collectMapper.specimeninsertbsystaffno(specimenDto);
-			
-			findbyspecimenno = collectMapper.findByspecimenno(specimenDto.getSpecimenNo());
+			collectMapper.insertReceptCollection(specimenDto);
+
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -77,17 +77,12 @@ public class CollectServiceImpl implements CollectService {
 		return Specimenlist;
 	}
 
-	
-	
-	
 	@Override
 	public CollectSpecimenVo getSpecimenbyno(String specimenNo) {
 		CollectSpecimenVo Specimenbyno = collectMapper.findByspecimenno(specimenNo);
 		return Specimenbyno;
 	}
-	
-	
-	
+
 	@Override
 	public List<InadequateTypeVo> getInadequate_typeall() {
 		List<InadequateTypeVo> inadequate_typelist = new ArrayList<InadequateTypeVo>();
@@ -178,10 +173,21 @@ public class CollectServiceImpl implements CollectService {
 		collectMapper.SubmitInadequatebyDto(SubmitInadequateDto);
 	}
 
-	
 	@Override
-	public List<CollectVisitVo> getvisitbypatientno(String patientNo){
+	public List<CollectVisitVo> getvisitbypatientno(String patientNo) {
 		List<CollectVisitVo> visitlist = collectMapper.findVisitByPatientNo(patientNo);
 		return visitlist;
-	}	
+	}
+
+	@Override
+	public List<ReceptCollectionVo> getReceptCollectionbyorderno(String orderNo) {
+		List<ReceptCollectionVo> rclist = collectMapper.findReceptCollectionbyorderno(orderNo);
+		return rclist;
+	}
+
+	@Override
+	public List<CollectPrescriptionVo> getPrebyPatientNo(String patientNo) {
+		List<CollectPrescriptionVo> prelist = collectMapper.findPrebyPatientNo(patientNo);
+		return prelist;
+	}
 }

@@ -10,9 +10,11 @@ import com.kanghoshin.lis.dto.collect.BloodCollectDto;
 import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
+import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
 
@@ -51,4 +53,6 @@ public interface CollectService {
 	void insertSubmitInadequate(SubmitInadequateDto SubmitInadequateDto);
 	
 	List<CollectVisitVo> getvisitbypatientno(String patientNo);	
+	List<ReceptCollectionVo> getReceptCollectionbyorderno(String orderNo);
+	List<CollectPrescriptionVo> getPrebyPatientNo(String patientNo);
 }

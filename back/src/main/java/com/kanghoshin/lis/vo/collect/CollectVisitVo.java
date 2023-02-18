@@ -13,5 +13,5 @@ public class CollectVisitVo {
 	private String patientNo;//환자번호
 	private String visitDate;//내원날짜
 	private String visitDoctor;//의사명
-	private String departmentName;//환자번호
+	private String departmentName;//진료과
 }

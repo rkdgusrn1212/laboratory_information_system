@@ -31,6 +31,8 @@ import { useEffect, useState } from 'react';
 import { PatientList } from '../components/receptcollection/PatientList';
 import axios from 'axios';
 import ScaleLoader from 'react-spinners/ScaleLoader';
+import { selectAccount } from '../services/accountSlice';
+import { useAppSelector } from '../hooks';
 
 //-----------------------카드
 export default function ReceptCollectionPage() {
@@ -63,6 +65,11 @@ export default function ReceptCollectionPage() {
   //db연결 오류
   const [error, setError] = useState(1); //
 
+  const [loginstaffno, setLoginstaffno] = useState(1);
+  const account = useAppSelector(selectAccount); //로그인한  계정 정보
+
+  const [checkorder, setCheckorder] = useState(true);
+
   useEffect(() => {
     PatientList().then((res) => {
       if (res.data == 'error') {
@@ -70,25 +77,12 @@ export default function ReceptCollectionPage() {
       }
       setpatientlist(res);
     });
-
+    setLoginstaffno(account.principal.staffVo.staffNo);
     setPagestarter({
       starter: [{ id: 1 }],
     });
   }, []);
-  const handleInput = (e) => {
-    console.log(e.target.value);
-    setInput(e.target.value.toLowerCase());
-    setSearch(e.target.value);
-  };
-  const onSearchHandler = (event) => {
-    setSearch(event.currentTarget.value);
-  };
-  const handleOnKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      setSelectedp(-100);
-      onSearch(); // Enter 입력이 되면 클릭 이벤트 실행
-    }
-  };
+  //데이터 불러오는 axios
 
   function onP() {
     //이름으로 환자 볼러오기
@@ -118,6 +112,27 @@ export default function ReceptCollectionPage() {
     });
   }
 
+  //검체를 생성하는 함수
+  function createspecimen() {
+    rows5.id &&
+      rows5.id.map((postdata) => {
+        axios({
+          method: 'post',
+          url: `http://localhost:8080/api/collect/insertspecimenpost`,
+          data: {
+            staffNo: loginstaffno,
+            orderNo: postdata.orderNo,
+          },
+        })
+          .then(function () {
+            alert('생성이 완료되었습니다.');
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      });
+  }
+
   function onvisit(patientNo) {
     //환자no로  내원 볼러오기
     axios({
@@ -136,40 +151,53 @@ export default function ReceptCollectionPage() {
     });
   }
 
+  function onpre(patientNo) {
+    //환자no로  처방 볼러오기
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/collect/getprebypatientno?PatientNo=${patientNo}`,
+    }).then(function (response) {
+      if (response.data != '') {
+        console.log(response.data);
+        error == 1 &&
+          response.data.map((pre, testid) => {
+            pre.id = testid;
+            pre.status = 0;
+          });
+
+        setRows1(response.data);
+      }
+    });
+  }
+
+  //환자 검색 파트
+  const handleInput = (e) => {
+    console.log(e.target.value);
+    setInput(e.target.value.toLowerCase());
+    setSearch(e.target.value);
+  };
+  const onSearchHandler = (event) => {
+    setSearch(event.currentTarget.value);
+  };
+  const handleOnKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      setSelectedp(-100);
+      onSearch(); // Enter 입력이 되면 클릭 이벤트 실행
+    }
+  };
+
   const onSearch = (event) => {
     onP(); //환자를 받아옴
 
     setFind(search);
   };
-  //받아온 json파일 전처리
-  function rowsbeforesetting(rows) {
-    error == 1 &&
-      rows.map((a) => {
-        a.status = 0;
-      });
-  }
-  // -------------다이얼로그
-
-  const handleClickOpen = () => {
-    if (error == 1) {
-      grid2buttonclick();
-      setOpen(true);
-    }
-  };
-
-  const handleClose = (value) => {
-    setOpen(false);
-  };
-
   //환자 선택
   const selectpatient = (i) => {
     setSelectedp(i);
     console.log(callpatient.patients[i - 1].patientNo); //내가 선택한 환자의 환자 번호
-    //axios get 환자번호로 처방 정보
 
-    rowsbeforesetting(rows); //전처리
-    setRows1(rows); //입력
-    //
+    //axios get 환자번호로 처방 정보받아오기
+    onpre(callpatient.patients[i - 1].patientNo);
 
     // 선택한 환자번호로 내원 받아오기
     onvisit(callpatient.patients[i - 1].patientNo);
@@ -183,15 +211,53 @@ export default function ReceptCollectionPage() {
     console.log(nawon);
     setSelectedn(i + 1); //i는 0부터 시작 로넘은 1부터 시작함
     error == 1 &&
-      rows.map((a, b) => {
-        if (nawon[i].visitNo === a.visit_no) {
-          rows[b].status = 1;
-          //그리드 객체에서
-          //getRowClassName={(params) => `super-app-theme--${params.row.status}`}
-        }
+      rows1.map((a, b) => {
+        if (nawon[i].visitNo === a.visitNo) {
+          rows1[b].status = 1;
+        } else rows1[b].status = 0;
       });
     //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
-    setRows1(rows);
+  };
+
+  // -------------다이얼로그
+
+  //채취버튼이 눌렸을때.
+  const handleClickOpen = () => {
+    //db와 연결 확인
+
+    connsole.log(rows5);
+
+    if (error == 1) {
+      grid2buttonclick();
+
+      //
+      checkReCobyorder(rows5);
+      setOpen(true);
+    }
+  };
+
+  //선택한정보의 오더 no로 이미 뽑은 검체 인지검사 reception-collection에 데이터가 있다면 여기서 표시를 해줘야한다.
+  function checkReCobyorder(selectedpre) {
+    selectedpre.map((pre) => {
+      console.log('pre.orderNo: ' + pre.orderNo);
+      axios({
+        method: 'get',
+        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${pre.orderNo}`,
+      }).then(function (response) {
+        if (response.data != '') {
+          console.log(
+            'warning!!!!!!!!!!!!!!!!! 이미 데이터가 테이블에 있습니다.',
+          );
+          console.log(response.data);
+          //이미 orderno가 검체접수 목록에 있다.
+          //진행 여부만 확인 하면 된다.
+        }
+      });
+    });
+  }
+
+  const handleClose = (value) => {
+    setOpen(false);
   };
 
   function grid1buttonclick() {
@@ -202,22 +268,23 @@ export default function ReceptCollectionPage() {
     error == 1 &&
       selectionModel1.map((id) => {
         // console.log("id:" + id)//선택된 값들의 id들
-        error == 1 &&
-          rows.map((row) => {
-            if (row.id === id) {
-              // console.log("id:" + row.id)
-              rows2.push({
-                p_code: row.p_code,
-                id: row.id,
-                visit_no: row.visit_no,
-                order_date: row.order_date,
-                test_container: row.test_container,
-                staff_name: row.staff_name,
-                department_name: row.department_name,
-                test_name: row.test_name,
-              });
-            }
-          });
+        rows1.map((row) => {
+          if (row.id === id) {
+            // console.log("id:" + row.id)
+            rows2.push({
+              id: row.id,
+              visitNo: row.visitNo,
+              prescriptionCode: row.prescriptionCode,
+              orderNo: row.orderNo,
+              orderDate: row.orderDate,
+              testName: row.testName,
+              testContainer: row.testContainer,
+              fieldName: row.fieldName,
+              visitDoctor: row.visitDoctor,
+              departmentName: row.departmentName,
+            });
+          }
+        });
       });
     setRows3(rows2);
   }
@@ -228,18 +295,20 @@ export default function ReceptCollectionPage() {
     // console.log("selectionModel2:" + selectionModel2)
     selectionModel2.map((id) => {
       // console.log("id:" + id)//선택된 값들의 id들
-      rows.map((row) => {
+      rows1.map((row) => {
         if (row.id === id) {
           // console.log("id:" + row.id)
           rows4.push({
             id: row.id,
-            visit_no: row.visit_no,
-            order_date: row.order_date,
-            specimen_no: row.specimen_no,
-            test_container: row.test_container,
-            staff_name: row.staff_name,
-            department_name: row.department_name,
-            test_name: row.test_name,
+            visitNo: row.visitNo,
+            prescriptionCode: row.prescriptionCode,
+            orderNo: row.orderNo,
+            orderDate: row.orderDate,
+            testName: row.testName,
+            testContainer: row.testContainer,
+            fieldName: row.fieldName,
+            visitDoctor: row.visitDoctor,
+            departmentName: row.departmentName,
           });
         }
       });
@@ -250,125 +319,64 @@ export default function ReceptCollectionPage() {
     //db에 이정보들을 입력하여야 함
   }
 
-  const rows = [
-    {
-      //처방 정보
-      p_code: 'L20',
-      id: 2211150001,
-      visit_no: 1,
-      order_date: '22-11-15',
-      test_container: '용기명1',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명1',
-    },
-    {
-      p_code: 'L20',
-      id: 2211150002,
-      visit_no: 1,
-      order_date: '22-11-15',
-      test_container: '용기명2',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명2',
-    },
-    {
-      p_code: 'L20',
-      id: 2212160003,
-      visit_no: 2,
-      order_date: '22-12-16',
-      test_container: '용기명3',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명3',
-    },
-    {
-      p_code: 'L20',
-      id: 2301050004,
-      visit_no: 3,
-      order_date: '23-01-05',
-      test_container: '용기명4',
-      staff_name: '나의사',
-      department_name: '신경외과(NS) - 제1병동',
-      test_name: '검사명5',
-    },
-    {
-      p_code: 'L20',
-      id: 2301180005,
-      visit_no: 4,
-      order_date: '23-01-18',
-      test_container: '용기명4',
-      staff_name: '나의사',
-      department_name: '신경외과(NS) - 제1병동',
-      test_name: '검사명5',
-    },
-    {
-      p_code: 'L20',
-      id: 2301870003,
-      visit_no: 5,
-      order_date: '23-01-27',
-      test_container: '용기명3',
-      staff_name: '김의사',
-      department_name: '소화기내과(GI) - 제2병동',
-      test_name: '검사명3',
-    },
-  ];
   const columns = [
     {
-      field: 'p_code',
+      field: 'prescriptionCode',
       headerName: '처방코드',
       headerAlign: 'center',
     },
-    // {
-    //     field: 'visit_no',
-    //     headerName: '내원번호',
-    //     headerAlign: 'center',
-
-    // },
     {
-      field: 'order_date',
+      field: 'orderDate',
       headerName: '오더일자',
       headerAlign: 'center',
       type: 'date',
     },
     {
-      field: 'test_container',
+      field: 'testName',
+      headerName: '검사명',
+      headerAlign: 'center',
+    },
+    {
+      field: 'testContainer',
       headerName: '용기명',
       headerAlign: 'center',
     },
     {
-      headerName: '검사명',
-      field: 'test_name',
+      field: 'fieldName',
+      headerName: '검사실',
       headerAlign: 'center',
     },
     {
-      field: 'staff_name',
+      field: 'visitDoctor',
       headerName: '담당의',
       headerAlign: 'center',
     },
     {
+      field: 'departmentName',
       headerName: '진료과',
-      field: 'department_name',
       headerAlign: 'center',
-      width: 300,
     },
   ];
 
   const columns2 = [
     {
       headerName: '검사명',
-      field: 'test_name',
+      field: 'testName',
       headerAlign: 'center',
-      width: 200,
     },
     {
-      field: 'test_container',
+      field: 'testContainer',
       headerName: '용기명',
       headerAlign: 'center',
     },
     {
-      field: 'p_code',
+      field: 'prescriptionCode',
       headerName: '처방코드',
+      headerAlign: 'center',
+    },
+    {
+      field: 'fieldName',
+      headerName: '검사실',
       headerAlign: 'center',
     },
   ];
@@ -595,6 +603,13 @@ export default function ReceptCollectionPage() {
                     if (!nawon) {
                       return <Grid>no data</Grid>;
                     } else {
+                      if (nawon.length == 0) {
+                        return (
+                          <Typography sx={{ fontSize: 14 }}>
+                            내원정보가 없습니다.
+                          </Typography>
+                        );
+                      }
                       if (selectedn === i + 1) {
                         return (
                           <>
@@ -624,19 +639,16 @@ export default function ReceptCollectionPage() {
                                       <Typography sx={{ fontSize: 14 }}>
                                         내원번호 : {visit.visitNo}
                                       </Typography>
-                                    </Grid>
-                                    <Grid sx={{ float: 'right' }}>
                                       <Typography
                                         sx={{ fontSize: 14 }}
                                         color="text.secondary"
-                                        gutterBottom
                                       >
                                         내원일자: {visit.visitDate}
                                       </Typography>
                                     </Grid>
                                   </Grid>
                                   <Typography variant="body2" component="div">
-                                    내원과:{visit.departmentName}
+                                    내원과: {visit.departmentName}
                                   </Typography>
                                   <Typography
                                     sx={{ fontSize: 14 }}
@@ -685,19 +697,16 @@ export default function ReceptCollectionPage() {
                                       <Typography sx={{ fontSize: 14 }}>
                                         내원번호 : {visit.visitNo}
                                       </Typography>
-                                    </Grid>
-                                    <Grid sx={{ float: 'right' }}>
                                       <Typography
                                         sx={{ fontSize: 14 }}
                                         color="text.secondary"
-                                        gutterBottom
                                       >
                                         내원일자: {visit.visitDate}
                                       </Typography>
                                     </Grid>
                                   </Grid>
                                   <Typography variant="body2" component="div">
-                                    내원과:{visit.departmentName}
+                                    내원과: {visit.departmentName}
                                   </Typography>
                                   <Typography
                                     sx={{ fontSize: 14 }}
