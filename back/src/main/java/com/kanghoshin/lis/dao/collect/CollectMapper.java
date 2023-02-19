@@ -12,9 +12,11 @@ import com.kanghoshin.lis.dto.collect.BloodCollectDto;
 import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
+import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
 
@@ -50,13 +52,29 @@ public interface CollectMapper {
 	@Insert("INSERT INTO blood_Collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
 	void collectinsertbydto(@Param("BloodCollectDto") BloodCollectDto BloodCollectDto);
 
-	@Select("select submit_inadequate.specimen_no AS SpecimenNo, submit_inadequate.Inadequate_type_code AS InadequateTypeCode,inadequate_type.Inadequate_type_name AS InadequateTypeName, submit_inadequate.Submit_Inadequate_from AS SubmitInadequateFrom,  submit_inadequate.Submit_Inadequate_to AS SubmitInadequateTo, blood_collect.staff_no AS BloodCollectStaffNo, blood_collect.collect_date AS CollectDate ,submit_inadequate.recept_Inadequate_date AS ReceptInadequateDate from blood_collect, inadequate_type, submit_inadequate WHERE submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code AND blood_collect.specimen_no = submit_inadequate.specimen_no ORDER BY ReceptInadequateDate desc")
+	@Select("select submit_inadequate.specimen_no AS SpecimenNo, submit_inadequate.Inadequate_type_code AS InadequateTypeCode, "
+			+ "inadequate_type.Inadequate_type_name AS InadequateTypeName, submit_inadequate.Submit_Inadequate_from AS SubmitInadequateFrom, "
+			+ "submit_inadequate.Submit_Inadequate_to AS SubmitInadequateTo, blood_collect.staff_no AS BloodCollectStaffNo, "
+			+ "blood_collect.collect_date AS CollectDate ,submit_inadequate.recept_Inadequate_date AS ReceptInadequateDate "
+			+ "from blood_collect, inadequate_type, submit_inadequate "
+			+ "WHERE submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code "
+			+ "AND blood_collect.specimen_no = submit_inadequate.specimen_no "
+			+ "ORDER BY ReceptInadequateDate desc ")
 	List<SubmitInadequateVo> SubmitInadequatelist();
 
-	@Select("select submit_inadequate.specimen_no AS SpecimenNo, submit_inadequate.Inadequate_type_code AS InadequateTypeCode,inadequate_type.Inadequate_type_name AS InadequateTypeName, submit_inadequate.Submit_Inadequate_from AS SubmitInadequateFrom,  submit_inadequate.Submit_Inadequate_to AS SubmitInadequateTo, blood_collect.staff_no AS BloodCollectStaffNo, blood_collect.collect_date AS CollectDate ,submit_inadequate.recept_Inadequate_date AS ReceptInadequateDate from blood_collect, inadequate_type, submit_inadequate WHERE submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code AND blood_collect.specimen_no = submit_inadequate.specimen_no and submit_inadequate.specimen_no = #{specimenNo} ")
+	@Select("select submit_inadequate.specimen_no AS SpecimenNo, submit_inadequate.Inadequate_type_code AS InadequateTypeCode, "
+			+ "inadequate_type.Inadequate_type_name AS InadequateTypeName, submit_inadequate.Submit_Inadequate_from AS SubmitInadequateFrom, "
+			+ "submit_inadequate.Submit_Inadequate_to AS SubmitInadequateTo, blood_collect.staff_no AS BloodCollectStaffNo, "
+			+ "blood_collect.collect_date AS CollectDate ,submit_inadequate.recept_Inadequate_date AS ReceptInadequateDate "
+			+ "from blood_collect, inadequate_type, submit_inadequate "
+			+ "WHERE submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code "
+			+ "AND blood_collect.specimen_no = submit_inadequate.specimen_no "
+			+ "and submit_inadequate.specimen_no = #{specimenNo} ")
 	SubmitInadequateVo getSubmitInadequatebyno(@Param("specimenNo") String specimenNo);
 
-	@Insert("INSERT INTO submit_inadequate (specimen_no,Inadequate_type_code,Submit_Inadequate_to,Submit_Inadequate_from,recept_Inadequate_date)VALUES(#{SubmitInadequateDto.specimenNo}, #{SubmitInadequateDto.inadequateTypeCode}, #{SubmitInadequateDto.submitInadequateTo},#{SubmitInadequateDto.submitInadequateFrom}, DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
+	@Insert("INSERT INTO submit_inadequate (specimen_no,Inadequate_type_code,Submit_Inadequate_to,Submit_Inadequate_from,recept_Inadequate_date) "
+			+ "VALUES(#{SubmitInadequateDto.specimenNo}, #{SubmitInadequateDto.inadequateTypeCode}, #{SubmitInadequateDto.submitInadequateTo}, "
+			+ "#{SubmitInadequateDto.submitInadequateFrom}, DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
 	void SubmitInadequatebyDto(@Param("SubmitInadequateDto") SubmitInadequateDto SubmitInadequateDto);
 
 	@Select("SELECT visit.visit_no AS visitNo,visit.patient_no AS patientNo, visit.visit_date AS visitDate,"
@@ -64,6 +82,32 @@ public interface CollectMapper {
 			+"FROM patient, visit, doctor, staff, department "
 			+"WHERE doctor.department_code = department.department_code "
 			+"and doctor.staff_no = staff.staff_no AND staff.staff_no = visit.visit_doctor "
-			+"and patient.patient_no = visit.patient_no AND patient.patient_no = #{patientNo} order BY visit.visit_date ")
+			+"and patient.patient_no = visit.patient_no AND patient.patient_no = #{patientNo} order BY visit.visit_no desc")
 	List<CollectVisitVo> findVisitByPatientNo(@Param("patientNo") String patientNo);
+	
+	
+	//교체필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	@Insert("INSERT INTO recept_collection (specimen_no,order_no) VALUES (#{SpecimenDto.specimenNo},#{SpecimenDto.orderNo})")
+	void insertReceptCollection(@Param("SpecimenDto") SpecimenDto SpecimenDto);
+	
+	
+	
+	//교체 햐야함
+	@Select("SELECT order_no AS orderNo,specimen_no AS specimenNo FROM recept_collection WHERE order_no = #{orderNo}")
+	List<ReceptCollectionVo> findReceptCollectionbyorderno(@Param("orderNo") String orderNo);
+	
+	
+	@Select("SELECT prescription.prescription_code AS prescriptionCode,visit.visit_no AS visitNo, "
+					+"order1.order_no AS orderNo,order1.order_date AS orderDate, "
+					+"diagnostic_test.diagnostic_test_container AS testContainer,diagnostic_test.diagnostic_test_name AS testName, "
+					+"staff.staff_name AS visitDoctor,department.department_name AS departmentName,test_field.test_field_name as fieldName "
+					+"FROM patient ,visit, order1,prescription,diagnostic_test,doctor,staff,department,test_field "
+					+"WHERE test_field.test_field_no=diagnostic_test.field_no "
+					+"and department.department_code= doctor.department_code "
+					+"and doctor.staff_no = staff.staff_no and doctor.staff_no= visit.visit_doctor "
+					+"and diagnostic_test.diagnostic_test_code = prescription.diagnostic_test_code "
+					+"and prescription.prescription_code =order1.prescription_code and order1.visit_no= visit.visit_no "
+					+"AND visit.patient_no = patient.patient_no and patient.patient_no= #{patientNo} ")
+	List<CollectPrescriptionVo> findPrebyPatientNo(@Param("patientNo")String patientNo);
+	
 }

@@ -136,8 +136,6 @@ export default function BloodCollectionPage() {
   //post 방식으로 제출
   const handleClickOpen = () => {
     if (error == 1) {
-      console.log(inputlist);
-
       postdata();
 
       setOpen(true);

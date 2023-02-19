@@ -16,9 +16,11 @@ import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.service.collect.CollectService;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
 import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
+import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
 import com.kanghoshin.lis.vo.entity.StaffVo;
 
@@ -35,14 +37,6 @@ public class CollectController {
 	public List<StaffVo> allstaffall() {
 		List<StaffVo> staffnameall = CollectService.getallstafflistall();
 		return staffnameall;
-	}
-
-	@GetMapping("/insertspecimen")
-	public CollectSpecimenVo insertspecimen(@Valid @Param("staffNo") String staffNo) {
-		SpecimenDto SpecimenDto = new SpecimenDto();
-		SpecimenDto.setStaffNo(staffNo);
-		CollectSpecimenVo createspecimen = CollectService.createSpecimen(SpecimenDto);
-		return createspecimen;
 	}
 
 	@PostMapping("/insertspecimenpost")
@@ -71,9 +65,7 @@ public class CollectController {
 		CollectSpecimenVo specimen = CollectService.getSpecimenbyno(specimenNo);
 		return specimen;
 	}
-	
-	
-	
+
 	@GetMapping("/inadequate_typeList")
 	public List<InadequateTypeVo> inadequate_typeall() {
 		List<InadequateTypeVo> inadequate_typelist = CollectService.getInadequate_typeall();
@@ -81,7 +73,8 @@ public class CollectController {
 	}
 
 	@GetMapping("/insertcollect")
-	public BloodCollectVo insertcollect(@Valid @Param("specimenNo") String specimenNo,@Param("staffNo") String staffNo) {
+	public BloodCollectVo insertcollect(@Valid @Param("specimenNo") String specimenNo,
+			@Param("staffNo") String staffNo) {
 		BloodCollectDto CollectDto = new BloodCollectDto();
 		CollectDto.setStaffNo(staffNo);
 		CollectDto.setSpecimenNo(specimenNo);
@@ -89,16 +82,12 @@ public class CollectController {
 		BloodCollectVo createspecimen = CollectService.createCollect(CollectDto);
 		return createspecimen;
 	}
-	
-	
-	
 
 	@PostMapping("/insertcollectbypost")
 	public void insertcollectbypost(@Valid @RequestBody BloodCollectDto CollectDTO) {
 		System.out.println(CollectDTO);
 		CollectService.createCollectPost(CollectDTO);
 	}
-
 
 	@GetMapping("/collectlist")
 	public List<BloodCollectVo> collectlist() {
@@ -124,20 +113,30 @@ public class CollectController {
 		return createspecimen;
 	}
 
-
-
 	@PostMapping("/insertsubmitinadequate")
 	public void insertsubmitinadequate(@Valid @RequestBody SubmitInadequateDto siDto) {
 		CollectService.insertSubmitInadequate(siDto);
 	}
-	
-	
-	
+
 	@GetMapping("/visitbypatientno")
 	public List<CollectVisitVo> getvisitbypatientno(@Valid @Param("patientNo") String patientNo) {
 		List<CollectVisitVo> visitlist = CollectService.getvisitbypatientno(patientNo);
 		return visitlist;
 	}
+
+	@GetMapping("/getrecobyorderno")
+	public List<ReceptCollectionVo> getReceptCollectionbyorderno(@Valid @Param("orderNo") String orderNo) {
+		List<ReceptCollectionVo> ReceptCollectionlist = CollectService.getReceptCollectionbyorderno(orderNo);
+		return ReceptCollectionlist;
+	}
+
+	@GetMapping("/getprebypatientno")
+	public List<CollectPrescriptionVo> getPrebyPatientNo(@Valid @Param("PatientNo") String PatientNo) {
+		List<CollectPrescriptionVo> Prescriptionlist = CollectService.getPrebyPatientNo(PatientNo);
+		return Prescriptionlist;
+	}
 	
 	
+	
+
 }
