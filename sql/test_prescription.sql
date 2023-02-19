@@ -32,6 +32,24 @@ CREATE TABLE IF NOT EXISTS `test_prescription` (
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 
+-- 트리거 kanghoshin_lis.test_prescription_after_delete 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `test_prescription_after_delete` AFTER DELETE ON `test_prescription` FOR EACH ROW BEGIN
+UPDATE prescription SET prescription_classification_code = null WHERE prescription_code = OLD.prescription_code;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- 트리거 kanghoshin_lis.test_prescription_before_insert 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `test_prescription_before_insert` BEFORE INSERT ON `test_prescription` FOR EACH ROW BEGIN
+UPDATE prescription SET prescription_classification_code = 'CP' WHERE prescription_code = NEW.prescription_code;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
