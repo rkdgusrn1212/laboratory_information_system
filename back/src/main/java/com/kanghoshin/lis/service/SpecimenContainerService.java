@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.kanghoshin.lis.constraints.specimencontainer.SpecimenContainerCodeConstraints;
-import com.kanghoshin.lis.dto.ReadSpecimenContainerListDto;
+import com.kanghoshin.lis.dto.specimencontainer.ReadSpecimenContainerListDto;
 import com.kanghoshin.lis.vo.entity.SpecimenContainerVo;
 
 @Validated

@@ -1,6 +1,7 @@
-package com.kanghoshin.lis.dto;
+package com.kanghoshin.lis.dto.specimencontainer;
 
 import com.kanghoshin.lis.constraints.OrderConstraints;
+import com.kanghoshin.lis.dto.ReadListDto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

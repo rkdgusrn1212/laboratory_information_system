@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.kanghoshin.lis.constraints.specimencontainer.SpecimenContainerCodeConstraints;
 import com.kanghoshin.lis.dao.SpecimenContainerMapper;
-import com.kanghoshin.lis.dto.ReadSpecimenContainerListDto;
+import com.kanghoshin.lis.dto.specimencontainer.ReadSpecimenContainerListDto;
 import com.kanghoshin.lis.vo.entity.SpecimenContainerVo;
 
 import lombok.RequiredArgsConstructor;
