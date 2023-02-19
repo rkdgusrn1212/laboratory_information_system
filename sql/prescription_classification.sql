@@ -17,17 +17,11 @@
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
--- 테이블 kanghoshin_lis.test_prescription 구조 내보내기
-CREATE TABLE IF NOT EXISTS `test_prescription` (
-  `prescription_code` varchar(10) NOT NULL,
-  `specimen_type_code` char(2) NOT NULL,
-  `specimen_container_code` char(2) NOT NULL,
-  PRIMARY KEY (`prescription_code`) USING BTREE,
-  KEY `FK_test_prescription_specimen_type` (`specimen_type_code`) USING BTREE,
-  KEY `FK_test_prescription_specimen_container` (`specimen_container_code`) USING BTREE,
-  CONSTRAINT `FK_test_prescription_prescription` FOREIGN KEY (`prescription_code`) REFERENCES `prescription` (`prescription_code`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_test_prescription_specimen_container` FOREIGN KEY (`specimen_container_code`) REFERENCES `specimen_container` (`specimen_container_code`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_test_prescription_specimen_type` FOREIGN KEY (`specimen_type_code`) REFERENCES `specimen_type` (`specimen_type_code`) ON UPDATE CASCADE
+-- 테이블 kanghoshin_lis.prescription_classification 구조 내보내기
+CREATE TABLE IF NOT EXISTS `prescription_classification` (
+  `prescription_classification_code` varchar(10) NOT NULL,
+  `prescription_classification_name` varchar(40) NOT NULL,
+  PRIMARY KEY (`prescription_classification_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.

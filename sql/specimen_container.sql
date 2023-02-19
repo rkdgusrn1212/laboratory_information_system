@@ -17,20 +17,33 @@
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
--- 테이블 kanghoshin_lis.test_prescription 구조 내보내기
-CREATE TABLE IF NOT EXISTS `test_prescription` (
-  `prescription_code` varchar(10) NOT NULL,
-  `specimen_type_code` char(2) NOT NULL,
+-- 테이블 kanghoshin_lis.specimen_container 구조 내보내기
+CREATE TABLE IF NOT EXISTS `specimen_container` (
   `specimen_container_code` char(2) NOT NULL,
-  PRIMARY KEY (`prescription_code`) USING BTREE,
-  KEY `FK_test_prescription_specimen_type` (`specimen_type_code`) USING BTREE,
-  KEY `FK_test_prescription_specimen_container` (`specimen_container_code`) USING BTREE,
-  CONSTRAINT `FK_test_prescription_prescription` FOREIGN KEY (`prescription_code`) REFERENCES `prescription` (`prescription_code`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_test_prescription_specimen_container` FOREIGN KEY (`specimen_container_code`) REFERENCES `specimen_container` (`specimen_container_code`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_test_prescription_specimen_type` FOREIGN KEY (`specimen_type_code`) REFERENCES `specimen_type` (`specimen_type_code`) ON UPDATE CASCADE
+  `specimen_container_name` varchar(40) NOT NULL,
+  PRIMARY KEY (`specimen_container_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 내보낼 데이터가 선택되어 있지 않습니다.
+-- 테이블 데이터 kanghoshin_lis.specimen_container:~15 rows (대략적) 내보내기
+DELETE FROM `specimen_container`;
+/*!40000 ALTER TABLE `specimen_container` DISABLE KEYS */;
+INSERT INTO `specimen_container` (`specimen_container_code`, `specimen_container_name`) VALUES
+	('01', ' SST tube'),
+	('02', ' EDTA tube'),
+	('03', ' Sod. Citrate tube'),
+	('04', ' Heparin tube'),
+	('05', ' CUP'),
+	('06', ' BAG'),
+	('07', ' Plan tube'),
+	('08', ' Syringe'),
+	('09', ' Culture'),
+	('10', ' 배양용기'),
+	('20', ' 진균배양'),
+	('51', ' 전용-TB'),
+	('97', ' 차광용기'),
+	('98', ' 전용용기'),
+	('99', ' Others');
+/*!40000 ALTER TABLE `specimen_container` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
