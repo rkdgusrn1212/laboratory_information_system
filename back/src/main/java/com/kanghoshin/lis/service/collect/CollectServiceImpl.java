@@ -190,4 +190,12 @@ public class CollectServiceImpl implements CollectService {
 		List<CollectPrescriptionVo> prelist = collectMapper.findPrebyPatientNo(patientNo);
 		return prelist;
 	}
+	
+	
+	
+	@Override
+	public List<CollectPrescriptionVo> getfindPrebyOrderNo(String orderNo) {
+		List<CollectPrescriptionVo> findPrebyOrderNo = collectMapper.findPrebyOrderNo(orderNo);
+		return findPrebyOrderNo;
+	}
 }

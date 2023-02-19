@@ -21,35 +21,17 @@ import Typography from '@mui/material/Typography';
 //그리드
 import Grid from '@mui/material/Grid';
 //체크박스
+import axios from 'axios';
 
-const testcodes = ['23012600001', '23012600002', '23012600003', '23012600004'];
-const nawon = [
-  '소화기내과(GI) - 제2병동',
-  '신경외과(NS) - 제1병동',
-  '소화기내과(GI) - 제2병동',
-  '신경외과(NS) - 제1병동',
-];
 //receptcollection 에서 rows5값으로 출력 진행하면 됨
 
 export default function ReceptCollectionDialog(props) {
-  const [imageUrl1, setImageUrl1] = useState([]);
-  const [imageUrl, setImageUrl] = useState([]);
-
   useEffect(() => {
-    setimg123();
+    //
   }, []);
 
-  const setimg123 = () => {
-    testcodes.map((testcode, idx) => {
-      const canvas = document.createElement('canvas');
-      JsBarcode(canvas, testcode, { height: 50, displayValue: true });
-      setImageUrl(canvas.toDataURL('image/png'));
-      imageUrl1[idx] = canvas.toDataURL('image/png');
-    });
-  };
-
-  const { onClose, selectedValue, open } = props;
-
+  const { onClose, selectedValue, open, img } = props;
+  const [collect, setCollect] = useState([]);
   const handleClose = () => {
     onClose(selectedValue);
   };
@@ -71,17 +53,9 @@ export default function ReceptCollectionDialog(props) {
           modules={[Pagination, Navigation]}
           className="mySwiper"
         >
-          {selectedValue.map((list, i) => {
-            axios({
-              method: 'get',
-              url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${list}`,
-            }).then(function (response) {
-              setCollect(response.data);
-            });
-
+          {selectedValue.map((pre, i) => {
             return (
               <SwiperSlide>
-                {response.data.id}
                 <div className="testcodetop">
                   <Grid
                     sx={{
@@ -92,21 +66,13 @@ export default function ReceptCollectionDialog(props) {
                     }}
                   >
                     <Grid item xs={4} sx={{ mx: 2 }}>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        환자이름
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                        환자이름: {pre.patientName}
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sx={{ mx: 2 }}>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        진료과
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                        진료과: {pre.departmentName}
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sx={{ mx: 2 }}>
@@ -115,9 +81,8 @@ export default function ReceptCollectionDialog(props) {
                         item
                         xs={4}
                         color="text.secondary"
-                        gutterBottom
                       >
-                        처방코드
+                        처방코드: {pre.prescriptionCode}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -131,17 +96,23 @@ export default function ReceptCollectionDialog(props) {
                       justifyContent: 'center',
                     }}
                   >
-                    <Grid item xs={3} sx={{}}>
+                    <Grid item xs={1} sx={{}}>
                       <Typography
                         sx={{ fontSize: 14, my: 3 }}
                         color="text.secondary"
-                        gutterBottom
                       >
-                        용기명
+                        용기명:{' '}
+                      </Typography>
+                      <Typography
+                        sx={{ fontSize: 14, my: 3 }}
+                        color="text.secondary"
+                      >
+                        {' '}
+                        {pre.testContainer}
                       </Typography>
                     </Grid>
-                    <Grid item xs={9} sx={{}}>
-                      {imageUrl[i] && <img src={imageUrl1[i]} />}
+                    <Grid item xs={12} sx={{}}>
+                      {img[i] && <img src={img[i]} />}
                     </Grid>
                   </Grid>
                 </div>
@@ -154,32 +125,23 @@ export default function ReceptCollectionDialog(props) {
                     }}
                   >
                     <Grid item xs={4} sx={{ mx: 2 }}>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        검사명
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                        검사명:{pre.testName}
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sx={{ mx: 2 }}>
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
-                      >
-                        검사실
+                      <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                        검사필드명:{pre.fieldName}
                       </Typography>
                     </Grid>
                   </Grid>
                 </div>
+                <br />
+                <br />
+                <br />
               </SwiperSlide>
             );
           })}
-
-          <br />
-          <br />
-          <br />
         </Swiper>
       </List>
 
@@ -196,5 +158,6 @@ ReceptCollectionDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   selectedValue: PropTypes.any.isRequired,
+  img: PropTypes.any.isRequired,
 };
 //------------------------다이얼로그

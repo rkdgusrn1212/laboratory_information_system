@@ -55,4 +55,5 @@ public interface CollectService {
 	List<CollectVisitVo> getvisitbypatientno(String patientNo);	
 	List<ReceptCollectionVo> getReceptCollectionbyorderno(String orderNo);
 	List<CollectPrescriptionVo> getPrebyPatientNo(String patientNo);
+	List<CollectPrescriptionVo> getfindPrebyOrderNo(String orderNo);
 }

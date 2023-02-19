@@ -33,13 +33,9 @@ import axios from 'axios';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import { selectAccount } from '../services/accountSlice';
 import { useAppSelector } from '../hooks';
-//만약 선택한 처방의 오더에 해당하는 검체 가 이미 있을때 알람만 준다.
+import JsBarcode from 'jsbarcode';
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+//만약 선택한 처방의 오더에 해당하는 검체 가 이미 있을때 알람만 준다.
 
 //-----------------------카드
 export default function ReceptCollectionPage() {
@@ -59,7 +55,7 @@ export default function ReceptCollectionPage() {
   const [selectionModel1, setSelectionModel1] = React.useState([]); // 첫번째 그리드에서 선택한 값들
   const [selectionModel2, setSelectionModel2] = React.useState([]); //바코드를 출력할 처방정보
   const [flagnawon, setFlagnawon] = useState(1);
-
+  const [rows5, setRows5] = useState([]);
   // 여기까진 검색 기능구현
   const [open, setOpen] = React.useState(false); //다이얼로그
   //검색결과 미리보기
@@ -76,11 +72,11 @@ export default function ReceptCollectionPage() {
   const [loginstaffno, setLoginstaffno] = useState(1);
   const account = useAppSelector(selectAccount); //로그인한  계정 정보
 
+  const [specimenlist, setSpecimenlist] = useState(1); //
+  const [imageUrl1, setImageUrl1] = useState([]);
+  const [imageUrl, setImageUrl] = useState([]);
   //만약 선택한 처방 정보의 해당하는 오더에 검체가 이미 있을때
   //다잉얼로그 열기
-  const [open2, setOpen2] = React.useState(false);
-  //이값이 1이면 검체가 생성됨 아니면 진행되지않음
-  const [flag, setFlag] = useState(1);
 
   useEffect(() => {
     PatientList().then((res) => {
@@ -126,23 +122,22 @@ export default function ReceptCollectionPage() {
 
   //검체를 생성하는 함수
   function createspecimen() {
-    rows4.id &&
-      rows4.id.map((postdata) => {
-        axios({
-          method: 'post',
-          url: `http://localhost:8080/api/collect/insertspecimenpost`,
-          data: {
-            staffNo: loginstaffno,
-            orderNo: postdata.orderNo,
-          },
+    rows4.map((postdata) => {
+      axios({
+        method: 'post',
+        url: `http://localhost:8080/api/collect/insertspecimenpost`,
+        data: {
+          staffNo: loginstaffno,
+          orderNo: postdata.orderNo,
+        },
+      })
+        .then(function () {
+          alert('생성이 완료되었습니다.');
         })
-          .then(function () {
-            alert('생성이 완료되었습니다.');
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      });
+        .catch((error) => {
+          console.log(error);
+        });
+    });
   }
 
   function onvisit(patientNo) {
@@ -177,6 +172,7 @@ export default function ReceptCollectionPage() {
           response.data.map((pre, testid) => {
             pre.id = testid;
             pre.status = 0;
+            pre.patientName = callpatient.patients[0].patientName;
           });
 
         setRows1(response.data);
@@ -196,7 +192,6 @@ export default function ReceptCollectionPage() {
         url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${pre.orderNo}`,
       }).then(function (response) {
         if (response.data != '') {
-          handleClickOpen2();
           console.log(
             'warning!!!!!!!!!!!!!!!!! 이미 데이터가 테이블에 있습니다.',
           );
@@ -204,14 +199,35 @@ export default function ReceptCollectionPage() {
           //이미 orderno가 검체접수 목록에 있다.
           //진행 여부만 확인 하면 된다.
         } else {
-          //검체생성
-          createspecimen();
-          //다이얼로그 오픈
-          setOpen(true);
         }
       });
     });
   }
+  //검체번호로 바코드 만들기
+
+  function makebarcord() {
+    rows4.map((a, i) => {
+      axios({
+        method: 'get',
+        url: `http://localhost:8080/api/collect/getPrebyOrderNo?orderNo=${a.orderNo}`,
+      }).then(function (response) {
+        if (response.data != '') {
+          console.log(i + '번째 검체번호' + response.data[0].specimenNo);
+          a.specimenNo = response.data[0].specimenNo;
+          const canvas = document.createElement('canvas');
+          JsBarcode(canvas, a.specimenNo, { height: 50, displayValue: true });
+          setImageUrl(canvas.toDataURL('image/png'));
+          imageUrl1[i] = canvas.toDataURL('image/png');
+        }
+      });
+    });
+  }
+
+  const setimg123 = () => {
+    rows4.map((a, idx) => {
+      console.log('idx:' + a.specimenNo);
+    });
+  };
 
   //환자 검색 파트
   const handleInput = (e) => {
@@ -275,6 +291,7 @@ export default function ReceptCollectionPage() {
           if (row.id === id) {
             // console.log("id:" + row.id)
             rows2.push({
+              patientName: row.patientName,
               id: row.id,
               visitNo: row.visitNo,
               prescriptionCode: row.prescriptionCode,
@@ -285,6 +302,7 @@ export default function ReceptCollectionPage() {
               fieldName: row.fieldName,
               visitDoctor: row.visitDoctor,
               departmentName: row.departmentName,
+              specimenNo: row.specimenNo,
             });
           }
         });
@@ -294,37 +312,24 @@ export default function ReceptCollectionPage() {
 
   // -------------다이얼로그
 
-  const handleClickOpen2 = () => {
-    setOpen2(true);
-  };
-  const handleClose2agree = () => {
-    console.log('계속 진행 = 검체 생성');
-
-    setOpen2(false);
-    //검체생성
-    if (flag == 1) {
-      createspecimen();
-    }
-
-    //다이얼로그 오픈
-    setOpen(true);
-  };
-  const handleClose2disagree = () => {
-    console.log('계속 진행x = 검체 생성X');
-    setFlag((flag) => flag + 1);
-    setOpen2(false);
-    //다이얼로그 오
-    setOpen(false);
-  };
   //채취버튼이 눌렸을때.
   const handleClickOpen = () => {
     //db와 연결 확인
     if (error == 1) {
       //선택한 그리드의정보를 rows4로 저장한다
       grid2buttonclick();
+      // //선택한 처방의 오더가 이미 채혈접수가 되어있는지 확인
+      // checkReCobyorder(rows4);
+      //검체생성
+      //createspecimen();
+      console.log(rows4);
+      //다이얼로그 오픈
 
-      //선택한 처방의 오더가 이미 채혈접수가 되어있는지 확인
-      checkReCobyorder(rows4);
+      makebarcord(); //rows4에 검체 번호 들어가 있음
+
+      console.log(specimenlist);
+      setimg123();
+      setOpen(true);
     }
   };
 
@@ -342,6 +347,7 @@ export default function ReceptCollectionPage() {
         if (row.id === id) {
           // console.log("id:" + row.id)
           rows4.push({
+            patientName: row.patientName,
             id: row.id,
             visitNo: row.visitNo,
             prescriptionCode: row.prescriptionCode,
@@ -352,11 +358,12 @@ export default function ReceptCollectionPage() {
             fieldName: row.fieldName,
             visitDoctor: row.visitDoctor,
             departmentName: row.departmentName,
+            specimenNo: row.specimenNo,
           });
         }
       });
     });
-
+    setRows5(rows4);
     //바코드 출력시간의 현재시간으로 입력해야 함
     //db에 이정보들을 입력하여야 함
   }
@@ -866,6 +873,12 @@ export default function ReceptCollectionPage() {
                   })}
 
                 <br />
+                <ReceptCollectionDialog
+                  selectedValue={rows5}
+                  open={open}
+                  onClose={handleClose}
+                  img={imageUrl1}
+                />
                 <Button
                   sx={{ width: '100%' }}
                   variant="contained"
@@ -873,33 +886,6 @@ export default function ReceptCollectionPage() {
                 >
                   채취버튼
                 </Button>
-                <Dialog
-                  open={open2}
-                  onClose={handleClose2disagree}
-                  aria-labelledby="alert-dialog-title"
-                  aria-describedby="alert-dialog-description"
-                >
-                  <DialogTitle id="alert-dialog-title">
-                    {'이미 선택한 오더에 해당하는 검체 번호가 있습니다.'}
-                  </DialogTitle>
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                      계속해서 검체번호를 생성 하시겠습니까?
-                    </DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleClose2disagree}>Disagree</Button>
-                    <Button onClick={handleClose2agree} autoFocus>
-                      Agree
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-
-                <ReceptCollectionDialog
-                  selectedValue={rows4}
-                  open={open}
-                  onClose={handleClose}
-                />
               </Box>
               <Grid sx={{ my: 40, float: 'right' }}>
                 <ArrowForwardIcon />
