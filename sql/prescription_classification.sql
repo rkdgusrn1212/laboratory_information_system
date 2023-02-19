@@ -17,19 +17,11 @@
 CREATE DATABASE IF NOT EXISTS `kanghoshin_lis` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `kanghoshin_lis`;
 
--- 테이블 kanghoshin_lis.prescription 구조 내보내기
-CREATE TABLE IF NOT EXISTS `prescription` (
-  `prescription_code` varchar(10) NOT NULL,
-  `behavior_code` varchar(10) DEFAULT NULL,
-  `prescription_name` varchar(200) NOT NULL,
-  `prescription_classification_code` varchar(10) DEFAULT NULL,
-  `prescription_slip_code` varchar(10) DEFAULT NULL,
-  `prescription_comment` varchar(200) DEFAULT NULL,
-  PRIMARY KEY (`prescription_code`) USING BTREE,
-  KEY `FK_prescription_prescription_classification` (`prescription_classification_code`),
-  KEY `FK_prescription_behavior` (`behavior_code`) USING BTREE,
-  CONSTRAINT `FK_prescription_behavior` FOREIGN KEY (`behavior_code`) REFERENCES `behavior` (`behavior_code`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON UPDATE CASCADE
+-- 테이블 kanghoshin_lis.prescription_classification 구조 내보내기
+CREATE TABLE IF NOT EXISTS `prescription_classification` (
+  `prescription_classification_code` varchar(10) NOT NULL,
+  `prescription_classification_name` varchar(40) NOT NULL,
+  PRIMARY KEY (`prescription_classification_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
