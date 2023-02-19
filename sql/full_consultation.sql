@@ -23,14 +23,16 @@ CREATE TABLE `full_consultation` (
 	`consultation_no` INT(11) NOT NULL,
 	`consultation_time` DATETIME NOT NULL,
 	`consultation_reception_no` INT(11) NOT NULL,
+	`consultation_reception_time` DATETIME NOT NULL,
 	`staff_no` INT(11) NOT NULL,
-	`patient_no` INT(11) NOT NULL
+	`patient_no` INT(11) NOT NULL,
+	`consultation_reception_appointment` DATETIME NULL
 ) ENGINE=MyISAM;
 
 -- 뷰 kanghoshin_lis.full_consultation 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `full_consultation`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_consultation` AS select `consultation`.`consultation_no` AS `consultation_no`,`consultation`.`consultation_time` AS `consultation_time`,`consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no` from (`consultation` join `consultation_reception` on(`consultation`.`consultation_reception_no` = `consultation_reception`.`consultation_reception_no`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_consultation` AS select `consultation`.`consultation_no` AS `consultation_no`,`consultation`.`consultation_time` AS `consultation_time`,`consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (`consultation` join `consultation_reception` on(`consultation`.`consultation_reception_no` = `consultation_reception`.`consultation_reception_no`));
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
