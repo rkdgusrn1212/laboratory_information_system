@@ -71,102 +71,111 @@ export default function ReceptCollectionDialog(props) {
           modules={[Pagination, Navigation]}
           className="mySwiper"
         >
-          {selectedValue.map((pre, i) => (
-            <SwiperSlide>
-              {pre.id}
-              <div className="testcodetop">
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    mx: 3,
-                  }}
-                >
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      환자이름
-                    </Typography>
+          {selectedValue.map((list, i) => {
+            axios({
+              method: 'get',
+              url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${list}`,
+            }).then(function (response) {
+              setCollect(response.data);
+            });
+
+            return (
+              <SwiperSlide>
+                {response.data.id}
+                <div className="testcodetop">
+                  <Grid
+                    sx={{
+                      textAlign: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      mx: 3,
+                    }}
+                  >
+                    <Grid item xs={4} sx={{ mx: 2 }}>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        환자이름
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4} sx={{ mx: 2 }}>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        진료과
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4} sx={{ mx: 2 }}>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        item
+                        xs={4}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        처방코드
+                      </Typography>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      진료과
-                    </Typography>
+                </div>
+                <p></p>
+                <div className="barcord">
+                  <Grid
+                    sx={{
+                      textAlign: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Grid item xs={3} sx={{}}>
+                      <Typography
+                        sx={{ fontSize: 14, my: 3 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        용기명
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={9} sx={{}}>
+                      {imageUrl[i] && <img src={imageUrl1[i]} />}
+                    </Grid>
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      item
-                      xs={4}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      처방코드
-                    </Typography>
+                </div>
+                <div className="testcodebottom">
+                  <Grid
+                    sx={{
+                      textAlign: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Grid item xs={4} sx={{ mx: 2 }}>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        검사명
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={4} sx={{ mx: 2 }}>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        검사실
+                      </Typography>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </div>
-              <p></p>
-              <div className="barcord">
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    display: 'flex',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Grid item xs={3} sx={{}}>
-                    <Typography
-                      sx={{ fontSize: 14, my: 3 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      용기명
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={9} sx={{}}>
-                    {imageUrl[i] && <img src={imageUrl1[i]} />}
-                  </Grid>
-                </Grid>
-              </div>
-              <div className="testcodebottom">
-                <Grid
-                  sx={{
-                    textAlign: 'center',
-                    display: 'flex',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      검사명
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <Typography
-                      sx={{ fontSize: 14 }}
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      검사실
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </div>
-            </SwiperSlide>
-          ))}
+                </div>
+              </SwiperSlide>
+            );
+          })}
 
           <br />
           <br />

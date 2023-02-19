@@ -33,6 +33,13 @@ import axios from 'axios';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import { selectAccount } from '../services/accountSlice';
 import { useAppSelector } from '../hooks';
+//만약 선택한 처방의 오더에 해당하는 검체 가 이미 있을때 알람만 준다.
+
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 //-----------------------카드
 export default function ReceptCollectionPage() {
@@ -49,9 +56,10 @@ export default function ReceptCollectionPage() {
   const [pagestarter, setPagestarter] = useState([]); //반응형 그리드를 만들기위한 변수설정
 
   const [rows3, setRows3] = useState([]); //첫번째 그리드에서 선택한 값들
-  const [rows5, setRows5] = useState([]); //바코드를 출력할 처방정보
   const [selectionModel1, setSelectionModel1] = React.useState([]); // 첫번째 그리드에서 선택한 값들
   const [selectionModel2, setSelectionModel2] = React.useState([]); //바코드를 출력할 처방정보
+  const [flagnawon, setFlagnawon] = useState(1);
+
   // 여기까진 검색 기능구현
   const [open, setOpen] = React.useState(false); //다이얼로그
   //검색결과 미리보기
@@ -68,7 +76,11 @@ export default function ReceptCollectionPage() {
   const [loginstaffno, setLoginstaffno] = useState(1);
   const account = useAppSelector(selectAccount); //로그인한  계정 정보
 
-  const [checkorder, setCheckorder] = useState(true);
+  //만약 선택한 처방 정보의 해당하는 오더에 검체가 이미 있을때
+  //다잉얼로그 열기
+  const [open2, setOpen2] = React.useState(false);
+  //이값이 1이면 검체가 생성됨 아니면 진행되지않음
+  const [flag, setFlag] = useState(1);
 
   useEffect(() => {
     PatientList().then((res) => {
@@ -114,8 +126,8 @@ export default function ReceptCollectionPage() {
 
   //검체를 생성하는 함수
   function createspecimen() {
-    rows5.id &&
-      rows5.id.map((postdata) => {
+    rows4.id &&
+      rows4.id.map((postdata) => {
         axios({
           method: 'post',
           url: `http://localhost:8080/api/collect/insertspecimenpost`,
@@ -147,6 +159,8 @@ export default function ReceptCollectionPage() {
           });
 
         setNawon(response.data);
+      } else {
+        setNawon([{ id: -100 }]);
       }
     });
   }
@@ -166,7 +180,36 @@ export default function ReceptCollectionPage() {
           });
 
         setRows1(response.data);
+      } else {
+        setRows1({ id: -100 });
       }
+    });
+  }
+
+  //선택한정보의 오더 no로 이미 뽑은 검체 인지검사 reception-collection에 데이터가 있다면 여기서 표시를 해줘야한다.
+  function checkReCobyorder(selectedpre) {
+    selectedpre.map((pre) => {
+      //pre.orderNo
+      console.log('pre.orderNo: ' + pre.orderNo);
+      axios({
+        method: 'get',
+        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${pre.orderNo}`,
+      }).then(function (response) {
+        if (response.data != '') {
+          handleClickOpen2();
+          console.log(
+            'warning!!!!!!!!!!!!!!!!! 이미 데이터가 테이블에 있습니다.',
+          );
+          console.log(response.data);
+          //이미 orderno가 검체접수 목록에 있다.
+          //진행 여부만 확인 하면 된다.
+        } else {
+          //검체생성
+          createspecimen();
+          //다이얼로그 오픈
+          setOpen(true);
+        }
+      });
     });
   }
 
@@ -219,47 +262,7 @@ export default function ReceptCollectionPage() {
     //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
   };
 
-  // -------------다이얼로그
-
-  //채취버튼이 눌렸을때.
-  const handleClickOpen = () => {
-    //db와 연결 확인
-
-    connsole.log(rows5);
-
-    if (error == 1) {
-      grid2buttonclick();
-
-      //
-      checkReCobyorder(rows5);
-      setOpen(true);
-    }
-  };
-
-  //선택한정보의 오더 no로 이미 뽑은 검체 인지검사 reception-collection에 데이터가 있다면 여기서 표시를 해줘야한다.
-  function checkReCobyorder(selectedpre) {
-    selectedpre.map((pre) => {
-      console.log('pre.orderNo: ' + pre.orderNo);
-      axios({
-        method: 'get',
-        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${pre.orderNo}`,
-      }).then(function (response) {
-        if (response.data != '') {
-          console.log(
-            'warning!!!!!!!!!!!!!!!!! 이미 데이터가 테이블에 있습니다.',
-          );
-          console.log(response.data);
-          //이미 orderno가 검체접수 목록에 있다.
-          //진행 여부만 확인 하면 된다.
-        }
-      });
-    });
-  }
-
-  const handleClose = (value) => {
-    setOpen(false);
-  };
-
+  //1번그리드 밑 버튼이 눌렸을때  데이터를 오른쪽 그리드로 복사한다.
   function grid1buttonclick() {
     // rows2 = resetrow;
     setRows3(resetrow); //초기화
@@ -289,6 +292,46 @@ export default function ReceptCollectionPage() {
     setRows3(rows2);
   }
 
+  // -------------다이얼로그
+
+  const handleClickOpen2 = () => {
+    setOpen2(true);
+  };
+  const handleClose2agree = () => {
+    console.log('계속 진행 = 검체 생성');
+
+    setOpen2(false);
+    //검체생성
+    if (flag == 1) {
+      createspecimen();
+    }
+
+    //다이얼로그 오픈
+    setOpen(true);
+  };
+  const handleClose2disagree = () => {
+    console.log('계속 진행x = 검체 생성X');
+    setFlag((flag) => flag + 1);
+    setOpen2(false);
+    //다이얼로그 오
+    setOpen(false);
+  };
+  //채취버튼이 눌렸을때.
+  const handleClickOpen = () => {
+    //db와 연결 확인
+    if (error == 1) {
+      //선택한 그리드의정보를 rows4로 저장한다
+      grid2buttonclick();
+
+      //선택한 처방의 오더가 이미 채혈접수가 되어있는지 확인
+      checkReCobyorder(rows4);
+    }
+  };
+
+  const handleClose = (value) => {
+    setOpen(false);
+  };
+
   //선택한 그리드2의 값들로 다이얼로그를 통해 바코드 생성
   const rows4 = [];
   function grid2buttonclick() {
@@ -314,7 +357,6 @@ export default function ReceptCollectionPage() {
       });
     });
 
-    setRows5(rows4);
     //바코드 출력시간의 현재시간으로 입력해야 함
     //db에 이정보들을 입력하여야 함
   }
@@ -603,10 +645,10 @@ export default function ReceptCollectionPage() {
                     if (!nawon) {
                       return <Grid>no data</Grid>;
                     } else {
-                      if (nawon.length == 0) {
+                      if (nawon[0].id == -100) {
                         return (
                           <Typography sx={{ fontSize: 14 }}>
-                            내원정보가 없습니다.
+                            선택한 환자의 내원정보가 없습니다.
                           </Typography>
                         );
                       }
@@ -831,8 +873,30 @@ export default function ReceptCollectionPage() {
                 >
                   채취버튼
                 </Button>
+                <Dialog
+                  open={open2}
+                  onClose={handleClose2disagree}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                >
+                  <DialogTitle id="alert-dialog-title">
+                    {'이미 선택한 오더에 해당하는 검체 번호가 있습니다.'}
+                  </DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      계속해서 검체번호를 생성 하시겠습니까?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose2disagree}>Disagree</Button>
+                    <Button onClick={handleClose2agree} autoFocus>
+                      Agree
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
                 <ReceptCollectionDialog
-                  selectedValue={rows5}
+                  selectedValue={rows4}
                   open={open}
                   onClose={handleClose}
                 />

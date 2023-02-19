@@ -43,10 +43,17 @@ public interface CollectMapper {
 	@Select("SELECT Inadequate_type_code as InadequateTypeCode, Inadequate_type_name as InadequateTypeName,Inadequate_type_brief_explanation as InadequateTypeBriefExplanation FROM inadequate_type")
 	List<InadequateTypeVo> listInadequate_typeall();
 
-	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo FROM blood_collect,specimen WHERE blood_collect.specimen_no= specimen.specimen_no ORDER BY blood_collect.collect_date desc")
+	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, "
+			+ "specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo "
+			+ "FROM blood_collect,specimen "
+			+ "WHERE blood_collect.specimen_no= specimen.specimen_no ORDER BY blood_collect.collect_date desc,blood_collect.specimen_no desc")
 	List<BloodCollectVo> listcollectall();
 
-	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo FROM blood_collect,specimen WHERE blood_collect.specimen_no= specimen.specimen_no and blood_collect.specimen_no = #{specimenNo}")
+	//db 나오면  수정 할것
+	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, "
+			+ "specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo "
+			+ "FROM blood_collect,specimen "
+			+ "WHERE blood_collect.specimen_no= specimen.specimen_no and blood_collect.specimen_no = #{specimenNo}")
 	BloodCollectVo findcollectByspecimenno(@Param("specimenNo") String specimenNo);
 
 	@Insert("INSERT INTO blood_Collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
