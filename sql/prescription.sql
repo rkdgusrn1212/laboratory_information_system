@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `behavior` (
   PRIMARY KEY (`behavior_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.behavior:~17,051 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.behavior:~17,225 rows (대략적) 내보내기
 DELETE FROM `behavior`;
 /*!40000 ALTER TABLE `behavior` DISABLE KEYS */;
 INSERT INTO `behavior` (`behavior_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
@@ -17266,6 +17266,7 @@ CREATE TABLE IF NOT EXISTS `prescription` (
   `prescription_name` varchar(200) NOT NULL,
   `prescription_classification_code` varchar(10) DEFAULT NULL,
   `prescription_slip_code` varchar(10) DEFAULT NULL,
+  `prescription_comment` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`prescription_code`) USING BTREE,
   KEY `FK_prescription_prescription_classification` (`prescription_classification_code`),
   KEY `FK_prescription_behavior` (`behavior_code`) USING BTREE,
