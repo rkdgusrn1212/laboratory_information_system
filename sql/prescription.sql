@@ -17261,11 +17261,12 @@ INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `b
 
 -- 테이블 kanghoshin_lis.prescription 구조 내보내기
 CREATE TABLE IF NOT EXISTS `prescription` (
-  `prescription_slip_code` varchar(10) NOT NULL,
+  `prescription_code` varchar(10) NOT NULL,
   `behavior_insurance_code` varchar(10) DEFAULT NULL,
   `prescription_name` varchar(200) NOT NULL,
   `prescription_classification_code` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`prescription_slip_code`) USING BTREE,
+  `prescription_slip_code` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`prescription_code`) USING BTREE,
   KEY `FK_prescription_behavior` (`behavior_insurance_code`),
   KEY `FK_prescription_prescription_classification` (`prescription_classification_code`),
   CONSTRAINT `FK_prescription_behavior` FOREIGN KEY (`behavior_insurance_code`) REFERENCES `behavior` (`behavior_insurance_code`) ON DELETE SET NULL ON UPDATE CASCADE,
