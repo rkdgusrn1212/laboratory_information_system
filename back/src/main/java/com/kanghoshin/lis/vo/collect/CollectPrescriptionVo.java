@@ -18,6 +18,13 @@ public class CollectPrescriptionVo {
 	private String fieldName;//검사분야명(검사실)
 	private String visitDoctor;//담당의
 	private String departmentName;//진료과
+	
+	private String patientName;
+	private String patientNo;
+	
+	private String specimenNo; //검체번호
+	private String printstaffNo;//바코드 출력자
+	private String specimenDate;//바코드 출력시간
 
 
 }

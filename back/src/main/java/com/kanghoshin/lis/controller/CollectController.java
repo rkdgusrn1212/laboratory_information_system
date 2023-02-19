@@ -131,12 +131,16 @@ public class CollectController {
 	}
 
 	@GetMapping("/getprebypatientno")
-	public List<CollectPrescriptionVo> getPrebyPatientNo(@Valid @Param("PatientNo") String PatientNo) {
+	public List<CollectPrescriptionVo> getPrebyPatientNo(@Valid @Param("patientNo") String PatientNo) {
 		List<CollectPrescriptionVo> Prescriptionlist = CollectService.getPrebyPatientNo(PatientNo);
 		return Prescriptionlist;
 	}
 	
-	
+	@GetMapping("/getPrebyOrderNo")
+	public List<CollectPrescriptionVo> findPrebyOrderNo(@Valid @Param("orderNo") String orderNo) {
+		List<CollectPrescriptionVo> Prescription = CollectService.getfindPrebyOrderNo(orderNo);
+		return Prescription;
+	}
 	
 
 }

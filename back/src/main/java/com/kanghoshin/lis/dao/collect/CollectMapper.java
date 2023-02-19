@@ -114,7 +114,22 @@ public interface CollectMapper {
 					+"and doctor.staff_no = staff.staff_no and doctor.staff_no= visit.visit_doctor "
 					+"and diagnostic_test.diagnostic_test_code = prescription.diagnostic_test_code "
 					+"and prescription.prescription_code =order1.prescription_code and order1.visit_no= visit.visit_no "
-					+"AND visit.patient_no = patient.patient_no and patient.patient_no= #{patientNo} ")
+					+"AND visit.patient_no = patient.patient_no and patient.patient_no= #{patientNo} order by visit.visit_no desc ")
 	List<CollectPrescriptionVo> findPrebyPatientNo(@Param("patientNo")String patientNo);
 	
+	//
+	@Select(
+			"SELECT order1.order_no AS orderNo,recept_collection.specimen_no as specimenNo ,specimen.staff_no AS printstaffNo,specimen.specimen_date AS specimenDate, "
+			+"staff.staff_name AS visitDoctor,department.department_name as departmentName,prescription.prescription_code AS prescriptionCode, "
+			+"patient.patient_name AS patientName,patient.patient_no AS patientNo ,diagnostic_test.diagnostic_test_name AS testName, "
+			+"diagnostic_test.diagnostic_test_container AS testContainer ,test_field.test_field_name AS fieldName, visit.visit_no as visitNo, " 
+			+"order1.order_date AS orderDate "
+			+"FROM order1,recept_collection,specimen,visit,doctor,staff,department,prescription,patient,diagnostic_test,test_field "
+			+"WHERE test_field.test_field_no=diagnostic_test.field_no "
+			+"and visit.patient_no= patient.patient_no AND diagnostic_test.diagnostic_test_code = prescription.diagnostic_test_code "
+			+"and prescription.prescription_code = order1.prescription_code and doctor.department_code= department.department_code "  
+			+"and doctor.staff_no = staff.staff_no and doctor.staff_no =visit.visit_doctor "
+			+"and visit.visit_no= order1.visit_no and specimen.specimen_no= recept_collection.specimen_no "
+			+"and recept_collection.order_no= order1.order_no and order1.order_no = #{orderNo} ")
+	List<CollectPrescriptionVo> findPrebyOrderNo(@Param("orderNo")String orderNo); 
 }
