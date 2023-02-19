@@ -3,13 +3,16 @@ package com.kanghoshin.lis.dto.prescriptionorder;
 import java.util.Date;
 
 import com.kanghoshin.lis.constraints.OrderConstraints;
+import com.kanghoshin.lis.dto.consultation.ReadFullConsultationListDto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-public class ReadFullTestPrescriptionOrderList {
+public class ReadFullTestPrescriptionOrderListDto extends ReadFullConsultationListDto{
 
 	private String prescriptionOrderNoKey;
 	@OrderConstraints
@@ -28,9 +31,9 @@ public class ReadFullTestPrescriptionOrderList {
 	@OrderConstraints
 	private String specimenContainerCodeOrder;
 
-	private String prescriptionTypeCodeKey;
+	private String specimenTypeCodeKey;
 	@OrderConstraints
-	private String prescriptionTypeCodeOrder;
+	private String specimenTypeCodeOrder;
 
 	private String prescriptionNameKey;
 	@OrderConstraints

@@ -19,7 +19,7 @@ public class ConsultationController {
 
 	private final ConsultationService consultationService;
 	
-	@GetMapping("/fullconsultation/list")
+	@GetMapping("/full-consultation/list")
 	public FullConsultationVo[] readFullConsultationList(@Valid ReadFullConsultationListDto readFullConsultationlistDto) {
 		return consultationService.readFullConsultationList(readFullConsultationlistDto);
 	}
