@@ -67,6 +67,42 @@ export default function BloodCollectionPage() {
     });
   }, []);
 
+  const onSearch = (event) => {
+    setFlag(2);
+    var count = 2; //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
+    }).then(function (response) {
+      if (response.data != '') {
+        response.data.id = response.data.specimenNo;
+
+        list.map((list) => {
+          if (list.id == search) {
+            count = 3;
+            setFlag(3);
+            console.log('아래 리스트와 겹침');
+          }
+        });
+
+        inputlist.map((input) => {
+          if (input.id == search) {
+            count = 3;
+            setFlag(3);
+            console.log('겹침22');
+          }
+        });
+
+        if (count == 2) {
+          setFlag(4);
+          inputlist.push(search);
+          setList([response.data, ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
+          console.log(inputlist);
+          console.log('flag: ' + flag);
+        }
+      }
+    });
+  };
   function postdata() {
     inputlist.map((input) => {
       // POST 요청 전송
@@ -85,7 +121,7 @@ export default function BloodCollectionPage() {
           console.log(error);
         });
     });
-    alert('생성이 완료되었습니다.');
+    return alert('생성이 완료되었습니다.');
   }
 
   const onSearchHandler = (event) => {
@@ -94,64 +130,23 @@ export default function BloodCollectionPage() {
   const handleOnKeyPress = (e) => {
     if (e.key === 'Enter') {
       onSearch(); // Enter 입력이 되면 클릭 이벤트 실행
+      console.log(flag);
     }
   };
 
-  const onSearch = (event) => {
-    setFlag(2); //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
-    axios({
-      method: 'get',
-      url: `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
-    }).then(function (response) {
-      if (response.data != '') {
-        response.data.id = response.data.specimenNo;
-
-        list.map((list) => {
-          if (list.id == search) {
-            setFlag(4);
-
-            console.log('겹침');
-            console.log('4 flag: ' + flag);
-          }
-        });
-
-        inputlist.map((input) => {
-          if (input.id == search) {
-            setFlag(4);
-            console.log('겹침22');
-            console.log('4-2 flag: ' + flag);
-          }
-        });
-
-        if (flag == 2) {
-          setFlag(3);
-          inputlist.push(search);
-          setList([response.data, ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
-          console.log(inputlist);
-          console.log('flag: ' + flag);
-        }
-      }
-    });
-  };
   //post 방식으로 제출
   const handleClickOpen = () => {
     if (error == 1) {
-      postdata();
-
-      setOpen(true);
+      if (inputlist.length >= 1) {
+        postdata();
+        setOpen(true);
+      }
     }
   };
 
   const handleClose = (value) => {
     setOpen(false);
   };
-
-  //받아온 json파일 전처리
-  function rowsbeforesetting(rows) {
-    rows.map((a) => {
-      a.status = 0;
-    });
-  }
 
   const columns = [
     {
@@ -271,44 +266,11 @@ export default function BloodCollectionPage() {
                                         justifyContent: 'center',
                                       }}
                                     >
-                                      &nbsp;현재 입력된 검체번호 :{' '}
                                       {inputlist.map((input, i) => {
                                         if (i == 0) {
                                           return (
                                             <Typography variant="subtitle2">
-                                              {input}
-                                            </Typography>
-                                          );
-                                        } else {
-                                          return (
-                                            <Typography variant="subtitle2">
-                                              ,{input}
-                                            </Typography>
-                                          );
-                                        }
-                                      })}
-                                    </Typography>
-                                  </>
-                                );
-                              } else if (flag == 3) {
-                                return (
-                                  <>
-                                    <Typography variant="subtitle2">
-                                      &nbsp;검체가 입력되었습니다.
-                                    </Typography>
-                                    <Typography
-                                      variant="subtitle2"
-                                      sx={{
-                                        textAlign: 'center',
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                      }}
-                                    >
-                                      &nbsp;현재 입력된 검체번호 :{' '}
-                                      {inputlist.map((input, i) => {
-                                        if (i == 0) {
-                                          return (
-                                            <Typography variant="subtitle2">
+                                              &nbsp;현재 입력된 검체번호 :{' '}
                                               {input}
                                             </Typography>
                                           );
@@ -327,6 +289,39 @@ export default function BloodCollectionPage() {
                                 return (
                                   <>
                                     <Typography variant="subtitle2">
+                                      &nbsp;검체가 입력되었습니다.
+                                    </Typography>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        textAlign: 'center',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      {inputlist.map((input, i) => {
+                                        if (i == 0) {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              &nbsp;현재 입력된 검체번호 :{' '}
+                                              {input}
+                                            </Typography>
+                                          );
+                                        } else {
+                                          return (
+                                            <Typography variant="subtitle2">
+                                              ,{input}
+                                            </Typography>
+                                          );
+                                        }
+                                      })}
+                                    </Typography>
+                                  </>
+                                );
+                              } else if (flag == 3) {
+                                return (
+                                  <>
+                                    <Typography variant="subtitle2">
                                       &nbsp;이미 채혈이 완료된 검체입니다.
                                     </Typography>
 
@@ -338,11 +333,15 @@ export default function BloodCollectionPage() {
                                         justifyContent: 'center',
                                       }}
                                     >
-                                      &nbsp;현재 입력된 검체번호 :{' '}
                                       {inputlist.map((input, i) => {
-                                        if (i == 0) {
+                                        if (inputlist.length < 1) {
+                                          <Typography variant="subtitle2">
+                                            현재 입력된 검체번호가 없습니다.
+                                          </Typography>;
+                                        } else if (i == 0) {
                                           return (
                                             <Typography variant="subtitle2">
+                                              &nbsp;현재 입력된 검체번호 :{' '}
                                               {input}
                                             </Typography>
                                           );
