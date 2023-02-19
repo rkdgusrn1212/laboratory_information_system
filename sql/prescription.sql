@@ -17269,8 +17269,8 @@ CREATE TABLE IF NOT EXISTS `prescription` (
   PRIMARY KEY (`prescription_code`) USING BTREE,
   KEY `FK_prescription_behavior` (`behavior_insurance_code`),
   KEY `FK_prescription_prescription_classification` (`prescription_classification_code`),
-  CONSTRAINT `FK_prescription_behavior` FOREIGN KEY (`behavior_insurance_code`) REFERENCES `behavior` (`behavior_insurance_code`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_prescription_behavior` FOREIGN KEY (`behavior_insurance_code`) REFERENCES `behavior` (`behavior_insurance_code`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 테이블 데이터 kanghoshin_lis.prescription:~0 rows (대략적) 내보내기

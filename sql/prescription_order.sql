@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `prescription_order` (
   `prescription_order_no` int(11) NOT NULL AUTO_INCREMENT,
   `consultation_no` int(11) NOT NULL,
   `prescription_code` varchar(10) NOT NULL,
+  `prescription_order_time` datetime NOT NULL,
   PRIMARY KEY (`prescription_order_no`),
   KEY `FK_prescription_order_prescription` (`prescription_code`),
   KEY `FK_prescription_order_consultation` (`consultation_no`),
@@ -30,6 +31,15 @@ CREATE TABLE IF NOT EXISTS `prescription_order` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 트리거 kanghoshin_lis.prescription_order_before_insert 구조 내보내기
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `prescription_order_before_insert` BEFORE INSERT ON `prescription_order` FOR EACH ROW BEGIN
+SET NEW.prescription_order_time = NOW();
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
