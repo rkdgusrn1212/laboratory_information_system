@@ -19,17 +19,17 @@ USE `kanghoshin_lis`;
 
 -- 테이블 kanghoshin_lis.behavior 구조 내보내기
 CREATE TABLE IF NOT EXISTS `behavior` (
-  `behavior_insurance_code` varchar(10) NOT NULL,
+  `behavior_code` varchar(10) NOT NULL,
   `behavior_classification` varchar(20) NOT NULL,
   `behavior_name_kr` varchar(130) NOT NULL,
   `behavior_name_en` varchar(160) DEFAULT NULL,
-  PRIMARY KEY (`behavior_insurance_code`) USING BTREE
+  PRIMARY KEY (`behavior_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- 테이블 데이터 kanghoshin_lis.behavior:~17,051 rows (대략적) 내보내기
 DELETE FROM `behavior`;
 /*!40000 ALTER TABLE `behavior` DISABLE KEYS */;
-INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
+INSERT INTO `behavior` (`behavior_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
 	('D0001010', '누000가', '일반혈액검사(CBC)-[혈구세포-현미경]_백혈구수', 'Complete blood cell count- WBC Count'),
 	('D0001011', '누000가', '일반혈액검사(CBC)-[혈구세포-현미경]_백혈구수', 'Complete blood cell count- WBC Count'),
 	('D0001012', '누000가', '일반혈액검사(CBC)-[혈구세포-현미경]_백혈구수', 'Complete blood cell count- WBC Count'),
@@ -7042,7 +7042,7 @@ INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `b
 	('D5336447', '누532나(2)주2', '약물 및 독물-[정밀면역검사](정량)-고형조직-핵의학적 방법_Tobramycin', 'Drug, Toxic Agent Test-Tobramycin '),
 	('D5336450', '누532나(2)주2', '약물 및 독물-[정밀면역검사](정량)-고형조직-핵의학적 방법_Valproic Acid', 'Drug, Toxic Agent Test-Valproic Acid '),
 	('D5336457', '누532나(2)주2', '약물 및 독물-[정밀면역검사](정량)-고형조직-핵의학적 방법_Valproic Acid', 'Drug, Toxic Agent Test-Valproic Acid ');
-INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
+INSERT INTO `behavior` (`behavior_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
 	('D5336460', '누532나(2)주2', '약물 및 독물-[정밀면역검사](정량)-고형조직-핵의학적 방법_Valproic Acid, Free', 'Drug, Toxic Agent Test-Valproic Acid, Free '),
 	('D5336467', '누532나(2)주2', '약물 및 독물-[정밀면역검사](정량)-고형조직-핵의학적 방법_Valproic Acid, Free', 'Drug, Toxic Agent Test-Valproic Acid, Free '),
 	('D5336470', '누532나(2)주2', '약물 및 독물-[정밀면역검사](정량)-고형조직-핵의학적 방법_Vancomycin', 'Drug, Toxic Agent Test-Vancomycin '),
@@ -12985,7 +12985,7 @@ INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `b
 	('D5904003', '누590라', '세균독소검사-Clostridium Difficile 독소 A·B, 글루탐산탈수소효소[정밀면역검사]-간이검사', 'Bacterial Toxin Assay-Clostridium difficile Toxin A and B(including Clostridium difficile Glutamate Dehydrogenase)'),
 	('D5904004', '누590라', '세균독소검사-Clostridium Difficile 독소 A·B, 글루탐산탈수소효소[정밀면역검사]-간이검사', 'Bacterial Toxin Assay-Clostridium difficile Toxin A and B(including Clostridium difficile Glutamate Dehydrogenase)'),
 	('D5904007', '누590라', '세균독소검사-Clostridium Difficile 독소 A·B, 글루탐산탈수소효소[정밀면역검사]-간이검사', 'Bacterial Toxin Assay-Clostridium difficile Toxin A and B(including Clostridium difficile Glutamate Dehydrogenase)');
-INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
+INSERT INTO `behavior` (`behavior_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
 	('D5905', '누590마', '세균독소검사-Clostridium difficile 글루탐산탈수소효소', 'Bacterial Toxin Assay-Clostridium difficile Glutamate Dehydrogenase(GDH) '),
 	('D5905001', '누590마', '세균독소검사-Clostridium difficile 글루탐산탈수소효소', 'Bacterial Toxin Assay-Clostridium difficile Glutamate Dehydrogenase(GDH) '),
 	('D5905002', '누590마', '세균독소검사-Clostridium difficile 글루탐산탈수소효소', 'Bacterial Toxin Assay-Clostridium difficile Glutamate Dehydrogenase(GDH) '),
@@ -17262,14 +17262,14 @@ INSERT INTO `behavior` (`behavior_insurance_code`, `behavior_classification`, `b
 -- 테이블 kanghoshin_lis.prescription 구조 내보내기
 CREATE TABLE IF NOT EXISTS `prescription` (
   `prescription_code` varchar(10) NOT NULL,
-  `behavior_insurance_code` varchar(10) DEFAULT NULL,
+  `behavior_code` varchar(10) DEFAULT NULL,
   `prescription_name` varchar(200) NOT NULL,
   `prescription_classification_code` varchar(10) DEFAULT NULL,
   `prescription_slip_code` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`prescription_code`) USING BTREE,
-  KEY `FK_prescription_behavior` (`behavior_insurance_code`),
   KEY `FK_prescription_prescription_classification` (`prescription_classification_code`),
-  CONSTRAINT `FK_prescription_behavior` FOREIGN KEY (`behavior_insurance_code`) REFERENCES `behavior` (`behavior_insurance_code`) ON UPDATE CASCADE,
+  KEY `FK_prescription_behavior` (`behavior_code`) USING BTREE,
+  CONSTRAINT `FK_prescription_behavior` FOREIGN KEY (`behavior_code`) REFERENCES `behavior` (`behavior_code`) ON UPDATE CASCADE,
   CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
