@@ -19,11 +19,11 @@ USE `kanghoshin_lis`;
 
 -- 테이블 kanghoshin_lis.recept_collection 구조 내보내기
 CREATE TABLE IF NOT EXISTS `recept_collection` (
-  `order_no` int(11) NOT NULL,
   `specimen_no` int(11) NOT NULL,
+  `order_no` int(11) DEFAULT NULL,
   KEY `FK_recept_collection_specimen` (`specimen_no`),
-  KEY `order_no` (`order_no`),
-  CONSTRAINT `FK_recept_collection_order` FOREIGN KEY (`order_no`) REFERENCES `order1` (`order_no`),
+  KEY `FK_recept_collection_prescription_order` (`order_no`),
+  CONSTRAINT `FK_recept_collection_prescription_order` FOREIGN KEY (`order_no`) REFERENCES `prescription_order` (`prescription_order_no`),
   CONSTRAINT `FK_recept_collection_specimen` FOREIGN KEY (`specimen_no`) REFERENCES `specimen` (`specimen_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
