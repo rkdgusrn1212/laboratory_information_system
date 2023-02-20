@@ -184,7 +184,7 @@ const CreateAuthForm: React.FC<{
           onChange={handleEmailChange}
           autoComplete="email"
           helperText={validationEmailHelp}
-          error={validationEmailHelp !== undefined}
+          error={validationEmailHelp != null}
           disabled={issueValidationCodeState.isSuccess}
         />
         {issueValidationCodeState.isSuccess || (
@@ -221,7 +221,7 @@ const CreateAuthForm: React.FC<{
                   required
                   fullWidth
                   label="아이디"
-                  error={authIdHelp !== undefined}
+                  error={authIdHelp != null}
                   helperText={authIdHelp}
                   value={authId}
                   onChange={handleIdChange}
@@ -247,7 +247,7 @@ const CreateAuthForm: React.FC<{
                   label="비밀번호"
                   value={authPassword}
                   onChange={handlePasswordChange}
-                  error={authPasswordHelp !== undefined}
+                  error={authPasswordHelp != null}
                   helperText={authPasswordHelp}
                   type={passwordVisiblity ? 'text' : 'password'}
                   autoComplete="new-password"
@@ -273,7 +273,7 @@ const CreateAuthForm: React.FC<{
                   required
                   fullWidth
                   label="인증번호"
-                  error={validationCodeHelp !== undefined}
+                  error={validationCodeHelp != null}
                   helperText={validationCodeHelp}
                   value={validationCode}
                   autoComplete="one-time-code"
