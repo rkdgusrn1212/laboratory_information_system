@@ -132,7 +132,7 @@ export default function ReceptCollectionPage() {
         },
       })
         .then(function () {
-          alert('생성이 완료되었습니다.');
+          //
         })
         .catch((error) => {
           console.log(error);
@@ -321,7 +321,7 @@ export default function ReceptCollectionPage() {
       // //선택한 처방의 오더가 이미 채혈접수가 되어있는지 확인
       // checkReCobyorder(rows4);
       //검체생성
-      //createspecimen();
+      createspecimen();
       console.log(rows4);
       //다이얼로그 오픈
 
