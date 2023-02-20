@@ -31,7 +31,18 @@ CREATE TABLE IF NOT EXISTS `auth` (
   CONSTRAINT `FK_validation` FOREIGN KEY (`validation_email`) REFERENCES `validation` (`validation_email`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 내보낼 데이터가 선택되어 있지 않습니다.
+-- 테이블 데이터 kanghoshin_lis.auth:~2 rows (대략적) 내보내기
+DELETE FROM `auth`;
+/*!40000 ALTER TABLE `auth` DISABLE KEYS */;
+INSERT INTO `auth` (`auth_id`, `auth_password`, `auth_refresh`, `staff_no`, `validation_email`) VALUES
+	('gim765987', '$2a$10$aPMcqy/Kuw/jeFRdLMXfQ.rAKNIaYhnWvUAvDp0D43Gu8t89dqBWS', '3c2bb0f7-46ca-4478-9ee4-23d3e5c567b0', 103, 'gim765987@gmail.com'),
+	('kevin3918', '$2a$10$YIhR9SXe0LywrDiiW4.K3.TEtLmdYZpuVRvARBcUn1VflJ.u11Q26', '464a7807-5314-418a-bd68-e0086393b85e', 104, 'kevin3918@naver.com'),
+	('kevin91503918', '$2a$10$ipO1HRF.wN/xIF/Twy8Mcujh5Hp9giDEqR6rK9bFSsCcmsXBktN1e', 'b0d64c24-846e-4870-8504-294c8b1c3660', 105, 'kevin91503918@gmail.com'),
+	('khgkjg12@naver.com', '$2a$10$Yat11zQthuDhGV6CW0W03uAqWYiclf9QMfFspAPlkrg1tXEvDfS5y', '18c25643-9c00-4445-af33-863b47baa222', 80, 'khgkjg12@naver.com'),
+	('khgnur12', '$2a$10$mbZbVPsPL1UVfnhaN.TxduBKuPAL9kERj9xSiuNQpkKMLUtT14PJ.', '5f8fa04b-d079-41a2-a1ed-615f25b7d5db', 102, 'khgkjg12@gmail.com'),
+	('rhj1216', '$2a$10$kJJMrhKF5OtXg5Xbt/y2xOlXwx/aFDgzcX8YsLW6SG/rDXfUh9PrW', '950b8e8a-b709-438b-a2f8-2b08650e4163', 106, 'rhj1216@naver.com'),
+	('rhj1216gg', '$2a$10$R1SaPu.1VwGkv.R08Q/U/.myBj662EWondAeyFGyi2wfy0iA3CtYW', '9d6a70d6-da26-476a-865d-32574eac3bc6', 107, 'rhj1216@gmail.com');
+/*!40000 ALTER TABLE `auth` ENABLE KEYS */;
 
 -- 트리거 kanghoshin_lis.auth_after_delete 구조 내보내기
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
