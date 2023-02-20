@@ -6,10 +6,13 @@ import javax.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 
 import com.kanghoshin.lis.dto.prescription.CreatePrescriptionDto;
+import com.kanghoshin.lis.dto.prescription.ReadPrescriptionListDto;
+import com.kanghoshin.lis.vo.entity.PrescriptionVo;
 
 @Validated
 public interface PrescriptionService {
 	
-	void createPrescription(@NotNull @Valid CreatePrescriptionDto creaetCreatePrescriptionDto);
+	void createPrescription(@NotNull @Valid CreatePrescriptionDto createCreatePrescriptionDto);
 
+	PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto);
 }

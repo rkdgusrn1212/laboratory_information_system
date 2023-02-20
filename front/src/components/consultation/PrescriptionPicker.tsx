@@ -20,38 +20,53 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLazyReadPrescriptionListQuery } from '../../services/prescriptionApi';
+import { Prescription } from '../../services/types';
 
 interface Column {
-  id: 'code' | 'name';
+  id: keyof Prescription;
   label: string;
   minWidth?: number;
   align?: 'right';
+  // eslint-disable-next-line no-unused-vars
   format?: (value: number) => string;
 }
 
 const columns: readonly Column[] = [
-  { id: 'code', label: '처방코드', minWidth: 100 },
+  { id: 'prescriptionCode', label: '처방코드', minWidth: 100 },
   {
-    id: 'name',
+    id: 'prescriptionName',
     label: '처방명',
     minWidth: 170,
   },
+  {
+    id: 'prescriptionComment',
+    label: '메모',
+  },
+  {
+    id: 'prescriptionClassificationCode',
+    label: '분류',
+  },
 ];
-
-interface Data {
-  name: string;
-  code: string;
-}
-
-function createData(code: string, name: string): Data {
-  return { name, code };
-}
 
 const PrescriptionPicker: React.FC = () => {
   const [condition, setCondition] = useState('name');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [readPrescriptionList] = useLazyReadPrescriptionListQuery({
+    pollingInterval: 20000,
+  });
+  const [rows, setRows] = useState<Prescription[]>([]);
+
+  useEffect(() => {
+    readPrescriptionList({
+      pageStart: page * rowsPerPage,
+      pageSize: rowsPerPage,
+    })
+      .unwrap()
+      .then((data) => setRows(data));
+  }, [page, readPrescriptionList, rowsPerPage]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -68,25 +83,7 @@ const PrescriptionPicker: React.FC = () => {
     setCondition(event.target.value as string);
   };
 
-  const rows = [
-    createData('D0001', '일반혈액검사(CBC)-[혈구세포-현미경]'),
-    createData('D0002', '일반혈액검사(CBC)-[혈구세포-장비측정]'),
-    createData('D0003', '일반혈액검사(CBC)-혈색소[화학반응-육안검사]'),
-    createData(
-      'D0004',
-      '일반혈액검사(CBC)-백혈구 수 [이미지분석법] - 간이검사',
-    ),
-    createData('D0011', '백혈구백분율(혈액)-[관찰판정-현미경]'),
-    createData(
-      'D0012',
-      '백혈구백분율(혈액)-[혈구세포-현미경](Buffy Coat Smear)',
-    ),
-    createData('D0013', '호산구수(혈액)-[관찰판정-현미경]'),
-    createData('D0021', '호산구수(혈액)-[혈구세포-장비측정]'),
-  ];
-
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const emptyRows = Math.max(0, rowsPerPage - rows.length);
 
   return (
     <Paper
@@ -172,7 +169,7 @@ const PrescriptionPicker: React.FC = () => {
                       hover
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.code}
+                      key={row.prescriptionCode}
                     >
                       {columns.map((column) => {
                         const value = row[column.id];
@@ -203,7 +200,7 @@ const PrescriptionPicker: React.FC = () => {
           sx={{ overflow: 'unset' }}
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={rows.length}
+          count={1000}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

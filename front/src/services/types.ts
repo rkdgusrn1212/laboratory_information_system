@@ -222,3 +222,12 @@ export interface ListRequest {
 }
 
 export type ListOrder = 'DESC' | 'ASC';
+
+export interface Prescription {
+  prescriptionCode: string;
+  behaviorCode: string | null;
+  prescriptionName: string;
+  prescriptionClassificationCode: string;
+  prescriptionSlipCode: string | null;
+  prescriptionComment: string | null;
+}
