@@ -28,7 +28,18 @@ CREATE TABLE IF NOT EXISTS `doctor` (
   CONSTRAINT `FK_doctor_staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 내보낼 데이터가 선택되어 있지 않습니다.
+-- 테이블 데이터 kanghoshin_lis.doctor:~2 rows (대략적) 내보내기
+DELETE FROM `doctor`;
+/*!40000 ALTER TABLE `doctor` DISABLE KEYS */;
+INSERT INTO `doctor` (`staff_no`, `doctor_certification`, `department_code`) VALUES
+	(80, 34938, '03'),
+	(102, 193774, '16'),
+	(103, 8999, '06'),
+	(104, 53672, '07'),
+	(105, 87901, '10'),
+	(106, 88774, '11'),
+	(107, 737642, '04');
+/*!40000 ALTER TABLE `doctor` ENABLE KEYS */;
 
 -- 트리거 kanghoshin_lis.doctor_after_delete 구조 내보내기
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
@@ -47,7 +58,6 @@ UPDATE staff SET staff_type = 1 WHERE staff_no = NEW.staff_no;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;
-
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
