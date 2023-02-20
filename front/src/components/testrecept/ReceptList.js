@@ -1,97 +1,46 @@
 import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import * as React from 'react';
-import { TableVirtuoso } from 'react-virtuoso';
-import { useState, useEffect } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const columns = [
   {
     width: 120,
-    label: '검체코드',
-    dataKey: 'specimenNo',
+    headerName: '검체코드',
+    field: 'specimenNo',
   },
   {
     width: 100,
-    label: '환자이름',
-    dataKey: 'patientName',
+    headerName: '환자이름',
+    field: 'patientName',
 
   },
   {
     width: 100,
-    label: '검사코드',
-    dataKey: 'testCode',
+    headerName: '검사코드',
+    field: 'testCode',
 
   },
   {
     width: 120,
-    label: '오더일자',
-    dataKey: 'orderDate',
+    headerName: '오더일자',
+    field: 'orderDate',
 
   },
   {
     width: 120,
-    label: '채혈일자',
-    dataKey: 'collectDate',
+    headerName: '채혈일자',
+    field: 'collectDate',
 
   },
   {
     width: 120,
-    label: '검사접수일자',
-    dataKey: 'receptionDate',
+    headerName: '검사접수일자',
+    field: 'receptionDate',
 
   },
 ];
 
-const VirtuosoTableComponents = {
-  Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
-  )),
-  Table: (props) => <Table {...props} style={{ borderCollapse: 'separate' }} />,
-  TableHead,
-  TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-  TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
-};
-
-function fixedHeaderContent() {
-  return (
-    <TableRow>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          variant="head"
-          align={column.numeric || false ? 'right' : 'left'}
-          style={{ width: column.width }}
-          sx={{
-            backgroundColor: 'background.paper',
-          }}
-        >
-          {column.label}
-        </TableCell>
-      ))}
-    </TableRow>
-  );
-}
-
-function rowContent(_index, row) {
-  return (
-    <React.Fragment>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align={column.numeric || false ? 'right' : 'left'}
-        >
-          {row[column.dataKey]}
-        </TableCell>
-      ))}
-    </React.Fragment>
-  );
-}
 
 
 export default function ReceptList() {
@@ -108,20 +57,27 @@ export default function ReceptList() {
         'http://localhost:8080/api/test/selectspecimen'
       );
 
+      response.data.map((specimenlist, i) => {
+        specimenlist.id = i;
+      });
+
+
       setSpecimenList(response.data)
       // console.log(response.data)
     } catch (error) {
       console.log(error);
     }
   }
-  console.log(specimenlist);
+ 
   return (
-    <Paper style={{ height: 460, width: '100%' }}>
-      <TableVirtuoso
-        data={specimenlist}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={rowContent}
+    <Paper style={{ height: 480, width: '100%' }}>
+      <DataGrid
+        rows={specimenlist}
+        columns={columns}
+        pageSize={10}
+        rowsPerPageOptions={[10]}
+        SelectionOnClick
+        experimentalFeatures={{ newEditingApi: true }}
       />
     </Paper>
   );
