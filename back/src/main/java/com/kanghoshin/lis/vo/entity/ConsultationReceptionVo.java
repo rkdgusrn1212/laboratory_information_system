@@ -25,8 +25,5 @@ public class ConsultationReceptionVo {
 	@NoConstraints
 	private final int patientNo;
 
-	@NoConstraints
-	private final int consultationNo;
-	
 	private final Date consultationReceptionAppointment;
 }
