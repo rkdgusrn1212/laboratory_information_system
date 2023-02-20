@@ -12,8 +12,8 @@ import lombok.Getter;
 @Getter
 public class ConsultationWalkInVo extends ConsultationReceptionVo{
 	public ConsultationWalkInVo(int consultationReceptionNo, @NotNull Date consultationReceptionTime, int StaffNo,
-			int patientNo, int consultationNo, Date consultationReceptionAppointment, int consultationWalkInOrder) {
-		super(consultationReceptionNo, consultationReceptionTime, StaffNo, patientNo, consultationNo,
+			int patientNo, Date consultationReceptionAppointment, int consultationWalkInOrder) {
+		super(consultationReceptionNo, consultationReceptionTime, StaffNo, patientNo,
 				consultationReceptionAppointment);
 		this.consultationWalkInOrder = consultationWalkInOrder;
 	}

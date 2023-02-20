@@ -22,12 +22,12 @@ const ConsultationReceptionPicker: React.FC<{
   const Account = useAppSelector(selectAccount);
   const [tabValue, setTabValue] = useState(0);
   const [readConsultationWalkInList, readConsultationWalkInListState] =
-    useLazyReadConsultationWalkInListQuery({ pollingInterval: 20 });
+    useLazyReadConsultationWalkInListQuery({ pollingInterval: 20000 });
 
   useEffect(() => {
     if (Account?.principal.staffVo.staffNo && tabValue === 0) {
       readConsultationWalkInList({
-        pageSize: 10,
+        pageSize: 1000,
         pageStart: 0,
         staffNo: Account?.principal.staffVo.staffNo,
       });

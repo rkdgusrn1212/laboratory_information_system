@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.kanghoshin.lis.dao.PrescriptionMapper;
 import com.kanghoshin.lis.dto.prescription.CreatePrescriptionDto;
+import com.kanghoshin.lis.dto.prescription.ReadPrescriptionListDto;
+import com.kanghoshin.lis.vo.entity.PrescriptionVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,8 +19,13 @@ public class PrescriptionServiceImpl implements PrescriptionService{
 	private final PrescriptionMapper prescriptionMapper;
 	
 	@Override
-	public void createPrescription(@NotNull @Valid CreatePrescriptionDto creaetCreatePrescriptionDto) {
-		prescriptionMapper.createPrescription(creaetCreatePrescriptionDto);
+	public void createPrescription(@NotNull @Valid CreatePrescriptionDto createCreatePrescriptionDto) {
+		prescriptionMapper.createPrescription(createCreatePrescriptionDto);
+	}
+
+	@Override
+	public PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto) {
+		return prescriptionMapper.select(readPrescriptionListDto);
 	}
 
 }

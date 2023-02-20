@@ -170,7 +170,6 @@ export interface ConsultationReception {
   consultationReceptionTime: string;
   doctorNo: number;
   patientNo: number;
-  consultationNo: number;
   consultationReceptionAppointment: string | null;
 }
 
@@ -187,8 +186,6 @@ export const isConsultationReception = (
   typeof data.doctorNo === 'number' &&
   'patientNo' in data &&
   typeof data.patientNo === 'number' &&
-  'consultationNo' in data &&
-  typeof data.consultationNo === 'number' &&
   'consultationReceptionAppointment' in data &&
   (typeof data.consultationReceptionAppointment === 'string' ||
     data.consultationReceptionAppointment == null);
@@ -225,3 +222,12 @@ export interface ListRequest {
 }
 
 export type ListOrder = 'DESC' | 'ASC';
+
+export interface Prescription {
+  prescriptionCode: string;
+  behaviorCode: string | null;
+  prescriptionName: string;
+  prescriptionClassificationCode: string;
+  prescriptionSlipCode: string | null;
+  prescriptionComment: string | null;
+}

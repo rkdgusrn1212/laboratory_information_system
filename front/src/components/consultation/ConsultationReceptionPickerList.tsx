@@ -25,7 +25,7 @@ const ConsultationReceptionCard: React.FC<{
 }> = ({ consultationReception, selected, onClick }) => {
   const useFindPatientResult = useReadPatientByPatientNoQuery(
     consultationReception ? consultationReception.patientNo : 0,
-    { pollingInterval: 20, skip: consultationReception === undefined },
+    { pollingInterval: 20000, skip: consultationReception === undefined },
   );
   const isAppointment = useMemo(
     () =>

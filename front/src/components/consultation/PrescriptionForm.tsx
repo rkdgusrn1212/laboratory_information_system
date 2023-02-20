@@ -23,7 +23,7 @@ const PrescriptionForm: React.FC<{
   const [during, setDuring] = useState<string>('00:00');
   const findPatientByPatientIdResult = useReadPatientByPatientNoQuery(
     consultationReception ? consultationReception.patientNo : 0,
-    { skip: consultationReception === undefined, pollingInterval: 20 },
+    { skip: consultationReception === undefined, pollingInterval: 20000 },
   );
 
   const age = useMemo(() => {
