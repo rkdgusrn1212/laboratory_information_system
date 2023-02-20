@@ -32,7 +32,13 @@ CREATE TABLE IF NOT EXISTS `prescription` (
   CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 내보낼 데이터가 선택되어 있지 않습니다.
+-- 테이블 데이터 kanghoshin_lis.prescription:~1 rows (대략적) 내보내기
+DELETE FROM `prescription`;
+/*!40000 ALTER TABLE `prescription` DISABLE KEYS */;
+INSERT INTO `prescription` (`prescription_code`, `behavior_code`, `prescription_name`, `prescription_classification_code`, `prescription_slip_code`, `prescription_comment`) VALUES
+	('A0314', 'D4902010', '비타민검사', 'CP', NULL, NULL),
+	('D0001', 'D0001010', '일반혈액검사1', 'CP', NULL, '하나만 요청');
+/*!40000 ALTER TABLE `prescription` ENABLE KEYS */;
 
 -- 트리거 kanghoshin_lis.prescription_before_insert 구조 내보내기
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
