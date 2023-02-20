@@ -38,27 +38,13 @@ export default function TestReceptPage() {
   const [orderdate, setOrderDate] = useState('');
 
   const account = useAppSelector(selectAccount);
-  console.log(account);
-
   const date = moment().format('YYYYMMDD');
-  console.log(date);
-
   const showdate = moment().format('YYYY-MM-DD')
-
 
   const handlebarcode = (e) => {
     setBarCode(e.target.value);
-    console.log(e.target.value);
-
+    // console.log(e.target.value);
   }
-
-  const handleOnKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      searchbarcode(e.target.value) // Enter 입력이 되면 클릭 이벤트 실행
-    }
-  };
-
-
 
   //바코드 입력했을 때 검체 정보 불러오기.
   const searchbarcode = async () => {
@@ -98,10 +84,10 @@ export default function TestReceptPage() {
     }
   };
 
-  console.log(barcode);
-  console.log(testcode);
-  console.log(account.principal.staffVo.staffNo);
-  console.log(date);
+  // console.log(barcode);
+  // console.log(testcode);
+  // console.log(account.principal.staffVo.staffNo);
+  // console.log(date);
 
   const insertspecimen = () => {
     try {
@@ -116,8 +102,6 @@ export default function TestReceptPage() {
           }
         }
       );
-      
-        alert('생성이 완료되었습니다.');
 
     } catch (error) {
       console.log(error);
@@ -125,9 +109,12 @@ export default function TestReceptPage() {
   };
 
   const handleinsert = (e) => {
-    insertspecimen(e.target.value);
+    searchbarcode(e.target.value)
+    if (barcode != null) {
+      insertspecimen(e.target.value);
+      alert('접수가 완료되었습니다.');
+    }
     console.log(e.target.value);
-
   }
 
   return (
@@ -145,39 +132,28 @@ export default function TestReceptPage() {
             }}
           >
             <Paper elevation={6}>
-              <Typography align="left" sx={{ mx: 2, my: 1 }}>
-                바코드 수기 입력
-              </Typography>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { md: '9fr 1fr' },
-                }}
-              >
-                <Grid>
-                  <TextField
-                    sx={{
-                      minWidth: '80%',
-                      maxWidth: '100%',
-                    }}
-                    id="outlined-size-small"
-                    size="small"
-                    value={barcode}
-                    onChange={handlebarcode}
-                    onKeyPress={handleOnKeyPress}
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Typography>
+                  바코드 수기 입력
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12} sx={{ display: 'flex', mx: 2, gap: 2 }}>
+                <Grid item xs={9} sx={{ mx: 2, mb: 2 }} display="flex" justifyContent="center">
+                  <TextField sx={{ width: '100%' }}
+                    size="small" value={barcode} onChange={handlebarcode}
                   />
                 </Grid>
-                <Grid>
+                <Grid item xs={3} sx={{ mx: 2, mb: 2 }} display="flex" justifyContent="center">
                   <Button
-                    variant="contained"
-                    color="success"
-                    sx={{ display: 'center', mr: 2 }}
-                    onClick={handleinsert}
+                    variant="contained" color="success"
+                    sx={{ width: '100%', display: 'center', mr: 2 }} onClick={handleinsert}
                   >
                     접수
                   </Button>
                 </Grid>
-              </Box>
+              </Grid>
+
             </Paper>
 
             <Paper elevation={6}>

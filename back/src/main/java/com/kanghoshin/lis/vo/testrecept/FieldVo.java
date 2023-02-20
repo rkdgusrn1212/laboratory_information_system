@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FieldVo {
 	
-	private int fieldNo;
+	private String fieldNo;
 
 	private String fieldName;
 	

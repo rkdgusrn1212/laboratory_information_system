@@ -14,15 +14,15 @@ import com.kanghoshin.lis.vo.testrecept.ReceptTestSearchVo;
 @Mapper
 public interface ReceptMapper {
 
-	@Select("SELECT specimen.specimen_no as specimenNo, diagnostic_test.diagnostic_test_specimen as testSpecimen,"
-			+ " diagnostic_test.diagnostic_test_amount as testAmount, diagnostic_test.diagnostic_test_container as testContainer,"
+	@Select("SELECT specimen.specimen_no as specimenNo, test.test_specimen as testSpecimen,"
+			+ " test.test_amount as testAmount, test.test_container as testContainer,"
 			+ " patient.patient_no as patientNo, patient.patient_name as patientName,"
 			+ " patient.patient_male as patientMale, patient.patient_rrn as patientRrn,"
-			+ " prescription.test_code as testCode, diagnostic_test.diagnostic_test_name as testName,"
+			+ " prescription.test_code as testCode, test.test_name as testName,"
 			+ " staff.staff_name as nurseName, blood_collect.collect_date as collectDate,"
 			+ " staff.staff_name as doctorName, prescription_order.order_date as orderDate"
 			+ " FROM patient, visit, prescription_order, recept_collection, specimen,"
-			+ " blood_collect, diagnostic_test, prescription, staff, doctor"
+			+ " blood_collect, test, prescription, staff, doctor"
 			+ " WHERE blood_collect.specimen_no = specimen.specimen_no "
 			+ "AND specimen.specimen_no = recept_collection.specimen_no "
 			+ "AND blood_collect.staff_no = staff.staff_no "
@@ -33,7 +33,7 @@ public interface ReceptMapper {
 			+ "AND doctor.staff_no = visit.visit_doctor "
 			+ "AND visit.visit_no = prescription_order.visit_no "
 			+ "AND prescription_order.prescription_code = prescription.prescription_code "
-			+ "AND prescription.test_code = diagnostic_test.diagnostic_test_code "
+			+ "AND prescription.test_code = test.test_code "
 			+ "AND blood_collect.specimen_no = #{specimenNo}")
 	ReceptTestSearchVo findBySpecimenNo(@Param("specimenNo") int specimenNo);
 
