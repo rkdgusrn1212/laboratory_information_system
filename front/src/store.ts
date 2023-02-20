@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 import { combineReducers } from '@reduxjs/toolkit';
 import {
   persistStore,
@@ -49,6 +49,7 @@ export const store = configureStore({
       .concat(departmentApi.middleware)
       .concat(consultationReceptionApi.middleware),
 });
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const persistor = persistStore(store);

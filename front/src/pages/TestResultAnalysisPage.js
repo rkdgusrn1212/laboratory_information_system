@@ -27,7 +27,7 @@ export default function TestResultAnalysisPage() {
             overflow: 'auto',
           }}
         >
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={2}>
               {/* 검사결과 */}
               <Grid item xs={12} md={8} lg={9}>

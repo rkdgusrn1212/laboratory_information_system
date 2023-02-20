@@ -1,7 +1,5 @@
 package com.kanghoshin.lis.controller;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,10 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kanghoshin.lis.dto.test.TestReceptDto;
-import com.kanghoshin.lis.service.TestReceptService;
-import com.kanghoshin.lis.vo.testrecept.ReceptTestListVo;
-import com.kanghoshin.lis.vo.testrecept.ReceptTestSearchVo;
+import com.kanghoshin.lis.dto.test.TestResultInputDto;
+import com.kanghoshin.lis.service.TestResultInputService;
+import com.kanghoshin.lis.vo.testresult.TestResultInputVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,21 +18,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TestResultInputController {
 
-	private final TestReceptService receptService;
+	private final TestResultInputService testResultInputService;
 
 	@GetMapping("findspecimen")
-	public ReceptTestSearchVo findBySpecimenNo(@RequestParam("specimenNo") int specimenNo) {
+	public TestResultInputVo findBySpecimenNo(@RequestParam("specimenNo") int specimenNo) {
 		System.out.println(specimenNo);
-		return receptService.findBySpecimenNo(specimenNo);
+		return testResultInputService.findBySpecimenNo(specimenNo);
 	}
 
-	@PostMapping("recepttest")
-	public void insert(@RequestBody TestReceptDto receptTestDto) {
-		receptService.insert(receptTestDto);
+	@PostMapping("testresultinput")
+	public void insert(@RequestBody TestResultInputDto testResultInputDto) {
+		testResultInputService.insert(testResultInputDto);
 	}
-
-	@GetMapping("selectspecimen")
-	public List<ReceptTestListVo> selectByReceptList() {
-		return receptService.selectByReceptList();
-	}
+	
 }
