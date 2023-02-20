@@ -1,7 +1,8 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { DataGrid } from '@mui/x-data-grid';
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   { field: 'id', headerName: '검체코드', width: 140 },
@@ -70,6 +71,8 @@ const columns = [
   // },
 ];
 
+
+
 const rows = [
   { id: 2212110001, b: 'EDT A', c: 'no01', d: '강현구', e: 'LB2130', f: 'WBC', g: '0', h: '보고', i: '2022/03/21' },
   { id: 2212110002, b: 'EDT B', c: 'no02', d: '김동신', e: 'LB2130', f: 'WBC', g: '0', h: '보고', i: '2022/03/21' },
@@ -89,7 +92,11 @@ const rows = [
 ];
 
 export default function ResultSearchList() {
+  const navigate = useNavigate();
 
+  const navigateToPurchase = () => {
+    navigate("/test/analysis");
+  };
 
   return (
 
@@ -102,10 +109,10 @@ export default function ResultSearchList() {
         checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
-
       ></DataGrid>
-      <Button variant="contained" color="success" sx={{width:400}} >분석</Button>
-      
+      <Grid item xs={12} sx={{ mx: 2, my: 2 }} display="flex" justifyContent="center">
+        <Button variant="contained" color="success" sx={{ width: 500 }} onClick={navigateToPurchase} >분석</Button>
+      </Grid>
 
     </Box >
   );
