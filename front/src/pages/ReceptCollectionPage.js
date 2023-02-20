@@ -144,7 +144,7 @@ export default function ReceptCollectionPage() {
     //환자no로  내원 볼러오기
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/collect/visitbypatientno?patientNo=${patientNo}`,
+      url: `http://localhost:8080/api/consultation/full-consultation/list?pageSize=10&pageStart=0&patientNoKey=${patientNo}`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
@@ -164,13 +164,13 @@ export default function ReceptCollectionPage() {
     //환자no로  처방 볼러오기
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/collect/getprebypatientno?PatientNo=${patientNo}`,
+      url: `http://localhost:8080/api/prescription-order/full-test-prescription-order/list?pageSize=10&pageStart=0&PatientNo=${patientNo}`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
         error == 1 &&
           response.data.map((pre, testid) => {
-            pre.id = testid;
+            pre.id = pre.prescriptionOrderNo;
             pre.status = 0;
             pre.patientName = callpatient.patients[0].patientName;
           });
@@ -271,7 +271,7 @@ export default function ReceptCollectionPage() {
     setSelectedn(i + 1); //i는 0부터 시작 로넘은 1부터 시작함
     error == 1 &&
       rows1.map((a, b) => {
-        if (nawon[i].visitNo === a.visitNo) {
+        if (nawon[i].consultationNo === a.consultationNo) {
           rows1[b].status = 1;
         } else rows1[b].status = 0;
       });
@@ -291,18 +291,25 @@ export default function ReceptCollectionPage() {
           if (row.id === id) {
             // console.log("id:" + row.id)
             rows2.push({
-              patientName: row.patientName,
-              id: row.id,
-              visitNo: row.visitNo,
+              consultationNo: row.consultationNo,
+              consultationTime: row.consultationTime,
+              consultationReceptionNo: row.consultationReceptionNo,
+              consultationReceptionTime: row.consultationReceptionTime,
+              staffNo: row.staffNo,
+              patientNo: row.patientNo,
+              consultationReceptionAppointment:
+                row.consultationReceptionAppointment,
+              prescriptionOrderNo: row.prescriptionOrderNo,
               prescriptionCode: row.prescriptionCode,
-              orderNo: row.orderNo,
-              orderDate: row.orderDate,
-              testName: row.testName,
-              testContainer: row.testContainer,
-              fieldName: row.fieldName,
-              visitDoctor: row.visitDoctor,
-              departmentName: row.departmentName,
-              specimenNo: row.specimenNo,
+              prescriptionOrderTime: row.prescriptionOrderTime,
+              specimenContainerCode: row.specimenContainerCode,
+              prescriptionTypeCode: row.prescriptionTypeCode,
+              prescriptionName: row.prescriptionName,
+              prescriptionClassificationCode:
+                row.prescriptionClassificationCode,
+              prescriptionCode: row.prescriptionCode,
+              prescriptionSlipCode: row.prescriptionSlipCode,
+              prescriptionComment: row.prescriptionComment,
             });
           }
         });
@@ -347,18 +354,24 @@ export default function ReceptCollectionPage() {
         if (row.id === id) {
           // console.log("id:" + row.id)
           rows4.push({
-            patientName: row.patientName,
-            id: row.id,
-            visitNo: row.visitNo,
+            consultationNo: row.consultationNo,
+            consultationTime: row.consultationTime,
+            consultationReceptionNo: row.consultationReceptionNo,
+            consultationReceptionTime: row.consultationReceptionTime,
+            staffNo: row.staffNo,
+            patientNo: row.patientNo,
+            consultationReceptionAppointment:
+              row.consultationReceptionAppointment,
+            prescriptionOrderNo: row.prescriptionOrderNo,
             prescriptionCode: row.prescriptionCode,
-            orderNo: row.orderNo,
-            orderDate: row.orderDate,
-            testName: row.testName,
-            testContainer: row.testContainer,
-            fieldName: row.fieldName,
-            visitDoctor: row.visitDoctor,
-            departmentName: row.departmentName,
-            specimenNo: row.specimenNo,
+            prescriptionOrderTime: row.prescriptionOrderTime,
+            specimenContainerCode: row.specimenContainerCode,
+            prescriptionTypeCode: row.prescriptionTypeCode,
+            prescriptionName: row.prescriptionName,
+            prescriptionClassificationCode: row.prescriptionClassificationCode,
+            prescriptionCode: row.prescriptionCode,
+            prescriptionSlipCode: row.prescriptionSlipCode,
+            prescriptionComment: row.prescriptionComment,
           });
         }
       });
@@ -375,47 +388,47 @@ export default function ReceptCollectionPage() {
       headerAlign: 'center',
     },
     {
-      field: 'orderDate',
-      headerName: '오더일자',
+      field: 'prescriptionOrderNo',
+      headerName: '오더번호',
       headerAlign: 'center',
       type: 'date',
     },
     {
-      field: 'testName',
-      headerName: '검사명',
+      field: 'prescriptionName',
+      headerName: '처방명',
       headerAlign: 'center',
     },
     {
-      field: 'testContainer',
-      headerName: '용기명',
+      field: 'specimenContainerCode',
+      headerName: '용기코드',
       headerAlign: 'center',
     },
     {
-      field: 'fieldName',
-      headerName: '검사실',
+      field: 'prescriptionTypeCode',
+      headerName: '처방타입코드',
       headerAlign: 'center',
     },
     {
-      field: 'visitDoctor',
+      field: 'staffNo',
       headerName: '담당의',
       headerAlign: 'center',
     },
     {
-      field: 'departmentName',
-      headerName: '진료과',
+      field: 'prescriptionName',
+      headerName: '처방이름',
       headerAlign: 'center',
     },
   ];
 
   const columns2 = [
     {
-      headerName: '검사명',
-      field: 'testName',
+      headerName: 'prescriptionOrderNo',
+      field: '오더번호',
       headerAlign: 'center',
     },
     {
-      field: 'testContainer',
-      headerName: '용기명',
+      field: 'specimenContainerCode',
+      headerName: '용기코드',
       headerAlign: 'center',
     },
     {
@@ -424,8 +437,8 @@ export default function ReceptCollectionPage() {
       headerAlign: 'center',
     },
     {
-      field: 'fieldName',
-      headerName: '검사실',
+      field: 'prescriptionName',
+      headerName: '처방이름',
       headerAlign: 'center',
     },
   ];
@@ -633,7 +646,7 @@ export default function ReceptCollectionPage() {
           </Card>
         </Grid>
         {/* ----------------------------------------------------------------- 내원 사이드 */}
-        <Grid sx={{ minWidth: ' 1450px' }}>
+        <Grid sx={{ minWidth: ' 1450px', my: 5 }}>
           <Grid sx={{ width: '18%', float: 'left', mx: 1 }}>
             <Card
               sx={{
@@ -641,6 +654,7 @@ export default function ReceptCollectionPage() {
                 minWidth: 275,
                 width: '95%',
                 mx: 1,
+
                 overflowY: 'scroll',
               }}
             >
@@ -686,13 +700,13 @@ export default function ReceptCollectionPage() {
                                   <Grid sx={{ display: 'flex' }}>
                                     <Grid sx={{ float: 'left' }}>
                                       <Typography sx={{ fontSize: 14 }}>
-                                        내원번호 : {visit.visitNo}
+                                        내원번호 : {visit.consultationNo}
                                       </Typography>
                                       <Typography
                                         sx={{ fontSize: 14 }}
                                         color="text.secondary"
                                       >
-                                        내원일자: {visit.visitDate}
+                                        내원일자: {visit.consultationTime}
                                       </Typography>
                                     </Grid>
                                   </Grid>
@@ -703,7 +717,13 @@ export default function ReceptCollectionPage() {
                                     sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                   >
-                                    진료의: {visit.visitDoctor}
+                                    진료의: {visit.staffNo}
+                                  </Typography>
+                                  <Typography
+                                    sx={{ fontSize: 14 }}
+                                    color="text.secondary"
+                                  >
+                                    진료시간: {visit.consultationTime}
                                   </Typography>
                                 </Grid>
                               </CardContent>
@@ -744,13 +764,13 @@ export default function ReceptCollectionPage() {
                                   <Grid sx={{ display: 'flex' }}>
                                     <Grid sx={{ float: 'left' }}>
                                       <Typography sx={{ fontSize: 14 }}>
-                                        내원번호 : {visit.visitNo}
+                                        내원번호 : {visit.consultationNo}
                                       </Typography>
                                       <Typography
                                         sx={{ fontSize: 14 }}
                                         color="text.secondary"
                                       >
-                                        내원일자: {visit.visitDate}
+                                        내원일자: {visit.consultationTime}
                                       </Typography>
                                     </Grid>
                                   </Grid>
@@ -761,7 +781,13 @@ export default function ReceptCollectionPage() {
                                     sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                   >
-                                    진료의: {visit.visitDoctor}
+                                    진료의: {visit.staffNo}
+                                  </Typography>
+                                  <Typography
+                                    sx={{ fontSize: 14 }}
+                                    color="text.secondary"
+                                  >
+                                    진료시간: {visit.consultationTime}
                                   </Typography>
                                 </Grid>
                               </CardContent>

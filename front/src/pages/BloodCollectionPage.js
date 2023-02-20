@@ -121,7 +121,6 @@ export default function BloodCollectionPage() {
           console.log(error);
         });
     });
-    return alert('생성이 완료되었습니다.');
   }
 
   const onSearchHandler = (event) => {
