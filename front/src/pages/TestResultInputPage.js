@@ -1,3 +1,4 @@
+import React from 'react';
 import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -5,11 +6,18 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProgressChart from '../components/testresultinput/ProgressChart';
-import { InputDialog, ResultList } from '../components/testresultinput/ResultList';
+import ResultList from '../components/testresultinput/ResultList';
+import InputDialog from '../components/testresultinput/InputDialog';
+import { useState } from 'react';
 
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 export default function TestResultInputPage() {
+
+  const [completetest, setCompletTest] = useState('');
+
+  const [incompletetest, setInCompletTest] = useState('');
+
 
   return (
     <ThemeProvider theme={lightTheme}>
@@ -44,10 +52,10 @@ export default function TestResultInputPage() {
             }}
           >
             <Paper elevation={6}>
-              <ResultList></ResultList>
+              <ResultList setCompletTest={setCompletTest} setInCompletTest={setInCompletTest}></ResultList>
             </Paper>
             <Paper elevation={6}>
-              <ProgressChart></ProgressChart>
+              <ProgressChart value={completetest} value2={incompletetest}></ProgressChart >
             </Paper>
           </Box>
         </Grid>

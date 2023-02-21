@@ -1,3 +1,4 @@
+import React from 'react';
 import { useTheme } from '@mui/material/styles';
 
 import numeral from 'numeral';
@@ -82,7 +83,7 @@ function fNumber(number) {
 
 // ----------------------------------------------------------------------
 
-export default function ProgressChart() {
+export default function ProgressChart(props) {
     const theme = useTheme();
 
     return (
@@ -90,16 +91,13 @@ export default function ProgressChart() {
             <AppCurrentVisits
                 title="진행상황"
                 chartData={[
-                    { label: '검사완료', value: 6344 },
-                    // { label: 'Asia', value: 5435 },
-                    // { label: 'Europe', value: 1443 },
-                    { label: '검사중', value: 4443 },
+                    { label: '검사중', value: props.value.length },
+                    { label: '검사완료', value: props.value2.length },
                 ]}
                 chartColors={[
-                    theme.palette.primary.main,
-                    // theme.palette.info.main,
-                    // theme.palette.warning.main,
+
                     theme.palette.error.main,
+                    theme.palette.primary.main,
                 ]}
             />
 

@@ -4,44 +4,13 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 
 const columns = [
-  {
-    width: 120,
-    headerName: '검체코드',
-    field: 'specimenNo',
-  },
-  {
-    width: 100,
-    headerName: '환자이름',
-    field: 'patientName',
-
-  },
-  {
-    width: 100,
-    headerName: '검사코드',
-    field: 'testCode',
-
-  },
-  {
-    width: 120,
-    headerName: '오더일자',
-    field: 'orderDate',
-
-  },
-  {
-    width: 120,
-    headerName: '채혈일자',
-    field: 'collectDate',
-
-  },
-  {
-    width: 120,
-    headerName: '검사접수일자',
-    field: 'receptionDate',
-
-  },
+  { flex: 1, width: 120, headerName: '검체코드', field: 'specimenNo', },
+  { flex: 1, width: 100, headerName: '환자이름', field: 'patientName', },
+  { flex: 1, width: 100, headerName: '검사코드', field: 'testCode', },
+  { flex: 1, width: 120, headerName: '오더일자', field: 'orderDate', },
+  { flex: 1, width: 120, headerName: '채혈일자', field: 'collectDate', },
+  { flex: 1, width: 120, headerName: '검사접수일자', field: 'receptionDate', },
 ];
-
-
 
 export default function ReceptList() {
 
@@ -68,7 +37,7 @@ export default function ReceptList() {
       console.log(error);
     }
   }
- 
+
   return (
     <Paper style={{ height: 480, width: '100%' }}>
       <DataGrid

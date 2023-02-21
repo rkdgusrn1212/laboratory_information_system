@@ -18,7 +18,7 @@ public class TestReceptDto {
 	@NotBlank(message="바코드가 비어있습니다.")
 	private int specimenNo;
 	
-	private String testCode;
+	private String prescriptionCode;
 	
 	private int staffNo;
 	
