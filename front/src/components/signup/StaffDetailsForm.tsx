@@ -33,15 +33,15 @@ const StaffDetailsForm: React.FC<{
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
   const [registerDoctor] = useRegisterDoctorMutation();
   const [staffName, setStaffName] = useState(
-    account ? account.principal.staffVo.staffName : '',
+    account ? account.principal.staffVo?.staffName : '',
   );
   const [staffType, setStaffType] = useState<number | null>(null);
   const [staffPhone, setStaffPhone] = useState(
-    account ? account.principal.staffVo.staffPhone : '',
+    account ? account.principal.staffVo?.staffPhone : '',
   );
   const phoneInit = staffPhone;
   const [staffRrn, setStaffRrn] = useState(
-    account ? account.principal.staffVo.staffRrn : '',
+    account ? account.principal.staffVo?.staffRrn : '',
   );
   const rrnInit = staffRrn;
   const [doctorCertification, setDoctorCertification] = useState('');
