@@ -61,6 +61,7 @@ public class CollectServiceImpl implements CollectService {
 			for (int i = 0; i < count; i++) {
 				collectMapper.specimeninsertbsystaffno(specimenDto);
 				findbyspecimenno = collectMapper.findByspecimenno(specimenDto.getSpecimenNo());
+				collectMapper.insertReceptCollection(specimenDto);
 				specimeninsertlist.add(findbyspecimenno);
 			}
 		} catch (Exception e) {
@@ -85,12 +86,7 @@ public class CollectServiceImpl implements CollectService {
 
 	@Override
 	public List<InadequateTypeVo> getInadequate_typeall() {
-		List<InadequateTypeVo> inadequate_typelist = new ArrayList<InadequateTypeVo>();
-		try {
-			inadequate_typelist = collectMapper.listInadequate_typeall();
-		} catch (Exception e) {
-			System.out.println(e);
-		}
+		List<InadequateTypeVo> inadequate_typelist = collectMapper.listInadequate_typeall();
 		return inadequate_typelist;
 	}
 
@@ -139,6 +135,7 @@ public class CollectServiceImpl implements CollectService {
 		}
 	}
 
+	//채혈페이지에서 목록에서 사용
 	@Override
 	public List<BloodCollectVo> getCollectall() {
 		List<BloodCollectVo> Specimenlist = new ArrayList<BloodCollectVo>();

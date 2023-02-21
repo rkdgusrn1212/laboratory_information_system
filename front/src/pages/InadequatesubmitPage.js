@@ -86,24 +86,15 @@ export default function InadequatePage() {
 
   const columns = [
     {
-      field: 'id',
+      field: 'specimenNo',
       headerName: '검체번호',
-      headerAlign: 'center',
-    },
-    {
-      field: 'test_container',
-      headerName: '용기명',
-      headerAlign: 'center',
-    },
-    {
-      headerName: '검사명',
-      field: 'test_name',
       headerAlign: 'center',
     },
     {
       headerName: '부적합사유 코드',
       field: 'inadequateTypeCode',
       headerAlign: 'center',
+      width: 120,
     },
     {
       headerName: '통보자',
@@ -114,36 +105,44 @@ export default function InadequatePage() {
       headerName: '통보시간',
       field: 'receptInadequateDate',
       headerAlign: 'center',
-      width: 200,
+      width: 180,
     },
     {
       headerName: '피통보자',
       field: 'submitInadequateTo',
       headerAlign: 'center',
+      width: 80,
     },
-
+    {
+      field: 'specimenContainerCode',
+      headerName: '용기코드',
+      headerAlign: 'center',
+      width: 80,
+    },
+    {
+      headerName: '용기타입코드',
+      field: 'specimenTypeCode',
+      headerAlign: 'center',
+      width: 100,
+    },
     {
       headerName: '채혈자',
       field: 'bloodCollectStaffNo',
       headerAlign: 'center',
+      width: 80,
     },
     {
       headerName: '채혈일시',
       field: 'collectDate',
       headerAlign: 'center',
       type: 'dateTime',
-      width: 200,
+      width: 180,
     },
     {
-      field: 'staff_name',
-      headerName: '담당의',
+      headerName: '환자번호',
+      field: 'patientNo',
       headerAlign: 'center',
-    },
-    {
-      headerName: '진료과',
-      field: 'department_name',
-      headerAlign: 'center',
-      width: 250,
+      width: 80,
     },
   ];
 

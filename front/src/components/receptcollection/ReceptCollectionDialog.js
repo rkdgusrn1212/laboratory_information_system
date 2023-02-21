@@ -21,7 +21,6 @@ import Typography from '@mui/material/Typography';
 //그리드
 import Grid from '@mui/material/Grid';
 //체크박스
-import axios from 'axios';
 
 //receptcollection 에서 rows5값으로 출력 진행하면 됨
 
@@ -67,12 +66,12 @@ export default function ReceptCollectionDialog(props) {
                   >
                     <Grid item xs={4} sx={{ mx: 2 }}>
                       <Typography sx={{ fontSize: 14 }} color="text.secondary">
-                        환자이름: {pre.patientName}
+                        환자번호: {pre.patientNo}
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sx={{ mx: 2 }}>
                       <Typography sx={{ fontSize: 14 }} color="text.secondary">
-                        진료과: {pre.departmentName}
+                        오더번호: {pre.prescriptionOrderNo}
                       </Typography>
                     </Grid>
                     <Grid item xs={4} sx={{ mx: 2 }}>
@@ -101,14 +100,14 @@ export default function ReceptCollectionDialog(props) {
                         sx={{ fontSize: 14, my: 3 }}
                         color="text.secondary"
                       >
-                        용기명:{' '}
+                        용기코드:{' '}
                       </Typography>
                       <Typography
                         sx={{ fontSize: 14, my: 3 }}
                         color="text.secondary"
                       >
                         {' '}
-                        {pre.testContainer}
+                        {pre.specimenContainerCode}
                       </Typography>
                     </Grid>
                     <Grid item xs={12} sx={{}}>
