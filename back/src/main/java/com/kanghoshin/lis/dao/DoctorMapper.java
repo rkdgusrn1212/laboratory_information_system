@@ -13,8 +13,8 @@ import com.kanghoshin.lis.vo.doctor.DoctorWithDepartmentVo;
 public interface DoctorMapper {
 	
 	@Insert("INSERT INTO doctor (staff_no, doctor_certification, department_code) "
-			+ "VALUES (#{createDoctorDto.staffNo}, #{createDoctorDto.doctorCertification}, #{createDoctorDto.departmentCode})")
-	int insert(@Param("createDoctorDto") CreateDoctorDto createDoctorDto );
+			+ "VALUES (#{staffNo}, #{createDoctorDto.doctorCertification}, #{createDoctorDto.departmentCode})")
+	int insert(@Param("staffNo") int staffNo, @Param("createDoctorDto") CreateDoctorDto createDoctorDto );
 
 	@Select("<script>"
 			+ "SELECT staff.staff_no AS staffNo, staff.staff_name AS staffName, "

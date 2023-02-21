@@ -1,6 +1,7 @@
 package com.kanghoshin.lis.service;
 
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.kanghoshin.lis.config.jwt.JwtService;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
@@ -23,6 +25,8 @@ import com.kanghoshin.lis.dao.ValidationMapper;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
 import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
+import com.kanghoshin.lis.vo.entity.AuthVo;
+import com.kanghoshin.lis.vo.entity.StaffVo;
 import com.kanghoshin.lis.vo.entity.ValidationVo;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
 import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
@@ -46,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
 	@Value("${spring.mail.username}")
 	private String adminEmail;
 	private final PlatformTransactionManager transactionManager;
-
+	private final JwtService jwtService;
 
 	@Override
 	public void issueValidationCode(@Valid issueValidationCodeDto issueValidationCodeDto) throws IssueVallidationCodeFailedException {
@@ -108,22 +112,17 @@ public class AuthServiceImpl implements AuthService {
 
 
 	@Override
-	public int writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException {
-		TransactionStatus txStatus =
-				transactionManager.getTransaction(new DefaultTransactionDefinition());
+	public Map<String, Object> writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException {
 		try {
-			staffMapper.insertDetailsDto(detailsDto);
-			if(authMapper.attachStaff(principalDetails.getUsername(),detailsDto.getStaffNo())<1)
-				throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
-		}catch(WriteDetailsFailedException e) {
-			transactionManager.rollback(txStatus);
-			throw e;
+			staffMapper.insertDetailsDto(detailsDto, principalDetails.getUsername());
 		}catch(Exception e) {
-			transactionManager.rollback(txStatus);
 			throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
 		}
-		transactionManager.commit(txStatus);
-		return detailsDto.getStaffNo();
+		AuthVo authVo = authMapper.findByAuthId(principalDetails.getUsername());
+		if(authVo==null) throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
+		StaffVo staffVo = staffMapper.findByStaffNo(authVo.getStaffNo());
+		if(staffVo==null) throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
+		return jwtService.createJwt(new PrincipalDetails(authVo, staffVo));
 	}
 
 	@Override

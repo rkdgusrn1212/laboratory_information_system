@@ -19,18 +19,16 @@ public interface StaffMapper {
 			+ "staff_type as staffType FROM staff WHERE staff_no = #{staff_no}")
 	StaffVo findByStaffNo(@Param("staff_no") int staffNo);
 
-	@Insert("INSERT INTO staff(staff_name, "
-			+ "staff_birth, staff_male, "
-			+ "staff_phone, staff_image, "
-			+ "staff_rrn) VALUES("
+	@Insert("CALL staff_insert("
 			+ " #{detailsDto.staffName},"
 			+ " #{detailsDto.staffBirth},"
 			+ " #{detailsDto.staffMale},"
 			+ " #{detailsDto.staffPhone},"
 			+ " #{detailsDto.staffImage},"
-			+ " #{detailsDto.staffRrn})")
+			+ " #{detailsDto.staffRrn},"
+			+ " #{authId})")
 	@Options(useGeneratedKeys=true,  keyProperty="detailsDto.staffNo")
-	int insertDetailsDto(@Param("detailsDto") DetailsDto detailsDto);
+	void insertDetailsDto(@Param("detailsDto") DetailsDto detailsDto, @Param("authId")String authId);
 	
 
 	@Select("<script>"

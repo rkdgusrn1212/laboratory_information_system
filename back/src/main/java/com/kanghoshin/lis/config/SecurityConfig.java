@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import com.kanghoshin.lis.config.jwt.JwtAuthenticationFilter;
 import com.kanghoshin.lis.config.jwt.JwtAuthorizationFilter;
+import com.kanghoshin.lis.config.jwt.JwtService;
 import com.kanghoshin.lis.config.principal.PrincipalAuthority;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class SecurityConfig{
 
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final CorsConfig corsConfig;
+	private final JwtService jwtService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,7 +50,7 @@ public class SecurityConfig{
 	}
 
 	private JwtAuthenticationFilter createJwtAuthenticationFilter() {
-		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild());	
+		JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManagerBuilder.getOrBuild(), jwtService);	
 		jwtAuthenticationFilter.setFilterProcessesUrl("/api/auth/signin");
 		return jwtAuthenticationFilter;
 	}

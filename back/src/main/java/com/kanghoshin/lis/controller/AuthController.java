@@ -1,6 +1,8 @@
 package com.kanghoshin.lis.controller;
 
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -61,7 +63,7 @@ public class AuthController {
 	
 
 	@PostMapping("write-details")
-	public int writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
+	public Map<String, Object> writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
 			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException {
 		return authService.writeDetails(principalDetasils, detailsDto);
 	}

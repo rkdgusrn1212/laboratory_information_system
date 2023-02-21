@@ -41,8 +41,33 @@ INSERT INTO `staff` (`staff_no`, `staff_name`, `staff_birth`, `staff_male`, `sta
 	(105, '김미도', '1991-07-28', b'0', '010-4432-1381', NULL, '910728-2113113', b'1', 1),
 	(106, '박신혜', '1973-10-11', b'0', '010-2389-7789', NULL, '731011-2141321', b'1', 1),
 	(107, '류호진', '1987-01-31', b'1', '010-7763-8214', NULL, '870131-1847382', b'1', 1),
-	(110, '강현구', '1995-12-12', b'1', '010-5502-6774', NULL, '951212-1234212', b'0', 1);
+	(177, '강현구', '1996-12-11', b'1', '010-1231-2321', NULL, '961211-1232322', b'0', 0);
 /*!40000 ALTER TABLE `staff` ENABLE KEYS */;
+
+-- 프로시저 kanghoshin_lis.staff_insert 구조 내보내기
+DELIMITER //
+CREATE PROCEDURE `staff_insert`(
+	IN `staff_name` VARCHAR(40),
+	IN `staff_birth` DATE,
+	IN `staff_male` BIT,
+	IN `staff_phone` VARCHAR(13),
+	IN `staff_image` VARCHAR(255),
+	IN `staff_rrn` CHAR(14),
+	IN `auth_id` VARCHAR(40)
+)
+    MODIFIES SQL DATA
+    COMMENT 'insert new staff and update auth'
+BEGIN
+START TRANSACTION;
+INSERT INTO staff VALUES (NULL, staff_name, staff_birth, staff_male, staff_phone, staff_image, staff_rrn, 0 , 0);
+UPDATE auth SET auth.staff_no = LAST_INSERT_ID() WHERE auth.auth_id = auth_id AND auth.staff_no IS null;
+IF ROW_COUNT() != 1 THEN
+ROLLBACK;
+SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'staff insert failed caused by update failed';
+ELSE COMMIT;
+END IF;
+END//
+DELIMITER ;
 
 -- 트리거 kanghoshin_lis.staff_before_insert 구조 내보내기
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';

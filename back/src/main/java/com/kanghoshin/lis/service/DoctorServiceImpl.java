@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.stereotype.Service;
 
+import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dao.DoctorMapper;
 import com.kanghoshin.lis.dto.doctor.CreateDoctorDto;
 import com.kanghoshin.lis.dto.doctor.ReadDoctorListWithDepartmentDto;
@@ -19,8 +20,8 @@ public class DoctorServiceImpl implements DoctorService{
 	private final DoctorMapper doctorMapper;
 	
 	@Override
-	public void createDoctor(@NotNull @Valid CreateDoctorDto createDoctorDto) {
-		doctorMapper.insert(createDoctorDto);
+	public void createDoctor(@NotNull PrincipalDetails principalDetasils, @NotNull @Valid CreateDoctorDto createDoctorDto) {
+		doctorMapper.insert(principalDetasils.getStaffVo().getStaffNo(), createDoctorDto);
 	}
 
 	@Override
