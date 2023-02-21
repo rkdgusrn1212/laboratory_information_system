@@ -20,8 +20,6 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
 export default function BloodcollectionsDialog(props) {
-  const [collect, setCollect] = useState([]);
-
   const { onClose, selectedValue, open } = props;
 
   const handleClose = () => {
@@ -33,7 +31,7 @@ export default function BloodcollectionsDialog(props) {
   }, []);
 
   return (
-    <Dialog maxWidth="lg" onClose={handleClose} open={open}>
+    <Dialog maxWidth="md" onClose={handleClose} open={open}>
       <DialogTitle>검체 정보</DialogTitle>
       <List sx={{ pt: 0 }}>
         <Swiper
@@ -44,48 +42,43 @@ export default function BloodcollectionsDialog(props) {
           modules={[Pagination, Navigation]}
           className="mySwiper"
         >
-          {selectedValue.map((list, i) => {
-            axios({
-              method: 'get',
-              url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${list}`,
-            }).then(function (response) {
-              setCollect(response.data);
-            });
-
+          {selectedValue.map((list) => {
             return (
               <SwiperSlide>
                 <Typography sx={{ fontSize: 14, mx: 9 }}>검체정보</Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'center', mx: 9 }}>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                <Grid sx={{ justifyContent: 'center', display: 'flex', mx: 9 }}>
+                  <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '20ch' }}
                       disabled
                       id="filled-disabled"
                       label="검체번호"
                       variant="filled"
-                      value={list}
+                      value={list.specimenNo}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '20ch' }}
                       disabled
                       id="filled-disabled"
-                      label="검사명"
+                      label="용기코드"
                       variant="filled"
-                      value={collect.testName}
+                      defaultValue={' '}
+                      value={list.specimenContainerCode}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '20ch' }}
                       disabled
                       id="filled-disabled"
-                      label="용기명"
+                      label="용기종류코드"
                       variant="filled"
-                      value={collect.testContainer}
+                      defaultValue={' '}
+                      value={list.specimenTypeCode}
                       size="small"
                     />
                   </Grid>
@@ -93,150 +86,124 @@ export default function BloodcollectionsDialog(props) {
                 <Typography sx={{ fontSize: 14, mx: 9 }}>
                   채혈자 정보
                 </Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'center', mx: 9 }}>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                <Grid sx={{ justifyContent: 'center', display: 'flex', mx: 9 }}>
+                  <Grid item xs={4} sx={{ mx: 0.5 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '14ch' }}
                       disabled
                       id="filled-disabled"
-                      label="채혈자"
+                      label="바코드 출력자 번호"
                       variant="filled"
-                      value={''}
+                      defaultValue={' '}
+                      value={list.printstaffNo}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 0.5 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '20ch' }}
+                      disabled
+                      id="filled-disabled"
+                      label="바코드 출력 일시"
+                      variant="filled"
+                      defaultValue={' '}
+                      value={list.specimenDate}
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={4} sx={{ mx: 0.5 }}>
+                    <TextField
+                      sx={{ m: 1, width: '13ch' }}
                       disabled
                       id="filled-disabled"
                       label="채혈자 번호"
                       variant="filled"
-                      value={collect.staffNo}
+                      defaultValue={' '}
+                      value={list.staffNo}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 0.5 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '20ch' }}
                       disabled
                       id="filled-disabled"
                       label="채혈일시"
                       variant="filled"
-                      value={collect.collectDate}
+                      defaultValue={' '}
+                      value={list.collectDate}
                       size="small"
                     />
                   </Grid>
                 </Grid>
                 <Typography sx={{ fontSize: 14, mx: 9 }}>환자정보</Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'center', mx: 9 }}>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                <Grid sx={{ justifyContent: 'center', display: 'flex', mx: 9 }}>
+                  <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '16ch' }}
                       disabled
                       id="filled-disabled"
                       label="환자번호"
                       variant="filled"
-                      value={collect.patientNo}
+                      defaultValue={' '}
+                      value={list.patientNo}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '18ch' }}
                       disabled
                       id="filled-disabled"
                       label="환자이름"
                       variant="filled"
-                      value={''}
+                      defaultValue={' '}
+                      value={list.patientName}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '25ch' }}
                       disabled
                       id="filled-disabled"
                       label="주민번호"
                       variant="filled"
-                      value={''}
+                      defaultValue={' '}
+                      value={list.patientRrn}
                       size="small"
                     />
                   </Grid>
                 </Grid>
 
                 <Typography sx={{ fontSize: 14, mx: 9 }}>처방정보</Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'center', mx: 9 }}>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                <Grid sx={{ justifyContent: 'center', display: 'flex', mx: 9 }}>
+                  <Grid item xs={4} sx={{ mx: 4 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '22ch' }}
                       disabled
                       id="filled-disabled"
                       label="처방번호"
                       variant="filled"
-                      value={''}
+                      defaultValue={' '}
+                      value={list.orderNo}
                       size="small"
                     />
                   </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
+                  <Grid item xs={4} sx={{ mx: 4 }}>
                     <TextField
-                      sx={{ m: 1, width: '34ch' }}
+                      sx={{ m: 1, width: '42ch' }}
                       disabled
                       id="filled-disabled"
-                      label="진료의"
+                      label="처방명"
                       variant="filled"
-                      value={''}
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <TextField
-                      sx={{ m: 1, width: '34ch' }}
-                      disabled
-                      id="filled-disabled"
-                      label="처방일자"
-                      variant="filled"
-                      value={''}
+                      defaultValue={' '}
+                      value={list.prescriptionName}
                       size="small"
                     />
                   </Grid>
                 </Grid>
-                <Typography sx={{ fontSize: 14, mx: 9 }}>검사분류</Typography>
-                <Grid sx={{ display: 'flex', justifyContent: 'center', mx: 9 }}>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <TextField
-                      sx={{ m: 1, width: '34ch' }}
-                      disabled
-                      id="filled-disabled"
-                      label="검사분류명"
-                      variant="filled"
-                      value={collect.fieldName}
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <TextField
-                      sx={{ m: 1, width: '34ch' }}
-                      disabled
-                      id="filled-disabled"
-                      label="검사명"
-                      variant="filled"
-                      value={collect.testName}
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{ mx: 2 }}>
-                    <TextField
-                      sx={{ m: 1, width: '34ch' }}
-                      disabled
-                      id="filled-disabled"
-                      label="진료과"
-                      variant="filled"
-                      value={''}
-                      size="small"
-                    />
-                  </Grid>
-                </Grid>
+
                 <br />
                 <br />
                 <br />

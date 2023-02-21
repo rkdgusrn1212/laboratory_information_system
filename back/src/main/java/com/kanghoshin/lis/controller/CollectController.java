@@ -60,12 +60,14 @@ public class CollectController {
 		return specimenlist;
 	}
 
+	//채혈페이지 검색값
 	@GetMapping("/specimenbyno")
 	public CollectSpecimenVo specimenbyno(@Valid @Param("specimenNo") String specimenNo) {
 		CollectSpecimenVo specimen = CollectService.getSpecimenbyno(specimenNo);
 		return specimen;
 	}
 
+	//부적합페이지 리스트
 	@GetMapping("/inadequate_typeList")
 	public List<InadequateTypeVo> inadequate_typeall() {
 		List<InadequateTypeVo> inadequate_typelist = CollectService.getInadequate_typeall();
@@ -89,18 +91,21 @@ public class CollectController {
 		CollectService.createCollectPost(CollectDTO);
 	}
 
+	//채혈페이지에서 사용
 	@GetMapping("/collectlist")
 	public List<BloodCollectVo> collectlist() {
 		List<BloodCollectVo> specimenlist = CollectService.getCollectall();
 		return specimenlist;
 	}
 
+	//채혈 다이얼로그
 	@GetMapping("/collectlistbyno")
 	public BloodCollectVo collectlistbyno(@Valid @Param("specimenNo") String specimenNo) {
 		BloodCollectVo specimen = CollectService.getCollectbyno(specimenNo);
 		return specimen;
 	}
 
+	//부적합검체 리스트
 	@GetMapping("/submitinadequatelist")
 	public List<SubmitInadequateVo> SubmitInadequatelist() {
 		List<SubmitInadequateVo> specimenlist = CollectService.getSubmitInadequatelist();

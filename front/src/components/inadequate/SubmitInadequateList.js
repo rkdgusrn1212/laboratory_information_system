@@ -6,8 +6,8 @@ export const SubmitInadequateList = async () => {
       'http://localhost:8080/api/collect/submitinadequatelist',
     );
     //전처리
-    response.data.map((submitinadequatelist) => {
-      submitinadequatelist.id = submitinadequatelist.specimenNo;
+    response.data.map((submitinadequatelist, i) => {
+      submitinadequatelist.id = i;
     });
 
     return response.data;
