@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `validation` (
   PRIMARY KEY (`validation_email`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.validation:~1 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.validation:~7 rows (대략적) 내보내기
 DELETE FROM `validation`;
 /*!40000 ALTER TABLE `validation` DISABLE KEYS */;
 INSERT INTO `validation` (`validation_email`, `validation_code`) VALUES

@@ -28,7 +28,16 @@ CREATE TABLE IF NOT EXISTS `patient` (
   PRIMARY KEY (`patient_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 내보낼 데이터가 선택되어 있지 않습니다.
+-- 테이블 데이터 kanghoshin_lis.patient:~5 rows (대략적) 내보내기
+DELETE FROM `patient`;
+/*!40000 ALTER TABLE `patient` DISABLE KEYS */;
+INSERT INTO `patient` (`patient_no`, `patient_name`, `patient_male`, `patient_rrn`, `patient_birth`, `patient_phone`) VALUES
+	(36, '김덕배', b'1', '840313-1243243', '1984-03-13', '010-2938-4932'),
+	(37, '이금희', b'0', '871209-2938737', '1987-12-09', '010-2383-4112'),
+	(38, '김재민', b'1', '020808-3314343', '2002-08-08', '010-5738-7782'),
+	(39, '김민석', b'1', '880217-1328738', '1988-02-17', '010-9473-0283'),
+	(40, '서민지', b'0', '870415-2716361', '1987-04-15', '010-9823-9832');
+/*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
