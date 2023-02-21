@@ -13,10 +13,11 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import Button from '@mui/material/Button';
 
-import PrescriptionForm from '../components/consultation/PrescriptionForm';
+import ConsultationForm from '../components/consultation/ConsultationForm';
 import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
 import ConsultationReceptionPicker from '../components/consultation/ConsultationRecptionPicker';
 import { ConsultationReception } from '../services/types';
+import SimplePrescriptionForm from '../components/consultation/SimplePrescriptionForm';
 
 const theme = createTheme({
   palette: {
@@ -106,11 +107,16 @@ const ConsultationPage: React.FC = () => {
               }),
             }}
           >
-            <PrescriptionForm consultationReception={selected} />
+            <ConsultationForm consultationReception={selected} />
           </Box>
-          <Box flexGrow={1}>
-            <PrescriptionPicker />
-          </Box>
+          <Stack flexGrow={1} spacing={1}>
+            <Box flexGrow={1}>
+              <PrescriptionPicker />
+            </Box>
+            <Box flexGrow={1}>
+              <SimplePrescriptionForm />
+            </Box>
+          </Stack>
         </Stack>
         <Dialog
           open={dialog.open}

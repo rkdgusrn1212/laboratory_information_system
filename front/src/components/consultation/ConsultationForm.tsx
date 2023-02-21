@@ -15,7 +15,7 @@ import { ConsultationReception } from '../../services/types';
 import OrderTable from './OrderTable';
 import { useReadPatientByPatientNoQuery } from '../../services/patientApi';
 
-const PrescriptionForm: React.FC<{
+const ConsultationForm: React.FC<{
   consultationReception: ConsultationReception | undefined;
 }> = ({ consultationReception }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,4 +243,4 @@ const PrescriptionForm: React.FC<{
     </Paper>
   );
 };
-export default PrescriptionForm;
+export default ConsultationForm;
