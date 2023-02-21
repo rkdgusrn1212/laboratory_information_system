@@ -40,10 +40,8 @@ public class SecurityConfig{
 				.authorizeRequests()
 				.antMatchers("/api/auth/write-details")
 				.access("hasRole('"+PrincipalAuthority.ROLE_AUTHONLY.getAuthority()+"')")
-				.antMatchers("/api/doc/**")
-				.access("hasRole('ROLE_DOC')")
-				.antMatchers("/api/nur/**")
-				.access("hasRole('ROLE_NUR')")
+				.antMatchers("/api/doctor/register")
+				.access("hasRole('"+PrincipalAuthority.ROLE_NANTYPE.getAuthority()+"')")
 				.anyRequest().permitAll()
 				.and()
 				.build();

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEventHandler } from 'react';
+import React, { useState, ChangeEventHandler, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -21,18 +21,29 @@ import PhoneInput from '../common/PhoneMaskedInput';
 import DoctorCertificationMaskedInput from '../common/DoctorCertificationMaskedInput';
 import DepartmentSelectInput from '../common/DepartmentSelectInput';
 import { SelectChangeEvent } from '@mui/material';
-import { useCreateDoctorMutation } from '../../services/doctorApi';
+import { useRegisterDoctorMutation } from '../../services/doctorApi';
+import { useAppSelector } from '../../hooks';
+import { selectAccount } from '../../services/accountSlice';
 
 const StaffDetailsForm: React.FC<{
   onSuccess: () => void;
   onException: () => void;
 }> = ({ onSuccess, onException }) => {
+  const account = useAppSelector(selectAccount);
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
-  const [createDoctor] = useCreateDoctorMutation();
-  const [staffName, setStaffName] = useState('');
+  const [registerDoctor] = useRegisterDoctorMutation();
+  const [staffName, setStaffName] = useState(
+    account ? account.principal.staffVo.staffName : '',
+  );
   const [staffType, setStaffType] = useState<number | null>(null);
-  const [staffPhone, setStaffPhone] = useState('');
-  const [staffRrn, setStaffRrn] = useState('');
+  const [staffPhone, setStaffPhone] = useState(
+    account ? account.principal.staffVo.staffPhone : '',
+  );
+  const phoneInit = staffPhone;
+  const [staffRrn, setStaffRrn] = useState(
+    account ? account.principal.staffVo.staffRrn : '',
+  );
+  const rrnInit = staffRrn;
   const [doctorCertification, setDoctorCertification] = useState('');
   const [departmentCode, setDepartmentCode] = useState('');
   const [staffNameHelp, setStaffNameHelp] = useState<string | null>(null);
@@ -42,50 +53,55 @@ const StaffDetailsForm: React.FC<{
     string | null
   >(null);
 
+  const doRegisterDoctor = () => {
+    registerDoctor({
+      departmentCode,
+      doctorCertification: parseInt(doctorCertification),
+    })
+      .unwrap()
+      .then(() => onSuccess())
+      .catch(() => {
+        onException();
+      });
+  };
+
   const handleSubmitClick = () => {
-    const parsedRrn = rrnParser(staffRrn);
-    if (!parsedRrn) setStaffRrnHelp('주민번호를 확인해주세요');
-    else {
-      writeDetails({
-        staffName,
-        staffRrn,
-        staffBirth: parsedRrn.birth,
-        staffMale: parsedRrn.male,
-        staffPhone,
-        staffImage: null,
-        staffType,
-      } as WriteDetailsRequest)
-        .unwrap()
-        .then((response) => {
-          createDoctor({
-            staffNo: response,
-            departmentCode,
-            doctorCertification: parseInt(doctorCertification),
-          })
-            .unwrap()
-            .then(() => onSuccess())
-            .catch(() => {
+    if (account?.principal.authorities[0] === 'ROLE_AUTHONLY') {
+      const parsedRrn = rrnParser(staffRrn);
+      if (!parsedRrn) setStaffRrnHelp('주민번호를 확인해주세요');
+      else {
+        writeDetails({
+          staffName,
+          staffRrn,
+          staffBirth: parsedRrn.birth,
+          staffMale: parsedRrn.male,
+          staffPhone,
+          staffImage: null,
+          staffType,
+        } as WriteDetailsRequest)
+          .unwrap()
+          .then(doRegisterDoctor)
+          .catch((error) => {
+            if (isWriteDetailsError(error)) {
               onException();
-            });
-        })
-        .catch((error) => {
-          if (isWriteDetailsError(error)) {
-            onException();
-          } else if (isValidationError<WriteDetailsField>(error)) {
-            const validationError =
-              mapValidationError<WriteDetailsField>(error);
-            if (validationError.staffPhone)
-              setStaffPhoneHelp(validationError.staffPhone);
-            if (validationError.staffRrn)
-              setStaffRrnHelp(validationError.staffRrn);
-            if (validationError.staffMale || validationError.staffBirth)
-              setStaffRrnHelp('주민번호를 확인해주세요');
-            if (validationError.staffName)
-              setStaffNameHelp(validationError.staffName);
-          } else {
-            onException();
-          }
-        });
+            } else if (isValidationError<WriteDetailsField>(error)) {
+              const validationError =
+                mapValidationError<WriteDetailsField>(error);
+              if (validationError.staffPhone)
+                setStaffPhoneHelp(validationError.staffPhone);
+              if (validationError.staffRrn)
+                setStaffRrnHelp(validationError.staffRrn);
+              if (validationError.staffMale || validationError.staffBirth)
+                setStaffRrnHelp('주민번호를 확인해주세요');
+              if (validationError.staffName)
+                setStaffNameHelp(validationError.staffName);
+            } else {
+              onException();
+            }
+          });
+      }
+    } else if (account?.principal.authorities[0] === 'ROLE_NANTYPE') {
+      doRegisterDoctor();
     }
   };
 
@@ -162,6 +178,7 @@ const StaffDetailsForm: React.FC<{
             size="small"
             required
             fullWidth
+            initValue={rrnInit}
             onValueSet={handleRrnValueSet}
             helpText={staffRrnHelp}
             error={staffRrnHelp != null}
@@ -173,6 +190,7 @@ const StaffDetailsForm: React.FC<{
           size="small"
           required
           fullWidth
+          initValue={phoneInit}
           label="전화번호"
           onValueSet={handlePhoneValueSet}
           helpText={staffPhoneHelp}

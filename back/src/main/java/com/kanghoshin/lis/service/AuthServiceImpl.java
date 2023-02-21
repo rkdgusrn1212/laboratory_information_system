@@ -22,11 +22,10 @@ import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dao.AuthMapper;
 import com.kanghoshin.lis.dao.StaffMapper;
 import com.kanghoshin.lis.dao.ValidationMapper;
+import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
 import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
-import com.kanghoshin.lis.vo.entity.AuthVo;
-import com.kanghoshin.lis.vo.entity.StaffVo;
 import com.kanghoshin.lis.vo.entity.ValidationVo;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
 import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
@@ -112,17 +111,13 @@ public class AuthServiceImpl implements AuthService {
 
 
 	@Override
-	public Map<String, Object> writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException {
+	public Map<String, Object> writeDetails(PrincipalDetails principalDetails, @Valid DetailsDto detailsDto) throws WriteDetailsFailedException, GeneralErrorWithMessageException {
 		try {
 			staffMapper.insertDetailsDto(detailsDto, principalDetails.getUsername());
 		}catch(Exception e) {
 			throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
 		}
-		AuthVo authVo = authMapper.findByAuthId(principalDetails.getUsername());
-		if(authVo==null) throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
-		StaffVo staffVo = staffMapper.findByStaffNo(authVo.getStaffNo());
-		if(staffVo==null) throw new WriteDetailsFailedException(WriteDetailsErrorVo.UNKNOWN);
-		return jwtService.createJwt(new PrincipalDetails(authVo, staffVo));
+		return jwtService.createJwtUpdated(principalDetails);
 	}
 
 	@Override

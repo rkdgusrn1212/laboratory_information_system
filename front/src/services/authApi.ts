@@ -74,6 +74,8 @@ export function isWriteDetailsError(
   return isGeneralError(error) && error.data.subject === 'writeDetails';
 }
 
+export type WriteDetailsResponse = Account;
+
 const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/auth/`,
@@ -101,14 +103,14 @@ const authApi = createApi({
         url: 'issue-validation-code',
       }),
     }),
-    createAuth: builder.mutation<unknown, CreateAuthRequest>({
+    createAuth: builder.mutation<void, CreateAuthRequest>({
       query: (body) => ({
         body: body,
         method: 'POST',
         url: 'create-auth',
       }),
     }),
-    writeDetails: builder.mutation<number, WriteDetailsRequest>({
+    writeDetails: builder.mutation<WriteDetailsResponse, WriteDetailsRequest>({
       query: (body) => ({
         body: body,
         method: 'POST',
