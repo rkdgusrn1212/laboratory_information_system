@@ -32,12 +32,13 @@ CREATE TABLE IF NOT EXISTS `prescription` (
   CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.prescription:~1 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.prescription:~2 rows (대략적) 내보내기
 DELETE FROM `prescription`;
 /*!40000 ALTER TABLE `prescription` DISABLE KEYS */;
 INSERT INTO `prescription` (`prescription_code`, `behavior_code`, `prescription_name`, `prescription_classification_code`, `prescription_slip_code`, `prescription_comment`) VALUES
 	('A0314', 'D4902010', '비타민검사', 'CP', NULL, NULL),
-	('D0001', 'D0001010', '일반혈액검사1', 'CP', NULL, '하나만 요청');
+	('D0001', 'D0001010', '일반혈액검사1', 'CP', NULL, '하나만 요청'),
+	('LB0282', 'D0001010', '기본혈액분석', 'CP', NULL, NULL);
 /*!40000 ALTER TABLE `prescription` ENABLE KEYS */;
 
 -- 트리거 kanghoshin_lis.prescription_before_insert 구조 내보내기
@@ -46,6 +47,9 @@ DELIMITER //
 CREATE TRIGGER `prescription_before_insert` BEFORE INSERT ON `prescription` FOR EACH ROW BEGIN
 IF NEW.prescription_classification_code != null THEN
 SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'DO NOT INSERT prescription_classification_code VALUE';
+END IF;
+IF LEFT(NEW.behavior_code,1) = 'D' THEN
+SET NEW.prescription_classification_code = 'CP';
 END IF;
 END//
 DELIMITER ;
