@@ -22,15 +22,23 @@ CREATE TABLE IF NOT EXISTS `test_prescription` (
   `prescription_code` varchar(10) NOT NULL,
   `specimen_type_code` char(2) NOT NULL,
   `specimen_container_code` char(2) NOT NULL,
+  `test_prescription_reference` varchar(200) DEFAULT NULL,
+  `test_prescription_unit` varchar(10) DEFAULT NULL,
+  `test_field` int(11) NOT NULL,
   PRIMARY KEY (`prescription_code`) USING BTREE,
   KEY `FK_test_prescription_specimen_type` (`specimen_type_code`) USING BTREE,
   KEY `FK_test_prescription_specimen_container` (`specimen_container_code`) USING BTREE,
+  KEY `FK_test_prescription_test_field` (`test_field`),
   CONSTRAINT `FK_test_prescription_prescription` FOREIGN KEY (`prescription_code`) REFERENCES `prescription` (`prescription_code`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_test_prescription_specimen_container` FOREIGN KEY (`specimen_container_code`) REFERENCES `specimen_container` (`specimen_container_code`) ON UPDATE CASCADE,
-  CONSTRAINT `FK_test_prescription_specimen_type` FOREIGN KEY (`specimen_type_code`) REFERENCES `specimen_type` (`specimen_type_code`) ON UPDATE CASCADE
+  CONSTRAINT `FK_test_prescription_specimen_type` FOREIGN KEY (`specimen_type_code`) REFERENCES `specimen_type` (`specimen_type_code`) ON UPDATE CASCADE,
+  CONSTRAINT `FK_test_prescription_test_field` FOREIGN KEY (`test_field`) REFERENCES `test_field` (`test_field_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 내보낼 데이터가 선택되어 있지 않습니다.
+-- 테이블 데이터 kanghoshin_lis.test_prescription:~0 rows (대략적) 내보내기
+DELETE FROM `test_prescription`;
+/*!40000 ALTER TABLE `test_prescription` DISABLE KEYS */;
+/*!40000 ALTER TABLE `test_prescription` ENABLE KEYS */;
 
 -- 트리거 kanghoshin_lis.test_prescription_after_delete 구조 내보내기
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
