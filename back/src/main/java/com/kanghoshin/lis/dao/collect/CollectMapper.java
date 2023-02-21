@@ -42,7 +42,7 @@ public interface CollectMapper {
 			+"full_test_prescription_order.patient_no AS patientNo, "
 			+"full_test_prescription_order.prescription_order_no AS orderNo "
 			+"FROM specimen, recept_collection ,full_test_prescription_order "
-			+"WHERE full_test_prescription_order.prescription_order_no= recept_collection.order_no "
+			+"WHERE full_test_prescription_order.prescription_order_no= recept_collection.prescription_order_no "
 			+"and specimen.specimen_no = recept_collection.specimen_no and specimen.specimen_no = #{specimenNo} ")
 	CollectSpecimenVo findByspecimenno(@Param("specimenNo") String specimenNo);
 
@@ -55,12 +55,12 @@ public interface CollectMapper {
 
 	//채혈페이지 목록
 	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, "
-			+"specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo, recept_collection.order_no AS orderNo ,"
+			+"specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo, recept_collection.prescription_order_no AS orderNo ,"
 			+"full_test_prescription_order.specimen_container_code AS specimenContainerCode, full_test_prescription_order.specimen_type_code AS specimenTypeCode, "
 			+"full_test_prescription_order.prescription_name AS prescriptionName, "
 			+"full_test_prescription_order.patient_no AS patientNo "
 			+"FROM blood_collect,specimen,recept_collection,full_test_prescription_order "
-			+"WHERE recept_collection.order_no= full_test_prescription_order.prescription_order_no "
+			+"WHERE recept_collection.prescription_order_no= full_test_prescription_order.prescription_order_no "
 			+"and specimen.specimen_no=recept_collection.specimen_no "
 			+"and blood_collect.specimen_no= specimen.specimen_no "
 			+"ORDER BY blood_collect.collect_date desc,blood_collect.specimen_no desc ")
@@ -68,13 +68,13 @@ public interface CollectMapper {
 
 	//채혈 다이얼로그에서 사용
 	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, "
-			+"specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo , recept_collection.order_no AS orderNo, "
+			+"specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo , recept_collection.prescription_order_no AS orderNo, "
 			+"full_test_prescription_order.specimen_container_code AS specimenContainerCode,full_test_prescription_order.specimen_type_code AS specimenTypeCode," 
 			+"full_test_prescription_order.prescription_name AS prescriptionName,full_test_prescription_order.patient_no AS patientNo, "
 			+"patient.patient_name AS patientName, patient.patient_male AS patientMale, patient.patient_rrn AS patientRrn "  
 			+"FROM blood_collect,specimen,recept_collection,full_test_prescription_order,patient "
 			+"WHERE full_test_prescription_order.patient_no= patient.patient_no "
-			+"and recept_collection.order_no= full_test_prescription_order.prescription_order_no "
+			+"and recept_collection.prescription_order_no= full_test_prescription_order.prescription_order_no "
 			+"and specimen.specimen_no=recept_collection.specimen_no "
 			+"and blood_collect.specimen_no= specimen.specimen_no and blood_collect.specimen_no = #{specimenNo} "
 			+"ORDER BY blood_collect.collect_date desc,blood_collect.specimen_no desc ")
@@ -95,7 +95,7 @@ public interface CollectMapper {
 			+"full_test_prescription_order.specimen_type_code AS specimenTypeCode,full_test_prescription_order.patient_no AS patientNo , "
 			+"full_test_prescription_order.prescription_name AS prescriptionName "
 			+"from blood_collect, inadequate_type, submit_inadequate , recept_collection,full_test_prescription_order "
-			+"WHERE full_test_prescription_order.prescription_order_no=recept_collection.order_no "
+			+"WHERE full_test_prescription_order.prescription_order_no=recept_collection.prescription_order_no "
 			+"AND recept_collection.specimen_no= blood_collect.specimen_no "
 			+"and submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code "
 			+"AND blood_collect.specimen_no = submit_inadequate.specimen_no "
@@ -128,13 +128,13 @@ public interface CollectMapper {
 	
 	
 	//교체필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	@Insert("INSERT INTO recept_collection (specimen_no,order_no) VALUES (#{SpecimenDto.specimenNo},#{SpecimenDto.orderNo})")
+	@Insert("INSERT INTO recept_collection (specimen_no,prescription_order_no) VALUES (#{SpecimenDto.specimenNo},#{SpecimenDto.orderNo})")
 	void insertReceptCollection(@Param("SpecimenDto") SpecimenDto SpecimenDto);
 	
 	
 	
 	//교체 햐야함
-	@Select("SELECT order_no AS orderNo,specimen_no AS specimenNo FROM recept_collection WHERE order_no = #{orderNo} order by specimen_no desc")
+	@Select("SELECT prescription_order_no AS orderNo,specimen_no AS specimenNo FROM recept_collection WHERE prescription_order_no = #{orderNo} order by specimen_no desc")
 	List<ReceptCollectionVo> findReceptCollectionbyorderno(@Param("orderNo") String orderNo);
 	
 	
