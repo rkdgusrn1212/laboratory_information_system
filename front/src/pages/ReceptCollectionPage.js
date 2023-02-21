@@ -116,6 +116,32 @@ export default function ReceptCollectionPage() {
           patients: response.data,
         });
         setPLength(response.data.length);
+      } else {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/api/patient/list?pageSize=1000&pageStart=0&patientNoKey=${search}`,
+        }).then(function (response) {
+          if (response.data != '') {
+            console.log(response.data);
+            error == 1 &&
+              response.data.map((patient) => {
+                patient.id = patient.patientNo;
+                if (patient.patientMale === true) patient.patientMale = '남';
+                else {
+                  patient.patientMale = '여';
+                }
+                const today = new Date();
+                const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
+
+                patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
+              });
+
+            setCallpatient({
+              patients: response.data,
+            });
+            setPLength(response.data.length);
+          }
+        });
       }
     });
   }
@@ -461,7 +487,7 @@ export default function ReceptCollectionPage() {
                           }
                           label="Required"
                           value={search}
-                          placeholder="환자이름, 번호, 주민번호"
+                          placeholder="환자이름, 환자번호"
                           onChange={onSearchHandler}
                           onKeyPress={handleOnKeyPress}
                         />
@@ -641,6 +667,7 @@ export default function ReceptCollectionPage() {
                               variant="outlined"
                               sx={{
                                 minWidth: 200,
+
                                 backgroundColor: '#ABCBAD',
                                 '&:hover': {
                                   backgroundColor: '#96BE98',
@@ -652,7 +679,7 @@ export default function ReceptCollectionPage() {
                                   alignItems: 'self-end',
                                   justifyContent: 'flex-end',
                                   background:
-                                    'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
+                                    'linear-gradient(to top, rgba(0,0,0,0.4), rgba(0,0,0,0.1))',
                                 }}
                               >
                                 <Grid>
@@ -702,7 +729,7 @@ export default function ReceptCollectionPage() {
                                 backgroundColor: '#fff',
 
                                 '&:hover': {
-                                  backgroundColor: '#a0a0a0',
+                                  backgroundColor: 'rgba(0,0,0,0.2)',
                                 },
                                 // '&:height_scroll': {
                                 //     height: '800px',
@@ -716,7 +743,7 @@ export default function ReceptCollectionPage() {
                                   alignItems: 'self-end',
                                   justifyContent: 'flex-end',
                                   background:
-                                    'linear-gradient(to top, rgba(0,0,0,0.1), rgba(0,0,0,0.1))',
+                                    'linear-gradient(to top, rgba(0,0,0,0.3), rgba(0,0,0,0.1))',
                                 }}
                               >
                                 <Grid>
