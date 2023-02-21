@@ -49,7 +49,7 @@ public interface CollectMapper {
 			+ "WHERE blood_collect.specimen_no= specimen.specimen_no ORDER BY blood_collect.collect_date desc,blood_collect.specimen_no desc")
 	List<BloodCollectVo> listcollectall();
 
-	//db 나오면  수정 할것
+	
 	@Select("SELECT blood_collect.specimen_no AS specimenNo, blood_collect.staff_no AS staffNo, blood_collect.collect_date AS collectDate, "
 			+ "specimen.specimen_date AS specimenDate, specimen.staff_no AS printstaffNo "
 			+ "FROM blood_collect,specimen "
@@ -59,6 +59,8 @@ public interface CollectMapper {
 	@Insert("INSERT INTO blood_Collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
 	void collectinsertbydto(@Param("BloodCollectDto") BloodCollectDto BloodCollectDto);
 
+	
+	//db 나오면  수정 할것
 	@Select("select submit_inadequate.specimen_no AS SpecimenNo, submit_inadequate.Inadequate_type_code AS InadequateTypeCode, "
 			+ "inadequate_type.Inadequate_type_name AS InadequateTypeName, submit_inadequate.Submit_Inadequate_from AS SubmitInadequateFrom, "
 			+ "submit_inadequate.Submit_Inadequate_to AS SubmitInadequateTo, blood_collect.staff_no AS BloodCollectStaffNo, "

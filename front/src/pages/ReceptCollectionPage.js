@@ -72,7 +72,6 @@ export default function ReceptCollectionPage() {
   const [loginstaffno, setLoginstaffno] = useState(1);
   const account = useAppSelector(selectAccount); //로그인한  계정 정보
 
-  const [specimenlist, setSpecimenlist] = useState(1); //
   const [imageUrl1, setImageUrl1] = useState([]);
   const [imageUrl, setImageUrl] = useState([]);
   //만약 선택한 처방 정보의 해당하는 오더에 검체가 이미 있을때
@@ -102,6 +101,7 @@ export default function ReceptCollectionPage() {
         console.log(response.data);
         error == 1 &&
           response.data.map((patient) => {
+            patient.id = patient.patientNo;
             if (patient.patientMale === true) patient.patientMale = '남';
             else {
               patient.patientMale = '여';
@@ -128,11 +128,11 @@ export default function ReceptCollectionPage() {
         url: `http://localhost:8080/api/collect/insertspecimenpost`,
         data: {
           staffNo: loginstaffno,
-          orderNo: postdata.orderNo,
+          orderNo: postdata.prescriptionOrderNo,
         },
       })
         .then(function () {
-          //
+          makebarcord();
         })
         .catch((error) => {
           console.log(error);
@@ -164,13 +164,13 @@ export default function ReceptCollectionPage() {
     //환자no로  처방 볼러오기
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/prescription-order/full-test-prescription-order/list?pageSize=10&pageStart=0&PatientNo=${patientNo}`,
+      url: `http://localhost:8080/api/prescription-order/full-test-prescription-order/list?pageSize=10&pageStart=0&PatientNoKey=${patientNo}`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
         error == 1 &&
-          response.data.map((pre, testid) => {
-            pre.id = pre.prescriptionOrderNo;
+          response.data.map((pre, i) => {
+            pre.id = i;
             pre.status = 0;
             pre.patientName = callpatient.patients[0].patientName;
           });
@@ -183,33 +183,14 @@ export default function ReceptCollectionPage() {
   }
 
   //선택한정보의 오더 no로 이미 뽑은 검체 인지검사 reception-collection에 데이터가 있다면 여기서 표시를 해줘야한다.
-  function checkReCobyorder(selectedpre) {
-    selectedpre.map((pre) => {
-      //pre.orderNo
-      console.log('pre.orderNo: ' + pre.orderNo);
-      axios({
-        method: 'get',
-        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${pre.orderNo}`,
-      }).then(function (response) {
-        if (response.data != '') {
-          console.log(
-            'warning!!!!!!!!!!!!!!!!! 이미 데이터가 테이블에 있습니다.',
-          );
-          console.log(response.data);
-          //이미 orderno가 검체접수 목록에 있다.
-          //진행 여부만 확인 하면 된다.
-        } else {
-        }
-      });
-    });
-  }
-  //검체번호로 바코드 만들기
 
+  //검체번호로 바코드 만들기
+  //수정해야함
   function makebarcord() {
     rows4.map((a, i) => {
       axios({
         method: 'get',
-        url: `http://localhost:8080/api/collect/getPrebyOrderNo?orderNo=${a.orderNo}`,
+        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${a.prescriptionOrderNo}`,
       }).then(function (response) {
         if (response.data != '') {
           console.log(i + '번째 검체번호' + response.data[0].specimenNo);
@@ -223,18 +204,7 @@ export default function ReceptCollectionPage() {
     });
   }
 
-  const setimg123 = () => {
-    rows4.map((a, idx) => {
-      console.log('idx:' + a.specimenNo);
-    });
-  };
-
   //환자 검색 파트
-  const handleInput = (e) => {
-    console.log(e.target.value);
-    setInput(e.target.value.toLowerCase());
-    setSearch(e.target.value);
-  };
   const onSearchHandler = (event) => {
     setSearch(event.currentTarget.value);
   };
@@ -291,6 +261,7 @@ export default function ReceptCollectionPage() {
           if (row.id === id) {
             // console.log("id:" + row.id)
             rows2.push({
+              id: row.id,
               consultationNo: row.consultationNo,
               consultationTime: row.consultationTime,
               consultationReceptionNo: row.consultationReceptionNo,
@@ -326,16 +297,12 @@ export default function ReceptCollectionPage() {
       //선택한 그리드의정보를 rows4로 저장한다
       grid2buttonclick();
       // //선택한 처방의 오더가 이미 채혈접수가 되어있는지 확인
-      // checkReCobyorder(rows4);
-      //검체생성
+
       createspecimen();
       console.log(rows4);
       //다이얼로그 오픈
+      //rows4에 검체 번호 들어가 있음
 
-      makebarcord(); //rows4에 검체 번호 들어가 있음
-
-      console.log(specimenlist);
-      setimg123();
       setOpen(true);
     }
   };
@@ -354,6 +321,7 @@ export default function ReceptCollectionPage() {
         if (row.id === id) {
           // console.log("id:" + row.id)
           rows4.push({
+            id: row.id,
             consultationNo: row.consultationNo,
             consultationTime: row.consultationTime,
             consultationReceptionNo: row.consultationReceptionNo,
@@ -376,6 +344,7 @@ export default function ReceptCollectionPage() {
         }
       });
     });
+    console.log(rows4);
     setRows5(rows4);
     //바코드 출력시간의 현재시간으로 입력해야 함
     //db에 이정보들을 입력하여야 함
@@ -413,11 +382,6 @@ export default function ReceptCollectionPage() {
       headerName: '담당의',
       headerAlign: 'center',
     },
-    {
-      field: 'prescriptionName',
-      headerName: '처방이름',
-      headerAlign: 'center',
-    },
   ];
 
   const columns2 = [
@@ -434,11 +398,6 @@ export default function ReceptCollectionPage() {
     {
       field: 'prescriptionCode',
       headerName: '처방코드',
-      headerAlign: 'center',
-    },
-    {
-      field: 'prescriptionName',
-      headerName: '처방이름',
       headerAlign: 'center',
     },
   ];
