@@ -41,6 +41,7 @@ import { useAppSelector } from '../hooks';
 
 export default function BloodCollectionPage() {
   const [open, setOpen] = React.useState(false);
+  const [collect, setCollect] = useState([]);
 
   const [inputlist, setInputlist] = useState([]);
   const [list, setList] = useState([]); //get
@@ -115,11 +116,21 @@ export default function BloodCollectionPage() {
         },
       })
         .then(function () {
-          collectlist().then((res) => setList(res));
+          getCollect(input);
         })
         .catch((error) => {
           console.log(error);
         });
+    });
+  }
+
+  function getCollect(input) {
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${input}`,
+    }).then(function (response) {
+      collect.push(response.data);
+      collectlist().then((res) => setList(res));
     });
   }
 
@@ -138,6 +149,7 @@ export default function BloodCollectionPage() {
     if (error == 1) {
       if (inputlist.length >= 1) {
         postdata();
+        console.log(collect);
         setOpen(true);
       }
     }
@@ -149,36 +161,42 @@ export default function BloodCollectionPage() {
 
   const columns = [
     {
-      field: 'id',
+      field: 'specimenNo',
       headerName: '검체번호',
       headerAlign: 'center',
       width: 80,
     },
     {
-      headerName: '검사명',
-      field: 'testName',
+      field: 'orderNo',
+      headerName: '오더번호',
       headerAlign: 'center',
     },
     {
-      field: 'testContainer',
-      headerName: '용기명',
+      headerName: '처방명',
+      field: 'prescriptionName',
+      headerAlign: 'center',
+      width: 150,
+    },
+    {
+      field: 'specimenContainerCode',
+      headerName: '용기코드',
       headerAlign: 'center',
     },
     {
-      field: 'patientNO',
+      field: 'specimenTypeCode',
+      headerName: '용기타입코드',
+      headerAlign: 'center',
+    },
+    {
+      field: 'patientNo',
       headerName: '환자번호',
-      headerAlign: 'center',
-    },
-    {
-      field: 'fieldName',
-      headerName: '검사분야명',
       headerAlign: 'center',
     },
     {
       headerName: '바코드 출력자',
       field: 'printstaffNo',
       headerAlign: 'center',
-      width: 60,
+      width: 120,
     },
     {
       headerName: '바코드 출력일시',
@@ -454,7 +472,7 @@ export default function BloodCollectionPage() {
           }}
         >
           <BloodcollectionsDialog
-            selectedValue={inputlist}
+            selectedValue={collect}
             open={open}
             onClose={handleClose}
           />

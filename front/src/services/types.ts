@@ -85,7 +85,7 @@ export interface Staff {
   staffImage: string | null;
   staffRrn: string;
   staffAdmitted: boolean;
-  staffType: number;
+  staffType: 'NAN' | 'NUR' | 'DOC';
 }
 
 export const isStaff = (data: unknown): data is Staff =>
@@ -109,8 +109,9 @@ export const isStaff = (data: unknown): data is Staff =>
 export interface Principal {
   authorities: (
     | 'ROLE_AUTHONLY'
+    | 'ROLE_NANTYPE'
     | 'ROLE_PENDING'
-    | 'ROLE_STAFF'
+    | 'ROLE_NURSE'
     | 'ROLE_DOCTOR'
   )[];
   staffVo: Staff;

@@ -30,11 +30,16 @@ public class PrincipalDetails implements UserDetails{
 		authorities = new ArrayList<PrincipalAuthority>();
 		if(staffVo==null) {
 			authorities.add(PrincipalAuthority.ROLE_AUTHONLY);//인증 정보만 있음
+		}else if(staffVo.getStaffType().equals("NAN")) {
+			authorities.add(PrincipalAuthority.ROLE_NANTYPE);
 		}else if(!staffVo.isStaffAdmitted()){
 			authorities.add(PrincipalAuthority.ROLE_PENDING);//승인 대기중
-		}else{
-			authorities.add(PrincipalAuthority.ROLE_STAFF);
-			if(staffVo.getStaffType()==1) {
+		}else {
+			switch(staffVo.getStaffType()) {
+			case "NUR":
+				authorities.add(PrincipalAuthority.ROLE_NURSE);
+				break;
+			case "DOC":
 				authorities.add(PrincipalAuthority.ROLE_DOCTOR);
 			}
 		}

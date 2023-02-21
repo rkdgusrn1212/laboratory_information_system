@@ -24,7 +24,6 @@ const SigninForm = () => {
   const [authPassword, setAuthPassword] = useState('');
   const [passwordVisiblity, setPasswordVisibility] = useState(false);
   const [signin, signinState] = useSigninMutation();
-  const navigate = useNavigate();
 
   const handleIdChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setAuthId(event.target.value);
@@ -41,25 +40,7 @@ const SigninForm = () => {
   const handleMouseDownVisibility = () => setPasswordVisibility(true);
 
   const handleSigninClick: MouseEventHandler<HTMLButtonElement> = () => {
-    signin({ authId, authPassword })
-      .unwrap()
-      .then((account) => {
-        switch (account.principal.authorities[0]) {
-          case 'ROLE_AUTHONLY':
-            navigate('/signup', { replace: true });
-            break;
-          case 'ROLE_PENDING':
-            navigate('/signup', { replace: true });
-            break;
-          case 'ROLE_STAFF':
-            if (account.principal.authorities[1] === 'ROLE_DOCTOR') {
-              navigate('/consultation', { replace: true });
-            } else {
-              navigate('/collection', { replace: true });
-            }
-            break;
-        }
-      });
+    signin({ authId, authPassword });
   };
 
   return (

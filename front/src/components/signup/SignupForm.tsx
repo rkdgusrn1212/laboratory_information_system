@@ -29,7 +29,8 @@ const SignupForm: React.FC = () => {
   const [step, setStep] = useState(
     account == null
       ? 0
-      : account.principal.authorities[0] === 'ROLE_AUTHONLY'
+      : account.principal.authorities[0] === 'ROLE_AUTHONLY' ||
+        account.principal.authorities[0] === 'ROLE_NANTYPE'
       ? 1
       : 2,
   );

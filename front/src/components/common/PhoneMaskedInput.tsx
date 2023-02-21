@@ -40,9 +40,10 @@ const PhoneInput: React.FC<
     helpText?: string | null;
     // eslint-disable-next-line no-unused-vars
     onValueSet: (value: string) => void;
+    initValue?: string;
   }
-> = ({ label, helpText, onValueSet, ...props }) => {
-  const [value, setValue] = useState('');
+> = ({ label, helpText, initValue, onValueSet, ...props }) => {
+  const [value, setValue] = useState(initValue ? initValue : '');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);

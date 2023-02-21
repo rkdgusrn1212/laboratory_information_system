@@ -1,6 +1,8 @@
 package com.kanghoshin.lis.controller;
 
 
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
 import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
@@ -61,8 +64,8 @@ public class AuthController {
 	
 
 	@PostMapping("write-details")
-	public int writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
-			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException {
+	public Map<String, Object> writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
+			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException, GeneralErrorWithMessageException {
 		return authService.writeDetails(principalDetasils, detailsDto);
 	}
 

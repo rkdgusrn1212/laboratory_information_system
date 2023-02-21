@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import authApi from './authApi';
+import doctorApi from './doctorApi';
 import { Account } from './types';
 
 const accountSlice = createSlice({
@@ -12,6 +13,14 @@ const accountSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       authApi.endpoints.signin.matchFulfilled,
+      (state, { payload }) => payload,
+    );
+    builder.addMatcher(
+      authApi.endpoints.writeDetails.matchFulfilled,
+      (state, { payload }) => payload,
+    );
+    builder.addMatcher(
+      doctorApi.endpoints.registerDoctor.matchFulfilled,
       (state, { payload }) => payload,
     );
   },

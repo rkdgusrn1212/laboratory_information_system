@@ -50,19 +50,16 @@ const SigninPage = () => {
 
   useEffect(() => {
     if (account) {
-      if (account.principal.staffVo) {
-        switch (account.principal.staffVo.staffType) {
-          case 0:
-            navigate('/collection', { replace: true });
-            break;
-          case 1:
-            navigate('/consultation', { replace: true });
-            break;
-          default:
-            break;
-        }
-      } else {
-        navigate('/signup', { replace: true });
+      switch (account.principal.authorities[0]) {
+        case 'ROLE_NURSE':
+          navigate('/collection', { replace: true });
+          break;
+        case 'ROLE_DOCTOR':
+          navigate('/consultation', { replace: true });
+          break;
+        default:
+          navigate('/signup', { replace: true });
+          break;
       }
     }
   }, [account, navigate]);
