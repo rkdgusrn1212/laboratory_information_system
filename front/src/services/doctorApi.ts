@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import server from '../server.json';
 import { RootState } from '../store';
-import { Department, Doctor, ListOrder, ListRequest } from './types';
+import { Account, Department, Doctor, ListOrder, ListRequest } from './types';
 
-export type CreateDoctorRequest = Pick<
+export type RegisterDoctorRequest = Pick<
   Doctor,
-  'staffNo' | 'departmentCode' | 'doctorCertification'
+  'departmentCode' | 'doctorCertification'
 >;
 
 export interface ReadDoctorListWithDepartmentRequest extends ListRequest {
@@ -15,6 +15,8 @@ export interface ReadDoctorListWithDepartmentRequest extends ListRequest {
   departmentNameOrder?: ListOrder;
 }
 export type ReadDoctorListWithDepartmentResponse = (Doctor & Department)[];
+
+export type RegisterDoctorResponse = Account;
 
 const doctorApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -29,11 +31,14 @@ const doctorApi = createApi({
   }),
   reducerPath: 'doctorApi',
   endpoints: (builder) => ({
-    createDoctor: builder.mutation<unknown, CreateDoctorRequest>({
+    registerDoctor: builder.mutation<
+      RegisterDoctorResponse,
+      RegisterDoctorRequest
+    >({
       query: (data) => ({
         body: data,
         method: 'POST',
-        url: '',
+        url: 'register',
       }),
     }),
     readDoctorListWithDepartment: builder.query<
@@ -49,5 +54,7 @@ const doctorApi = createApi({
   }),
 });
 export default doctorApi;
-export const { useCreateDoctorMutation, useReadDoctorListWithDepartmentQuery } =
-  doctorApi;
+export const {
+  useRegisterDoctorMutation,
+  useReadDoctorListWithDepartmentQuery,
+} = doctorApi;

@@ -40,10 +40,11 @@ const RrnMaskedInput: React.FC<
     helpText?: string | null;
     // eslint-disable-next-line no-unused-vars
     onValueSet: (value: string) => void;
+    initValue?: string;
   }
-> = ({ label, helpText, onValueSet, ...props }) => {
-  const [value, setValue] = useState('');
-  const [pure, setPure] = useState('');
+> = ({ label, helpText, onValueSet, initValue, ...props }) => {
+  const [value, setValue] = useState(initValue ? initValue : '');
+  const [pure, setPure] = useState(initValue ? initValue : '');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);

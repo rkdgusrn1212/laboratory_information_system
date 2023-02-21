@@ -44,5 +44,5 @@ public class StaffVo {
 	private boolean staffAdmitted;
 
 	@StaffTypeConstraints
-	private int staffType;
+	private String staffType;
 }

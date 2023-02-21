@@ -1,9 +1,6 @@
 package com.kanghoshin.lis.config.jwt;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dto.auth.SignInDto;
@@ -26,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
 
 	private final AuthenticationManager authenticationManager;
+	private final JwtService jwtService;
 
 	// Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
 	// 인증 요청시에 실행되는 함수 => /login
@@ -59,23 +55,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 			Authentication authResult) throws IOException, ServletException {
 
 		PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
-
 		ObjectMapper objectMapper = new ObjectMapper();
-		@SuppressWarnings("unchecked")
-		Map<String, Object> principalMap = objectMapper.convertValue(principalDetails, Map.class);
-		String jwtToken = JWT.create()
-				.withSubject(principalDetails.getUsername())
-				.withClaim("principal", principalMap)
-				.withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
-				.sign(Algorithm.HMAC512(JwtProperties.SECRET));
-
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
-
-		Map<String, Object> payload = new HashMap<>();
-		payload.put("accessToken", JwtProperties.TOKEN_PREFIX+jwtToken);
-		payload.put("principal", principalMap);
-
-		response.getWriter().print(objectMapper.writeValueAsString(payload));
+		response.getWriter().print(objectMapper.writeValueAsString(jwtService.createJwt(principalDetails)));
 	}
 }

@@ -15,18 +15,16 @@ import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Max(value = 1, message="타입은 최대 1(의사) 입니다.")
-@Min(value = 0, message="타입은 최소 0(간호사) 입니다.")
+@Pattern(regexp="(NAN)|(NUR)|(DOC)", message="타입 값이 유효하지 않습니다.")
 public @interface StaffTypeConstraints {
-	String message() default "타입 값이 유효하지 않습니다.";
+	String message() default "";
 	Class<?>[] groups() default { };
 	Class<? extends Payload>[] payload() default { };
 }
