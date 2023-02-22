@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.dto.prescription.CreatePrescriptionDto;
 import com.kanghoshin.lis.dto.prescription.ReadPrescriptionListDto;
+import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.service.PrescriptionService;
 import com.kanghoshin.lis.vo.entity.PrescriptionVo;
 
@@ -23,7 +24,7 @@ public class PrescriptionController {
 	private final PrescriptionService prescriptionService;
 	
 	@PostMapping
-	public void createPrescription(@Valid @RequestBody CreatePrescriptionDto createPrescriptionDto) {
+	public void createPrescription(@Valid @RequestBody CreatePrescriptionDto createPrescriptionDto) throws GeneralErrorWithMessageException {
 		prescriptionService.createPrescription(createPrescriptionDto);
 	}
 	

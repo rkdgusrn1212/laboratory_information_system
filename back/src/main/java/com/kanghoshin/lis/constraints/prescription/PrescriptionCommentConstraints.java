@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 @Inherited
 @Documented
 @Constraint(validatedBy = { })
-@Size(min=1, max=200, message="처방 코멘트는 200자 이하입니다.")
+@Size(min=1, max=200, message="처방 코멘트는 1자 이상 200자 이상입니다.")
 public @interface PrescriptionCommentConstraints {
 	String message() default "";
 	Class<?>[] groups() default { };

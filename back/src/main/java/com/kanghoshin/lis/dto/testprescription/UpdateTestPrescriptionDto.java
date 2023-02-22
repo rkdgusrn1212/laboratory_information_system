@@ -11,17 +11,23 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CreateTestPrescriptionDto {
+public class UpdateTestPrescriptionDto {
 
 	@NotNull
 	@PrescriptionCodeConstraints
 	private String prescriptionCode;
 	
-	@NotNull
 	@SpecimenTypeCodeConstraints
 	private String specimenTypeCode;
 
-	@NotNull
 	@SpecimenContainerCodeConstraints
 	private String specimenContainerCode;
+	
+	private int testPrescriptionAmount;
+	
+	private String testPrescriptionUnit;
+	
+	private String testPrescriptionReference;
+	
+	private String testFieldCode;
 }

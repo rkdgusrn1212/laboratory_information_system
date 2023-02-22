@@ -247,3 +247,15 @@ export interface SpecimenContainer {
   specimenContainerCode: string;
   specimenContainerName: string;
 }
+export interface TestPrescription extends Prescription {
+  specimenTypeCode: string | null;
+  specimenContainerCode: string | null;
+  testPrescriptionAmount: number | null;
+  testPrescriptionUnit: string | null;
+  testPrescriptionReference: string | null;
+  testFieldCode: string | null;
+}
+export interface TestField {
+  testFieldCode: string;
+  testFieldName: string;
+}
