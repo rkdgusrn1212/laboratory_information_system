@@ -110,10 +110,10 @@ const ConsultationPage: React.FC = () => {
             <ConsultationForm consultationReception={selected} />
           </Box>
           <Stack flexGrow={1} spacing={1}>
-            <Box flexGrow={1}>
+            <Box height="50%">
               <PrescriptionPicker />
             </Box>
-            <Box flexGrow={1}>
+            <Box flexGrow={1} overflow="scroll">
               <SimplePrescriptionForm />
             </Box>
           </Stack>

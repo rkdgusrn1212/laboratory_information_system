@@ -32,13 +32,12 @@ CREATE TABLE IF NOT EXISTS `prescription` (
   CONSTRAINT `FK_prescription_prescription_classification` FOREIGN KEY (`prescription_classification_code`) REFERENCES `prescription_classification` (`prescription_classification_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.prescription:~40 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.prescription:~42 rows (대략적) 내보내기
 DELETE FROM `prescription`;
 /*!40000 ALTER TABLE `prescription` DISABLE KEYS */;
 INSERT INTO `prescription` (`prescription_code`, `behavior_code`, `prescription_name`, `prescription_classification_code`, `prescription_slip_code`, `prescription_comment`) VALUES
 	('A0082', 'D0001010', 'Ach-r-binding Ab', 'CP', NULL, NULL),
 	('A0237', 'D0001010', 'Anti Cardiolipin IgG', 'CP', NULL, NULL),
-	('A0314', 'D4902010', '비타민검사', 'CP', NULL, NULL),
 	('A0341', 'D0001010', '1CTP', 'CP', NULL, NULL),
 	('A0352', 'D0001010', 'Acetazolamide', 'CP', NULL, NULL),
 	('A0414', 'D0001010', '1,5-Anhydroglucitol', 'CP', NULL, NULL),
@@ -68,14 +67,11 @@ INSERT INTO `prescription` (`prescription_code`, `behavior_code`, `prescription_
 	('B53611', 'D0001010', 'CMV IgM', 'CP', NULL, NULL),
 	('C3221', 'D0001010', '5-HIAA (Qual)', 'CP', NULL, NULL),
 	('C4691', 'D0001010', 'Adenovirus Ag (Stool)', 'CP', NULL, NULL),
-	('D0001', 'D0001010', '일반혈액검사1', 'CP', NULL, '하나만 요청'),
-	('D083200F', 'D083200F', '골수판독검', 'CP', NULL, '검사필'),
 	('H0225', 'D0001010', 'DMD/BMD Exon Deletion', 'CP', NULL, NULL),
 	('H0576', 'D0001010', 'ABCB11 gene mutation (PFIC2)', 'CP', NULL, NULL),
 	('H0667', 'D0001010', '(1-3)β-D-Glucan', 'CP', NULL, NULL),
 	('H0735', 'D0001010', 'AR gene, mutation (androgen insensitivity)', 'CP', NULL, NULL),
-	('H0827', 'D0001010', 'ALB gene, mutation [sequencing]', 'CP', NULL, NULL),
-	('LB0282', 'D0001010', '기본혈액분석', 'CP', NULL, NULL);
+	('H0827', 'D0001010', 'ALB gene, mutation [sequencing]', 'CP', NULL, NULL);
 /*!40000 ALTER TABLE `prescription` ENABLE KEYS */;
 
 -- 트리거 kanghoshin_lis.prescription_after_insert 구조 내보내기

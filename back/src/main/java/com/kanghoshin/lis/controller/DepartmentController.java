@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kanghoshin.lis.dto.department.ReadDepartmentDto;
+import com.kanghoshin.lis.dto.department.ReadDepartmentListDto;
 import com.kanghoshin.lis.service.DepartmentService;
 import com.kanghoshin.lis.vo.entity.DepartmentVo;
 
@@ -21,7 +21,7 @@ public class DepartmentController {
 	private final DepartmentService departmentService;
 	
 	@GetMapping("list")
-	public DepartmentVo[] readDepartmentList(@NotNull @Valid ReadDepartmentDto readDepartmentDto) {
+	public DepartmentVo[] readDepartmentList(@NotNull @Valid ReadDepartmentListDto readDepartmentDto) {
 		return departmentService.readDepartmentList(readDepartmentDto);
 	}
 }

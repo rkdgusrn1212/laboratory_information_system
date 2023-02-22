@@ -8,7 +8,6 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
-import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
