@@ -400,6 +400,7 @@ const SimplePrescriptionForm: React.FC = () => {
               fullWidth
               size="small"
               label="검체량"
+              type="number"
               value={testAmount}
               onChange={handleAmountChange}
               autoComplete="new-password"
@@ -429,7 +430,6 @@ const SimplePrescriptionForm: React.FC = () => {
           fullWidth
           size="small"
           label="참고치"
-          type="number"
           value={reference}
           onChange={handleReferenceChange}
           autoComplete="new-password"
