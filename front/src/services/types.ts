@@ -239,3 +239,11 @@ export interface Behavior {
   behaviorNameKr: string;
   behaviorNameEn: string;
 }
+export interface SpecimenType {
+  specimenTypeCode: string;
+  specimenTypeName: string;
+}
+export interface SpecimenContainer {
+  specimenContainerCode: string;
+  specimenContainerName: string;
+}

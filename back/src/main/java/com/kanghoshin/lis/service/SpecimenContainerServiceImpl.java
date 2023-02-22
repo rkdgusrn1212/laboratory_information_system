@@ -1,5 +1,6 @@
 package com.kanghoshin.lis.service;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -25,8 +26,7 @@ public class SpecimenContainerServiceImpl implements SpecimenContainerService {
 	}
 
 	@Override
-	public SpecimenContainerVo[] readSpecimenContainerList(
-			@NotNull ReadSpecimenContainerListDto readSpecimenContainerListDto) {
+	public SpecimenContainerVo[] readSpecimenContainerList(@NotNull @Valid ReadSpecimenContainerListDto readSpecimenContainerListDto) {
 		return specimenContainerMapper.select(readSpecimenContainerListDto);
 	}
 }

@@ -14,9 +14,9 @@ public class SpecimenTypeVo {
 
 	@NotBlank(message="검체(검체타입) 코드가 비어있습니다.")
 	@SpecimenTypeCodeConstraints
-	private final String specimenContainerCode;
+	private final String specimenTypeCode;
 	
 	@NotBlank(message="검체(검체 타입) 이름 비어있습니다.")
 	@Size(max=40, message="용기 이름이 너무 깁니다.") 
-	private final String specimenConatinerName;
+	private final String specimenTypeName;
 }
