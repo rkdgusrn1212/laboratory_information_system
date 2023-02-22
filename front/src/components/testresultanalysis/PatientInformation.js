@@ -1,11 +1,7 @@
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import Title from './Title';
 
-function preventDefault(event) {
-  event.preventDefault();
-}
 
 export default function PatientInformation() {
   return (
@@ -17,12 +13,6 @@ export default function PatientInformation() {
       <Typography color="text.secondary" sx={{ flex: 1 }}>
         2022/03/09 ~ 2022/03/13
       </Typography>
-     
-      <div>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          자세히
-        </Link>
-      </div>
     </React.Fragment>
   );
 }

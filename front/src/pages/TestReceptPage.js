@@ -6,11 +6,11 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import moment from 'moment';
 import { useState } from 'react';
 import ReceptList from '../components/testrecept/ReceptList';
 import { useAppSelector } from '../hooks';
 import { selectAccount } from '../services/accountSlice';
-import moment from 'moment';
 
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 
@@ -110,7 +110,7 @@ export default function TestReceptPage() {
 
   const handleinsert = (e) => {
     searchbarcode(e.target.value)
-    if (barcode != null) {
+    if (barcode !== null) {
       insertspecimen(e.target.value);
       alert('접수가 완료되었습니다.');
     }

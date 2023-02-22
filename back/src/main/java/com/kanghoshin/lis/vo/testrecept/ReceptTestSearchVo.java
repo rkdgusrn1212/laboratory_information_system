@@ -13,11 +13,11 @@ public class ReceptTestSearchVo {
 	
 	private int specimenNo;
 	
-	private String testSpecimen;
+	private String specimenTypeName;
 	
-	private int testAmount;
+	private int testPrescriptionAmount;
 
-	private String testContainer;
+	private String specimenContainerName;
 	
 	private int patientNo;
 	
@@ -27,9 +27,9 @@ public class ReceptTestSearchVo {
 	
 	private String PatientRrn;
 	
-	private String testCode;
+	private String prescriptionCode;
 	
-	private String testName;
+	private String prescriptionName;
 	
 	private String nurseName;
 	
@@ -37,6 +37,6 @@ public class ReceptTestSearchVo {
 
 	private String doctorName;
 	
-	private Date orderDate;
+	private Date prescriptionOrderTime;
 	
 }

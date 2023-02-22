@@ -11,9 +11,9 @@ public class ReceptTestListVo {
 	
 	private String patientName;
 	
-	private String testCode;
+	private String prescriptionCode;
 	
-	private String orderDate;
+	private String prescriptionOrderTime;
 	
 	private String collectDate;
 	
