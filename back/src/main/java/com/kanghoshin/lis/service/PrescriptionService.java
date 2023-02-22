@@ -15,4 +15,6 @@ public interface PrescriptionService {
 	void createPrescription(@NotNull @Valid CreatePrescriptionDto createCreatePrescriptionDto);
 
 	PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto);
+	
+	int count();
 }

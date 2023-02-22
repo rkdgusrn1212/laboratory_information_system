@@ -51,6 +51,12 @@ const prescriptionApi = createApi({
         url: '',
       }),
     }),
+    countPrescription: builder.query<number, void>({
+      query: () => ({
+        method: 'GET',
+        url: 'list/count',
+      }),
+    }),
   }),
 });
 
@@ -59,4 +65,6 @@ export const {
   useLazyReadPrescriptionListQuery,
   useReadPrescriptionListQuery,
   useCreatePrescriptionMutation,
+  useCountPrescriptionQuery,
+  useLazyCountPrescriptionQuery,
 } = prescriptionApi;
