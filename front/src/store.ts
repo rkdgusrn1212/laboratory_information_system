@@ -18,6 +18,9 @@ import doctorApi from './services/doctorApi';
 import departmentApi from './services/departmentApi';
 import consultationReceptionApi from './services/consultationReceptionApi';
 import prescriptionApi from './services/prescriptionApi';
+import behaviorApi from './services/behaviorApi';
+import specimenTypeApi from './services/specimenTypeApi';
+import specimenContainerApi from './services/specimenContainerApi';
 
 const rootReducer = combineReducers({
   account: accountSlice.reducer,
@@ -27,6 +30,9 @@ const rootReducer = combineReducers({
   [departmentApi.reducerPath]: departmentApi.reducer,
   [consultationReceptionApi.reducerPath]: consultationReceptionApi.reducer,
   [prescriptionApi.reducerPath]: prescriptionApi.reducer,
+  [behaviorApi.reducerPath]: behaviorApi.reducer,
+  [specimenTypeApi.reducerPath]: specimenTypeApi.reducer,
+  [specimenContainerApi.reducerPath]: specimenContainerApi.reducer,
 });
 
 const persistConfig = {
@@ -50,7 +56,10 @@ export const store = configureStore({
       .concat(doctorApi.middleware)
       .concat(departmentApi.middleware)
       .concat(consultationReceptionApi.middleware)
-      .concat(prescriptionApi.middleware),
+      .concat(prescriptionApi.middleware)
+      .concat(behaviorApi.middleware)
+      .concat(specimenTypeApi.middleware)
+      .concat(specimenContainerApi.middleware),
 });
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -232,3 +232,18 @@ export interface Prescription {
   prescriptionSlipCode: string | null;
   prescriptionComment: string | null;
 }
+
+export interface Behavior {
+  behaviorCode: string;
+  behaviorClassification: string;
+  behaviorNameKr: string;
+  behaviorNameEn: string;
+}
+export interface SpecimenType {
+  specimenTypeCode: string;
+  specimenTypeName: string;
+}
+export interface SpecimenContainer {
+  specimenContainerCode: string;
+  specimenContainerName: string;
+}

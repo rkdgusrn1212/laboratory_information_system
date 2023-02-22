@@ -18,6 +18,9 @@ export interface ReadPrescriptionListRequest extends ListRequest {
 
 export type ReadPrescriptionListResponse = Prescription[];
 
+export type CreatePrescriptionRequest = Partial<Prescription> &
+  Pick<Prescription, 'prescriptionCode' | 'prescriptionName'>;
+
 const prescriptionApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/prescription`,
@@ -41,6 +44,13 @@ const prescriptionApi = createApi({
         url: 'list',
       }),
     }),
+    createPrescription: builder.mutation<void, CreatePrescriptionRequest>({
+      query: (data) => ({
+        body: data,
+        method: 'POST',
+        url: '',
+      }),
+    }),
   }),
 });
 
@@ -48,4 +58,5 @@ export default prescriptionApi;
 export const {
   useLazyReadPrescriptionListQuery,
   useReadPrescriptionListQuery,
+  useCreatePrescriptionMutation,
 } = prescriptionApi;

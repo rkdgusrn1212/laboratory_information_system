@@ -18,5 +18,5 @@ public class SpecimenContainerVo {
 	
 	@NotBlank(message="용기 이름이 비어있습니다.")
 	@Size(max=40, message="용기 이름이 너무 깁니다.") 
-	private final String specimenConatinerName;
+	private final String specimenContainerName;
 }
