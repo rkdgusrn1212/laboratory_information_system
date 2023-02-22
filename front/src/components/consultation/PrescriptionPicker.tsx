@@ -20,8 +20,9 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import {
+  ReadPrescriptionListRequest,
   useLazyCountPrescriptionQuery,
   useLazyReadPrescriptionListQuery,
 } from '../../services/prescriptionApi';
@@ -51,9 +52,17 @@ const columns: readonly Column[] = [
 
 const ROW_PER_PAGE = 5;
 
+type ConditionStates = keyof Pick<
+  ReadPrescriptionListRequest,
+  'prescriptionCodeKey' | 'prescriptionNameKey'
+>;
+
 const PrescriptionPicker: React.FC = () => {
-  const [condition, setCondition] = useState('name');
+  const [condition, setCondition] = useState<ConditionStates>(
+    'prescriptionCodeKey',
+  );
   const [page, setPage] = useState(0);
+  const [searchKey, setSearchKey] = useState('');
   const [readPrescriptionList] = useLazyReadPrescriptionListQuery({
     pollingInterval: 20000,
   });
@@ -68,17 +77,22 @@ const PrescriptionPicker: React.FC = () => {
     readPrescriptionList({
       pageStart: page * ROW_PER_PAGE,
       pageSize: ROW_PER_PAGE,
+      [condition]: searchKey,
     })
       .unwrap()
       .then((data) => setRows(data));
-  }, [page, countPrescription, readPrescriptionList]);
+  }, [page, countPrescription, readPrescriptionList, condition, searchKey]);
+
+  const handleSearchKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchKey(event.target.value);
+  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
   const handleChange = (event: SelectChangeEvent) => {
-    setCondition(event.target.value as string);
+    setCondition(event.target.value as ConditionStates);
   };
 
   const emptyRows = Math.max(0, ROW_PER_PAGE - rows.length);
@@ -118,8 +132,8 @@ const PrescriptionPicker: React.FC = () => {
               label="검색조건"
               onChange={handleChange}
             >
-              <MenuItem value={'panel'}>처방코드</MenuItem>
-              <MenuItem value={'name'}>처방명</MenuItem>
+              <MenuItem value={'prescriptionCodeKey'}>처방코드</MenuItem>
+              <MenuItem value={'prescriptionNameKey'}>처방명</MenuItem>
             </Select>
           </FormControl>
           <FormControl sx={{ flexGrow: 1 }} variant="outlined" size="small">
@@ -127,6 +141,8 @@ const PrescriptionPicker: React.FC = () => {
             <OutlinedInput
               id="search"
               type="search"
+              value={searchKey}
+              onChange={handleSearchKeyChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton edge="end">
