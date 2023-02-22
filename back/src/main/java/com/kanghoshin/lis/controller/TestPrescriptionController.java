@@ -2,12 +2,12 @@ package com.kanghoshin.lis.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kanghoshin.lis.dto.testprescription.CreateTestPrescriptionDto;
+import com.kanghoshin.lis.dto.testprescription.UpdateTestPrescriptionDto;
 import com.kanghoshin.lis.service.TestPrescriptionService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,8 +19,8 @@ public class TestPrescriptionController {
 
 	private final TestPrescriptionService testPrescriptionService;
 	
-	@PostMapping
-	public void createTestPrescription(@Valid @RequestBody CreateTestPrescriptionDto createTestPrescriptionDto) {
-		testPrescriptionService.createTestPrescription(createTestPrescriptionDto);
+	@PatchMapping
+	public void createTestPrescription(@Valid @RequestBody UpdateTestPrescriptionDto createTestPrescriptionDto) {
+		testPrescriptionService.updateTestPrescription(createTestPrescriptionDto);
 	}
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
-public class ReadDepartmentDto extends ReadListDto{
+public class ReadDepartmentListDto extends ReadListDto{
 
 	@DepartmentCodeConstraints
 	String departmentCodeKey;

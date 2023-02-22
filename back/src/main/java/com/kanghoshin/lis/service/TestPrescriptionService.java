@@ -5,10 +5,10 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.validation.annotation.Validated;
 
-import com.kanghoshin.lis.dto.testprescription.CreateTestPrescriptionDto;
+import com.kanghoshin.lis.dto.testprescription.UpdateTestPrescriptionDto;
 
 @Validated
 public interface TestPrescriptionService {
 	
-	void createTestPrescription(@NotNull @Valid CreateTestPrescriptionDto createTestPrescriptionDto);
+	void updateTestPrescription(@NotNull @Valid UpdateTestPrescriptionDto createTestPrescriptionDto);
 }
