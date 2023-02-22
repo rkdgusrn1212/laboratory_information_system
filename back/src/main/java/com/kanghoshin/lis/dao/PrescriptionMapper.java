@@ -61,4 +61,7 @@ public interface PrescriptionMapper {
 			+ "limit #{readPrescriptionListDto.pageStart}, #{readPrescriptionListDto.pageSize} "
 			+ "</script>")
 	PrescriptionVo[] select(@Param("readPrescriptionListDto") ReadPrescriptionListDto readPrescriptionListDto);
+	
+	@Select("SELECT COUNT(*) FROM prescription")
+	int count();
 }

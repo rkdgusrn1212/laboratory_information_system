@@ -30,6 +30,12 @@ public class PrescriptionController {
 	
 	@GetMapping("list")
 	public PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto) {
+		
 		return prescriptionService.readPrescriptionList(readPrescriptionListDto);
+	}
+	
+	@GetMapping("list/count")
+	public int countPrescription() {
+		return prescriptionService.count();
 	}
 }

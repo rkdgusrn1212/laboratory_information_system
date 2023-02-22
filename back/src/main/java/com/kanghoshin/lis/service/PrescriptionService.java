@@ -16,4 +16,6 @@ public interface PrescriptionService {
 	void createPrescription(@NotNull @Valid CreatePrescriptionDto createCreatePrescriptionDto) throws GeneralErrorWithMessageException;
 
 	PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto);
+	
+	int count();
 }

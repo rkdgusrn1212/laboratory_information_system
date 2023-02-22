@@ -35,5 +35,9 @@ public class PrescriptionServiceImpl implements PrescriptionService{
 	public PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto) {
 		return prescriptionMapper.select(readPrescriptionListDto);
 	}
+	@Override
+	public int count() {
+		return prescriptionMapper.count();
+	}
 
 }
