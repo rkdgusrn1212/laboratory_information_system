@@ -1,14 +1,22 @@
 package com.kanghoshin.lis.dao;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.kanghoshin.lis.dto.consultation.CreateConsultationDto;
 import com.kanghoshin.lis.dto.consultation.ReadFullConsultationListDto;
 import com.kanghoshin.lis.vo.consultation.FullConsultationVo;
 
 @Mapper
 public interface ConsultationMapper {
+	
+	
+	@Insert("INSERT INTO consultation(consultation_reception_no) VALUES (#{createConsultationDto.consultationReceptionNo})")
+	@Options(useGeneratedKeys = true, keyProperty = "createConsultationDto.consultationNo")
+	int insert(@Param("createConsultationDto")CreateConsultationDto createConsultationDto);
 	
 	@Select("<script>"
 			+ "SELECT * FROM full_consultation "
