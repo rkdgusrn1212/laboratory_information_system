@@ -82,7 +82,7 @@ INSERT INTO `test_prescription` (`prescription_code`, `specimen_type_code`, `spe
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `test_prescription_after_delete` AFTER DELETE ON `test_prescription` FOR EACH ROW BEGIN
-UPDATE prescription SET prescription_classification_code = null WHERE prescription_code = OLD.prescription_code;
+DELETE FROM prescription WHERE prescription_code = OLD.prescription_code;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;

@@ -20,83 +20,98 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 
 import SearchIcon from '@mui/icons-material/Search';
-import { useEffect, useState } from 'react';
-import { useLazyReadPrescriptionListQuery } from '../../services/prescriptionApi';
+import { ChangeEvent, useEffect, useState } from 'react';
+import {
+  ReadPrescriptionListRequest,
+  useLazyCountPrescriptionQuery,
+  useLazyReadPrescriptionListQuery,
+} from '../../services/prescriptionApi';
 import { Prescription } from '../../services/types';
 
 interface Column {
   id: keyof Prescription;
   label: string;
-  minWidth?: number;
+  width?: number;
   align?: 'right';
   // eslint-disable-next-line no-unused-vars
   format?: (value: number) => string;
 }
 
 const columns: readonly Column[] = [
-  { id: 'prescriptionCode', label: '처방코드', minWidth: 100 },
+  { id: 'prescriptionCode', label: '처방코드', width: 100 },
   {
     id: 'prescriptionName',
     label: '처방명',
-    minWidth: 170,
-  },
-  {
-    id: 'prescriptionComment',
-    label: '메모',
   },
   {
     id: 'prescriptionClassificationCode',
     label: '분류',
+    width: 80,
   },
 ];
 
-const PrescriptionPicker: React.FC = () => {
-  const [condition, setCondition] = useState('name');
+const ROW_PER_PAGE = 5;
+
+type ConditionStates = keyof Pick<
+  ReadPrescriptionListRequest,
+  'prescriptionCodeKey' | 'prescriptionNameKey'
+>;
+
+const PrescriptionPicker: React.FC<{
+  // eslint-disable-next-line no-unused-vars
+  onPrescriptionPick: (prescription: Prescription) => void;
+}> = ({ onPrescriptionPick }) => {
+  const [condition, setCondition] = useState<ConditionStates>(
+    'prescriptionCodeKey',
+  );
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchKey, setSearchKey] = useState('');
   const [readPrescriptionList] = useLazyReadPrescriptionListQuery({
     pollingInterval: 20000,
   });
+  const [countPrescription, countPrescriptionResult] =
+    useLazyCountPrescriptionQuery({
+      pollingInterval: 20000,
+    });
   const [rows, setRows] = useState<Prescription[]>([]);
 
   useEffect(() => {
+    countPrescription();
     readPrescriptionList({
-      pageStart: page * rowsPerPage,
-      pageSize: rowsPerPage,
+      pageStart: page * ROW_PER_PAGE,
+      pageSize: ROW_PER_PAGE,
+      [condition]: searchKey,
     })
       .unwrap()
       .then((data) => setRows(data));
-  }, [page, readPrescriptionList, rowsPerPage]);
+  }, [page, countPrescription, readPrescriptionList, condition, searchKey]);
+
+  const handleSearchKeyChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchKey(event.target.value);
+  };
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
   const handleChange = (event: SelectChangeEvent) => {
-    setCondition(event.target.value as string);
+    setCondition(event.target.value as ConditionStates);
   };
 
-  const emptyRows = Math.max(0, rowsPerPage - rows.length);
+  const emptyRows = Math.max(0, ROW_PER_PAGE - rows.length);
 
   return (
     <Paper
       sx={{
         height: '100%',
-        py: 3,
-        minWidth: 400,
+        pt: 3,
       }}
     >
       <Stack
         direction="column"
         alignContent="stretch"
         justifyContent="start"
+        width={500}
         height="100%"
       >
         <Typography variant="h6" ml={3} mb={2}>
@@ -120,8 +135,8 @@ const PrescriptionPicker: React.FC = () => {
               label="검색조건"
               onChange={handleChange}
             >
-              <MenuItem value={'panel'}>처방코드</MenuItem>
-              <MenuItem value={'name'}>처방명</MenuItem>
+              <MenuItem value={'prescriptionCodeKey'}>처방코드</MenuItem>
+              <MenuItem value={'prescriptionNameKey'}>처방명</MenuItem>
             </Select>
           </FormControl>
           <FormControl sx={{ flexGrow: 1 }} variant="outlined" size="small">
@@ -129,6 +144,8 @@ const PrescriptionPicker: React.FC = () => {
             <OutlinedInput
               id="search"
               type="search"
+              value={searchKey}
+              onChange={handleSearchKeyChange}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton edge="end">
@@ -153,7 +170,7 @@ const PrescriptionPicker: React.FC = () => {
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ minWidth: column.minWidth }}
+                    style={{ width: column.width }}
                   >
                     {column.label}
                   </TableCell>
@@ -161,36 +178,35 @@ const PrescriptionPicker: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.prescriptionCode}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  );
-                })}
+              {rows.map((row) => {
+                return (
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    onClick={() => onPrescriptionPick(row)}
+                    tabIndex={-1}
+                    key={row.prescriptionCode}
+                  >
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <TableCell key={column.id} align={column.align}>
+                          {column.format && typeof value === 'number'
+                            ? column.format(value)
+                            : value}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
               {emptyRows > 0 && (
                 <TableRow
                   style={{
                     height: 33 * emptyRows,
                   }}
                 >
-                  <TableCell colSpan={2} />
+                  <TableCell colSpan={3} />
                 </TableRow>
               )}
             </TableBody>
@@ -198,13 +214,14 @@ const PrescriptionPicker: React.FC = () => {
         </TableContainer>
         <TablePagination
           sx={{ overflow: 'unset' }}
-          rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={1000}
-          rowsPerPage={rowsPerPage}
+          count={
+            countPrescriptionResult.data ? countPrescriptionResult.data : 0
+          }
+          rowsPerPage={ROW_PER_PAGE}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[ROW_PER_PAGE]}
         />
       </Stack>
     </Paper>

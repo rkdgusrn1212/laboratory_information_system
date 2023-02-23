@@ -247,3 +247,32 @@ export interface SpecimenContainer {
   specimenContainerCode: string;
   specimenContainerName: string;
 }
+export interface TestPrescription extends Prescription {
+  specimenTypeCode: string | null;
+  specimenContainerCode: string | null;
+  testPrescriptionAmount: number | null;
+  testPrescriptionUnit: string | null;
+  testPrescriptionReference: string | null;
+  testFieldCode: string | null;
+}
+
+export const isTestPrescription = (
+  prescription: Prescription,
+): prescription is TestPrescription =>
+  prescription.prescriptionClassificationCode === 'CP';
+
+export interface TestField {
+  testFieldCode: string;
+  testFieldName: string;
+}
+
+export interface PrescriptionOrder {
+  prescriptionOrderNo: number;
+  consultationNo: number;
+  prescriptionCode: string;
+}
+export interface Consultation {
+  consultationNo: number;
+  consultationTime: string;
+  consultationReceptionNo: number;
+}

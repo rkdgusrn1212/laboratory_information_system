@@ -1,9 +1,21 @@
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { ChangeEvent, forwardRef, useCallback, useMemo, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Alert from '@mui/material/Alert';
+import Button from '@mui/material/Button';
 import Autocomplete from '@mui/material/Autocomplete';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Slide from '@mui/material/Slide';
+import { TransitionProps } from '@mui/material/transitions';
+import Collapse from '@mui/material/Collapse';
+
 import { useLazyReadBehaviorListQuery } from '../../services/behaviorApi';
 import {
   Behavior,
@@ -12,8 +24,22 @@ import {
 } from '../../services/types';
 import { useLazyReadSpecimenTypeListQuery } from '../../services/specimenTypeApi';
 import { useLazyReadSpecimenContainerListQuery } from '../../services/specimenContainerApi';
-import { Button } from '@mui/material';
-import { useCreatePrescriptionMutation } from '../../services/prescriptionApi';
+import {
+  useCreatePrescriptionMutation,
+  isCreatePrescriptionError,
+} from '../../services/prescriptionApi';
+import { useUpdateTestPrescriptionMutation } from '../../services/testPrescriptionApi';
+import { SelectChangeEvent } from '@mui/material';
+import TestFieldSelectInput from '../common/TestFieldSelectInput';
+
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const SimplePrescriptionForm: React.FC = () => {
   const [prescriptionCode, setPrescriptionCode] = useState('');
@@ -29,6 +55,10 @@ const SimplePrescriptionForm: React.FC = () => {
   const [comment, setComment] = useState('');
   const [unit, setUnit] = useState('');
   const [reference, setReference] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+  const [testFieldCode, setTestFieldCode] = useState('');
+  const [testAmount, setTestAmount] = useState(0);
   const [readBehaviorList, readBehaviorListResult] =
     useLazyReadBehaviorListQuery({ pollingInterval: 20000 });
   const [readSpecimenTypeList, readSpecimenTypeListResult] =
@@ -36,8 +66,10 @@ const SimplePrescriptionForm: React.FC = () => {
   const [readSpecimenContainerList, readSpecimenContainerListResult] =
     useLazyReadSpecimenContainerListQuery({ pollingInterval: 20000 });
 
-  const [createPrescription, createPrescriptionState] =
+  const [createPrescription, createPrescriptionResult] =
     useCreatePrescriptionMutation();
+  const [updateTestPrescription, updateTestPrescriptionResult] =
+    useUpdateTestPrescriptionMutation();
 
   const handleCommentChange = (event: ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
@@ -85,7 +117,9 @@ const SimplePrescriptionForm: React.FC = () => {
     setPrescriptionCode(value ? value.behaviorCode : '');
     setPrescriptionName(value ? value?.behaviorNameKr : '');
     if (value && value.behaviorCode.charAt(0) === 'D') {
-      setPrescriptionClassification(value ? 'CP' : '');
+      setPrescriptionClassification('CP');
+    } else {
+      setPrescriptionClassification('');
     }
   };
 
@@ -127,6 +161,10 @@ const SimplePrescriptionForm: React.FC = () => {
     [readSpecimenContainerList],
   );
 
+  const handleDialogClose = () => {
+    setOpen(false);
+  };
+
   const behaviorOptions: readonly Behavior[] = useMemo(
     () => (readBehaviorListResult.data ? readBehaviorListResult.data : []),
     [readBehaviorListResult.data],
@@ -149,10 +187,52 @@ const SimplePrescriptionForm: React.FC = () => {
   const handleClick = () => {
     createPrescription({
       prescriptionCode,
+      behaviorCode: behaviorCode.length > 0 ? behaviorCode : null,
       prescriptionName,
-      prescriptionComment: comment,
-    });
+      prescriptionComment: comment.length > 0 ? comment : null,
+    })
+      .unwrap()
+      .then(() => {
+        updateTestPrescription({
+          prescriptionCode,
+          specimenContainerCode: specimenContainer
+            ? specimenContainer.specimenContainerCode
+            : null,
+          specimenTypeCode: specimenType ? specimenType.specimenTypeCode : null,
+          testPrescriptionUnit: unit.length > 0 ? unit : null,
+          testPrescriptionReference: reference.length > 0 ? reference : null,
+          testFieldCode: testFieldCode.length > 0 ? testFieldCode : null,
+          testPrescriptionAmount: testAmount,
+        })
+          .unwrap()
+          .then(() => {
+            setError(null);
+          })
+          .catch(() => {
+            setError('새 처방 등록을 실패했습니다.');
+          });
+      })
+      .catch((data) => {
+        if (
+          isCreatePrescriptionError(data) &&
+          data.data.code === 'DUPLICATED'
+        ) {
+          setError('이미 처방코드가 존재합니다');
+          setOpen(true);
+        } else {
+          setError('새 처방 등록을 실패했습니다.');
+        }
+      });
   };
+
+  const handleTestFieldChange = (event: SelectChangeEvent) => {
+    setTestFieldCode(event.target.value);
+  };
+
+  const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTestAmount(parseInt(event.target.value));
+  };
+
   return (
     <Paper sx={{ height: '100%', py: 3, px: 1 }}>
       <Typography variant="h6" ml={2} mb={2}>
@@ -226,102 +306,7 @@ const SimplePrescriptionForm: React.FC = () => {
           />
         </Box>
       </Box>
-      <Box mt={1} display="flex" gap={1}>
-        <Box width={100} flexGrow={1}>
-          <Autocomplete
-            fullWidth
-            options={specimenTypeOptions}
-            autoHighlight
-            inputValue={specimenTypeName}
-            onInputChange={handleSpecimenTypeCodeChange}
-            isOptionEqualToValue={(option, value) =>
-              option.specimenTypeCode === value.specimenTypeCode
-            }
-            onChange={handleSpecimenTypeChange}
-            getOptionLabel={(option) => option.specimenTypeName}
-            renderOption={(props, option) => (
-              <Box
-                component="li"
-                sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-                {...props}
-              >
-                <Typography fontSize="12px">
-                  {option.specimenTypeCode} {option.specimenTypeName}
-                </Typography>
-              </Box>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                size="small"
-                label="검체 선택"
-                inputProps={{
-                  ...params.inputProps,
-                  autoComplete: 'new-password',
-                }}
-              />
-            )}
-          />
-        </Box>
-        <Box width={100} flexGrow={1}>
-          <Autocomplete
-            fullWidth
-            options={specimenContainerOptions}
-            autoHighlight
-            inputValue={specimenContainerName}
-            onInputChange={handleSpecimenContainerCodeChange}
-            isOptionEqualToValue={(option, value) =>
-              option.specimenContainerCode === value.specimenContainerCode
-            }
-            onChange={handleSpecimenContainerChange}
-            getOptionLabel={(option) => option.specimenContainerName}
-            renderOption={(props, option) => (
-              <Box
-                component="li"
-                sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
-                {...props}
-              >
-                <Typography fontSize="12px">
-                  {option.specimenContainerCode} {option.specimenContainerName}
-                </Typography>
-              </Box>
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                fullWidth
-                size="small"
-                label="용기 선택"
-                inputProps={{
-                  ...params.inputProps,
-                  autoComplete: 'new-password',
-                }}
-              />
-            )}
-          />
-        </Box>
-      </Box>
-      <Box display="flex" gap={1} mt={1}>
-        <Box width={100}>
-          <TextField
-            fullWidth
-            size="small"
-            label="단위"
-            value={unit}
-            onChange={handleUnitChange}
-            autoComplete="new-password"
-          />
-        </Box>
-        <TextField
-          fullWidth
-          size="small"
-          label="참고치"
-          value={reference}
-          onChange={handleReferenceChange}
-          autoComplete="new-password"
-        />
-      </Box>
+
       <TextField
         fullWidth
         sx={{ mt: 1 }}
@@ -331,14 +316,182 @@ const SimplePrescriptionForm: React.FC = () => {
         onChange={handleCommentChange}
         autoComplete="new-password"
       />
-      <Button
-        fullWidth
-        variant="contained"
-        sx={{ mt: 1 }}
-        onClick={handleClick}
+      <Collapse in={prescriptionClassfication === 'CP'}>
+        <Box mt={1} display="flex" gap={1}>
+          <Box width={100} flexGrow={1}>
+            <Autocomplete
+              fullWidth
+              options={specimenTypeOptions}
+              autoHighlight
+              inputValue={specimenTypeName}
+              onInputChange={handleSpecimenTypeCodeChange}
+              isOptionEqualToValue={(option, value) =>
+                option.specimenTypeCode === value.specimenTypeCode
+              }
+              onChange={handleSpecimenTypeChange}
+              getOptionLabel={(option) => option.specimenTypeName}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                >
+                  <Typography fontSize="12px">
+                    {option.specimenTypeCode} {option.specimenTypeName}
+                  </Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  size="small"
+                  label="검체 선택"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: 'new-password',
+                  }}
+                />
+              )}
+            />
+          </Box>
+          <Box width={100} flexGrow={1}>
+            <Autocomplete
+              fullWidth
+              options={specimenContainerOptions}
+              autoHighlight
+              inputValue={specimenContainerName}
+              onInputChange={handleSpecimenContainerCodeChange}
+              isOptionEqualToValue={(option, value) =>
+                option.specimenContainerCode === value.specimenContainerCode
+              }
+              onChange={handleSpecimenContainerChange}
+              getOptionLabel={(option) => option.specimenContainerName}
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+                  {...props}
+                >
+                  <Typography fontSize="12px">
+                    {option.specimenContainerCode}{' '}
+                    {option.specimenContainerName}
+                  </Typography>
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  size="small"
+                  label="용기 선택"
+                  inputProps={{
+                    ...params.inputProps,
+                    autoComplete: 'new-password',
+                  }}
+                />
+              )}
+            />
+          </Box>
+        </Box>
+        <Box display="flex" gap={1} mt={1} alignItems="center">
+          <Box width={100}>
+            <TextField
+              fullWidth
+              size="small"
+              label="검체량"
+              type="number"
+              value={testAmount}
+              onChange={handleAmountChange}
+              autoComplete="new-password"
+            />
+          </Box>
+          <Box width={100}>
+            <TextField
+              fullWidth
+              size="small"
+              label="단위"
+              value={unit}
+              onChange={handleUnitChange}
+              autoComplete="new-password"
+            />
+          </Box>
+          <TestFieldSelectInput
+            label="검사분류"
+            value={testFieldCode}
+            fullWidth
+            onChange={handleTestFieldChange}
+            size="small"
+            variant="outlined"
+          />
+        </Box>
+        <TextField
+          sx={{ mt: 1 }}
+          fullWidth
+          size="small"
+          label="참고치"
+          value={reference}
+          onChange={handleReferenceChange}
+          autoComplete="new-password"
+        />
+      </Collapse>
+      <Box display="flex" width="100%" justifyContent="flex-end" mt={1}>
+        {updateTestPrescriptionResult.isSuccess && (
+          <Alert severity="success" sx={{ flexGrow: 1, mx: 1 }}>
+            등록되었습니다.
+          </Alert>
+        )}
+        {error && (
+          <Alert severity="error" sx={{ flexGrow: 1, mx: 1 }}>
+            {error}
+          </Alert>
+        )}
+        <Box sx={{ position: 'relative' }}>
+          <Button
+            variant="contained"
+            onClick={handleClick}
+            disabled={
+              prescriptionCode.length < 1 ||
+              prescriptionName.length < 1 ||
+              updateTestPrescriptionResult.isLoading
+            }
+            color="secondary"
+          >
+            등록
+          </Button>
+          {(createPrescriptionResult.isLoading ||
+            updateTestPrescriptionResult.isLoading) && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: '',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          )}
+        </Box>
+      </Box>
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleDialogClose}
       >
-        등록
-      </Button>
+        <DialogTitle>{'동일한 처방코드가 존재합니다'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            기존 처방을 수정하는 페이지로 이동하시겠습니까?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>아니오</Button>
+          <Button onClick={handleDialogClose}>네</Button>
+        </DialogActions>
+      </Dialog>
     </Paper>
   );
 };

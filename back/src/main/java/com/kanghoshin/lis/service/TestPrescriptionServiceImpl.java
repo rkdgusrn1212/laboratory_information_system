@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 
 import com.kanghoshin.lis.dao.TestPrescriptionMapper;
-import com.kanghoshin.lis.dto.testprescription.CreateTestPrescriptionDto;
+import com.kanghoshin.lis.dto.testprescription.UpdateTestPrescriptionDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +18,7 @@ public class TestPrescriptionServiceImpl implements TestPrescriptionService {
 	private final TestPrescriptionMapper testPrescriptionMapper;
 
 	@Override
-	public void createTestPrescription(@NotNull @Valid CreateTestPrescriptionDto createTestPrescriptionDto) {
-		testPrescriptionMapper.createTestPrescription(createTestPrescriptionDto);
+	public void updateTestPrescription(@NotNull @Valid UpdateTestPrescriptionDto updateTestPrescriptionDto) {
+		testPrescriptionMapper.updateTestPrescription(updateTestPrescriptionDto);
 	}
 }
