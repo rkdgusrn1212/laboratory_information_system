@@ -57,7 +57,10 @@ type ConditionStates = keyof Pick<
   'prescriptionCodeKey' | 'prescriptionNameKey'
 >;
 
-const PrescriptionPicker: React.FC = () => {
+const PrescriptionPicker: React.FC<{
+  // eslint-disable-next-line no-unused-vars
+  onPrescriptionPick: (prescription: Prescription) => void;
+}> = ({ onPrescriptionPick }) => {
   const [condition, setCondition] = useState<ConditionStates>(
     'prescriptionCodeKey',
   );
@@ -180,6 +183,7 @@ const PrescriptionPicker: React.FC = () => {
                   <TableRow
                     hover
                     role="checkbox"
+                    onClick={() => onPrescriptionPick(row)}
                     tabIndex={-1}
                     key={row.prescriptionCode}
                   >

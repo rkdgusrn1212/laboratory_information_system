@@ -255,6 +255,12 @@ export interface TestPrescription extends Prescription {
   testPrescriptionReference: string | null;
   testFieldCode: string | null;
 }
+
+export const isTestPrescription = (
+  prescription: Prescription,
+): prescription is TestPrescription =>
+  prescription.prescriptionClassificationCode === 'CP';
+
 export interface TestField {
   testFieldCode: string;
   testFieldName: string;

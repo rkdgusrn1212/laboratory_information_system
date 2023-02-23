@@ -11,13 +11,14 @@ import Skeleton from '@mui/material/Skeleton';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 
-import { ConsultationReception } from '../../services/types';
+import { ConsultationReception, Prescription } from '../../services/types';
 import OrderTable from './OrderTable';
 import { useReadPatientByPatientNoQuery } from '../../services/patientApi';
 
 const ConsultationForm: React.FC<{
   consultationReception: ConsultationReception | undefined;
-}> = ({ consultationReception }) => {
+  prescriptionList: Prescription[];
+}> = ({ consultationReception, prescriptionList }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const startTime = useMemo<number>(() => Date.now(), [consultationReception]);
   const [during, setDuring] = useState<string>('00:00');
@@ -207,6 +208,7 @@ const ConsultationForm: React.FC<{
           </Typography>
           <Box sx={{ flexGrow: 1 }}>
             <OrderTable
+              prescriptionList={prescriptionList}
               disabled={findPatientByPatientIdResult.data === undefined}
             />
           </Box>

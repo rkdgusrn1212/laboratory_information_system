@@ -16,7 +16,11 @@ import Button from '@mui/material/Button';
 import ConsultationForm from '../components/consultation/ConsultationForm';
 import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
 import ConsultationReceptionPicker from '../components/consultation/ConsultationRecptionPicker';
-import { ConsultationReception } from '../services/types';
+import {
+  ConsultationReception,
+  isTestPrescription,
+  Prescription,
+} from '../services/types';
 import SimplePrescriptionForm from '../components/consultation/SimplePrescriptionForm';
 
 const theme = createTheme({
@@ -60,6 +64,16 @@ const ConsultationPage: React.FC = () => {
     open: false,
     data: undefined,
   });
+  const [prescriptionList, setPrescriptionList] = useState<Prescription[]>([]);
+
+  const handlePrescriptionPick = (prescription: Prescription) => {
+    for (const elem of prescriptionList) {
+      if (elem.prescriptionCode === prescription.prescriptionCode) {
+        return;
+      }
+    }
+    setPrescriptionList([...prescriptionList, prescription]);
+  };
 
   const handleSelected = (item: ConsultationReception | undefined) => {
     if (
@@ -107,11 +121,14 @@ const ConsultationPage: React.FC = () => {
               }),
             }}
           >
-            <ConsultationForm consultationReception={selected} />
+            <ConsultationForm
+              consultationReception={selected}
+              prescriptionList={prescriptionList}
+            />
           </Box>
           <Stack flexGrow={1} spacing={1}>
             <Box height="50%">
-              <PrescriptionPicker />
+              <PrescriptionPicker onPrescriptionPick={handlePrescriptionPick} />
             </Box>
             <Box flexGrow={1} overflow="scroll">
               <SimplePrescriptionForm />
