@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.dto.consultation.CreateConsultationDto;
 import com.kanghoshin.lis.dto.consultation.ReadFullConsultationListDto;
+import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.service.ConsultationService;
 import com.kanghoshin.lis.vo.consultation.FullConsultationVo;
+import com.kanghoshin.lis.vo.entity.ConsultationVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +30,7 @@ public class ConsultationController {
 	}
 	
 	@PostMapping
-	public int createConsultation(@Valid @RequestBody CreateConsultationDto createConsultationDto) {
+	public ConsultationVo createConsultation(@Valid @RequestBody CreateConsultationDto createConsultationDto) throws GeneralErrorWithMessageException {
 		return consultationService.createConsultation(createConsultationDto);
 	}
 }

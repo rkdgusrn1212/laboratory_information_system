@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef, useCallback, useState } from 'react';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme, Container } from '@mui/material';
@@ -16,11 +16,7 @@ import Button from '@mui/material/Button';
 import ConsultationForm from '../components/consultation/ConsultationForm';
 import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
 import ConsultationReceptionPicker from '../components/consultation/ConsultationRecptionPicker';
-import {
-  ConsultationReception,
-  isTestPrescription,
-  Prescription,
-} from '../services/types';
+import { ConsultationReception, Prescription } from '../services/types';
 import SimplePrescriptionForm from '../components/consultation/SimplePrescriptionForm';
 
 const theme = createTheme({
@@ -75,9 +71,16 @@ const ConsultationPage: React.FC = () => {
     setPrescriptionList([...prescriptionList, prescription]);
   };
 
-  const handlePrescriptionListChanged = (prescriptionList: Prescription[]) => [
-    setPrescriptionList(prescriptionList),
-  ];
+  const handlePrescriptionListChanged = useCallback(
+    (prescriptionList: Prescription[]) => {
+      setPrescriptionList(prescriptionList);
+    },
+    [],
+  );
+
+  const handleResetPrescription = useCallback(() => {
+    setPrescriptionList([]);
+  }, []);
 
   const handleSelected = (item: ConsultationReception | undefined) => {
     if (
@@ -91,7 +94,7 @@ const ConsultationPage: React.FC = () => {
     }
   };
 
-  const handleAccept = () => {
+  const handleReset = () => {
     setSelected(dialog.data);
     setDialog({ open: false, data: undefined });
   };
@@ -129,6 +132,7 @@ const ConsultationPage: React.FC = () => {
               consultationReception={selected}
               prescriptionList={prescriptionList}
               onPrescriptionListChanged={handlePrescriptionListChanged}
+              onResetPrescription={handleResetPrescription}
             />
           </Box>
           <Stack flexGrow={1} spacing={1}>
@@ -147,17 +151,20 @@ const ConsultationPage: React.FC = () => {
           onClose={handleClose}
           aria-describedby="alert-dialog-slide-description"
         >
-          <DialogTitle>{'현재 진료중인 환자가 있습니다'}</DialogTitle>
+          <DialogTitle>{'진료를 취소하시겠습니까?'}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
-              현재 진료중인 환자가 있습니다. 진료중인 기록을 제출하거나,
-              초기화하고 진행할 수 있습니다.
+              진료기록 작성 중 취소하면. 진료여부는 서버에 기록되지만 오더는
+              발생하지 않습니다.
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose}>취소</Button>
-            <Button onClick={handleAccept}>초기화</Button>
-            <Button onClick={handleAccept}>제출</Button>
+            <Button variant="outlined" onClick={handleClose}>
+              돌아가기
+            </Button>
+            <Button variant="contained" onClick={handleReset}>
+              진료 취소
+            </Button>
           </DialogActions>
         </Dialog>
       </Container>

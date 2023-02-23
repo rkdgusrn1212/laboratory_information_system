@@ -265,3 +265,14 @@ export interface TestField {
   testFieldCode: string;
   testFieldName: string;
 }
+
+export interface PrescriptionOrder {
+  prescriptionOrderNo: number;
+  consultationNo: number;
+  prescriptionCode: string;
+}
+export interface Consultation {
+  consultationNo: number;
+  consultationTime: string;
+  consultationReceptionNo: number;
+}
