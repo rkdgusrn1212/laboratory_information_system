@@ -14,7 +14,7 @@ import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
 import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
-import com.kanghoshin.lis.vo.collect.CollectVisitVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionOrderVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -50,6 +50,9 @@ public interface CollectMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "specimenDto.specimenNo")
 	void specimeninsertbsystaffno(@Param("specimenDto") SpecimenDto specimenDto);
 
+	
+
+	
 	@Select("SELECT Inadequate_type_code as InadequateTypeCode, Inadequate_type_name as InadequateTypeName,Inadequate_type_brief_explanation as InadequateTypeBriefExplanation FROM inadequate_type")
 	List<InadequateTypeVo> listInadequate_typeall();
 
@@ -124,7 +127,7 @@ public interface CollectMapper {
 			+"WHERE doctor.department_code = department.department_code "
 			+"and doctor.staff_no = staff.staff_no AND staff.staff_no = visit.visit_doctor "
 			+"and patient.patient_no = visit.patient_no AND patient.patient_no = #{patientNo} order BY visit.visit_no desc")
-	List<CollectVisitVo> findVisitByPatientNo(@Param("patientNo") String patientNo);
+	List<CollectPrescriptionOrderVo> findVisitByPatientNo(@Param("patientNo") String patientNo);
 	
 	
 	//교체필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -137,33 +140,35 @@ public interface CollectMapper {
 	@Select("SELECT prescription_order_no AS orderNo,specimen_no AS specimenNo FROM recept_collection WHERE prescription_order_no = #{orderNo} order by specimen_no desc")
 	List<ReceptCollectionVo> findReceptCollectionbyorderno(@Param("orderNo") String orderNo);
 	
-	
-	@Select("SELECT prescription.prescription_code AS prescriptionCode,visit.visit_no AS visitNo, "
-					+"order1.order_no AS orderNo,order1.order_date AS orderDate, "
-					+"diagnostic_test.diagnostic_test_container AS testContainer,diagnostic_test.diagnostic_test_name AS testName, "
-					+"staff.staff_name AS visitDoctor,department.department_name AS departmentName,test_field.test_field_name as fieldName "
-					+"FROM patient ,visit, order1,prescription,diagnostic_test,doctor,staff,department,test_field "
-					+"WHERE test_field.test_field_no=diagnostic_test.field_no "
-					+"and department.department_code= doctor.department_code "
-					+"and doctor.staff_no = staff.staff_no and doctor.staff_no= visit.visit_doctor "
-					+"and diagnostic_test.diagnostic_test_code = prescription.diagnostic_test_code "
-					+"and prescription.prescription_code =order1.prescription_code and order1.visit_no= visit.visit_no "
-					+"AND visit.patient_no = patient.patient_no and patient.patient_no= #{patientNo} order by visit.visit_no desc ")
-	List<CollectPrescriptionVo> findPrebyPatientNo(@Param("patientNo")String patientNo);
-	
-	//
+	//내원 정보 불러오기
 	@Select(
-			"SELECT order1.order_no AS orderNo,recept_collection.specimen_no as specimenNo ,specimen.staff_no AS printstaffNo,specimen.specimen_date AS specimenDate, "
-			+"staff.staff_name AS visitDoctor,department.department_name as departmentName,prescription.prescription_code AS prescriptionCode, "
-			+"patient.patient_name AS patientName,patient.patient_no AS patientNo ,diagnostic_test.diagnostic_test_name AS testName, "
-			+"diagnostic_test.diagnostic_test_container AS testContainer ,test_field.test_field_name AS fieldName, visit.visit_no as visitNo, " 
-			+"order1.order_date AS orderDate "
-			+"FROM order1,recept_collection,specimen,visit,doctor,staff,department,prescription,patient,diagnostic_test,test_field "
-			+"WHERE test_field.test_field_no=diagnostic_test.field_no "
-			+"and visit.patient_no= patient.patient_no AND diagnostic_test.diagnostic_test_code = prescription.diagnostic_test_code "
-			+"and prescription.prescription_code = order1.prescription_code and doctor.department_code= department.department_code "  
-			+"and doctor.staff_no = staff.staff_no and doctor.staff_no =visit.visit_doctor "
-			+"and visit.visit_no= order1.visit_no and specimen.specimen_no= recept_collection.specimen_no "
-			+"and recept_collection.order_no= order1.order_no and order1.order_no = #{orderNo} ")
+			"SELECT consultation.consultation_no AS consultationNo ,consultation.consultation_time AS consultationTime, "
+			+"department.department_name AS departmentName,staff.staff_name AS visitDoctor "
+			+"FROM consultation, consultation_reception, patient ,doctor,department,staff "
+			+"WHERE doctor.staff_no=staff.staff_no "
+			+"and department.department_code= doctor.department_code "
+			+"and consultation_reception.staff_no= doctor.staff_no "
+			+"AND consultation.consultation_reception_no = consultation_reception.consultation_reception_no "
+			+"AND patient.patient_no= consultation_reception.patient_no "
+			+"AND patient.patient_no = #{patientNo} "
+			+"ORDER BY consultation.consultation_time desc ")
+	List<CollectPrescriptionVo> findconsultationPatientNo(@Param("patientNo")String patientNo);
+	
+	//오더 번호로 처방 정보 불러오기
+	@Select("SELECT consultation.consultation_no AS consultationNo,prescription_order.prescription_order_no AS orderNo, "
+			+"department.department_name AS departmentName,staff.staff_name AS visitDoctor,prescription.prescription_code AS prescriptionCode, "
+			+"prescription.prescription_name AS prescriptionName, "
+			+"test_prescription.specimen_type_code AS specimenTypeCode,specimen_type.specimen_type_name AS specimenTypeName "
+			+"FROM prescription_order, consultation, consultation_reception, patient, doctor,department,staff,prescription,test_prescription,specimen_type "
+			+"WHERE test_prescription.specimen_type_code= specimen_type.specimen_type_code "
+			+"and prescription.prescription_code= prescription_order.prescription_code=test_prescription.prescription_code "
+			+"and doctor.staff_no= staff.staff_no "
+			+"and department.department_code= doctor.department_code "
+			+"and consultation_reception.staff_no= doctor.staff_no "
+			+"and prescription_order.consultation_no = consultation.consultation_no "
+			+"AND consultation.consultation_reception_no = consultation_reception.consultation_reception_no "
+			+"AND patient.patient_no = consultation_reception.patient_no "
+			+"AND prescription_order.prescription_order_no= #{orderNo} "
+	)
 	List<CollectPrescriptionVo> findPrebyOrderNo(@Param("orderNo")String orderNo); 
 }

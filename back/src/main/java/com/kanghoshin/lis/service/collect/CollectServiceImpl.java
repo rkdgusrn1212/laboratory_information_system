@@ -17,7 +17,7 @@ import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
 import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
-import com.kanghoshin.lis.vo.collect.CollectVisitVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionOrderVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -43,6 +43,7 @@ public class CollectServiceImpl implements CollectService {
 		CollectSpecimenVo findbyspecimenno = null;
 		try {
 			collectMapper.specimeninsertbsystaffno(specimenDto);
+
 			collectMapper.insertReceptCollection(specimenDto);
 
 		} catch (Exception e) {
@@ -51,6 +52,22 @@ public class CollectServiceImpl implements CollectService {
 		transactionManager.commit(txStatus);
 		return findbyspecimenno;
 	}
+	//검체 만들고 접수 하고 검체번호 받아오기
+	@Override
+	public String createSpecimengetno(SpecimenDto specimenDto) {
+
+		collectMapper.specimeninsertbsystaffno(specimenDto);
+		
+		collectMapper.insertReceptCollection(specimenDto);
+		return specimenDto.getSpecimenNo();
+	}
+	//검체 번호 입력 받아서 접수만 하기
+	@Override
+	public void createReceptCollection (SpecimenDto specimenDto) {
+		collectMapper.insertReceptCollection(specimenDto);
+	}
+	
+	
 
 	@Override
 	public List<CollectSpecimenVo> createSpecimenmulti(@Valid SpecimenDto specimenDto, @Valid int count) {
@@ -135,7 +152,7 @@ public class CollectServiceImpl implements CollectService {
 		}
 	}
 
-	//채혈페이지에서 목록에서 사용
+	// 채혈페이지에서 목록에서 사용
 	@Override
 	public List<BloodCollectVo> getCollectall() {
 		List<BloodCollectVo> Specimenlist = new ArrayList<BloodCollectVo>();
@@ -171,8 +188,8 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public List<CollectVisitVo> getvisitbypatientno(String patientNo) {
-		List<CollectVisitVo> visitlist = collectMapper.findVisitByPatientNo(patientNo);
+	public List<CollectPrescriptionOrderVo> getvisitbypatientno(String patientNo) {
+		List<CollectPrescriptionOrderVo> visitlist = collectMapper.findVisitByPatientNo(patientNo);
 		return visitlist;
 	}
 
@@ -183,13 +200,11 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public List<CollectPrescriptionVo> getPrebyPatientNo(String patientNo) {
-		List<CollectPrescriptionVo> prelist = collectMapper.findPrebyPatientNo(patientNo);
+	public List<CollectPrescriptionVo> getconsultationPatientNo(String patientNo) {
+		List<CollectPrescriptionVo> prelist = collectMapper.findconsultationPatientNo(patientNo);
 		return prelist;
 	}
-	
-	
-	
+
 	@Override
 	public List<CollectPrescriptionVo> getfindPrebyOrderNo(String orderNo) {
 		List<CollectPrescriptionVo> findPrebyOrderNo = collectMapper.findPrebyOrderNo(orderNo);

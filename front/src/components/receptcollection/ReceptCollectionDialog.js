@@ -125,12 +125,7 @@ export default function ReceptCollectionDialog(props) {
                   >
                     <Grid item xs={4} sx={{ mx: 2 }}>
                       <Typography sx={{ fontSize: 14 }} color="text.secondary">
-                        검사명:{pre.testName}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={4} sx={{ mx: 2 }}>
-                      <Typography sx={{ fontSize: 14 }} color="text.secondary">
-                        검사필드명:{pre.fieldName}
+                        검사명:{pre.prescriptionName}
                       </Typography>
                     </Grid>
                   </Grid>
