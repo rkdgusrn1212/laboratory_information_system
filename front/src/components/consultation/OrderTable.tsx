@@ -19,25 +19,11 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import Skeleton from '@mui/material/Skeleton';
 import { Stack } from '@mui/material';
+import { Prescription } from '../../services/types';
 
 const tableMinWidth = 600;
 
-interface Data {
-  no: string;
-  panel: string;
-  name: string;
-}
-
-const rows = [
-  { no: 'LT0001', panel: '간기능 및 담도계', name: 'Albumin' },
-  { no: 'LT0002', panel: '간기능 및 담도계', name: 'Globulin' },
-  { no: 'LT0003', panel: '간기능 및 담도계', name: 'A/G ratio' },
-  { no: 'LT0004', panel: '신장기능', name: 'BUN' },
-  { no: 'LT0005', panel: '신장기능', name: 'Creatinine' },
-  { no: 'LT0006', panel: '신장기능', name: 'B/C ratio' },
-  { no: 'LT0007', panel: '신장기능', name: 'A/G ratio' },
-];
-
+const ROW_PER_PAGE = 12;
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -50,24 +36,23 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends keyof Prescription>(
   order: Order,
   orderBy: Key,
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
+  // eslint-disable-next-line no-unused-vars
+  a: { [key in Key]: number | string | null },
+  // eslint-disable-next-line no-unused-vars
+  b: { [key in Key]: number | string | null },
 ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
 function stableSort<T>(
   array: readonly T[],
+  // eslint-disable-next-line no-unused-vars
   comparator: (a: T, b: T) => number,
 ) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -83,38 +68,41 @@ function stableSort<T>(
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof Prescription;
   label: string;
   numeric: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'no',
+    id: 'prescriptionCode',
     numeric: false,
     disablePadding: false,
     label: '처방코드',
   },
   {
-    id: 'panel',
+    id: 'prescriptionName',
     numeric: false,
     disablePadding: false,
     label: '처방명',
   },
   {
-    id: 'name',
+    id: 'prescriptionClassificationCode',
     numeric: false,
     disablePadding: false,
-    label: '검사항목',
+    label: '처방분류',
   },
 ];
 
 interface EnhancedTableProps {
   numSelected: number;
   onRequestSort: (
+    // eslint-disable-next-line no-unused-vars
     event: React.MouseEvent<unknown>,
-    property: keyof Data,
+    // eslint-disable-next-line no-unused-vars
+    property: keyof Prescription,
   ) => void;
+  // eslint-disable-next-line no-unused-vars
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
@@ -131,7 +119,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     onRequestSort,
   } = props;
   const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof Prescription) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
@@ -177,11 +165,13 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  onDeleteClick: () => void;
 }
 
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
+const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
+  numSelected,
+  onDeleteClick,
+}) => {
   return (
     <Toolbar
       sx={{
@@ -210,7 +200,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDeleteClick}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -223,18 +213,23 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
     </Toolbar>
   );
-}
+};
 
-export default function EnhancedTable({ disabled }: { disabled: boolean }) {
+export const OrderTable: React.FC<{
+  disabled: boolean;
+  prescriptionList: Prescription[];
+  // eslint-disable-next-line no-unused-vars
+  onPrescriptionListChanged: (prescriptionList: Prescription[]) => void;
+}> = ({ disabled, prescriptionList, onPrescriptionListChanged }) => {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('no');
+  const [orderBy, setOrderBy] =
+    React.useState<keyof Prescription>('prescriptionCode');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data,
+    property: keyof Prescription,
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -243,19 +238,19 @@ export default function EnhancedTable({ disabled }: { disabled: boolean }) {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = prescriptionList.map((n) => n.prescriptionCode);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, code: string) => {
+    const selectedIndex = selected.indexOf(code);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, code);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -274,25 +269,41 @@ export default function EnhancedTable({ disabled }: { disabled: boolean }) {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0
+      ? Math.max(0, (1 + page) * ROW_PER_PAGE - prescriptionList.length)
+      : 0;
+
+  const handleDeleteClick = () => {
+    const resultList = [];
+    for (const prescription of prescriptionList) {
+      let isSelected = false;
+      for (const selectedItem of selected) {
+        if (prescription.prescriptionCode === selectedItem) {
+          isSelected = true;
+          break;
+        }
+      }
+      if (!isSelected) {
+        resultList.push(prescription);
+      }
+    }
+    onPrescriptionListChanged(resultList);
+    setSelected([]);
+  };
 
   return (
     <Stack width="100%" height="100%">
       {disabled ? (
         <Skeleton sx={{ height: 40, m: 1 }} />
       ) : (
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onDeleteClick={handleDeleteClick}
+        />
       )}
       {disabled ? (
         <Skeleton
@@ -310,23 +321,25 @@ export default function EnhancedTable({ disabled }: { disabled: boolean }) {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={prescriptionList.length}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              {stableSort(prescriptionList, getComparator(order, orderBy))
+                .slice(page * ROW_PER_PAGE, page * ROW_PER_PAGE + ROW_PER_PAGE)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.prescriptionCode);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) =>
+                        handleClick(event, row.prescriptionCode)
+                      }
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.no}
+                      key={row.prescriptionCode}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -344,10 +357,12 @@ export default function EnhancedTable({ disabled }: { disabled: boolean }) {
                         scope="row"
                         padding="none"
                       >
-                        {row.no}
+                        {row.prescriptionCode}
                       </TableCell>
-                      <TableCell align="left">{row.panel}</TableCell>
-                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="left">{row.prescriptionName}</TableCell>
+                      <TableCell align="left">
+                        {row.prescriptionClassificationCode}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -372,15 +387,15 @@ export default function EnhancedTable({ disabled }: { disabled: boolean }) {
         />
       ) : (
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[ROW_PER_PAGE]}
           component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
+          count={prescriptionList.length}
+          rowsPerPage={ROW_PER_PAGE}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       )}
     </Stack>
   );
-}
+};
+export default OrderTable;
