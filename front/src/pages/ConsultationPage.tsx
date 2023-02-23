@@ -75,6 +75,10 @@ const ConsultationPage: React.FC = () => {
     setPrescriptionList([...prescriptionList, prescription]);
   };
 
+  const handlePrescriptionListChanged = (prescriptionList: Prescription[]) => [
+    setPrescriptionList(prescriptionList),
+  ];
+
   const handleSelected = (item: ConsultationReception | undefined) => {
     if (
       item === undefined ||
@@ -124,6 +128,7 @@ const ConsultationPage: React.FC = () => {
             <ConsultationForm
               consultationReception={selected}
               prescriptionList={prescriptionList}
+              onPrescriptionListChanged={handlePrescriptionListChanged}
             />
           </Box>
           <Stack flexGrow={1} spacing={1}>

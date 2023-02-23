@@ -23,6 +23,7 @@ import { Prescription } from '../../services/types';
 
 const tableMinWidth = 600;
 
+const ROW_PER_PAGE = 12;
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -35,11 +36,13 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends keyof Prescription>(
   order: Order,
   orderBy: Key,
 ): (
+  // eslint-disable-next-line no-unused-vars
   a: { [key in Key]: number | string | null },
+  // eslint-disable-next-line no-unused-vars
   b: { [key in Key]: number | string | null },
 ) => number {
   return order === 'desc'
@@ -49,6 +52,7 @@ function getComparator<Key extends keyof any>(
 
 function stableSort<T>(
   array: readonly T[],
+  // eslint-disable-next-line no-unused-vars
   comparator: (a: T, b: T) => number,
 ) {
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
@@ -161,11 +165,13 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  onDeleteClick: () => void;
 }
 
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
-
+const EnhancedTableToolbar: React.FC<EnhancedTableToolbarProps> = ({
+  numSelected,
+  onDeleteClick,
+}) => {
   return (
     <Toolbar
       sx={{
@@ -194,7 +200,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={onDeleteClick}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
@@ -207,18 +213,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
     </Toolbar>
   );
-}
+};
 
 export const OrderTable: React.FC<{
   disabled: boolean;
-  prescriptionList: readonly Prescription[];
-}> = ({ disabled, prescriptionList }) => {
+  prescriptionList: Prescription[];
+  // eslint-disable-next-line no-unused-vars
+  onPrescriptionListChanged: (prescriptionList: Prescription[]) => void;
+}> = ({ disabled, prescriptionList, onPrescriptionListChanged }) => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] =
     React.useState<keyof Prescription>('prescriptionCode');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -231,19 +238,19 @@ export const OrderTable: React.FC<{
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = prescriptionList.map((n) => n.prescriptionName);
+      const newSelected = prescriptionList.map((n) => n.prescriptionCode);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, code: string) => {
+    const selectedIndex = selected.indexOf(code);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, code);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -262,27 +269,41 @@ export const OrderTable: React.FC<{
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - prescriptionList.length)
+      ? Math.max(0, (1 + page) * ROW_PER_PAGE - prescriptionList.length)
       : 0;
+
+  const handleDeleteClick = () => {
+    const resultList = [];
+    for (const prescription of prescriptionList) {
+      let isSelected = false;
+      for (const selectedItem of selected) {
+        if (prescription.prescriptionCode === selectedItem) {
+          isSelected = true;
+          break;
+        }
+      }
+      if (!isSelected) {
+        resultList.push(prescription);
+      }
+    }
+    onPrescriptionListChanged(resultList);
+    setSelected([]);
+  };
 
   return (
     <Stack width="100%" height="100%">
       {disabled ? (
         <Skeleton sx={{ height: 40, m: 1 }} />
       ) : (
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onDeleteClick={handleDeleteClick}
+        />
       )}
       {disabled ? (
         <Skeleton
@@ -304,16 +325,16 @@ export const OrderTable: React.FC<{
             />
             <TableBody>
               {stableSort(prescriptionList, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .slice(page * ROW_PER_PAGE, page * ROW_PER_PAGE + ROW_PER_PAGE)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.prescriptionName);
+                  const isItemSelected = isSelected(row.prescriptionCode);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
                       onClick={(event) =>
-                        handleClick(event, row.prescriptionName)
+                        handleClick(event, row.prescriptionCode)
                       }
                       role="checkbox"
                       aria-checked={isItemSelected}
@@ -366,13 +387,12 @@ export const OrderTable: React.FC<{
         />
       ) : (
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[ROW_PER_PAGE]}
           component="div"
           count={prescriptionList.length}
-          rowsPerPage={rowsPerPage}
+          rowsPerPage={ROW_PER_PAGE}
           page={page}
           onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       )}
     </Stack>

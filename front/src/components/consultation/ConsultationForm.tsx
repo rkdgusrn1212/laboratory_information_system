@@ -14,11 +14,18 @@ import AlertTitle from '@mui/material/AlertTitle';
 import { ConsultationReception, Prescription } from '../../services/types';
 import OrderTable from './OrderTable';
 import { useReadPatientByPatientNoQuery } from '../../services/patientApi';
+import { Divider } from '@mui/material';
 
 const ConsultationForm: React.FC<{
   consultationReception: ConsultationReception | undefined;
   prescriptionList: Prescription[];
-}> = ({ consultationReception, prescriptionList }) => {
+  // eslint-disable-next-line no-unused-vars
+  onPrescriptionListChanged: (prescriptionList: Prescription[]) => void;
+}> = ({
+  consultationReception,
+  prescriptionList,
+  onPrescriptionListChanged,
+}) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const startTime = useMemo<number>(() => Date.now(), [consultationReception]);
   const [during, setDuring] = useState<string>('00:00');
@@ -199,9 +206,10 @@ const ConsultationForm: React.FC<{
               )}
             </Box>
           </Stack>
-          <Typography variant="subtitle1" ml={2}>
+          <Divider />
+          <Typography variant="subtitle1" ml={2} mt={2}>
             {findPatientByPatientIdResult.data ? (
-              '처방 목록'
+              '오더 목록'
             ) : (
               <Skeleton width={120} />
             )}
@@ -210,6 +218,7 @@ const ConsultationForm: React.FC<{
             <OrderTable
               prescriptionList={prescriptionList}
               disabled={findPatientByPatientIdResult.data === undefined}
+              onPrescriptionListChanged={onPrescriptionListChanged}
             />
           </Box>
           {findPatientByPatientIdResult.data ? (
