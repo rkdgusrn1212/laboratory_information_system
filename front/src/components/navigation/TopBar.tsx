@@ -73,7 +73,7 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseUserMenu = (setting: string) => () => {
+  const handleCloseUserMenu = (setting?: string) => () => {
     setAnchorElUser(null);
     if (setting === '로그아웃') {
       dispatch(signout());
@@ -150,9 +150,9 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
                 horizontal: 'right',
               }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClose={handleCloseUserMenu()}
             >
-              {settings.map((setting, idx) => (
+              {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
