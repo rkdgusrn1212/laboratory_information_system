@@ -22,10 +22,12 @@ import {
   useCreateAuthMutation,
   isCreateAuthError,
   useSigninMutation,
+  useLazyIsExistQuery,
 } from '../../services/authApi';
 import { Stack } from '@mui/system';
 import { isValidationError, mapValidationError } from '../../services/types';
 import { PasswordPattern, ValidationEmailPattern } from '../../utils/patterns';
+import { Alert, Snackbar } from '@mui/material';
 const CreateAuthForm: React.FC<{
   onSuccess: () => void;
   onException: () => void; //컴포넌트 내에서 처리 못한 애러 발생
@@ -48,6 +50,11 @@ const CreateAuthForm: React.FC<{
     null,
   );
   const navigate = useNavigate();
+  const [open, setOpen] = useState({
+    isSuccess: false,
+    message: '',
+    open: false,
+  });
 
   const handleCreateAuthClick = () => {
     createAuth({
@@ -170,6 +177,39 @@ const CreateAuthForm: React.FC<{
     }
   };
 
+  const [isExist] = useLazyIsExistQuery();
+
+  const handleDuplicateClick = () => {
+    isExist({ authId })
+      .unwrap()
+      .then((result) => {
+        if (result) {
+          setOpen({
+            message: '이미 존재하는 아이디 입니다.',
+            isSuccess: false,
+            open: true,
+          });
+        } else {
+          setOpen({
+            message: '사용 가능한 아이디 입니다.',
+            isSuccess: true,
+            open: true,
+          });
+        }
+      })
+      .catch(() => {
+        setOpen({
+          message: '요청에 실패했습니다.',
+          isSuccess: false,
+          open: true,
+        });
+      });
+  };
+
+  const handleClose = () => {
+    setOpen((open) => ({ ...open, open: false }));
+  };
+
   return (
     <Box display="flex" justifyContent="center">
       <Stack sx={{ my: 3 }} gap={2} width="100%" maxWidth={600}>
@@ -234,6 +274,7 @@ const CreateAuthForm: React.FC<{
                           sx={{ whiteSpace: 'nowrap' }}
                           variant="text"
                           color="secondary"
+                          onClick={handleDuplicateClick}
                         >
                           중복확인
                         </Button>
@@ -329,6 +370,20 @@ const CreateAuthForm: React.FC<{
           </Box>
         )}
       </Stack>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={open.open}
+        onClose={handleClose}
+        autoHideDuration={6000}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={open.isSuccess ? 'success' : 'warning'}
+          sx={{ width: '100%' }}
+        >
+          {open.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

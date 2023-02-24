@@ -76,6 +76,8 @@ export function isWriteDetailsError(
 
 export type WriteDetailsResponse = Account;
 
+export type IsExistRequest = Pick<SigninRequest, 'authId'>;
+
 const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/auth/`,
@@ -117,6 +119,13 @@ const authApi = createApi({
         url: 'write-details',
       }),
     }),
+    isExist: builder.query<boolean, IsExistRequest>({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: 'is-exist',
+      }),
+    }),
   }),
 });
 export default authApi;
@@ -125,4 +134,6 @@ export const {
   useIssueValidationCodeMutation,
   useCreateAuthMutation,
   useWriteDetailsMutation,
+  useIsExistQuery,
+  useLazyIsExistQuery,
 } = authApi;
