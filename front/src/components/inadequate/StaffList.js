@@ -8,9 +8,10 @@ export const staffList = async () => {
 
     //전처리
     response.data.map((staff) => {
-      if (staff.staffType === 1) staff.staffType = '의사';
+      if (staff.staffType == 'DOC') staff.staffType = '의사';
+      else if (staff.staffType == 'NUR') staff.staffType = '간호사';
       else {
-        staff.staffType = '간호사';
+        staff.staffType = '직원';
       }
     });
 

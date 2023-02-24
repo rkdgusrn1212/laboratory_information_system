@@ -2,6 +2,7 @@ package com.kanghoshin.lis.controller;
 
 import java.util.List;
 
+
 import javax.validation.Valid;
 
 import org.apache.ibatis.annotations.Param;
@@ -16,9 +17,9 @@ import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.service.collect.CollectService;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionOrderVo;
 import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
-import com.kanghoshin.lis.vo.collect.CollectVisitVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -44,7 +45,32 @@ public class CollectController {
 		CollectSpecimenVo createspecimen = CollectService.createSpecimen(SpecimenDTO);
 		return createspecimen;
 	}
+	
+	@PostMapping("/insertspecimenpostgetspecimenno")
+	public String insertspecimenpostgetspecimenno(@Valid @RequestBody SpecimenDto SpecimenDTO) {
+		String createspecimen = CollectService.createSpecimengetno(SpecimenDTO);
+		return createspecimen;
+	}
+	
+	@PostMapping("/insertspecimenRCpostgetspecimenno")
+	public String insertspecimenRCpostgetspecimenno(@Valid @RequestBody SpecimenDto SpecimenDTO) {
+		String createspecimen = CollectService.createSpecimenRCgetno(SpecimenDTO);
+		return createspecimen;
+	}
+///////////////오더 넘버, 스태프 넘버,용기코드
+	@PostMapping("/inserttest")
+	public void test(@Valid @RequestBody List<SpecimenDto> list) {
+		       CollectService.createSpecimenRCgetno2(list);
+	}
+	
+	//검체입력받고 오더입력 받아서 삽입
+	@PostMapping("/createReceptCollection")
+	public void createReceptCollection(@Valid @RequestBody SpecimenDto SpecimenDTO) {
+		CollectService.	createReceptCollection(SpecimenDTO);
+	
+	}
 
+	
 	@GetMapping("/createspecimenmulti")
 	public List<CollectSpecimenVo> createspecimenmulti(@Valid @Param("staffNo") String staffNo,
 			@Param("count") int count) {
@@ -124,8 +150,8 @@ public class CollectController {
 	}
 
 	@GetMapping("/visitbypatientno")
-	public List<CollectVisitVo> getvisitbypatientno(@Valid @Param("patientNo") String patientNo) {
-		List<CollectVisitVo> visitlist = CollectService.getvisitbypatientno(patientNo);
+	public List<CollectPrescriptionOrderVo> getvisitbypatientno(@Valid @Param("patientNo") String patientNo) {
+		List<CollectPrescriptionOrderVo> visitlist = CollectService.getvisitbypatientno(patientNo);
 		return visitlist;
 	}
 
@@ -135,10 +161,10 @@ public class CollectController {
 		return ReceptCollectionlist;
 	}
 
-	@GetMapping("/getprebypatientno")
-	public List<CollectPrescriptionVo> getPrebyPatientNo(@Valid @Param("patientNo") String PatientNo) {
-		List<CollectPrescriptionVo> Prescriptionlist = CollectService.getPrebyPatientNo(PatientNo);
-		return Prescriptionlist;
+	@GetMapping("/getconsultationPatientNo")
+	public List<CollectPrescriptionVo> getconsultationPatientNo(@Valid @Param("patientNo") String PatientNo) {
+		List<CollectPrescriptionVo> getconsultationPatientNo = CollectService.getconsultationPatientNo(PatientNo);
+		return getconsultationPatientNo;
 	}
 	
 	@GetMapping("/getPrebyOrderNo")

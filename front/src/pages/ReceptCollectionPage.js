@@ -26,7 +26,7 @@ import Grid from '@mui/material/Grid';
 import ReceptCollectionDialog from '../components/receptcollection/ReceptCollectionDialog';
 //검색셜과 미리보기
 import { Autocomplete } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 //그리드에 색깔 넣기
 import { PatientList } from '../components/receptcollection/PatientList';
 import axios from 'axios';
@@ -63,7 +63,7 @@ export default function ReceptCollectionPage() {
   //리셋용 배열
   const resetrow = [];
   //선택한 그리드1의 값들 그리드 2로 이동
-  const rows2 = [];
+  const [flag, setFlag] = useState(1);
   //검색창 미리보기 구현
 
   //db연결 오류
@@ -78,6 +78,7 @@ export default function ReceptCollectionPage() {
   //다잉얼로그 열기
 
   useEffect(() => {
+    // 나중에 구현 할 배열에 항목 추가하는 로직
     PatientList().then((res) => {
       if (res.data == 'error') {
         setError(-100);
@@ -108,10 +109,8 @@ export default function ReceptCollectionPage() {
             }
             const today = new Date();
             const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
-
             patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
           });
-
         setCallpatient({
           patients: response.data,
         });
@@ -132,10 +131,8 @@ export default function ReceptCollectionPage() {
                 }
                 const today = new Date();
                 const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
-
                 patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
               });
-
             setCallpatient({
               patients: response.data,
             });
@@ -146,31 +143,11 @@ export default function ReceptCollectionPage() {
     });
   }
 
-  //검체를 생성하는 함수
-  function createspecimen() {
-    rows4.map((postdata) => {
-      axios({
-        method: 'post',
-        url: `http://localhost:8080/api/collect/insertspecimenpost`,
-        data: {
-          staffNo: loginstaffno,
-          orderNo: postdata.prescriptionOrderNo,
-        },
-      })
-        .then(function () {
-          makebarcord();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-  }
-
   function onvisit(patientNo) {
     //환자no로  내원 볼러오기
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/consultation/full-consultation/list?pageSize=10&pageStart=0&patientNoKey=${patientNo}`,
+      url: `http://localhost:8080/api/collect/getconsultationPatientNo?PatientNo=${patientNo}`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
@@ -207,28 +184,54 @@ export default function ReceptCollectionPage() {
       }
     });
   }
+  const rows6 = [];
+  //검체를 생성하는 함수
+  function createspecimen() {
+    //같으면 채혈접수만
+    //다르면 검체 생성까지
 
-  //선택한정보의 오더 no로 이미 뽑은 검체 인지검사 reception-collection에 데이터가 있다면 여기서 표시를 해줘야한다.
+    rows4.map((postdata, i) => {
+      rows6.push({
+        orderNo: postdata.prescriptionOrderNo,
+        staffNo: loginstaffno,
+        specimenContainerCode: postdata.specimenContainerCode,
+      });
+    });
 
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/api/collect/inserttest`,
+      data: rows6,
+    });
+
+    setFlag(2);
+  }
   //검체번호로 바코드 만들기
   //수정해야함
   function makebarcord() {
-    rows4.map((a, i) => {
+    console.log('바코드 안만드니???~~~~~~~~~~~~~~~~~~~~~~~~~');
+    rows6.map((a, i) => {
       axios({
         method: 'get',
-        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${a.prescriptionOrderNo}`,
+        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${a.orderNo}`,
       }).then(function (response) {
         if (response.data != '') {
-          console.log(i + '번째 검체번호' + response.data[0].specimenNo);
-          a.specimenNo = response.data[0].specimenNo;
+          console.log(response.data[0].specimenNo);
           const canvas = document.createElement('canvas');
-          JsBarcode(canvas, a.specimenNo, { height: 50, displayValue: true });
+          JsBarcode(canvas, response.data[0].specimenNo, {
+            height: 50,
+            displayValue: true,
+          });
           setImageUrl(canvas.toDataURL('image/png'));
           imageUrl1[i] = canvas.toDataURL('image/png');
+          setOpen(true);
         }
       });
     });
   }
+  useEffect(() => {
+    makebarcord();
+  }, [flag]);
 
   //환자 검색 파트
   const onSearchHandler = (event) => {
@@ -263,17 +266,18 @@ export default function ReceptCollectionPage() {
 
   //내원정보 카드 글릭시 내원카드 선택
   const clickcard = (i) => {
-    console.log(nawon);
+    //console.log(nawon);
     setSelectedn(i + 1); //i는 0부터 시작 로넘은 1부터 시작함
     error == 1 &&
       rows1.map((a, b) => {
-        if (nawon[i].consultationNo === a.consultationNo) {
+        if (nawon[i].consultationNo == a.consultationNo) {
           rows1[b].status = 1;
         } else rows1[b].status = 0;
       });
     //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
   };
 
+  const rows2 = [];
   //1번그리드 밑 버튼이 눌렸을때  데이터를 오른쪽 그리드로 복사한다.
   function grid1buttonclick() {
     // rows2 = resetrow;
@@ -311,6 +315,7 @@ export default function ReceptCollectionPage() {
           }
         });
       });
+    console.log(rows2);
     setRows3(rows2);
   }
 
@@ -329,7 +334,7 @@ export default function ReceptCollectionPage() {
       //다이얼로그 오픈
       //rows4에 검체 번호 들어가 있음
 
-      setOpen(true);
+      makebarcord();
     }
   };
 
@@ -378,20 +383,21 @@ export default function ReceptCollectionPage() {
 
   const columns = [
     {
-      field: 'prescriptionCode',
-      headerName: '처방코드',
-      headerAlign: 'center',
-    },
-    {
       field: 'prescriptionOrderNo',
       headerName: '오더번호',
       headerAlign: 'center',
       type: 'date',
     },
     {
+      field: 'prescriptionCode',
+      headerName: '처방코드',
+      headerAlign: 'center',
+    },
+    {
       field: 'prescriptionName',
       headerName: '처방명',
       headerAlign: 'center',
+      width: 150,
     },
     {
       field: 'specimenContainerCode',
@@ -412,19 +418,25 @@ export default function ReceptCollectionPage() {
 
   const columns2 = [
     {
-      headerName: 'prescriptionOrderNo',
-      field: '오더번호',
+      field: 'specimenContainerCode',
+      headerName: '용기코드',
       headerAlign: 'center',
     },
     {
-      field: 'specimenContainerCode',
-      headerName: '용기코드',
+      headerName: '오더번호',
+      field: 'prescriptionOrderNo',
       headerAlign: 'center',
     },
     {
       field: 'prescriptionCode',
       headerName: '처방코드',
       headerAlign: 'center',
+    },
+    {
+      field: 'prescriptionName',
+      headerName: '검사명',
+      headerAlign: 'center',
+      width: 200,
     },
   ];
 
@@ -444,27 +456,6 @@ export default function ReceptCollectionPage() {
               >
                 <Grid sx={{ maxHeight: '500px', overflowY: 'scroll' }}>
                   <h3>&nbsp; 환자 정보 검색창</h3>
-                  {/* <Grid sx={{ textAlign: 'right' }}>
-                    <Autocomplete
-                      onKeyPress={handleOnKeyPress}
-                      disablePortal
-                      options={
-                        error == 1 &&
-                        patientlist.map((item) => item.patientName)
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="이름으로 검색"
-                          onSelect={handleInput}
-                          sx={{
-                            width: 350,
-                            margin: '10px auto',
-                          }}
-                        />
-                      )}
-                    />
-                  </Grid> */}
                   <Grid
                     sx={{
                       textAlign: 'center',
@@ -703,13 +694,7 @@ export default function ReceptCollectionPage() {
                                     sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                   >
-                                    진료의: {visit.staffNo}
-                                  </Typography>
-                                  <Typography
-                                    sx={{ fontSize: 14 }}
-                                    color="text.secondary"
-                                  >
-                                    진료시간: {visit.consultationTime}
+                                    진료의: {visit.visitDoctor}
                                   </Typography>
                                 </Grid>
                               </CardContent>
@@ -731,11 +716,6 @@ export default function ReceptCollectionPage() {
                                 '&:hover': {
                                   backgroundColor: 'rgba(0,0,0,0.2)',
                                 },
-                                // '&:height_scroll': {
-                                //     height: '800px',
-                                //     overflowX: 'hidden',
-                                //     overflowY: 'auto'
-                                // },
                               }}
                             >
                               <CardContent
@@ -767,13 +747,7 @@ export default function ReceptCollectionPage() {
                                     sx={{ fontSize: 14 }}
                                     color="text.secondary"
                                   >
-                                    진료의: {visit.staffNo}
-                                  </Typography>
-                                  <Typography
-                                    sx={{ fontSize: 14 }}
-                                    color="text.secondary"
-                                  >
-                                    진료시간: {visit.consultationTime}
+                                    진료의: {visit.visitDoctor}
                                   </Typography>
                                 </Grid>
                               </CardContent>
@@ -871,13 +845,6 @@ export default function ReceptCollectionPage() {
                             }}
                             rows={rows3}
                             columns={columns2}
-                            pageSize={7}
-                            rowsPerPageOptions={[7]}
-                            checkboxSelection
-                            onSelectionModelChange={(newSelectionModel) => {
-                              setSelectionModel2(newSelectionModel);
-                            }}
-                            selectionModel={selectionModel2}
                           />
                         );
                       }
@@ -916,9 +883,15 @@ export default function ReceptCollectionPage() {
                       bgcolor: '#96BE98',
                     },
                   },
+                  '& .super-app-theme--2': {
+                    bgcolor: '#ABCBAD',
+                    '&:hover': {
+                      bgcolor: '#96BE98',
+                    },
+                  },
                 }}
               >
-                <h3>처방정보</h3>
+                <h3>오더정보</h3>
                 {pagestarter.starter &&
                   pagestarter.starter.map(() => {
                     if (!pagestarter.starter) {
@@ -969,16 +942,6 @@ export default function ReceptCollectionPage() {
                           <DataGrid
                             rows={rows1}
                             columns={columns}
-                            getRowClassName={(params) =>
-                              `super-app-theme--${params.row.status}`
-                            }
-                            pageSize={10}
-                            rowsPerPageOptions={[10]}
-                            checkboxSelection
-                            onSelectionModelChange={(newSelectionModel) => {
-                              setSelectionModel1(newSelectionModel);
-                            }}
-                            selectionModel={selectionModel1}
                             components={{
                               Toolbar: GridToolbar,
                               NoRowsOverlay: () => (
@@ -1015,7 +978,7 @@ export default function ReceptCollectionPage() {
                   color="success"
                   onClick={grid1buttonclick}
                 >
-                  리스트 등록
+                  오더 선택
                 </Button>
               </Box>
             </CardContent>

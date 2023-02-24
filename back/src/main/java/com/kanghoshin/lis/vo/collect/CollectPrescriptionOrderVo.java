@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CollectVisitVo {
+public class CollectPrescriptionOrderVo {
 
 	private String visitNo;
 	private String patientNo;//환자번호

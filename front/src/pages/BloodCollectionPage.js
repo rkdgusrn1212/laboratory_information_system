@@ -70,7 +70,7 @@ export default function BloodCollectionPage() {
 
   const onSearch = (event) => {
     setFlag(2);
-    var count = 2; //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
+    let count = 2; //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
     axios({
       method: 'get',
       url: `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,

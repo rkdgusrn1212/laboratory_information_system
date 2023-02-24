@@ -16,4 +16,6 @@ public class SpecimenDto {
 	private String specimenDate;
 	
 	private String orderNo;	// recept_collection테이블에 삽입되는 오더no
+
+	private String specimenContainerCode;
 }
