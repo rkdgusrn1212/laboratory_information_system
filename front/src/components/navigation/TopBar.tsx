@@ -77,6 +77,8 @@ const TopBar: React.FC<TopBarProps> = ({ open, onOpenIconClick, ...props }) => {
     setAnchorElUser(null);
     if (setting === '로그아웃') {
       dispatch(signout());
+    } else if (setting === '내 정보 수정') {
+      navigate('/my-info');
     }
   };
 
