@@ -158,6 +158,7 @@ export interface Doctor extends Staff {
   doctorCertification: number;
   departmentCode: string;
 }
+export type Nurse = Staff;
 
 export const isDoctor = (data: unknown): data is Doctor =>
   isStaff(data) &&
