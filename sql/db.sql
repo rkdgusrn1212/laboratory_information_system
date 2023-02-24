@@ -17314,19 +17314,6 @@ CREATE TABLE IF NOT EXISTS `consultation` (
 -- 테이블 데이터 kanghoshin_lis.consultation:~12 rows (대략적) 내보내기
 DELETE FROM `consultation`;
 /*!40000 ALTER TABLE `consultation` DISABLE KEYS */;
-INSERT INTO `consultation` (`consultation_no`, `consultation_reception_no`, `consultation_time`) VALUES
-	(1, 18, '2023-02-23 14:49:53'),
-	(2, 15, '2023-02-24 00:58:14'),
-	(3, 17, '2023-02-24 01:25:41'),
-	(4, 15, '2023-02-24 01:29:43'),
-	(5, 20, '2023-02-24 01:32:21'),
-	(6, 15, '2023-02-24 01:37:53'),
-	(7, 17, '2023-02-24 02:24:23'),
-	(8, 18, '2023-02-24 02:24:31'),
-	(9, 15, '2023-02-24 02:26:35'),
-	(10, 15, '2023-02-24 02:26:41'),
-	(11, 19, '2023-02-24 16:10:00'),
-	(12, 16, '2023-02-24 16:29:01');
 /*!40000 ALTER TABLE `consultation` ENABLE KEYS */;
 
 -- 테이블 kanghoshin_lis.consultation_reception 구조 내보내기
@@ -17346,14 +17333,6 @@ CREATE TABLE IF NOT EXISTS `consultation_reception` (
 -- 테이블 데이터 kanghoshin_lis.consultation_reception:~7 rows (대략적) 내보내기
 DELETE FROM `consultation_reception`;
 /*!40000 ALTER TABLE `consultation_reception` DISABLE KEYS */;
-INSERT INTO `consultation_reception` (`consultation_reception_no`, `consultation_reception_time`, `staff_no`, `patient_no`, `consultation_reception_appointment`) VALUES
-	(15, '2023-02-24 16:00:46', 6, 36, NULL),
-	(16, '2023-02-24 16:01:09', 3, 37, NULL),
-	(17, '2023-02-24 16:01:48', 6, 38, NULL),
-	(18, '2023-02-24 16:02:45', 6, 39, NULL),
-	(19, '2023-02-24 16:03:09', 3, 40, NULL),
-	(20, '2023-02-24 11:19:51', 3, 41, NULL),
-	(21, '2023-02-24 23:45:20', 3, 42, NULL);
 /*!40000 ALTER TABLE `consultation_reception` ENABLE KEYS */;
 
 -- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
@@ -17533,13 +17512,13 @@ CREATE TABLE IF NOT EXISTS `patient` (
 DELETE FROM `patient`;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
 INSERT INTO `patient` (`patient_no`, `patient_name`, `patient_male`, `patient_rrn`, `patient_birth`, `patient_phone`) VALUES
-	(36, '김덕배', b'1', '840313-1243243', '1984-03-13', '010-2938-4932'),
-	(37, '이금희', b'0', '871209-2938737', '1987-12-09', '010-2383-4112'),
-	(38, '김재민', b'1', '020808-3314343', '2002-08-08', '010-5738-7782'),
-	(39, '김민석', b'1', '880217-1328738', '1988-02-17', '010-9473-0283'),
-	(40, '서민지', b'0', '870415-2716361', '1987-04-15', '010-9823-9832'),
-	(41, '구한강', b'1', '560823-1213123', '1956-08-23', '010-3241-2341'),
-	(42, '구현강', b'1', '871123-1322342', '1987-11-23', '010-2221-1231');
+	(1, '김덕배', b'1', '840313-1243243', '1984-03-13', '010-2938-4932'),
+	(2, '이금희', b'0', '871209-2938737', '1987-12-09', '010-2383-4112'),
+	(3, '김재민', b'1', '020808-3314343', '2002-08-08', '010-5738-7782'),
+	(4, '김민석', b'1', '880217-1328738', '1988-02-17', '010-9473-0283'),
+	(5, '서민지', b'0', '870415-2716361', '1987-04-15', '010-9823-9832'),
+	(6, '구한강', b'1', '560823-1213123', '1956-08-23', '010-3241-2341'),
+	(7, '구현강', b'1', '871123-1322342', '1987-11-23', '010-2221-1231');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 
 -- 테이블 kanghoshin_lis.prescription 구조 내보내기
@@ -17629,33 +17608,6 @@ CREATE TABLE IF NOT EXISTS `prescription_order` (
 -- 테이블 데이터 kanghoshin_lis.prescription_order:~26 rows (대략적) 내보내기
 DELETE FROM `prescription_order`;
 /*!40000 ALTER TABLE `prescription_order` DISABLE KEYS */;
-INSERT INTO `prescription_order` (`prescription_order_no`, `consultation_no`, `prescription_code`, `prescription_order_time`) VALUES
-	(1, 1, 'H0827', '2023-02-23 14:50:29'),
-	(2, 1, 'A0341', '2023-02-23 14:50:29'),
-	(3, 1, 'A0352', '2023-02-23 14:50:29'),
-	(4, 1, 'A0414', '2023-02-23 14:50:29'),
-	(5, 1, 'A0237', '2023-02-23 14:50:29'),
-	(6, 1, 'A0082', '2023-02-23 14:50:29'),
-	(7, 6, 'B2580', '2023-02-24 02:20:06'),
-	(8, 6, 'H0576', '2023-02-24 02:20:06'),
-	(9, 6, 'C4691', '2023-02-24 02:20:06'),
-	(10, 6, 'H0667', '2023-02-24 02:20:06'),
-	(11, 6, 'B53611', '2023-02-24 02:20:06'),
-	(12, 6, 'A6510', '2023-02-24 02:20:06'),
-	(13, 6, 'A6163', '2023-02-24 02:20:06'),
-	(14, 6, 'B1070', '2023-02-24 02:20:06'),
-	(15, 6, 'B2510', '2023-02-24 02:20:06'),
-	(16, 6, 'B1530', '2023-02-24 02:20:06'),
-	(17, 6, 'B2601', '2023-02-24 02:20:06'),
-	(18, 6, 'B2531', '2023-02-24 02:20:06'),
-	(19, 6, 'C3221', '2023-02-24 02:20:06'),
-	(20, 6, 'B5290', '2023-02-24 02:20:06'),
-	(21, 6, 'B4114', '2023-02-24 02:20:06'),
-	(22, 6, 'H0735', '2023-02-24 02:20:06'),
-	(23, 6, 'H0225', '2023-02-24 02:20:06'),
-	(24, 6, 'H0827', '2023-02-24 02:20:06'),
-	(25, 6, 'B3081', '2023-02-24 02:20:06'),
-	(26, 6, 'B2535', '2023-02-24 02:20:06');
 /*!40000 ALTER TABLE `prescription_order` ENABLE KEYS */;
 
 -- 테이블 kanghoshin_lis.recept_collection 구조 내보내기

@@ -36,4 +36,9 @@ public class PatientServiceImpl implements PatientService{
 		return patientMapper.select(readPatientListDto);
 	}
 
+	@Override
+	public PatientVo readPatientByPatientRrn(String patientRrn) {
+		return patientMapper.findByPatientRrn(patientRrn);
+	}
+
 }

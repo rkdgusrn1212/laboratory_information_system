@@ -108,6 +108,7 @@ interface InnerFormProps {
   onReset: () => void;
   patient: Partial<Patient>;
   doctor: Partial<Doctor & Department>;
+  isExistPatient: boolean;
 }
 
 const InnerForm = ({
@@ -117,10 +118,11 @@ const InnerForm = ({
   onReset,
   onSuccess,
   onException,
+  isExistPatient,
 }: InnerFormProps) => {
   switch (step) {
     case 0:
-      return <StepRrn onSuccess={onSuccess} />;
+      return <StepRrn onSuccess={onSuccess} isExistPatient={isExistPatient} />;
     case 1:
       return <StepNameAndPhone onSuccess={onSuccess} />;
     case 2:
@@ -223,6 +225,7 @@ const ReceptionConsultationForm: React.FC<{
         onReset={handleReset}
         onSuccess={handleSuccess}
         onException={handleException}
+        isExistPatient={!isNew}
       />
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

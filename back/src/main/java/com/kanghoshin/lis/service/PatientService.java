@@ -18,6 +18,7 @@ public interface PatientService {
 	int createPatient(@NotNull @Valid CreatePatientDto patientDto);
 	
 	PatientVo readPatientByPatientNo(@NoConstraints int patientNo);
+	PatientVo readPatientByPatientRrn(String patientRrn);
 	
 	List<PatientVo> readPatientList(@Valid ReadPatientListDto readPatientListDto);
 }
