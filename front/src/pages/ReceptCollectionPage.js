@@ -26,7 +26,7 @@ import Grid from '@mui/material/Grid';
 import ReceptCollectionDialog from '../components/receptcollection/ReceptCollectionDialog';
 //검색셜과 미리보기
 import { Autocomplete } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 //그리드에 색깔 넣기
 import { PatientList } from '../components/receptcollection/PatientList';
 import axios from 'axios';
@@ -78,6 +78,7 @@ export default function ReceptCollectionPage() {
   //다잉얼로그 열기
 
   useEffect(() => {
+    // 나중에 구현 할 배열에 항목 추가하는 로직
     PatientList().then((res) => {
       if (res.data == 'error') {
         setError(-100);
@@ -108,10 +109,8 @@ export default function ReceptCollectionPage() {
             }
             const today = new Date();
             const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
-
             patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
           });
-
         setCallpatient({
           patients: response.data,
         });
@@ -132,10 +131,8 @@ export default function ReceptCollectionPage() {
                 }
                 const today = new Date();
                 const birthDate = new Date(patient.patientBirth); // 2000년 8월 10일
-
                 patient.age = today.getFullYear() - birthDate.getFullYear() + 1;
               });
-
             setCallpatient({
               patients: response.data,
             });
@@ -187,56 +184,54 @@ export default function ReceptCollectionPage() {
       }
     });
   }
-
-  function ordernopre(orderNo) {
-    //환자no로  처방 볼러오기
-    axios({
-      method: 'get',
-      url: `http://localhost:8080/api/collect/getPrebyOrderNo?orderNo=${orderNo}`,
-    }).then(function (response) {
-      if (response.data != '') {
-        error == 1 &&
-          response.data.map((pre, i) => {
-            pre.id = i;
-            pre.status = 0;
-            pre.patientName = callpatient.patients[0].patientName;
-          });
-        //setRows1(response.data);
-      } else {
-        //setRows1({ id: -100 });
-      }
-    });
-  }
-  //선택한정보의 오더 no로 이미 뽑은 검체 인지검사 reception-collection에 데이터가 있다면 여기서 표시를 해줘야한다.
-
+  const rows6 = [];
   //검체를 생성하는 함수
   function createspecimen() {
+    //같으면 채혈접수만
+    //다르면 검체 생성까지
+
     rows4.map((postdata, i) => {
-      axios({
-        method: 'post',
-        url: `http://localhost:8080/api/collect/insertspecimenpostgetspecimenno`,
-        data: {
-          staffNo: loginstaffno,
-          orderNo: postdata.prescriptionOrderNo,
-        },
-      })
-        .then(function (response) {
-          console.log(response.data);
-          makebarcord(response.data, i);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      rows6.push({
+        orderNo: postdata.prescriptionOrderNo,
+        staffNo: loginstaffno,
+        specimenContainerCode: postdata.specimenContainerCode,
+      });
     });
+
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/api/collect/inserttest`,
+      data: rows6,
+    });
+
+    setFlag(2);
   }
   //검체번호로 바코드 만들기
   //수정해야함
-  function makebarcord(a, i) {
-    const canvas = document.createElement('canvas');
-    JsBarcode(canvas, a, { height: 50, displayValue: true });
-    setImageUrl(canvas.toDataURL('image/png'));
-    imageUrl1[i] = canvas.toDataURL('image/png');
+  function makebarcord() {
+    console.log('바코드 안만드니???~~~~~~~~~~~~~~~~~~~~~~~~~');
+    rows6.map((a, i) => {
+      axios({
+        method: 'get',
+        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${a.orderNo}`,
+      }).then(function (response) {
+        if (response.data != '') {
+          console.log(response.data[0].specimenNo);
+          const canvas = document.createElement('canvas');
+          JsBarcode(canvas, response.data[0].specimenNo, {
+            height: 50,
+            displayValue: true,
+          });
+          setImageUrl(canvas.toDataURL('image/png'));
+          imageUrl1[i] = canvas.toDataURL('image/png');
+          setOpen(true);
+        }
+      });
+    });
   }
+  useEffect(() => {
+    makebarcord();
+  }, [flag]);
 
   //환자 검색 파트
   const onSearchHandler = (event) => {
@@ -339,7 +334,7 @@ export default function ReceptCollectionPage() {
       //다이얼로그 오픈
       //rows4에 검체 번호 들어가 있음
 
-      setOpen(true);
+      makebarcord();
     }
   };
 

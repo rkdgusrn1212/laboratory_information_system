@@ -46,12 +46,37 @@ public interface CollectMapper {
 			+"and specimen.specimen_no = recept_collection.specimen_no and specimen.specimen_no = #{specimenNo} ")
 	CollectSpecimenVo findByspecimenno(@Param("specimenNo") String specimenNo);
 
+	//검체번호 생성해서 출력받기
 	@Insert("INSERT INTO specimen(staff_no,specimen_date) VALUES ( #{specimenDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
 	@Options(useGeneratedKeys = true, keyProperty = "specimenDto.specimenNo")
 	void specimeninsertbsystaffno(@Param("specimenDto") SpecimenDto specimenDto);
 
 	
+	//검체번호 입력해서 입력
+	@Insert("INSERT INTO specimen(specimen_no,staff_no,specimen_date) VALUES ( #{specimenDto.specimen_no}, #{specimenDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
+	void specimeninsertbsystaffnoandget(@Param("specimenDto") SpecimenDto specimenDto);
+	
+	
+	//교체필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	@Insert("INSERT INTO recept_collection (specimen_no,prescription_order_no) VALUES (#{SpecimenDto.specimenNo},#{SpecimenDto.orderNo})")
+	void insertReceptCollection(@Param("SpecimenDto") SpecimenDto SpecimenDto);
+	
+	
+	
+	//교체 햐야함
+	@Select("SELECT prescription_order_no AS orderNo,specimen_no AS specimenNo FROM recept_collection WHERE prescription_order_no = #{orderNo} order by specimen_no desc")
+	List<ReceptCollectionVo> findReceptCollectionbyorderno(@Param("orderNo") String orderNo);
+	
+	
+	
+	//채혈만생성
+	@Insert("INSERT INTO blood_Collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
+	void collectinsertbydto(@Param("BloodCollectDto") BloodCollectDto BloodCollectDto);
 
+	
+	
+	
+	
 	
 	@Select("SELECT Inadequate_type_code as InadequateTypeCode, Inadequate_type_name as InadequateTypeName,Inadequate_type_brief_explanation as InadequateTypeBriefExplanation FROM inadequate_type")
 	List<InadequateTypeVo> listInadequate_typeall();
@@ -83,8 +108,6 @@ public interface CollectMapper {
 			+"ORDER BY blood_collect.collect_date desc,blood_collect.specimen_no desc ")
 	BloodCollectVo findcollectByspecimenno(@Param("specimenNo") String specimenNo);
 
-	@Insert("INSERT INTO blood_Collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
-	void collectinsertbydto(@Param("BloodCollectDto") BloodCollectDto BloodCollectDto);
 
 	
 	//부적합검체 리스트
@@ -129,17 +152,7 @@ public interface CollectMapper {
 			+"and patient.patient_no = visit.patient_no AND patient.patient_no = #{patientNo} order BY visit.visit_no desc")
 	List<CollectPrescriptionOrderVo> findVisitByPatientNo(@Param("patientNo") String patientNo);
 	
-	
-	//교체필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	@Insert("INSERT INTO recept_collection (specimen_no,prescription_order_no) VALUES (#{SpecimenDto.specimenNo},#{SpecimenDto.orderNo})")
-	void insertReceptCollection(@Param("SpecimenDto") SpecimenDto SpecimenDto);
-	
-	
-	
-	//교체 햐야함
-	@Select("SELECT prescription_order_no AS orderNo,specimen_no AS specimenNo FROM recept_collection WHERE prescription_order_no = #{orderNo} order by specimen_no desc")
-	List<ReceptCollectionVo> findReceptCollectionbyorderno(@Param("orderNo") String orderNo);
-	
+
 	//내원 정보 불러오기
 	@Select(
 			"SELECT consultation.consultation_no AS consultationNo ,consultation.consultation_time AS consultationTime, "

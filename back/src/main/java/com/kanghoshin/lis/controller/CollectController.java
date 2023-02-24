@@ -2,6 +2,7 @@ package com.kanghoshin.lis.controller;
 
 import java.util.List;
 
+
 import javax.validation.Valid;
 
 import org.apache.ibatis.annotations.Param;
@@ -16,9 +17,9 @@ import com.kanghoshin.lis.dto.collect.SpecimenDto;
 import com.kanghoshin.lis.dto.collect.SubmitInadequateDto;
 import com.kanghoshin.lis.service.collect.CollectService;
 import com.kanghoshin.lis.vo.collect.BloodCollectVo;
+import com.kanghoshin.lis.vo.collect.CollectPrescriptionOrderVo;
 import com.kanghoshin.lis.vo.collect.CollectPrescriptionVo;
 import com.kanghoshin.lis.vo.collect.CollectSpecimenVo;
-import com.kanghoshin.lis.vo.collect.CollectPrescriptionOrderVo;
 import com.kanghoshin.lis.vo.collect.InadequateTypeVo;
 import com.kanghoshin.lis.vo.collect.ReceptCollectionVo;
 import com.kanghoshin.lis.vo.collect.SubmitInadequateVo;
@@ -50,7 +51,17 @@ public class CollectController {
 		String createspecimen = CollectService.createSpecimengetno(SpecimenDTO);
 		return createspecimen;
 	}
-
+	
+	@PostMapping("/insertspecimenRCpostgetspecimenno")
+	public String insertspecimenRCpostgetspecimenno(@Valid @RequestBody SpecimenDto SpecimenDTO) {
+		String createspecimen = CollectService.createSpecimenRCgetno(SpecimenDTO);
+		return createspecimen;
+	}
+///////////////오더 넘버, 스태프 넘버,용기코드
+	@PostMapping("/inserttest")
+	public void test(@Valid @RequestBody List<SpecimenDto> list) {
+		       CollectService.createSpecimenRCgetno2(list);
+	}
 	
 	//검체입력받고 오더입력 받아서 삽입
 	@PostMapping("/createReceptCollection")

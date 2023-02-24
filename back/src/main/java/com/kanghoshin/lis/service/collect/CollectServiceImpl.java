@@ -52,22 +52,60 @@ public class CollectServiceImpl implements CollectService {
 		transactionManager.commit(txStatus);
 		return findbyspecimenno;
 	}
-	//검체 만들고 접수 하고 검체번호 받아오기
+
+	// 검체 만들고 검체번호 받아오기
 	@Override
 	public String createSpecimengetno(SpecimenDto specimenDto) {
 
 		collectMapper.specimeninsertbsystaffno(specimenDto);
-		
-		collectMapper.insertReceptCollection(specimenDto);
+
 		return specimenDto.getSpecimenNo();
 	}
-	//검체 번호 입력 받아서 접수만 하기
+
+	// 검체 만들고 접수 하고 검체번호 받아오기
 	@Override
-	public void createReceptCollection (SpecimenDto specimenDto) {
+	public String createSpecimenRCgetno(SpecimenDto specimenDto) {
+
+		collectMapper.specimeninsertbsystaffno(specimenDto);
+		collectMapper.insertReceptCollection(specimenDto);
+
+		return specimenDto.getSpecimenNo();
+	}
+
+	// 검체 번호 입력 받아서 접수만 하기
+	@Override
+	public void createReceptCollection(SpecimenDto specimenDto) {
 		collectMapper.insertReceptCollection(specimenDto);
 	}
-	
-	
+
+	@Override
+	public void createSpecimenRCgetno2(List<SpecimenDto> list) {
+		System.out.println(list.toString());
+		boolean flag;
+		List<String> specimenlist = null;
+		for (int a = 0; a < list.size(); a++) {
+			flag = true;
+			for (int b = 0; b <= a; b++) {
+				if (flag && list.get(b).getSpecimenContainerCode().equals(list.get(a).getSpecimenContainerCode())
+						&& a != b) {
+					SpecimenDto rc = new SpecimenDto();
+					rc.setOrderNo(list.get(a).getOrderNo());
+					rc.setSpecimenNo(list.get(b).getSpecimenNo());
+					collectMapper.insertReceptCollection(rc);
+					flag = false;
+				}
+			}
+			if (flag) {
+				SpecimenDto is = new SpecimenDto();
+				is.setOrderNo(list.get(a).getOrderNo());
+				is.setStaffNo(list.get(a).getStaffNo());
+				collectMapper.specimeninsertbsystaffno(is);
+				collectMapper.insertReceptCollection(is);
+				list.get(a).setSpecimenNo(is.getSpecimenNo());
+				flag = false;
+			}
+		}
+	}
 
 	@Override
 	public List<CollectSpecimenVo> createSpecimenmulti(@Valid SpecimenDto specimenDto, @Valid int count) {
