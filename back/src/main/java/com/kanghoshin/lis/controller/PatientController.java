@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.constraints.NoConstraints;
@@ -29,6 +30,11 @@ public class PatientController {
 	@PostMapping
 	public int createPatient(@Valid @RequestBody CreatePatientDto patientDto) {
 		return patientService.createPatient(patientDto);
+	}
+
+	@GetMapping
+	public PatientVo readPatientByRrn(@RequestParam String patientRrn){
+		return patientService.readPatientByPatientRrn(patientRrn);
 	}
 	
 	@GetMapping("{no}")

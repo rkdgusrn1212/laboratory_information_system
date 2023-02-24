@@ -26,6 +26,9 @@ export type ReadPatientListResponse = Patient[];
 export type ReadPatientByPatientNoRequest = number;
 export type ReadPatientByPatientNoResponse = Patient;
 
+export type ReadPatientByPatientRrnResponse = Patient;
+export type ReadPatientByPatientRrnRequest = Pick<Patient, 'patientRrn'>;
+
 const patientApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/patient`,
@@ -65,6 +68,16 @@ const patientApi = createApi({
         url: data.toString(),
       }),
     }),
+    readPatientByPatientRrn: builder.query<
+      ReadPatientByPatientRrnResponse,
+      ReadPatientByPatientRrnRequest
+    >({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: '',
+      }),
+    }),
   }),
 });
 export default patientApi;
@@ -74,4 +87,6 @@ export const {
   useLazyReadPatientListQuery,
   useReadPatientByPatientNoQuery,
   useLazyReadPatientByPatientNoQuery,
+  useLazyReadPatientByPatientRrnQuery,
+  useReadPatientByPatientRrnQuery,
 } = patientApi;

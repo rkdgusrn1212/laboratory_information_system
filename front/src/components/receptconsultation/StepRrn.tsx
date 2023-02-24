@@ -4,22 +4,30 @@ import Box from '@mui/material/Box';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import { Button, Typography } from '@mui/material';
 import { RrnPattern } from '../../utils/patterns';
-import { CreatePatientRequest } from '../../services/patientApi';
+import {
+  CreatePatientRequest,
+  useLazyReadPatientByPatientRrnQuery,
+} from '../../services/patientApi';
 import rrnParser from '../../utils/rrnParser';
+import { Patient } from '../../services/types';
 
 const StepRrn: React.FC<{
   onSuccess: (
     // eslint-disable-next-line no-unused-vars
     data: {
-      patient: Pick<
-        CreatePatientRequest,
-        'patientRrn' | 'patientBirth' | 'patientMale'
-      >;
+      patient:
+        | Pick<
+            CreatePatientRequest,
+            'patientRrn' | 'patientBirth' | 'patientMale'
+          >
+        | Patient;
     },
   ) => void;
-}> = ({ onSuccess }) => {
+  isExistPatient: boolean;
+}> = ({ onSuccess, isExistPatient }) => {
   const [rrn, setRrn] = useState('');
   const [error, setError] = useState<string | undefined>(undefined);
+  const [readPatientByPatientRrn] = useLazyReadPatientByPatientRrnQuery();
 
   const handleValueSet = (value: string) => {
     setRrn(value);
@@ -31,13 +39,33 @@ const StepRrn: React.FC<{
   const handleClick = () => {
     const data = rrnParser(rrn);
     if (data) {
-      onSuccess({
-        patient: {
-          patientRrn: rrn,
-          patientBirth: data.birth,
-          patientMale: data.male,
-        },
-      });
+      readPatientByPatientRrn({
+        patientRrn: rrn,
+      })
+        .unwrap()
+        .then((res) => {
+          if (res) {
+            if (isExistPatient) {
+              onSuccess({ patient: res });
+            } else {
+              setError(
+                '이미 방문하신 기록이 있습니다. 재진 접수로 진행 해주세요',
+              );
+            }
+          } else if (!res) {
+            if (isExistPatient) {
+              setError('방문하신 기록이 없습니다. 초진 접수로 진행 해주세요');
+            } else {
+              onSuccess({
+                patient: {
+                  patientRrn: rrn,
+                  patientBirth: data.birth,
+                  patientMale: data.male,
+                },
+              });
+            }
+          }
+        });
     } else {
       setError('주민번호/외국인등록번호를 다시 한번 확인해 주세요.');
     }

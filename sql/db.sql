@@ -31,17 +31,16 @@ CREATE TABLE IF NOT EXISTS `auth` (
   CONSTRAINT `FK_auth_validation` FOREIGN KEY (`validation_email`) REFERENCES `validation` (`validation_email`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.auth:~7 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.auth:~6 rows (대략적) 내보내기
 DELETE FROM `auth`;
 /*!40000 ALTER TABLE `auth` DISABLE KEYS */;
 INSERT INTO `auth` (`auth_id`, `auth_password`, `auth_refresh`, `staff_no`, `validation_email`) VALUES
-	('gim765987', '$2a$10$aPMcqy/Kuw/jeFRdLMXfQ.rAKNIaYhnWvUAvDp0D43Gu8t89dqBWS', '3c2bb0f7-46ca-4478-9ee4-23d3e5c567b0', 103, 'gim765987@gmail.com'),
-	('kevin3918', '$2a$10$YIhR9SXe0LywrDiiW4.K3.TEtLmdYZpuVRvARBcUn1VflJ.u11Q26', '464a7807-5314-418a-bd68-e0086393b85e', 104, 'kevin3918@naver.com'),
-	('kevin91503918', '$2a$10$ipO1HRF.wN/xIF/Twy8Mcujh5Hp9giDEqR6rK9bFSsCcmsXBktN1e', 'b0d64c24-846e-4870-8504-294c8b1c3660', 105, 'kevin91503918@gmail.com'),
-	('khgkjg12', '$2a$10$h4BJs2QydhWhQk0UNEVbveHk2J.sAbZTvPZGCeD8f/E1GJPBADdaC', 'a2c7dc66-5322-41c3-bc65-b7bef39dcac7', 194, 'khgkjg12@naver.com'),
-	('khgnur12', '$2a$10$mbZbVPsPL1UVfnhaN.TxduBKuPAL9kERj9xSiuNQpkKMLUtT14PJ.', '5f8fa04b-d079-41a2-a1ed-615f25b7d5db', 102, 'khgkjg12@gmail.com'),
-	('rhj1216', '$2a$10$kJJMrhKF5OtXg5Xbt/y2xOlXwx/aFDgzcX8YsLW6SG/rDXfUh9PrW', '950b8e8a-b709-438b-a2f8-2b08650e4163', 106, 'rhj1216@naver.com'),
-	('rhj1216gg', '$2a$10$R1SaPu.1VwGkv.R08Q/U/.myBj662EWondAeyFGyi2wfy0iA3CtYW', '9d6a70d6-da26-476a-865d-32574eac3bc6', 107, 'rhj1216@gmail.com');
+	('gim765987', '$2a$10$aPMcqy/Kuw/jeFRdLMXfQ.rAKNIaYhnWvUAvDp0D43Gu8t89dqBWS', '3c2bb0f7-46ca-4478-9ee4-23d3e5c567b0', 2, 'gim765987@gmail.com'),
+	('kevin3918', '$2a$10$YIhR9SXe0LywrDiiW4.K3.TEtLmdYZpuVRvARBcUn1VflJ.u11Q26', '464a7807-5314-418a-bd68-e0086393b85e', 3, 'kevin3918@naver.com'),
+	('kevin91503918', '$2a$10$ipO1HRF.wN/xIF/Twy8Mcujh5Hp9giDEqR6rK9bFSsCcmsXBktN1e', 'b0d64c24-846e-4870-8504-294c8b1c3660', 6, 'kevin91503918@gmail.com'),
+	('khgkjg12', '$2a$10$xk2ib7Uct0KjzflShWm4oe.W3Ii4tjA92NTBlfKUPaSPkPc/6Zngi', 'd7348441-8e4b-4f9f-8683-211db5da1115', 7, 'khgkjg12@naver.com'),
+	('khgnur12', '$2a$10$mbZbVPsPL1UVfnhaN.TxduBKuPAL9kERj9xSiuNQpkKMLUtT14PJ.', '5f8fa04b-d079-41a2-a1ed-615f25b7d5db', 1, 'khgkjg12@gmail.com'),
+	('rhj1216', '$2a$10$kJJMrhKF5OtXg5Xbt/y2xOlXwx/aFDgzcX8YsLW6SG/rDXfUh9PrW', '950b8e8a-b709-438b-a2f8-2b08650e4163', 5, 'rhj1216@naver.com');
 /*!40000 ALTER TABLE `auth` ENABLE KEYS */;
 
 -- 테이블 kanghoshin_lis.behavior 구조 내보내기
@@ -53,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `behavior` (
   PRIMARY KEY (`behavior_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.behavior:~17,051 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.behavior:~17,225 rows (대략적) 내보내기
 DELETE FROM `behavior`;
 /*!40000 ALTER TABLE `behavior` DISABLE KEYS */;
 INSERT INTO `behavior` (`behavior_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
@@ -17312,7 +17311,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
   CONSTRAINT `FK_consultation_consultation_reception` FOREIGN KEY (`consultation_reception_no`) REFERENCES `consultation_reception` (`consultation_reception_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation:~0 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation:~12 rows (대략적) 내보내기
 DELETE FROM `consultation`;
 /*!40000 ALTER TABLE `consultation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation` ENABLE KEYS */;
@@ -17331,16 +17330,9 @@ CREATE TABLE IF NOT EXISTS `consultation_reception` (
   CONSTRAINT `FK__patient` FOREIGN KEY (`patient_no`) REFERENCES `patient` (`patient_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation_reception:~6 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation_reception:~7 rows (대략적) 내보내기
 DELETE FROM `consultation_reception`;
 /*!40000 ALTER TABLE `consultation_reception` DISABLE KEYS */;
-INSERT INTO `consultation_reception` (`consultation_reception_no`, `consultation_reception_time`, `staff_no`, `patient_no`, `consultation_reception_appointment`) VALUES
-	(15, '2023-02-23 16:00:46', 194, 36, NULL),
-	(16, '2023-02-23 16:01:09', 194, 37, NULL),
-	(17, '2023-02-23 16:01:48', 194, 38, NULL),
-	(18, '2023-02-23 16:02:45', 194, 39, NULL),
-	(19, '2023-02-23 16:03:09', 194, 40, NULL),
-	(20, '2023-02-23 11:19:51', 194, 41, NULL);
 /*!40000 ALTER TABLE `consultation_reception` ENABLE KEYS */;
 
 -- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
@@ -17437,17 +17429,16 @@ CREATE TABLE IF NOT EXISTS `doctor` (
   CONSTRAINT `FK_doctor_staff` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.doctor:~8 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.doctor:~6 rows (대략적) 내보내기
 DELETE FROM `doctor`;
 /*!40000 ALTER TABLE `doctor` DISABLE KEYS */;
 INSERT INTO `doctor` (`staff_no`, `doctor_certification`, `department_code`) VALUES
-	(102, 193774, '16'),
-	(103, 8999, '06'),
-	(104, 53672, '07'),
-	(105, 87901, '10'),
-	(106, 88774, '11'),
-	(107, 737642, '04'),
-	(194, 771231, '03');
+	(1, 193774, '16'),
+	(2, 8999, '06'),
+	(3, 53672, '07'),
+	(4, 87901, '10'),
+	(5, 88774, '11'),
+	(6, 737642, '04');
 /*!40000 ALTER TABLE `doctor` ENABLE KEYS */;
 
 -- 뷰 kanghoshin_lis.full_consultation 구조 내보내기
@@ -17513,19 +17504,21 @@ CREATE TABLE IF NOT EXISTS `patient` (
   `patient_rrn` char(14) NOT NULL,
   `patient_birth` date NOT NULL,
   `patient_phone` varchar(13) NOT NULL,
-  PRIMARY KEY (`patient_no`)
+  PRIMARY KEY (`patient_no`),
+  UNIQUE KEY `patient_rrn` (`patient_rrn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.patient:~6 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.patient:~7 rows (대략적) 내보내기
 DELETE FROM `patient`;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
 INSERT INTO `patient` (`patient_no`, `patient_name`, `patient_male`, `patient_rrn`, `patient_birth`, `patient_phone`) VALUES
-	(36, '김덕배', b'1', '840313-1243243', '1984-03-13', '010-2938-4932'),
-	(37, '이금희', b'0', '871209-2938737', '1987-12-09', '010-2383-4112'),
-	(38, '김재민', b'1', '020808-3314343', '2002-08-08', '010-5738-7782'),
-	(39, '김민석', b'1', '880217-1328738', '1988-02-17', '010-9473-0283'),
-	(40, '서민지', b'0', '870415-2716361', '1987-04-15', '010-9823-9832'),
-	(41, '구한강', b'1', '111111-1111111', '1911-11-11', '010-3241-2341');
+	(1, '김덕배', b'1', '840313-1243243', '1984-03-13', '010-2938-4932'),
+	(2, '이금희', b'0', '871209-2938737', '1987-12-09', '010-2383-4112'),
+	(3, '김재민', b'1', '020808-3314343', '2002-08-08', '010-5738-7782'),
+	(4, '김민석', b'1', '880217-1328738', '1988-02-17', '010-9473-0283'),
+	(5, '서민지', b'0', '870415-2716361', '1987-04-15', '010-9823-9832'),
+	(6, '구한강', b'1', '560823-1213123', '1956-08-23', '010-3241-2341'),
+	(7, '구현강', b'1', '871123-1322342', '1987-11-23', '010-2221-1231');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 
 -- 테이블 kanghoshin_lis.prescription 구조 내보내기
@@ -17612,7 +17605,7 @@ CREATE TABLE IF NOT EXISTS `prescription_order` (
   CONSTRAINT `FK_prescription_order_prescription` FOREIGN KEY (`prescription_code`) REFERENCES `prescription` (`prescription_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.prescription_order:~0 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.prescription_order:~26 rows (대략적) 내보내기
 DELETE FROM `prescription_order`;
 /*!40000 ALTER TABLE `prescription_order` DISABLE KEYS */;
 /*!40000 ALTER TABLE `prescription_order` ENABLE KEYS */;
@@ -17631,6 +17624,45 @@ CREATE TABLE IF NOT EXISTS `recept_collection` (
 DELETE FROM `recept_collection`;
 /*!40000 ALTER TABLE `recept_collection` DISABLE KEYS */;
 /*!40000 ALTER TABLE `recept_collection` ENABLE KEYS */;
+
+-- 테이블 kanghoshin_lis.recept_test 구조 내보내기
+CREATE TABLE IF NOT EXISTS `recept_test` (
+  `specimen_no` int(11) NOT NULL,
+  `prescription_code` varchar(10) NOT NULL,
+  `staff_no` int(11) NOT NULL,
+  `reception_date` date DEFAULT NULL,
+  PRIMARY KEY (`specimen_no`,`prescription_code`),
+  KEY `prescription_code` (`prescription_code`),
+  KEY `staff_no` (`staff_no`),
+  CONSTRAINT `recept_test_ibfk_1` FOREIGN KEY (`specimen_no`) REFERENCES `blood_collect` (`specimen_no`),
+  CONSTRAINT `recept_test_ibfk_2` FOREIGN KEY (`prescription_code`) REFERENCES `test_prescription` (`prescription_code`),
+  CONSTRAINT `recept_test_ibfk_3` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 테이블 데이터 kanghoshin_lis.recept_test:~0 rows (대략적) 내보내기
+DELETE FROM `recept_test`;
+/*!40000 ALTER TABLE `recept_test` DISABLE KEYS */;
+/*!40000 ALTER TABLE `recept_test` ENABLE KEYS */;
+
+-- 테이블 kanghoshin_lis.result_test 구조 내보내기
+CREATE TABLE IF NOT EXISTS `result_test` (
+  `specimen_no` int(11) NOT NULL,
+  `prescription_code` varchar(10) NOT NULL,
+  `staff_no` int(11) NOT NULL,
+  `result_observed` decimal(10,5) DEFAULT NULL,
+  `result_date` date DEFAULT NULL,
+  PRIMARY KEY (`specimen_no`,`prescription_code`),
+  KEY `prescription_code` (`prescription_code`),
+  KEY `staff_no` (`staff_no`),
+  CONSTRAINT `result_test_ibfk_1` FOREIGN KEY (`specimen_no`) REFERENCES `recept_test` (`specimen_no`),
+  CONSTRAINT `result_test_ibfk_2` FOREIGN KEY (`prescription_code`) REFERENCES `recept_test` (`prescription_code`),
+  CONSTRAINT `result_test_ibfk_3` FOREIGN KEY (`staff_no`) REFERENCES `staff` (`staff_no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- 테이블 데이터 kanghoshin_lis.result_test:~0 rows (대략적) 내보내기
+DELETE FROM `result_test`;
+/*!40000 ALTER TABLE `result_test` DISABLE KEYS */;
+/*!40000 ALTER TABLE `result_test` ENABLE KEYS */;
 
 -- 뷰 kanghoshin_lis.secure_patient 구조 내보내기
 -- VIEW 종속성 오류를 극복하기 위해 임시 테이블을 생성합니다.
@@ -17811,13 +17843,13 @@ CREATE TABLE IF NOT EXISTS `staff` (
 DELETE FROM `staff`;
 /*!40000 ALTER TABLE `staff` DISABLE KEYS */;
 INSERT INTO `staff` (`staff_no`, `staff_name`, `staff_birth`, `staff_male`, `staff_phone`, `staff_image`, `staff_rrn`, `staff_admitted`, `staff_type`) VALUES
-	(102, '구한강', '1982-03-27', b'1', '010-3805-7373', NULL, '820327-1193283', b'1', 'DOC'),
-	(103, '김기남', '1968-09-02', b'1', '010-7767-3823', NULL, '680902-1134562', b'1', 'DOC'),
-	(104, '김동신', '1988-02-03', b'1', '010-2347-4638', NULL, '880203-1836381', b'1', 'DOC'),
-	(105, '김미도', '1991-07-28', b'0', '010-4432-1381', NULL, '910728-2113113', b'1', 'DOC'),
-	(106, '박신혜', '1973-10-11', b'0', '010-2389-7789', NULL, '731011-2141321', b'1', 'DOC'),
-	(107, '류호진', '1987-01-31', b'1', '010-7763-8214', NULL, '870131-1847382', b'1', 'DOC'),
-	(194, '강현구', '1995-12-12', b'1', '010-5502-6774', NULL, '951212-1234123', b'1', 'DOC');
+	(1, '구한강', '1982-03-27', b'1', '010-3805-7373', NULL, '820327-1193283', b'1', 'DOC'),
+	(2, '김기남', '1968-09-02', b'1', '010-7767-3823', NULL, '680902-1134562', b'1', 'DOC'),
+	(3, '김동신', '1988-02-03', b'1', '010-2347-4638', NULL, '880203-1836381', b'1', 'DOC'),
+	(4, '김미도', '1991-07-28', b'0', '010-4432-1381', NULL, '910728-2113113', b'1', 'DOC'),
+	(5, '박신혜', '1973-10-11', b'0', '010-2389-7789', NULL, '731011-2141321', b'1', 'DOC'),
+	(6, '이창식', '1973-07-12', b'1', '010-8865-8613', NULL, '730712-1323142', b'1', 'DOC'),
+	(7, '강현구', '1995-12-12', b'1', '010-5502-6774', NULL, '951212-1212121', b'0', 'NUR');
 /*!40000 ALTER TABLE `staff` ENABLE KEYS */;
 
 -- 프로시저 kanghoshin_lis.staff_insert 구조 내보내기
@@ -17835,7 +17867,7 @@ CREATE PROCEDURE `staff_insert`(
     COMMENT 'insert new staff and update auth'
 BEGIN
 START TRANSACTION;
-INSERT INTO staff VALUES (NULL, staff_name, staff_birth, staff_male, staff_phone, staff_image, staff_rrn, 0 , 0);
+INSERT INTO staff VALUES (NULL, staff_name, staff_birth, staff_male, staff_phone, staff_image, staff_rrn, 0, 'NAN');
 UPDATE auth SET auth.staff_no = LAST_INSERT_ID() WHERE auth.auth_id = auth_id AND auth.staff_no IS null;
 IF ROW_COUNT() != 1 THEN
 ROLLBACK;
@@ -17954,7 +17986,7 @@ CREATE TABLE IF NOT EXISTS `validation` (
   PRIMARY KEY (`validation_email`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.validation:~7 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.validation:~6 rows (대략적) 내보내기
 DELETE FROM `validation`;
 /*!40000 ALTER TABLE `validation` DISABLE KEYS */;
 INSERT INTO `validation` (`validation_email`, `validation_code`) VALUES
@@ -17963,7 +17995,6 @@ INSERT INTO `validation` (`validation_email`, `validation_code`) VALUES
 	('kevin91503918@gmail.com', NULL),
 	('khgkjg12@gmail.com', NULL),
 	('khgkjg12@naver.com', NULL),
-	('rhj1216@gmail.com', NULL),
 	('rhj1216@naver.com', NULL);
 /*!40000 ALTER TABLE `validation` ENABLE KEYS */;
 

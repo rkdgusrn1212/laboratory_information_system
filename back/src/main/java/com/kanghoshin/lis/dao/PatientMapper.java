@@ -23,6 +23,9 @@ public interface PatientMapper {
 			+ ", patient_birth as patientBirth"
 			+ " FROM patient WHERE patient_no = #{patient_no}")
 	PatientVo findByPatientNo(@Param("patient_no") int patientNo);
+	
+	@Select("SELECT * FROM patient WHERE patient_rrn = #{patientRrn}")
+	PatientVo findByPatientRrn(@Param("patientRrn") String patientRrn);
 
 	@Insert("INSERT INTO patient "
 			+ "(patient_no, patient_name, patient_male, patient_phone, patient_rrn, patient_birth) "
