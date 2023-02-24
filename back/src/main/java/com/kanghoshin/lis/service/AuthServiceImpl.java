@@ -121,12 +121,6 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public boolean isDuplicatedId(String id) {
-		return authMapper.findByAuthId(id)!=null;
-	}
-
-
-	@Override
 	public boolean refreshValidationCode(@Valid RefreshValidaitonCodeDto sendCodeDto) {
 		try {
 			String code = UUID.randomUUID().toString();
@@ -146,4 +140,10 @@ public class AuthServiceImpl implements AuthService {
 		message.setText(content);
 		emailSender.send(message);
 	}
+
+	@Override
+	public boolean isExist(String authId) {
+		return authMapper.findByAuthId(authId)!=null;
+	}
+	
 }

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import authApi from './authApi';
 import doctorApi from './doctorApi';
+import nurseApi from './nurseApi';
 import { Account } from './types';
 
 const accountSlice = createSlice({
@@ -21,6 +22,10 @@ const accountSlice = createSlice({
     );
     builder.addMatcher(
       doctorApi.endpoints.registerDoctor.matchFulfilled,
+      (state, { payload }) => payload,
+    );
+    builder.addMatcher(
+      nurseApi.endpoints.registerNurse.matchFulfilled,
       (state, { payload }) => payload,
     );
   },

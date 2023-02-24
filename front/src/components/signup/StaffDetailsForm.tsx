@@ -1,4 +1,4 @@
-import React, { useState, ChangeEventHandler, useEffect } from 'react';
+import React, { useState, ChangeEventHandler } from 'react';
 import Box from '@mui/material/Box';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -6,6 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Alert, Snackbar } from '@mui/material';
 
 import {
   isWriteDetailsError,
@@ -24,6 +25,7 @@ import { SelectChangeEvent } from '@mui/material';
 import { useRegisterDoctorMutation } from '../../services/doctorApi';
 import { useAppSelector } from '../../hooks';
 import { selectAccount } from '../../services/accountSlice';
+import { useRegisterNurseMutation } from '../../services/nurseApi';
 
 const StaffDetailsForm: React.FC<{
   onSuccess: () => void;
@@ -32,6 +34,7 @@ const StaffDetailsForm: React.FC<{
   const account = useAppSelector(selectAccount);
   const [writeDetails, writeDetailsState] = useWriteDetailsMutation();
   const [registerDoctor] = useRegisterDoctorMutation();
+  const [registerNurse] = useRegisterNurseMutation();
   const [staffName, setStaffName] = useState(
     account?.principal.staffVo ? account.principal.staffVo.staffName : '',
   );
@@ -53,16 +56,33 @@ const StaffDetailsForm: React.FC<{
     string | null
   >(null);
 
-  const doRegisterDoctor = () => {
-    registerDoctor({
-      departmentCode,
-      doctorCertification: parseInt(doctorCertification),
-    })
-      .unwrap()
-      .then(() => onSuccess())
-      .catch(() => {
-        onException();
-      });
+  const doRegisterType = () => {
+    if (staffType === 0) {
+      registerNurse()
+        .unwrap()
+        .then(() => onSuccess())
+        .catch(() => {
+          setOpen({
+            message: '요청에 실패했습니다.',
+            isSuccess: false,
+            open: true,
+          });
+        });
+    } else if (staffType === 1) {
+      registerDoctor({
+        departmentCode,
+        doctorCertification: parseInt(doctorCertification),
+      })
+        .unwrap()
+        .then(() => onSuccess())
+        .catch(() => {
+          setOpen({
+            message: '요청에 실패했습니다.',
+            isSuccess: false,
+            open: true,
+          });
+        });
+    }
   };
 
   const handleSubmitClick = () => {
@@ -80,7 +100,7 @@ const StaffDetailsForm: React.FC<{
           staffType,
         } as WriteDetailsRequest)
           .unwrap()
-          .then(doRegisterDoctor)
+          .then(doRegisterType)
           .catch((error) => {
             if (isWriteDetailsError(error)) {
               onException();
@@ -96,12 +116,16 @@ const StaffDetailsForm: React.FC<{
               if (validationError.staffName)
                 setStaffNameHelp(validationError.staffName);
             } else {
-              onException();
+              setOpen({
+                message: '요청에 실패했습니다.',
+                isSuccess: false,
+                open: true,
+              });
             }
           });
       }
     } else if (account?.principal.authorities[0] === 'ROLE_NANTYPE') {
-      doRegisterDoctor();
+      doRegisterType();
     }
   };
 
@@ -158,6 +182,16 @@ const StaffDetailsForm: React.FC<{
 
   const handleDepartmentChange = (event: SelectChangeEvent) => {
     setDepartmentCode(event.target.value);
+  };
+
+  const [open, setOpen] = useState({
+    isSuccess: false,
+    message: '',
+    open: false,
+  });
+
+  const handleClose = () => {
+    setOpen((open) => ({ ...open, open: false }));
   };
 
   return (
@@ -292,6 +326,21 @@ const StaffDetailsForm: React.FC<{
           </Box>
         </Box>
       </Box>
+
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        open={open.open}
+        onClose={handleClose}
+        autoHideDuration={6000}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={open.isSuccess ? 'success' : 'warning'}
+          sx={{ width: '100%' }}
+        >
+          {open.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
