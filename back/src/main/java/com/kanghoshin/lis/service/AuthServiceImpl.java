@@ -25,14 +25,17 @@ import com.kanghoshin.lis.dao.ValidationMapper;
 import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
 import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
+import com.kanghoshin.lis.exception.auth.UpdateDetailsFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
 import com.kanghoshin.lis.vo.entity.ValidationVo;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
 import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
+import com.kanghoshin.lis.vo.error.auth.UpdateDetailsErrorVo;
 import com.kanghoshin.lis.vo.error.auth.WriteDetailsErrorVo;
 import com.kanghoshin.lis.dto.auth.CreateAuthDto;
 import com.kanghoshin.lis.dto.auth.issueValidationCodeDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
+import com.kanghoshin.lis.dto.auth.UpdateDetailsDto;
 import com.kanghoshin.lis.dto.auth.DetailsDto;
 
 import lombok.RequiredArgsConstructor;
@@ -145,5 +148,20 @@ public class AuthServiceImpl implements AuthService {
 	public boolean isExist(String authId) {
 		return authMapper.findByAuthId(authId)!=null;
 	}
-	
+
+	@Override
+	public Map<String, Object> updateDetails(PrincipalDetails principalDetails, @Valid UpdateDetailsDto detailDto)
+			throws GeneralErrorWithMessageException, UpdateDetailsFailedException {
+		int result = 0;
+		try {
+			result = staffMapper.update(detailDto, principalDetails.getStaffVo().getStaffNo());
+		}catch(Exception e) {
+			e.printStackTrace();
+			throw new UpdateDetailsFailedException(UpdateDetailsErrorVo.UNKNOWN);
+		}
+		if(result<1) 
+			throw new UpdateDetailsFailedException(UpdateDetailsErrorVo.UNKNOWN);
+		return jwtService.createJwtUpdated(principalDetails);
+	}
+
 }

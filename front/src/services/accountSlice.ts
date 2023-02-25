@@ -21,6 +21,10 @@ const accountSlice = createSlice({
       (state, { payload }) => payload,
     );
     builder.addMatcher(
+      authApi.endpoints.updateDetails.matchFulfilled,
+      (state, { payload }) => payload,
+    );
+    builder.addMatcher(
       doctorApi.endpoints.registerDoctor.matchFulfilled,
       (state, { payload }) => payload,
     );

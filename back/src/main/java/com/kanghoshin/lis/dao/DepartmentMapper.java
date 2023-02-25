@@ -9,6 +9,10 @@ import com.kanghoshin.lis.vo.entity.DepartmentVo;
 
 @Mapper
 public interface DepartmentMapper {
+	
+	@Select("SELECT * FROM department WHERE department_code = #{departmentCode}")
+	DepartmentVo findByDepartmentCode(@Param("departmentCode") String departmentCode);
+	
 	@Select("<script>"
 			+ "SELECT department_code as departmentCode, department_name as departmentName FROM department "
 			+ "<where> "

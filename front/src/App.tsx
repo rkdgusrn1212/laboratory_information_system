@@ -13,6 +13,7 @@ import TestResultAnalysisPage from './pages/TestResultAnalysisPage';
 import TestReceptPage from './pages/TestReceptPage';
 import TestResultInputPage from './pages/TestResultInputPage';
 import TestResultPage from './pages/TestResultPage';
+import MyInfoPage from './pages/MyInfoPage';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         path="recept-consultation"
         element={<ReceptConsultationPage />}
       ></Route>
+      <Route path="my-info" element={<MyInfoPage />}></Route>
       <Route path="" element={<Navigation />}>
         <Route path="consultation">
           <Route path="" element={<ConsultationPage />}></Route>

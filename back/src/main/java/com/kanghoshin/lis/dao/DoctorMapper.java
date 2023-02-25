@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Select;
 import com.kanghoshin.lis.dto.doctor.CreateDoctorDto;
 import com.kanghoshin.lis.dto.doctor.ReadDoctorListWithDepartmentDto;
 import com.kanghoshin.lis.vo.doctor.DoctorWithDepartmentVo;
+import com.kanghoshin.lis.vo.doctor.ExclusiveDoctorVo;
 
 @Mapper
 public interface DoctorMapper {
@@ -48,4 +49,7 @@ public interface DoctorMapper {
 			+ "limit #{readDoctorListWithDepartmentDto.pageStart}, #{readDoctorListWithDepartmentDto.pageSize}"
 			+ "</script>")
 	DoctorWithDepartmentVo[] selectWithDepartment(@Param("readDoctorListWithDepartmentDto") ReadDoctorListWithDepartmentDto readDoctorListWithDepartmentDto);
+	
+	@Select("SELECT * FROM doctor WHERE staff_no = #{doctorNo}")
+	ExclusiveDoctorVo findDoctorByDoctorNo(@Param("doctorNo") int doctorNo);
 }
