@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.exception.auth.CreateAuthFailedException;
 import com.kanghoshin.lis.exception.auth.IssueVallidationCodeFailedException;
+import com.kanghoshin.lis.exception.auth.UpdateDetailsFailedException;
 import com.kanghoshin.lis.exception.auth.WriteDetailsFailedException;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
 import com.kanghoshin.lis.dto.auth.CreateAuthDto;
 import com.kanghoshin.lis.dto.auth.issueValidationCodeDto;
 import com.kanghoshin.lis.dto.auth.DetailsDto;
 import com.kanghoshin.lis.dto.auth.RefreshValidaitonCodeDto;
+import com.kanghoshin.lis.dto.auth.UpdateDetailsDto;
 import com.kanghoshin.lis.service.AuthService;
 import com.kanghoshin.lis.vo.error.auth.CreateAuthErrorVo;
 import com.kanghoshin.lis.vo.error.auth.IssueValidationCodeErrorVo;
@@ -66,10 +68,18 @@ public class AuthController {
 	
 
 	@PostMapping("write-details")
-	public Map<String, Object> writeDetailss(@AuthenticationPrincipal PrincipalDetails principalDetasils,
+	public Map<String, Object> writeDetails(@AuthenticationPrincipal PrincipalDetails principalDetasils,
 			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException, GeneralErrorWithMessageException {
 		return authService.writeDetails(principalDetasils, detailsDto);
 	}
+	
+
+	@PostMapping("update-details")
+	public Map<String, Object> updateDetails(@AuthenticationPrincipal PrincipalDetails principalDetasils,
+			@Valid @RequestBody UpdateDetailsDto detailsDto) throws  GeneralErrorWithMessageException, UpdateDetailsFailedException {
+		return authService.updateDetails(principalDetasils, detailsDto);
+	}
+
 
 	@ExceptionHandler(WriteDetailsFailedException.class)
 	public ResponseEntity<WriteDetailsErrorVo> handleSignupFailedException(WriteDetailsFailedException exception) {

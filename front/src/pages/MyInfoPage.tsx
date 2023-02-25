@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useAppSelector } from '../hooks';
 import { selectAccount } from '../services/accountSlice';
 import MyInfoForm from '../components/myinfo/MyInfoForm';
-import { Account } from '../services/types';
+import { Staff } from '../services/types';
 
 const theme = createTheme({
   palette: {
@@ -53,7 +53,7 @@ const MyInfoPage = () => {
         }}
       >
         <Container component="main" maxWidth="md">
-          <MyInfoForm account={account as Account} />
+          <MyInfoForm staff={account?.principal.staffVo as Staff} />
         </Container>
       </Box>
     </ThemeProvider>

@@ -154,10 +154,14 @@ export interface Department {
   departmentName: string;
 }
 
-export interface Doctor extends Staff {
+export interface ExclusiveDoctor {
+  staffNo: number;
   doctorCertification: number;
   departmentCode: string;
 }
+
+export type Doctor = Staff & ExclusiveDoctor;
+
 export type Nurse = Staff;
 
 export const isDoctor = (data: unknown): data is Doctor =>

@@ -76,6 +76,13 @@ export function isWriteDetailsError(
 
 export type WriteDetailsResponse = Account;
 
+export type UpdateDetailsRequest = Omit<
+  Staff,
+  'staffNo' | 'staffAdmitted' | 'staffType'
+>;
+
+export type UpdateDetailsResponse = Account;
+
 export type IsExistRequest = Pick<SigninRequest, 'authId'>;
 
 const authApi = createApi({
@@ -119,6 +126,16 @@ const authApi = createApi({
         url: 'write-details',
       }),
     }),
+    updateDetails: builder.mutation<
+      UpdateDetailsResponse,
+      UpdateDetailsRequest
+    >({
+      query: (body) => ({
+        body: body,
+        method: 'POST',
+        url: 'update-details',
+      }),
+    }),
     isExist: builder.query<boolean, IsExistRequest>({
       query: (data) => ({
         params: data,
@@ -136,4 +153,5 @@ export const {
   useWriteDetailsMutation,
   useIsExistQuery,
   useLazyIsExistQuery,
+  useUpdateDetailsMutation,
 } = authApi;

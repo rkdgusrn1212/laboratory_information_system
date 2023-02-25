@@ -7,18 +7,20 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
+import com.kanghoshin.lis.constraints.NoConstraints;
 import com.kanghoshin.lis.dto.doctor.CreateDoctorDto;
 import com.kanghoshin.lis.dto.doctor.ReadDoctorListWithDepartmentDto;
 import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.service.DoctorService;
 import com.kanghoshin.lis.vo.doctor.DoctorWithDepartmentVo;
-
+import com.kanghoshin.lis.vo.doctor.ExclusiveDoctorVo;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,5 +36,10 @@ public class DoctorController {
 	@GetMapping("list-with-department")
 	public DoctorWithDepartmentVo[] readListWithDepartment(@Valid ReadDoctorListWithDepartmentDto readDoctorListWithDepartmentDto) {
 		return doctorService.readDoctorListWithDepartment(readDoctorListWithDepartmentDto);
+	}
+	
+	@GetMapping("{id}")
+	public ExclusiveDoctorVo readDoctor(@NoConstraints @PathVariable("id") int doctorNo) {
+		return doctorService.readDoctor(doctorNo);
 	}
 }

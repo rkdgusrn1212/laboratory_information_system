@@ -1,7 +1,15 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import server from '../server.json';
 import { RootState } from '../store';
-import { Account, Department, Doctor, ListOrder, ListRequest } from './types';
+import {
+  Account,
+  Department,
+  Doctor,
+  ExclusiveDoctor,
+  ListOrder,
+  ListRequest,
+  Staff,
+} from './types';
 
 export type RegisterDoctorRequest = Pick<
   Doctor,
@@ -15,6 +23,9 @@ export interface ReadDoctorListWithDepartmentRequest extends ListRequest {
   departmentNameOrder?: ListOrder;
 }
 export type ReadDoctorListWithDepartmentResponse = (Doctor & Department)[];
+
+export type ReadDoctorRequest = number;
+export type ReadDoctorResponse = ExclusiveDoctor;
 
 export type RegisterDoctorResponse = Account;
 
@@ -51,10 +62,18 @@ const doctorApi = createApi({
         url: 'list-with-department',
       }),
     }),
+    readDoctor: builder.query<ReadDoctorResponse, ReadDoctorRequest>({
+      query: (data) => ({
+        method: 'GET',
+        url: data.toString(),
+      }),
+    }),
   }),
 });
 export default doctorApi;
 export const {
   useRegisterDoctorMutation,
   useReadDoctorListWithDepartmentQuery,
+  useReadDoctorQuery,
+  useLazyReadDoctorQuery,
 } = doctorApi;

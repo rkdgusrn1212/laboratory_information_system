@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.kanghoshin.lis.config.jwt.JwtService;
 import com.kanghoshin.lis.config.principal.PrincipalDetails;
+import com.kanghoshin.lis.constraints.NoConstraints;
 import com.kanghoshin.lis.dao.DoctorMapper;
 import com.kanghoshin.lis.dto.doctor.CreateDoctorDto;
 import com.kanghoshin.lis.dto.doctor.ReadDoctorListWithDepartmentDto;
 import com.kanghoshin.lis.exception.GeneralErrorWithMessageException;
 import com.kanghoshin.lis.vo.doctor.DoctorWithDepartmentVo;
+import com.kanghoshin.lis.vo.doctor.ExclusiveDoctorVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,11 @@ public class DoctorServiceImpl implements DoctorService{
 	public DoctorWithDepartmentVo[] readDoctorListWithDepartment(
 			@Valid ReadDoctorListWithDepartmentDto readDoctorListWithDepartmentDto) {
 		return doctorMapper.selectWithDepartment(readDoctorListWithDepartmentDto);
+	}
+
+	@Override
+	public ExclusiveDoctorVo readDoctor(@NoConstraints int doctorNo) {
+		return doctorMapper.findDoctorByDoctorNo(doctorNo);
 	}
 
 }

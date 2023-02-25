@@ -6,7 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
 import com.kanghoshin.lis.dto.auth.DetailsDto;
+import com.kanghoshin.lis.dto.auth.UpdateDetailsDto;
 import com.kanghoshin.lis.dto.staff.ReadStaffListDto;
 import com.kanghoshin.lis.vo.entity.StaffVo;
 
@@ -29,6 +32,15 @@ public interface StaffMapper {
 			+ " #{authId})")
 	@Options(useGeneratedKeys=true,  keyProperty="detailsDto.staffNo")
 	void insertDetailsDto(@Param("detailsDto") DetailsDto detailsDto, @Param("authId")String authId);
+	
+	@Update("UPDATE staff SET "
+			+ "staff_name = #{detailsDto.staffName}, "
+			+ "staff_birth = #{detailsDto.staffBirth}, "
+			+ "staff_male = #{detailsDto.staffMale}, "
+			+ "staff_phone = #{detailsDto.staffPhone}, "
+			+ "staff_rrn = #{detailsDto.staffRrn}, "
+			+ "staff_image = #{detailsDto.staffImage} WHERE staff_no = #{staffNo}")
+	int update(@Param("detailsDto") UpdateDetailsDto detailsDto, @Param("staffNo") int staffNo);
 	
 
 	@Select("<script>"

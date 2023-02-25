@@ -13,6 +13,8 @@ export type ReadDepartmentListRequest = Partial<{
 
 export type ReadDepartmentListResponse = Department[];
 
+export type ReadDepartmentRequest = string;
+export type ReadDepartmentResponse = Department;
 const departmentApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/department/`,
@@ -36,7 +38,20 @@ const departmentApi = createApi({
         url: 'list',
       }),
     }),
+    readDepartment: builder.query<
+      ReadDepartmentResponse,
+      ReadDepartmentRequest
+    >({
+      query: (data) => ({
+        method: 'GET',
+        url: data,
+      }),
+    }),
   }),
 });
 export default departmentApi;
-export const { useReadDepartmentListMutation } = departmentApi;
+export const {
+  useReadDepartmentListMutation,
+  useLazyReadDepartmentQuery,
+  useReadDepartmentQuery,
+} = departmentApi;

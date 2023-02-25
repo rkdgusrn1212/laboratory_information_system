@@ -1,50 +1,94 @@
-import React, { useState, ChangeEventHandler } from 'react';
+import React, { useState, ChangeEventHandler, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
 import Avatar from '@mui/material/Avatar';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Alert, Snackbar, Typography } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 import { PhonePattern, RrnPattern } from '../../utils/patterns';
 import RrnMaskedInput from '../common/RrnMaskedInput';
 import PhoneInput from '../common/PhoneMaskedInput';
-import DoctorCertificationMaskedInput from '../common/DoctorCertificationMaskedInput';
-import DepartmentSelectInput from '../common/DepartmentSelectInput';
-import { SelectChangeEvent } from '@mui/material';
-import { Account } from '../../services/types';
 import Logo from '../common/Logo';
-import { grey, teal } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import Link from '@mui/material/Link';
 import { Container } from '@mui/system';
+import {
+  isValidationError,
+  mapValidationError,
+  Staff,
+} from '../../services/types';
+import { useLazyReadDoctorQuery } from '../../services/doctorApi';
+import { useLazyReadDepartmentQuery } from '../../services/departmentApi';
+import {
+  UpdateDetailsRequest,
+  useUpdateDetailsMutation,
+} from '../../services/authApi';
+import rrnParser from '../../utils/rrnParser';
+import { useNavigate } from 'react-router-dom';
 
-const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
-  const [staffName, setStaffName] = useState(
-    account?.principal.staffVo ? account.principal.staffVo.staffName : '',
-  );
-  const [staffType, setStaffType] = useState<number | null>(null);
-  const [staffPhone, setStaffPhone] = useState(
-    account?.principal.staffVo ? account.principal.staffVo.staffPhone : '',
-  );
+const MyInfoForm: React.FC<{ staff: Staff }> = ({ staff }) => {
+  const [staffName, setStaffName] = useState(staff.staffName);
+  const [staffPhone, setStaffPhone] = useState(staff.staffPhone);
   const phoneInit = staffPhone;
-  const [staffRrn, setStaffRrn] = useState(
-    account?.principal.staffVo ? account.principal.staffVo.staffRrn : '',
-  );
+  const [staffRrn, setStaffRrn] = useState(staff.staffRrn);
   const rrnInit = staffRrn;
-  const [doctorCertification, setDoctorCertification] = useState('');
-  const [departmentCode, setDepartmentCode] = useState('');
   const [staffNameHelp, setStaffNameHelp] = useState<string | null>(null);
   const [staffPhoneHelp, setStaffPhoneHelp] = useState<string | null>(null);
   const [staffRrnHelp, setStaffRrnHelp] = useState<string | null>(null);
-  const [doctorCertificationHelp, setDoctorCertificationHelp] = useState<
-    string | null
-  >(null);
+  const [readDoctor, readDoctorResult] = useLazyReadDoctorQuery({
+    pollingInterval: 60000,
+  });
+  const [readDepartment, readDepartmentResult] = useLazyReadDepartmentQuery({
+    pollingInterval: 60000,
+  });
+  const [updateDetails, updateDetailsResult] = useUpdateDetailsMutation();
+  const navigate = useNavigate();
 
   const handleSubmitClick = () => {
-    console.log('click');
+    const parsedRrn = rrnParser(staffRrn);
+    if (!parsedRrn) setStaffRrnHelp('주민번호를 확인해주세요');
+    else {
+      updateDetails({
+        staffName,
+        staffRrn,
+        staffBirth: parsedRrn.birth,
+        staffMale: parsedRrn.male,
+        staffPhone,
+        staffImage: null,
+      })
+        .unwrap()
+        .then()
+        .catch((error) => {
+          if (isValidationError<keyof UpdateDetailsRequest>(error)) {
+            const validationError =
+              mapValidationError<keyof UpdateDetailsRequest>(error);
+            if (validationError.staffPhone)
+              setStaffPhoneHelp(validationError.staffPhone);
+            if (validationError.staffRrn)
+              setStaffRrnHelp(validationError.staffRrn);
+            if (validationError.staffMale || validationError.staffBirth)
+              setStaffRrnHelp('주민번호를 확인해주세요');
+            if (validationError.staffName)
+              setStaffNameHelp(validationError.staffName);
+          } else {
+            setOpen({
+              message: '요청에 실패했습니다.',
+              isSuccess: false,
+              open: true,
+            });
+          }
+        });
+    }
   };
+  useEffect(() => {
+    if (staff.staffType === 'DOC') {
+      readDoctor(staff.staffNo)
+        .unwrap()
+        .then((data) => readDepartment(data.departmentCode));
+    }
+  }, [staff.staffNo, readDepartment, readDoctor, staff.staffType]);
 
   const handleNameChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const value = event.target.value;
@@ -78,27 +122,6 @@ const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
     } else {
       setStaffRrnHelp(null);
     }
-  };
-
-  const handleTypeChange = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
-    value: number | null,
-  ) => {
-    setStaffType(value);
-  };
-
-  const handleCertificationSet = (value: string) => {
-    setDoctorCertification(value);
-    const num = parseInt(value);
-    if (num < 1000 || num > 999999) {
-      setDoctorCertificationHelp('4-6자리의 의사면허를 입력해주세요');
-    } else {
-      setDoctorCertificationHelp(null);
-    }
-  };
-
-  const handleDepartmentChange = (event: SelectChangeEvent) => {
-    setDepartmentCode(event.target.value);
   };
 
   const [open, setOpen] = useState({
@@ -139,8 +162,19 @@ const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
           </Box>
         </Container>
       </Box>
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" mt={5} justifyContent="center">
         <Box width="100%" maxWidth={600}>
+          <Link
+            underline="hover"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            &lt; 이전 페이지
+          </Link>
+          <Typography fontFamily="cafe-surround" mt={2} mb={1} fontSize={32}>
+            기본정보
+          </Typography>
           <Box sx={{ mt: 2 }} display="flex" alignItems="baseline" gap={2}>
             <TextField
               autoComplete="name"
@@ -174,68 +208,6 @@ const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
             helpText={staffPhoneHelp}
             error={staffPhoneHelp != null}
           />
-          <ToggleButtonGroup
-            fullWidth
-            sx={{ mt: 2 }}
-            color="standard"
-            value={staffType}
-            exclusive
-            onChange={handleTypeChange}
-          >
-            <ToggleButton value={0}>
-              <Box sx={{ display: 'block', p: 1 }}>
-                <Avatar
-                  src="/images/nurse_icon.png"
-                  sx={{
-                    margin: 'auto',
-                    p: 1,
-                    bgcolor: 'skyblue',
-                    width: 56,
-                    height: 56,
-                  }}
-                />
-                간호사
-              </Box>
-            </ToggleButton>
-            <ToggleButton value={1}>
-              <Box sx={{ display: 'block', p: 1 }}>
-                <Avatar
-                  src="/images/doctor_icon.png"
-                  sx={{
-                    margin: 'auto',
-                    p: 1,
-                    bgcolor: 'orange',
-                    width: 56,
-                    height: 56,
-                  }}
-                />
-                의사
-              </Box>
-            </ToggleButton>
-          </ToggleButtonGroup>
-
-          {staffType === 1 && (
-            <>
-              <DoctorCertificationMaskedInput
-                sx={{ mt: 1 }}
-                label="의사면허"
-                fullWidth
-                size="small"
-                onValueSet={handleCertificationSet}
-                error={doctorCertificationHelp != null}
-                helpText={doctorCertificationHelp}
-              />
-              <DepartmentSelectInput
-                sx={{ mt: 1 }}
-                label="진료과"
-                value={departmentCode}
-                fullWidth
-                onChange={handleDepartmentChange}
-                size="small"
-                variant="outlined"
-              />
-            </>
-          )}
           <Box display="flex" my={2} width="100%" justifyContent="flex-end">
             <Box sx={{ position: 'relative' }}>
               <Button
@@ -245,7 +217,6 @@ const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
                   staffName.length < 1 ||
                   staffPhone.length < 1 ||
                   staffRrn.length < 1 ||
-                  staffType == null ||
                   staffNameHelp != null ||
                   staffPhoneHelp != null ||
                   staffRrnHelp != null
@@ -254,7 +225,7 @@ const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
               >
                 등록
               </Button>
-              {true && (
+              {updateDetailsResult.isLoading && (
                 <CircularProgress
                   size={24}
                   sx={{
@@ -266,6 +237,87 @@ const MyInfoForm: React.FC<{ account: Account }> = ({ account }) => {
                     marginLeft: '-12px',
                   }}
                 />
+              )}
+            </Box>
+          </Box>
+          <Typography fontFamily="cafe-surround" mt={3} mb={1} fontSize={32}>
+            유형별 상세 정보
+          </Typography>{' '}
+          <Box
+            flexDirection="row-reverse"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Avatar
+              src={
+                staff.staffType === 'NUR'
+                  ? '/images/nurse_icon.png'
+                  : staff.staffType === 'DOC'
+                  ? '/images/doctor_icon.png'
+                  : undefined
+              }
+              sx={{
+                bgcolor:
+                  staff.staffType === 'NUR'
+                    ? 'orange'
+                    : staff.staffType === 'DOC'
+                    ? 'skyblue'
+                    : undefined,
+                width: 126,
+                height: 126,
+                my: 1,
+                p: 2,
+              }}
+            />
+            <Box>
+              <Box display="flex" alignItems="center">
+                <Typography fontSize={20} fontWeight="bold">
+                  계정 유형 : &nbsp;
+                </Typography>
+                <Typography
+                  fontSize={20}
+                  fontWeight="bold"
+                  fontFamily="cafe-surround"
+                >
+                  {staff.staffType === 'NUR'
+                    ? '간호사'
+                    : staff.staffType === 'DOC'
+                    ? '의사'
+                    : undefined}
+                  &nbsp; &nbsp;
+                </Typography>
+              </Box>
+              {staff.staffType === 'DOC' && (
+                <>
+                  <Box display="flex" alignItems="center">
+                    <Typography fontSize={20} fontWeight="bold">
+                      의사면허 :&nbsp;
+                    </Typography>
+                    <Typography
+                      fontSize={20}
+                      fontWeight="bold"
+                      fontFamily="cafe-surround"
+                    >
+                      {readDoctorResult.data?.doctorCertification}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" alignItems="center">
+                    <Typography fontSize={20} fontWeight="bold">
+                      진료과 :&nbsp;
+                    </Typography>
+                    <Typography
+                      fontSize={20}
+                      fontWeight="bold"
+                      fontFamily="cafe-surround"
+                    >
+                      {readDepartmentResult.data?.departmentName +
+                        ' (' +
+                        readDepartmentResult.data?.departmentCode +
+                        ')'}
+                    </Typography>
+                  </Box>
+                </>
               )}
             </Box>
           </Box>
