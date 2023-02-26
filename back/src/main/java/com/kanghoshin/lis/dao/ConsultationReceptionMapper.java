@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.kanghoshin.lis.dto.consultationreception.CreateConsultationAppointmentDto;
 import com.kanghoshin.lis.dto.consultationreception.CreateConsultationWalkInDto;
 import com.kanghoshin.lis.dto.consultationreception.ReadConsultationWalkInListDto;
 import com.kanghoshin.lis.vo.consultationreception.ConsultationWalkInVo;
@@ -41,4 +42,10 @@ public interface ConsultationReceptionMapper {
 			+ "limit #{readConsultationWalkInDto.pageStart}, #{readConsultationWalkInDto.pageSize} "
 			+ "</script>")
 	ConsultationWalkInVo[] selectWalkIn(@Param("readConsultationWalkInDto") ReadConsultationWalkInListDto readConsultationWalkInDto);
+
+
+	@Insert("INSERT INTO consultation_reception"
+			+ "( staff_no, patient_no, consultation_reception_appointment )"
+			+ "VALUES (#{createConsultationAppointmentDto.staffNo}, #{createConsultationAppointmentDto.patientNo}, #{createConsultationAppointmentDto.consultationReceptionAppointment})")
+	int insertAppointment(@Param("createConsultationAppointmentDto") CreateConsultationAppointmentDto createConsultationAppointmentDto);
 }

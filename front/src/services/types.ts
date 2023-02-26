@@ -174,7 +174,7 @@ export const isDoctor = (data: unknown): data is Doctor =>
 export interface ConsultationReception {
   consultationReceptionNo: number;
   consultationReceptionTime: string;
-  doctorNo: number;
+  staffNo: number;
   patientNo: number;
   consultationReceptionAppointment: string | null;
 }
@@ -188,8 +188,8 @@ export const isConsultationReception = (
   typeof data.consultationReceptionNo === 'number' &&
   'consultationReceptionTime' in data &&
   typeof data.consultationReceptionTime === 'string' &&
-  'doctorNo' in data &&
-  typeof data.doctorNo === 'number' &&
+  'staffNo' in data &&
+  typeof data.staffNo === 'number' &&
   'patientNo' in data &&
   typeof data.patientNo === 'number' &&
   'consultationReceptionAppointment' in data &&

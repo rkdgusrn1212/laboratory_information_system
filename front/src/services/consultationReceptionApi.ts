@@ -9,6 +9,11 @@ import {
   ConsultationReception,
 } from './types';
 
+export type CreateConsultationAppointmentRequest = Omit<
+  ConsultationReception,
+  'consultationReceptionTime' | 'consultationReceptionNo'
+>;
+
 export type CreateConsultationWalkInRequest = Pick<Doctor, 'staffNo'> &
   Pick<Patient, 'patientNo'>;
 
@@ -35,6 +40,16 @@ const consultationReceptionApi = createApi({
   }),
   reducerPath: 'consultationReceptionApi',
   endpoints: (builder) => ({
+    createConsultationAppointment: builder.mutation<
+      unknown,
+      CreateConsultationAppointmentRequest
+    >({
+      query: (data) => ({
+        body: data,
+        method: 'POST',
+        url: 'appointment',
+      }),
+    }),
     createConsultationWalkIn: builder.mutation<
       unknown,
       CreateConsultationWalkInRequest
@@ -63,4 +78,5 @@ export const {
   useCreateConsultationWalkInMutation,
   useReadConsultationWalkInListQuery,
   useLazyReadConsultationWalkInListQuery,
+  useCreateConsultationAppointmentMutation,
 } = consultationReceptionApi;
