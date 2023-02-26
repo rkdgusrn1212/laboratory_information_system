@@ -23,7 +23,6 @@ public interface CollectService {
 
 	List<StaffVo> getallstafflistall();
 
-	List<CollectSpecimenVo> createSpecimenmulti(@Valid SpecimenDto specimenDto, @Valid int count);
 
 	CollectSpecimenVo createSpecimen(@Valid SpecimenDto specimenDto);
 
@@ -33,23 +32,26 @@ public interface CollectService {
 
 	List<CollectSpecimenVo> getSpecimenall();
 
-	CollectSpecimenVo getSpecimenbyno(String specimenNo);
+	List<CollectSpecimenVo> getSpecimenbyno(String specimenNo);
 
 	void createReceptCollection(SpecimenDto specimenDto);
 
 	void createSpecimenRCgetno2(List<SpecimenDto> list);
 
+	List<SpecimenDto> createSpecimenRCgetno3(List<SpecimenDto> list);
+	
+	
 	List<InadequateTypeVo> getInadequate_typeall();
 
 	List<BloodCollectVo> createCollectmulti(@Valid List<BloodCollectDto> collectDtolist);
 
-	BloodCollectVo createCollect(@Valid BloodCollectDto collectDto);
+	List<BloodCollectVo> createCollect(@Valid BloodCollectDto collectDto);
 
 	void createCollectPost(@Valid BloodCollectDto collectDto);
 
 	List<BloodCollectVo> getCollectall();
 
-	BloodCollectVo getCollectbyno(String specimenNo);
+	List<BloodCollectVo> getCollectbyno(String specimenNo);
 
 	List<SubmitInadequateVo> getSubmitInadequatelist();
 

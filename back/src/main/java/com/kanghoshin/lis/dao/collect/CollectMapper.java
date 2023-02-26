@@ -44,7 +44,7 @@ public interface CollectMapper {
 			+"FROM specimen, recept_collection ,full_test_prescription_order "
 			+"WHERE full_test_prescription_order.prescription_order_no= recept_collection.prescription_order_no "
 			+"and specimen.specimen_no = recept_collection.specimen_no and specimen.specimen_no = #{specimenNo} ")
-	CollectSpecimenVo findByspecimenno(@Param("specimenNo") String specimenNo);
+	List<CollectSpecimenVo> findByspecimenno(@Param("specimenNo") String specimenNo);
 
 	//검체번호 생성해서 출력받기
 	@Insert("INSERT INTO specimen(staff_no,specimen_date) VALUES ( #{specimenDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
@@ -106,7 +106,7 @@ public interface CollectMapper {
 			+"and specimen.specimen_no=recept_collection.specimen_no "
 			+"and blood_collect.specimen_no= specimen.specimen_no and blood_collect.specimen_no = #{specimenNo} "
 			+"ORDER BY blood_collect.collect_date desc,blood_collect.specimen_no desc ")
-	BloodCollectVo findcollectByspecimenno(@Param("specimenNo") String specimenNo);
+	List<BloodCollectVo> findcollectByspecimenno(@Param("specimenNo") String specimenNo);
 
 
 	
@@ -115,17 +115,11 @@ public interface CollectMapper {
 			+"inadequate_type.Inadequate_type_name AS InadequateTypeName, "
 			+"submit_inadequate.Submit_Inadequate_from AS SubmitInadequateFrom, "
 			+"submit_inadequate.Submit_Inadequate_to AS SubmitInadequateTo, blood_collect.staff_no AS BloodCollectStaffNo, "
-			+"blood_collect.collect_date AS CollectDate ,submit_inadequate.recept_Inadequate_date AS ReceptInadequateDate, "
-			+"full_test_prescription_order.prescription_order_no AS prescriptionrderNo , "
-			+"full_test_prescription_order.specimen_container_code AS specimenContainerCode, "
-			+"full_test_prescription_order.specimen_type_code AS specimenTypeCode,full_test_prescription_order.patient_no AS patientNo , "
-			+"full_test_prescription_order.prescription_name AS prescriptionName "
-			+"from blood_collect, inadequate_type, submit_inadequate , recept_collection,full_test_prescription_order "
-			+"WHERE full_test_prescription_order.prescription_order_no=recept_collection.prescription_order_no "
-			+"AND recept_collection.specimen_no= blood_collect.specimen_no "
-			+"and submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code "
+			+"blood_collect.collect_date AS CollectDate ,submit_inadequate.recept_Inadequate_date AS ReceptInadequateDate "
+			+"from blood_collect, inadequate_type, submit_inadequate "
+			+"WHERE submit_inadequate.Inadequate_type_code= inadequate_type.Inadequate_type_code "
 			+"AND blood_collect.specimen_no = submit_inadequate.specimen_no "
-			+"ORDER BY ReceptInadequateDate desc " )
+			+"ORDER BY ReceptInadequateDate DESC ")
 	List<SubmitInadequateVo> SubmitInadequatelist();
 
 	

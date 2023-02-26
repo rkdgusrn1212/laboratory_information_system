@@ -8,7 +8,7 @@ export const collectlist = async () => {
 
     //전처리
     response.data.map((collect, i) => {
-      collect.id = i;
+      collect.id = collect.specimenNo + collect.orderNo;
     });
 
     return response.data;
