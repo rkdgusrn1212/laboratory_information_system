@@ -9,6 +9,11 @@ import {
   ConsultationReception,
 } from './types';
 
+export type CreateConsultationAppointmentRequest = Omit<
+  ConsultationReception,
+  'consultationReceptionTime' | 'consultationReceptionNo'
+>;
+
 export type CreateConsultationWalkInRequest = Pick<Doctor, 'staffNo'> &
   Pick<Patient, 'patientNo'>;
 
@@ -21,6 +26,16 @@ export interface ReadConsultationWalkInRequest extends ListRequest {
 }
 
 export type ReadConsultationWalkInResponse = ConsultationReception[];
+
+export interface ReadConsultationAppointmentRequest extends ListRequest {
+  staffNo?: number;
+  staffNoOrder?: ListOrder;
+  consultationReceptionAppointmentStart?: number;
+  consultationReceptionAppointmentEnd?: number;
+  consultationReceptionAppointmentOrder?: ListOrder;
+}
+
+export type ReadConsultationAppointmentResponse = ConsultationReception[];
 
 const consultationReceptionApi = createApi({
   baseQuery: fetchBaseQuery({
@@ -35,6 +50,16 @@ const consultationReceptionApi = createApi({
   }),
   reducerPath: 'consultationReceptionApi',
   endpoints: (builder) => ({
+    createConsultationAppointment: builder.mutation<
+      unknown,
+      CreateConsultationAppointmentRequest
+    >({
+      query: (data) => ({
+        body: data,
+        method: 'POST',
+        url: 'appointment',
+      }),
+    }),
     createConsultationWalkIn: builder.mutation<
       unknown,
       CreateConsultationWalkInRequest
@@ -55,6 +80,16 @@ const consultationReceptionApi = createApi({
         url: 'walk-in/list',
       }),
     }),
+    readConsultationAppointmentList: builder.query<
+      ReadConsultationAppointmentResponse,
+      ReadConsultationAppointmentRequest
+    >({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: 'appointment/list',
+      }),
+    }),
   }),
 });
 
@@ -63,4 +98,7 @@ export const {
   useCreateConsultationWalkInMutation,
   useReadConsultationWalkInListQuery,
   useLazyReadConsultationWalkInListQuery,
+  useCreateConsultationAppointmentMutation,
+  useLazyReadConsultationAppointmentListQuery,
+  useReadConsultationAppointmentListQuery,
 } = consultationReceptionApi;

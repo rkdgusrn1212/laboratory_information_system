@@ -29,7 +29,7 @@ const ConsultationReceptionCard: React.FC<{
   );
   const isAppointment = useMemo(
     () =>
-      isArray<ConsultationWalkIn>(consultationReception, isConsultationWalkIn),
+      !isArray<ConsultationWalkIn>(consultationReception, isConsultationWalkIn),
     [consultationReception],
   );
 
@@ -52,7 +52,7 @@ const ConsultationReceptionCard: React.FC<{
                 ? dayjs(
                     (consultationReception as ConsultationAppointment)
                       .consultationReceptionAppointment,
-                  ).format('HH:mm:ss')
+                  ).format('HH:mm')
                 : (consultationReception as ConsultationWalkIn)
                     .consultationWalkInOrder)
             ) : (

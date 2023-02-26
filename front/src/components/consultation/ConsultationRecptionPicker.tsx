@@ -8,9 +8,13 @@ import Tab from '@mui/material/Tab';
 import Stack from '@mui/material/Stack';
 
 import { ConsultationReception } from '../../services/types';
-import { useLazyReadConsultationWalkInListQuery } from '../../services/consultationReceptionApi';
+import {
+  useLazyReadConsultationAppointmentListQuery,
+  useLazyReadConsultationWalkInListQuery,
+} from '../../services/consultationReceptionApi';
 import { useAppSelector } from '../../hooks';
 import { selectAccount } from '../../services/accountSlice';
+import dayjs, { Dayjs } from 'dayjs';
 
 const ConsultationReceptionPicker: React.FC<{
   onSelected: (
@@ -23,18 +27,39 @@ const ConsultationReceptionPicker: React.FC<{
   const [tabValue, setTabValue] = useState(0);
   const [readConsultationWalkInList, readConsultationWalkInListState] =
     useLazyReadConsultationWalkInListQuery({ pollingInterval: 20000 });
+  const [
+    readConsultationAppointmentList,
+    readConsultationAppointmentListState,
+  ] = useLazyReadConsultationAppointmentListQuery({ pollingInterval: 20000 });
 
   useEffect(() => {
-    if (Account?.principal.staffVo.staffNo && tabValue === 0) {
-      readConsultationWalkInList({
-        pageSize: 1000,
-        pageStart: 0,
-        staffNo: Account?.principal.staffVo.staffNo,
-      });
+    if (Account?.principal.staffVo.staffNo) {
+      if (tabValue === 0) {
+        readConsultationWalkInList({
+          pageSize: 1000,
+          pageStart: 0,
+          staffNo: Account?.principal.staffVo.staffNo,
+        });
+      } else {
+        const startDate = dayjs(Date.now());
+        const endDate = dayjs(startDate)
+          .set('date', startDate.date() + 1)
+          .set('hour', 0)
+          .set('minute', 0)
+          .set('second', 0);
+        readConsultationAppointmentList({
+          pageSize: 1000,
+          pageStart: 0,
+          consultationReceptionAppointmentStart: startDate.unix(),
+          consultationReceptionAppointmentEnd: endDate.unix(),
+          staffNo: Account?.principal.staffVo.staffNo,
+        });
+      }
     }
   }, [
     Account?.principal.staffVo.staffNo,
     readConsultationWalkInList,
+    readConsultationAppointmentList,
     tabValue,
   ]);
 
@@ -76,7 +101,7 @@ const ConsultationReceptionPicker: React.FC<{
               data={
                 tabValue === 0
                   ? readConsultationWalkInListState.data
-                  : undefined
+                  : readConsultationAppointmentListState.data
               }
             />
           </Box>
