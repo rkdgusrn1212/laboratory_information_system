@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -9,6 +9,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { useState } from 'react';
 import ReceptList from '../components/testrecept/ReceptList';
+import Title from '../components/testresultanalysis/Title';
 import { useAppSelector } from '../hooks';
 import { selectAccount } from '../services/accountSlice';
 
@@ -17,25 +18,24 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
 export default function TestReceptPage() {
   // 보내는 변수
   const [barcode, setBarCode] = useState('');
-
   // 받아온 변수
   const [specimenno, setSpecimenNo] = useState('');
-  const [testspecimen, setTestSpecimen] = useState('');
-  const [testamount, setTestAmount] = useState('');
-  const [testcontainer, setTestContainer] = useState('');
+  const [specimentypename, setSpecimenTypeName] = useState('');
+  const [testprescriptionamount, setTestPrescriptionAmount] = useState('');
+  const [specimencontainername, setSpecimenContainerName] = useState('');
 
   const [patientno, setPatientNo] = useState('');
   const [patientname, setPatientName] = useState('');
   const [patientmale, setPatientMale] = useState('');
   const [patientrrn, setPatientRrn] = useState('');
 
-  const [testcode, setTestCode] = useState('');
-  const [testname, setTestName] = useState('');
+  const [prescriptioncode, setPrescriptionCode] = useState('');
+  const [prescriptionname, setPrescriptionName] = useState('');
 
   const [nursename, setNurseName] = useState('');
   const [collectdate, setCollectDate] = useState('');
   const [doctorname, setDoctorName] = useState('');
-  const [orderdate, setOrderDate] = useState('');
+  const [prescriptionordertime, setPrescriptionOrderTime] = useState('');
 
   const account = useAppSelector(selectAccount);
   const date = moment().format('YYYYMMDD');
@@ -43,7 +43,8 @@ export default function TestReceptPage() {
 
   const handlebarcode = (e) => {
     setBarCode(e.target.value);
-    // console.log(e.target.value);
+
+    //  console.log(e.target.value);
   }
 
   //바코드 입력했을 때 검체 정보 불러오기.
@@ -59,9 +60,9 @@ export default function TestReceptPage() {
         }
       );
       setSpecimenNo(searchSpecimenInfo.data.specimenNo);
-      setTestSpecimen(searchSpecimenInfo.data.testSpecimen);
-      setTestAmount(searchSpecimenInfo.data.testAmount);
-      setTestContainer(searchSpecimenInfo.data.testContainer);
+      setSpecimenTypeName(searchSpecimenInfo.data.specimenTypeName);
+      setTestPrescriptionAmount(searchSpecimenInfo.data.testPrescriptionAmount);
+      setSpecimenContainerName(searchSpecimenInfo.data.specimenContainerName);
 
       setPatientNo(searchSpecimenInfo.data.patientNo);
       setPatientName(searchSpecimenInfo.data.patientName);
@@ -72,49 +73,64 @@ export default function TestReceptPage() {
       }
       setPatientRrn(searchSpecimenInfo.data.patientRrn);
 
-      setTestCode(searchSpecimenInfo.data.testCode);
-      setTestName(searchSpecimenInfo.data.testName);
+      setPrescriptionCode(searchSpecimenInfo.data.prescriptionCode);
+      setPrescriptionName(searchSpecimenInfo.data.prescriptionName);
 
       setNurseName(searchSpecimenInfo.data.nurseName);
       setCollectDate(searchSpecimenInfo.data.collectDate);
       setDoctorName(searchSpecimenInfo.data.doctorName);
-      setOrderDate(searchSpecimenInfo.data.orderDate);
+      setPrescriptionOrderTime(searchSpecimenInfo.data.prescriptionOrderTime);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // console.log(barcode);
-  // console.log(testcode);
-  // console.log(account.principal.staffVo.staffNo);
-  // console.log(date);
+  // const insertspecimen = async () => {
+  //   try {
+  //     await axios.post(
+  //       'http://localhost:8080/api/test/recepttest',
+  //       {
+  //         body: {
+  //           specimenNo: barcode,
+  //           prescriptionCode: prescriptioncode,
+  //           staffNo: account.principal.staffVo.staffNo,
+  //           receptionDate: date
+  //         }
+  //       }
+  //     );
+
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const handleOnKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      searchbarcode(e.target.value)
+    }
+  };
 
   const insertspecimen = () => {
-    try {
-      axios.post(
-        'http://localhost:8080/api/test/recepttest',
-        {
-          data: {
-            specimenNo: barcode,
-            testCode: testcode,
-            staffNo: account.principal.staffVo.staffNo,
-            receptionDate: date
-          }
-        }
-      );
-
-    } catch (error) {
-      console.log(error);
-    }
+    axios({
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: 'post',
+      url: 'http://localhost:8080/api/test/recepttest',
+      data: JSON.stringify({
+        specimenNo: barcode,
+        prescriptionCode: prescriptioncode,
+        staffNo: account.principal.staffVo.staffNo,
+        receptionDate: date
+      })
+    });
   };
 
   const handleinsert = (e) => {
     searchbarcode(e.target.value)
-    if (barcode !== null) {
-      insertspecimen(e.target.value);
-      alert('접수가 완료되었습니다.');
-    }
-    console.log(e.target.value);
+    insertspecimen(e.target.value)
+    alert("검사가 접수되었습니다.")
+
   }
 
   return (
@@ -133,15 +149,15 @@ export default function TestReceptPage() {
           >
             <Paper elevation={6}>
               <Grid sx={{ mx: 2, my: 1 }}>
-                <Typography>
-                  바코드 수기 입력
-                </Typography>
+                <Title>
+                  검사 접수
+                </Title>
               </Grid>
 
               <Grid item xs={12} sx={{ display: 'flex', mx: 2, gap: 2 }}>
                 <Grid item xs={9} sx={{ mx: 2, mb: 2 }} display="flex" justifyContent="center">
                   <TextField sx={{ width: '100%' }}
-                    size="small" value={barcode} onChange={handlebarcode}
+                    label="바코드 수기 입력" size="small" value={barcode} onChange={handlebarcode} onKeyPress={handleOnKeyPress}
                   />
                 </Grid>
                 <Grid item xs={3} sx={{ mx: 2, mb: 2 }} display="flex" justifyContent="center">
@@ -157,9 +173,11 @@ export default function TestReceptPage() {
             </Paper>
 
             <Paper elevation={6}>
-              <Typography align="left" sx={{ mx: 2, my: 1, mt: 2 }}>
-                검체 정보
-              </Typography>
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  검체 정보
+                </Title>
+              </Grid>
               <Box sx={{ flexGrow: 1, mb: 3 }}>
                 <Grid xs={12} sx={{ mx: 2, gap: 2 }}>
                   <Box display="flex"
@@ -168,16 +186,18 @@ export default function TestReceptPage() {
                       '& > :not(style)': { m: 1, width: '25ch' },
                     }}>
                     <TextField label="검체번호" size="small" value={specimenno} disabled />
-                    <TextField label="검체명" size="small" value={testspecimen} disabled />
-                    <TextField label="검체량" size="small" value={testamount} disabled />
-                    <TextField label="용기명" size="small" value={testcontainer} disabled />
+                    <TextField label="검체명" size="small" value={specimentypename} disabled />
+                    <TextField label="검체량" size="small" value={testprescriptionamount} disabled />
+                    <TextField label="용기명" size="small" value={specimencontainername} disabled />
                   </Box>
                 </Grid>
               </Box>
 
-              <Typography align="left" sx={{ mx: 2, my: 1 }}>
-                환자 정보
-              </Typography>
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  환자 정보
+                </Title>
+              </Grid>
               <Box sx={{ flexGrow: 1, mb: 3 }}>
                 <Grid xs={12} sx={{ mx: 2, gap: 2 }}>
                   <Box display="flex"
@@ -193,9 +213,11 @@ export default function TestReceptPage() {
                 </Grid>
               </Box>
 
-              <Typography align="left" sx={{ mx: 2, my: 1 }}>
-                검사 정보
-              </Typography>
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  검사 정보
+                </Title>
+              </Grid>
               <Box sx={{ flexGrow: 1, mb: 3 }}>
                 <Grid xs={12} sx={{ mx: 2, gap: 2 }}>
                   <Box display="flex"
@@ -203,17 +225,19 @@ export default function TestReceptPage() {
                     sx={{
                       '& > :not(style)': { m: 1, width: '25ch' },
                     }}>
-                    <TextField label="검사항목코드" size="small" value={testcode} disabled />
-                    <TextField label="검사명" size="small" value={testname} disabled />
+                    <TextField label="검사항목코드" size="small" value={prescriptioncode} disabled />
+                    <TextField label="검사명" size="small" value={prescriptionname} disabled />
                     <TextField label="검사접수자" size="small" value={account.principal.staffVo.staffName} disabled />
                     <TextField label="검사접수일자" size="small" value={showdate} disabled />
                   </Box>
                 </Grid>
               </Box>
 
-              <Typography align="left" sx={{ mx: 2, my: 1 }}>
-                채혈/진료 정보
-              </Typography>
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  채혈/진료 정보
+                </Title>
+              </Grid>
               <Box sx={{ flexGrow: 1, mb: 3 }}>
                 <Grid xs={12} sx={{ mx: 2, gap: 2 }}>
                   <Box display="flex"
@@ -224,7 +248,7 @@ export default function TestReceptPage() {
                     <TextField label="채혈자" size="small" value={nursename} disabled />
                     <TextField label="채혈일자" size="small" value={collectdate} disabled />
                     <TextField label="진료의" size="small" value={doctorname} disabled />
-                    <TextField label="진료일자" size="small" value={orderdate} disabled />
+                    <TextField label="진료일자" size="small" value={prescriptionordertime} disabled />
                   </Box>
                 </Grid>
               </Box>
@@ -241,9 +265,11 @@ export default function TestReceptPage() {
             }}
           >
             <Paper elevation={6}>
-              <Typography align="left" sx={{ mx: 2, my: 1 }}>
-                접수 목록
-              </Typography>
+            <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  검사 접수 목록
+                </Title>
+              </Grid>
               <Box sx={{ flexGrow: 1, mt: 3 }}>
                 <Grid xs={12} sx={{ gap: 2 }}>
                   <Box display="flex"

@@ -1,7 +1,5 @@
 package com.kanghoshin.lis.vo.testresult;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +11,9 @@ public class TestResultInputVo {
 
 	private int specimenNo;
 
-	private String testSpecimen;
+	private String specimenTypeName;
 
-	private String testContainer;
+	private String specimenContainerName;
 
 	private int patientNo;
 
@@ -27,19 +25,15 @@ public class TestResultInputVo {
 
 	private String prescriptionName;
 
-	private Date orderDate;
+	private String prescriptionOrderTime;
 
 	private int receptTestStaffNo;
 
 	private String receptTestStaffName;
 
-	private Date receptTestDate;
-	
-	private String testCode;
+	private String receptionDate;
 
-	private String fieldName;
+	private String testFieldName;
 
-	private String testName;
-
-	private String testReference;
+	private String testPrescriptionReference;
 }

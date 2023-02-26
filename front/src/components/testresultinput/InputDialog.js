@@ -1,4 +1,3 @@
-import React from 'react';
 import { TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -26,7 +25,7 @@ export default function InputDialog() {
     const handleClickOpen = (e) => {
         setOpen(true);
         searchbarcode(e.target.value)
-    };   
+    };
 
     const handleClickClose = (e) => {
         insertinput(e.target.value);
@@ -37,8 +36,8 @@ export default function InputDialog() {
         setOpen(false);
     };
     const [specimenno, setSpecimenNo] = useState('');
-    const [testspecimen, setTestSpecimen] = useState('');
-    const [testcontainer, setTestContainer] = useState('');
+    const [specimentypename, setSpecimenTypeName] = useState('');
+    const [specimencontainername, setSpecimenContainerName] = useState('');
 
     const [patientno, setPatientNo] = useState('');
     const [patientname, setPatientName] = useState('');
@@ -46,21 +45,21 @@ export default function InputDialog() {
 
     const [prescriptioncode, setPrescriptionCode] = useState('');
     const [prescriptionname, setPrescriptionName] = useState('');
-    const [orderdate, setOrderDate] = useState('');
+    const [prescriptionordertime, setPrescriptionOrderTime] = useState('');
 
     const [receptteststaffno, setReceptTestStaffNo] = useState('');
     const [receptteststaffname, setReceptTestStaffName] = useState('');
-    const [recepttestdate, setReceptTestDate] = useState('');
+    const [receptiondate, setReceptionDate] = useState('');
 
-    const [testcode, setTestCode] = useState('');
-    const [fieldname, setFieldName] = useState('');
-    const [testname, setTestName] = useState('');
+
+    const [testfieldname, setTestFieldName] = useState('');
+
 
     const account = useAppSelector(selectAccount);
     const date = moment().format('YYYYMMDD');
     const showdate = moment().format('YYYY-MM-DD')
 
-    const [testreference, setTestReference] = useState('');
+    const [testprescriptionreference, setTestPrescriptionReference] = useState('');
     const [resultobserved, setResultObserved] = useState('');
 
     const handleresult = (e) => {
@@ -81,8 +80,8 @@ export default function InputDialog() {
             );
 
             setSpecimenNo(searchSpecimenInfo.data.specimenNo);
-            setTestSpecimen(searchSpecimenInfo.data.testSpecimen);
-            setTestContainer(searchSpecimenInfo.data.testContainer);
+            setSpecimenTypeName(searchSpecimenInfo.data.specimenTypeName);
+            setSpecimenContainerName(searchSpecimenInfo.data.specimenContainerName);
 
             setPatientNo(searchSpecimenInfo.data.patientNo);
             setPatientName(searchSpecimenInfo.data.patientName);
@@ -90,43 +89,39 @@ export default function InputDialog() {
 
             setPrescriptionCode(searchSpecimenInfo.data.prescriptionCode);
             setPrescriptionName(searchSpecimenInfo.data.prescriptionName);
-            setOrderDate(searchSpecimenInfo.data.orderDate);
+            setPrescriptionOrderTime(searchSpecimenInfo.data.prescriptionOrderTime);
 
             setReceptTestStaffNo(searchSpecimenInfo.data.receptTestStaffNo);
             setReceptTestStaffName(searchSpecimenInfo.data.receptTestStaffName);
-            setReceptTestDate(searchSpecimenInfo.data.receptTestDate);
+            setReceptionDate(searchSpecimenInfo.data.receptionDate);
 
-            setTestCode(searchSpecimenInfo.data.testCode);
-            setFieldName(searchSpecimenInfo.data.fieldName);
-            setTestName(searchSpecimenInfo.data.testName);
-
-            setTestReference(searchSpecimenInfo.data.testReference);
+            setTestFieldName(searchSpecimenInfo.data.testFieldName);
+            setTestPrescriptionReference(searchSpecimenInfo.data.testPrescriptionReference);
 
         } catch (error) {
             console.log(error);
         }
     };
+
 
     const insertinput = () => {
-        try {
-            axios.post(
-                'http://localhost:8080/api/testresult/testresultinput',
-                {
-                    data: {
-                        specimenNo: barcode,
-                        testCode: testcode,
-                        staffNo: account.principal.staffVo.staffNo,
-                        resultObserved: resultobserved,
-                        resultDate: date
-                    }
-                }
-            );
-            alert('검사결과 입력이 완료되었습니다.');
-        } catch (error) {
-            console.log(error);
-        }
+        axios({
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'post',
+            url: 'http://localhost:8080/api/testresult/testresultinput',
+            data: JSON.stringify({
+                specimenNo: barcode,
+                prescriptionCode: prescriptioncode,
+                staffNo: account.principal.staffVo.staffNo,
+                resultObserved: resultobserved,
+                resultDate: date
+            })
+        }).then(function () {
+            alert("검사결과 입력이 완료되었습니다.")
+        });
     };
-
 
     return (
         <div>
@@ -134,18 +129,19 @@ export default function InputDialog() {
                 <Grid item xs={12} sx={{ display: 'flex', mx: 2, gap: 2 }}>
                     <Grid item xs={8} sx={{ mx: 2, mb: 2 }} display="flex" justifyContent="center">
                         <TextField sx={{ width: '90%' }}
-                            size="small" value={barcode} onChange={handlebarcode}
+                            label="바코드 수기 입력" size="small" value={barcode} onChange={handlebarcode}
                         />
                     </Grid>
                     <Grid item xs={4} sx={{ mx: 2, mb: 2 }} display="flex" justifyContent="center" >
                         <Button sx={{ width: '80%' }}
-                            variant="contained" color="success" onClick={handleClickOpen}                       >
+                            variant="contained" color="success" onClick={handleClickOpen} >
                             입력
                         </Button>
                     </Grid>
                 </Grid>
             </Grid>
-            <Dialog open={open} onClose={handleClose} fullWidth="fullWidth" maxWidth="lg"            >
+
+            <Dialog open={open} onClose={handleClose} fullWidth="fullWidth" maxWidth="lg" >
                 <DialogTitle >{"검체 정보"}</DialogTitle>
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container spacing={2} >
@@ -154,10 +150,10 @@ export default function InputDialog() {
                                 <Grid item xs={12} sx={{ display: 'flex', mx: 2, py: 2 }}>
                                     <Grid item xs={3.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
                                         <TextField label="검체번호" size="small" value={specimenno} disabled />
-                                        <TextField label="검체명" size="small" value={testspecimen} disabled />
+                                        <TextField label="검체명" size="small" value={specimentypename} disabled />
                                     </Grid>
                                     <Grid item xs={2.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
-                                        <TextField label="용기명" size="small" value={testcontainer} disabled />
+                                        <TextField label="용기명" size="small" value={specimencontainername} disabled />
                                     </Grid>
                                     <Grid item xs={3.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
                                         <TextField label="환자번호" size="small" value={patientno} disabled />
@@ -173,23 +169,23 @@ export default function InputDialog() {
                                         <TextField label="처방명" size="small" value={prescriptionname} disabled />
                                     </Grid>
                                     <Grid item xs={2.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
-                                        <TextField label="처방날짜" size="small" value={orderdate} disabled />
+                                        <TextField label="처방날짜" size="small" value={prescriptionordertime} disabled />
                                     </Grid>
                                     <Grid item xs={3.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
                                         <TextField label="검사접수자번호" size="small" value={receptteststaffno} disabled />
                                         <TextField label="검사접수자명" size="small" value={receptteststaffname} disabled />
                                     </Grid>
                                     <Grid item xs={2.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
-                                        <TextField label="검사접수날짜" size="small" value={recepttestdate} disabled />
+                                        <TextField label="검사접수날짜" size="small" value={receptiondate} disabled />
                                     </Grid>
                                 </Grid>
                                 <Grid item xs={12} sx={{ display: 'flex', mx: 2, py: 2 }}>
                                     <Grid item xs={3.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
-                                        <TextField label="검사코드" size="small" value={testcode} disabled />
-                                        <TextField label="검사분야명" size="small" value={fieldname} disabled />
+                                        <TextField label="검사코드" size="small" value={prescriptioncode} disabled />
+                                        <TextField label="검사분야명" size="small" value={testfieldname} disabled />
                                     </Grid>
                                     <Grid item xs={2.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
-                                        <TextField label="검사명" size="small" value={testname} disabled />
+                                        <TextField label="검사명" size="small" value={prescriptionname} disabled />
                                     </Grid>
                                     <Grid item xs={3.5} sx={{ display: 'flex', mx: 2, gap: 2 }}>
                                         <TextField label="검사입력자번호" size="small" value={account.principal.staffVo.staffNo} disabled />
@@ -218,7 +214,7 @@ export default function InputDialog() {
                                     </Grid>
                                     <Grid item xs={6} sx={{ display: 'flex', mx: 2 }}>
                                         <TextField multiline rows={6} fullWidth label="참고치" size="small"
-                                            value={testreference} disabled />
+                                            value={testprescriptionreference} disabled />
                                     </Grid>
                                 </Grid>
                             </DialogContentText>
@@ -229,6 +225,7 @@ export default function InputDialog() {
                     <Button variant="contained" color="success" onClick={handleClickClose} sx={{ width: 400 }}>결과등록</Button>
                 </DialogActions>
             </Dialog>
-        </div >
+        </div>
+
     );
 }

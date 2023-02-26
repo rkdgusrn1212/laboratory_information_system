@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import { useLocation } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import PatientInformation from '../components/testresultanalysis/PatientInformation';
@@ -10,8 +11,19 @@ import TimeSeriesChart from '../components/testresultanalysis/TimeSeriesChart';
 
 const mdTheme = createTheme();
 
+
 export default function TestResultAnalysisPage() {
-  
+
+  const location = useLocation();
+
+  const b = location.state.b;
+  const c = location.state.c;
+  const d = location.state.d;
+  const e = location.state.e;
+  const f = location.state.f;
+
+  console.log(b+" "+c+" "+d+" "+e+" "+f);
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -39,7 +51,7 @@ export default function TestResultAnalysisPage() {
                     height: 240,
                   }}
                 >
-                  <TimeSeriesChart></TimeSeriesChart> 
+                  <TimeSeriesChart c={c} d={d} e={e} f={f}></TimeSeriesChart>
                 </Paper>
               </Grid>
               {/* 환자정보 */}
@@ -52,13 +64,13 @@ export default function TestResultAnalysisPage() {
                     height: 240,
                   }}
                 >
-                  <PatientInformation></PatientInformation>
+                  <PatientInformation c={c} d={d} e={e} f={f}></PatientInformation>
                 </Paper>
               </Grid>
               {/* 선택된 검사 */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <SelectedTestResult></SelectedTestResult>
+                  <SelectedTestResult c={c} d={d} e={e} f={f}></SelectedTestResult>
                 </Paper>
               </Grid>
             </Grid>

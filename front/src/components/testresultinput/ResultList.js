@@ -7,8 +7,8 @@ import axios from 'axios';
 const columns = [
   { flex: 1, headerName: '검체코드', field: 'specimenNo' },
   { flex: 1, headerName: '환자이름', field: 'patientName' },
-  { flex: 1, headerName: '검사코드', field: 'testCode' },
-  { flex: 1, headerName: '오더일자', field: 'orderDate' },
+  { flex: 1, headerName: '검사코드', field: 'prescriptionCode' },
+  { flex: 1, headerName: '오더일자', field: 'prescriptionOrderTime' },
   { flex: 1, headerName: '채혈일자', field: 'collectDate' },
   { flex: 1, headerName: '검사접수일자', field: 'receptionDate' }
 ];
@@ -18,28 +18,20 @@ export default function ResultList(props) {
   const [specimenlist, setSpecimenList] = useState('');
   const [resultlist, setResultList] = useState('');
 
-  // const [barcode, setBarCode] = useState('');
-
   useEffect(() => {
     getReceptlist();
-  }, []);
-
-  useEffect(() => {
     getResultlist();
   }, []);
 
-  function sendSpecimenList(){
+  function sendSpecimenList() {
     props.setCompletTest(specimenlist);
     props.setInCompletTest(resultlist)
   }
 
   useEffect(() => {
     sendSpecimenList();
-  }, []);
+  });
 
-  // const handlebarcode = (e) => { 
-  //     setBarCode(e.row.specimenNo)
-  // }
 
   async function getReceptlist() {
     try {
@@ -61,12 +53,8 @@ export default function ResultList(props) {
   async function getResultlist() {
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/test/selectresult'
+        'http://localhost:8080/api/testresult/selectresult'
       );
-
-      response.data.map((resultlist, i) => {
-        resultlist.id = i;
-      });
 
       setResultList(response.data)
 
@@ -76,7 +64,7 @@ export default function ResultList(props) {
   }
 
   return (
-    <Paper style={{ height: 475, width: '100%' }}>
+    <Paper style={{ height: 445, width: '100%' }}>
       <DataGrid
         rows={specimenlist}
         columns={columns}

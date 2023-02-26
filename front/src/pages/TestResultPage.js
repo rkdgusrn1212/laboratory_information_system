@@ -7,6 +7,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ResultSearchList from '../components/testresult/ResultSearchList';
 import TextField from '@mui/material/TextField';
 import { useState } from 'react';
+import Title from '../components/testresultanalysis/Title';
+import axios from 'axios';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -20,7 +22,7 @@ export default function TestResultPage() {
   const [start, setStart] = useState(null);
   const [end, setEnd] = useState(null);
 
-  const [selectedpatientlist, setSelectedPatientList] = useState('');
+  const [selectedpatientlist, setSelectedPatientList] = useState([]);
 
   const handlepatientname = (e) => {
     setPatientName(e.target.value);
@@ -33,27 +35,27 @@ export default function TestResultPage() {
   const searchpatient = async () => {
 
     try {
-      const searchpatientInfo = await axios.post(
-        'http://localhost:8080/api/test/findspecimen',
+      const searchpatientInfo = await axios.get(
+        'http://localhost:8080/api/result/findresultlistbypatient',
         {
           params: {
             patientName: patientname,
             startDate: start,
-            endDate: end,
-
+            endDate: end
           }
-        });
+        }
+      );
+         
       searchpatientInfo.data.map((selectedpatientlist, i) => {
         selectedpatientlist.id = i;
       });
 
-      setSelectedPatientList(response.data)
+      setSelectedPatientList(searchpatientInfo.data)
 
     } catch (error) {
       console.log(error);
     }
   };
-
 
   return (
     <ThemeProvider theme={lightTheme}>
@@ -66,30 +68,37 @@ export default function TestResultPage() {
           }}>
             <Paper elevation={6}>
               <Grid container spacing={2}>
-                <Grid item xs={1} sx={{ ml: 2, my: 3 }} display="flex" justifyContent="center">
+                <Grid item xs={12} sx={{ ml: 2, mt: 2 }} >
+                
+                <Title >
+                  검사 결과 조회
+                </Title>
+              
+                </Grid>
+                <Grid item xs={1} sx={{ ml: 2, my: 2 }} display="flex" justifyContent="center">
                   <Typography>환자 이름</Typography>
                 </Grid>
-                <Grid item xs={3} sx={{ my: 2 }} display="flex" justifyContent="center">
+                <Grid item xs={3} sx={{ my: 1 }} display="flex" justifyContent="center">
                   <TextField sx={{ width: '100%' }} label="환자이름" size="small" value={patientname}
                     onChange={handlepatientname} />
                 </Grid>
-                <Grid item xs={1} sx={{ mx: 3, my: 3 }} display="flex" justifyContent="center">
+                <Grid item xs={1} sx={{ mx: 3, my: 2 }} display="flex" justifyContent="center">
                   <Typography>접수 기간</Typography>
                 </Grid>
-                <Grid item xs={5} sx={{ my: 2, width: '100%' }} display="flex" justifyContent="center">
+                <Grid item xs={5} sx={{ my: 1, width: '100%' }} display="flex" justifyContent="center">
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DatePicker label="시작일" value={start}
-                      onChange={(newstart) => { setStart(newstart); }}
+                      onChange={(newstart) => { setStart(newstart.format('YYYYMMDD')); }}
                       renderInput={(params) => <TextField size="small" {...params} />}
                     />
                     <Typography sx={{ mx: 1, my: 1 }}> ~ </Typography>
                     <DatePicker label="종료일" value={end}
-                      onChange={(newend) => { setEnd(newend); }}
+                      onChange={(newend) => { setEnd(newend.format('YYYYMMDD')); }}
                       renderInput={(params) => <TextField size="small" {...params} />}
                     />
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={1} sx={{ my: 2, width: '100%' }} display="flex" justifyContent="center">
+                <Grid item xs={1} sx={{ my: 1, width: '100%' }} display="flex" justifyContent="center">
                   <Button variant="contained" color="success" onClick={handlepatientsearch}>
                     검색
                   </Button>
@@ -97,7 +106,7 @@ export default function TestResultPage() {
               </Grid>
             </Paper>
             <Paper elevation={6}>
-              <ResultSearchList value={selectedpatientlist}></ResultSearchList>
+              <ResultSearchList value={selectedpatientlist} value2={start} value3={end}></ResultSearchList>
             </Paper>
           </Box>
         </Grid>
