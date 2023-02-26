@@ -14,7 +14,7 @@ import com.kanghoshin.lis.vo.entity.TestFieldVo;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/test-field")
+@RequestMapping("api/test-field")//직원만 사용가능
 @RequiredArgsConstructor
 public class TestFieldController {
 

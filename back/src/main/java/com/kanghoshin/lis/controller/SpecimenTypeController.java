@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/specimen-type")
+@RequestMapping("api/specimen-type")//직원 사용
 public class SpecimenTypeController {
 
 	private final SpecimenTypeService specimenTypeService;

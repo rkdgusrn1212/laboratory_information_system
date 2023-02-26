@@ -28,17 +28,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DoctorController {
 	private final DoctorService doctorService;
-	@PostMapping("register")
+	@PostMapping("register")//nontype만
 	public Map<String, Object> registerDoctor(@AuthenticationPrincipal PrincipalDetails principalDetasils, @NotNull @Valid @RequestBody CreateDoctorDto createDoctorDto) throws GeneralErrorWithMessageException {
 		return doctorService.registerDoctor(principalDetasils, createDoctorDto);
 	}
 	
-	@GetMapping("list-with-department")
+	@GetMapping("list-with-department")//진료접수모듈에서 사용
 	public DoctorWithDepartmentVo[] readListWithDepartment(@Valid ReadDoctorListWithDepartmentDto readDoctorListWithDepartmentDto) {
 		return doctorService.readDoctorListWithDepartment(readDoctorListWithDepartmentDto);
 	}
 	
-	@GetMapping("{id}")
+	@GetMapping("{id}")//환자도 열람 가능해야함
 	public ExclusiveDoctorVo readDoctor(@NoConstraints @PathVariable("id") int doctorNo) {
 		return doctorService.readDoctor(doctorNo);
 	}

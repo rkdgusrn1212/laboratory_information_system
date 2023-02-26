@@ -27,23 +27,23 @@ public class PatientController {
 
 	private final PatientService patientService;
 	
-	@PostMapping
+	@PostMapping//무인접수모듈에서 사용
 	public int createPatient(@Valid @RequestBody CreatePatientDto patientDto) {
 		return patientService.createPatient(patientDto);
 	}
 
-	@GetMapping
+	@GetMapping//무인접수모듈에서 사용
 	public PatientVo readPatientByRrn(@RequestParam String patientRrn){
 		return patientService.readPatientByPatientRrn(patientRrn);
 	}
 	
-	@GetMapping("{no}")
+	@GetMapping("{no}")//타모듈에서 사용
 	public PatientVo readPatient(@PathVariable("no")
 	@NoConstraints int patientNo) {
 		return patientService.readPatientByPatientNo(patientNo);
 	}
 	
-	@GetMapping("list")
+	@GetMapping("list")//타모듈에서 사용
 	public List<PatientVo> readPatientList(@Valid ReadPatientListDto readPatientListDto){
 		return patientService.readPatientList(readPatientListDto);
 	}

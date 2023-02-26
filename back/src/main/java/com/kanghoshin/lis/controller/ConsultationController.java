@@ -24,12 +24,12 @@ public class ConsultationController {
 
 	private final ConsultationService consultationService;
 	
-	@GetMapping("/full-consultation/list")
+	@GetMapping("/full-consultation/list")//직원만 사용가능
 	public FullConsultationVo[] readFullConsultationList(@Valid ReadFullConsultationListDto readFullConsultationlistDto) {
 		return consultationService.readFullConsultationList(readFullConsultationlistDto);
 	}
 	
-	@PostMapping
+	@PostMapping//의사만 사용가능
 	public ConsultationVo createConsultation(@Valid @RequestBody CreateConsultationDto createConsultationDto) throws GeneralErrorWithMessageException {
 		return consultationService.createConsultation(createConsultationDto);
 	}

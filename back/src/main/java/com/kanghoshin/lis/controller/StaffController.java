@@ -21,12 +21,12 @@ public class StaffController {
 	
 	private final StaffService staffService;
 	
-	@GetMapping("list")
+	@GetMapping("list")//환자도 볼수 있어햐함(일단 개인 민감 정보 고려안함)
 	public StaffVo[] readStaffList(@Valid ReadStaffListDto readStaffListDto) {
 		return staffService.readStaffList(readStaffListDto);
 	}
 	
-	@GetMapping("{no}")
+	@GetMapping("{no}")//환자도 볼수 있어햐함(일단 개인 민감 정보 고려안함)
 	public StaffVo readStaff(@NoConstraints @PathVariable("no") int staffNo) {
 		return staffService.readStaff(staffNo);
 	}

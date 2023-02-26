@@ -19,7 +19,7 @@ public class TestPrescriptionController {
 
 	private final TestPrescriptionService testPrescriptionService;
 	
-	@PatchMapping
+	@PatchMapping//의사만
 	public void createTestPrescription(@Valid @RequestBody UpdateTestPrescriptionDto createTestPrescriptionDto) {
 		testPrescriptionService.updateTestPrescription(createTestPrescriptionDto);
 	}

@@ -24,12 +24,12 @@ public class PrescriptionOrderController {
 	
 	private final PrescriptionOrderService prescriptionOrderService;
 	
-	@PostMapping
+	@PostMapping//의사만 사용
 	public void createPrescriptionOrderList( @RequestBody CreatePrescriptionOrderDto[] createPrescriptionOrderDto) throws GeneralErrorWithMessageException {
 		prescriptionOrderService.createPrescriptionOrderList(createPrescriptionOrderDto);
 	}
 	
-	@GetMapping("full-test-prescription-order/list")
+	@GetMapping("full-test-prescription-order/list")//타모듈에서 사용
 	public FullTestPrescriptionOrderVo[] readFullTestPrescriptionOrderList(@Valid ReadFullTestPrescriptionOrderListDto readFullTestPrescriptionOrderListDto) {
 		return prescriptionOrderService.readFullTestPrescriptionOrderList(readFullTestPrescriptionOrderListDto);
 	}

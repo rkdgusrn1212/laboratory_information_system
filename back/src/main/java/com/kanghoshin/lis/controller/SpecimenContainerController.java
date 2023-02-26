@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/specimen-container")
+@RequestMapping("api/specimen-container")//직원만
 public class SpecimenContainerController {
 
 	private final SpecimenContainerService specimenContainerService;

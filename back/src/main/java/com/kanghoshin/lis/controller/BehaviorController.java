@@ -20,12 +20,12 @@ public class BehaviorController {
 	private final BehaviorService behaviorService;
 	
 
-	@GetMapping("list")
+	@GetMapping("list")//직원만 사용가능
 	public BehaviorVo[] readBehaviorListCode(@Valid ReadBehaviorListDto readBehaviorListDto) {
 		return behaviorService.readBehaviorList(readBehaviorListDto);
 	}
 	
-	@GetMapping("{id}")
+	@GetMapping("{id}")//직원만 사용가능
 	public BehaviorVo readBehaviorByBehaviorCode(@PathVariable("id") String behaviorCode) {
 		return behaviorService.readBehaviorByBehaviorCode(behaviorCode);
 	}
