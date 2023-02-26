@@ -26,11 +26,11 @@ const ConsultationReceptionPicker: React.FC<{
   const Account = useAppSelector(selectAccount);
   const [tabValue, setTabValue] = useState(0);
   const [readConsultationWalkInList, readConsultationWalkInListState] =
-    useLazyReadConsultationWalkInListQuery({ pollingInterval: 20000 });
+    useLazyReadConsultationWalkInListQuery({ pollingInterval: 5000 });
   const [
     readConsultationAppointmentList,
     readConsultationAppointmentListState,
-  ] = useLazyReadConsultationAppointmentListQuery({ pollingInterval: 20000 });
+  ] = useLazyReadConsultationAppointmentListQuery({ pollingInterval: 5000 });
 
   useEffect(() => {
     if (Account?.principal.staffVo.staffNo) {
