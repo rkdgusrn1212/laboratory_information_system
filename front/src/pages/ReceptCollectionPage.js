@@ -72,7 +72,8 @@ export default function ReceptCollectionPage() {
   const [loginstaffno, setLoginstaffno] = useState(1);
   const account = useAppSelector(selectAccount); //로그인한  계정 정보
 
-  const [imageUrl1, setImageUrl1] = useState([]);
+  const imageUrl23 = useRef('');
+  const imageUrl1 = [];
   const [imageUrl, setImageUrl] = useState([]);
   //만약 선택한 처방 정보의 해당하는 오더에 검체가 이미 있을때
   //다잉얼로그 열기
@@ -162,12 +163,12 @@ export default function ReceptCollectionPage() {
       }
     });
   }
-
+  const checker = useRef(0);
   function onpre(patientNo) {
     //환자no로  처방 볼러오기
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/prescription-order/full-test-prescription-order/list?pageSize=10&pageStart=0&PatientNoKey=${patientNo}`,
+      url: `http://localhost:8080/api/prescription-order/full-test-prescription-order/list?pageSize=1000&pageStart=0&PatientNoKey=${patientNo}&consultationTimeOrder=DESC`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
@@ -189,7 +190,7 @@ export default function ReceptCollectionPage() {
   function createspecimen() {
     //같으면 채혈접수만
     //다르면 검체 생성까지
-
+    checker.current = 1;
     rows4.map((postdata, i) => {
       rows6.push({
         orderNo: postdata.prescriptionOrderNo,
@@ -200,8 +201,27 @@ export default function ReceptCollectionPage() {
 
     axios({
       method: 'post',
-      url: `http://localhost:8080/api/collect/inserttest`,
+      url: `http://localhost:8080/api/collect/inserttest2`,
       data: rows6,
+    }).then(function (response) {
+      response.data.map((a) => {
+        if (a.specimenNo != null) {
+          const canvas = document.createElement('canvas');
+          JsBarcode(canvas, a.specimenNo, {
+            height: 50,
+            displayValue: true,
+          });
+          imageUrl1.push(canvas.toDataURL('image/png'));
+        } else {
+          imageUrl1.push('검체가 통합되었습니다.');
+        }
+      });
+      console.log(imageUrl1);
+      console.log('imageUrl1: ');
+      console.log(imageUrl1);
+      setImageUrl(imageUrl1);
+      console.log(imageUrl);
+      setOpen(true);
     });
 
     setFlag(2);
@@ -209,29 +229,30 @@ export default function ReceptCollectionPage() {
   //검체번호로 바코드 만들기
   //수정해야함
   function makebarcord() {
-    console.log('바코드 안만드니???~~~~~~~~~~~~~~~~~~~~~~~~~');
     rows6.map((a, i) => {
       axios({
         method: 'get',
         url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${a.orderNo}`,
       }).then(function (response) {
-        if (response.data != '') {
-          console.log(response.data[0].specimenNo);
-          const canvas = document.createElement('canvas');
-          JsBarcode(canvas, response.data[0].specimenNo, {
-            height: 50,
-            displayValue: true,
-          });
-          setImageUrl(canvas.toDataURL('image/png'));
-          imageUrl1[i] = canvas.toDataURL('image/png');
-          setOpen(true);
-        }
+        console.log('바코드가 생성되었습니다.');
+        console.log('오더번호' + a.orderNo);
+        console.log(response.data);
+        console.log(response.data[0].specimenNo);
+        const canvas = document.createElement('canvas');
+        JsBarcode(canvas, response.data[0].specimenNo, {
+          height: 50,
+          displayValue: true,
+        });
+        imageUrl1.push(canvas.toDataURL('image/png'));
       });
     });
+
+    console.log('imageUrl1: ');
+    console.log(imageUrl1);
+    setImageUrl(imageUrl1);
+    console.log(imageUrl);
+    setOpen(true);
   }
-  useEffect(() => {
-    makebarcord();
-  }, [flag]);
 
   //환자 검색 파트
   const onSearchHandler = (event) => {
@@ -271,8 +292,8 @@ export default function ReceptCollectionPage() {
     error == 1 &&
       rows1.map((a, b) => {
         if (nawon[i].consultationNo == a.consultationNo) {
-          rows1[b].status = 1;
-        } else rows1[b].status = 0;
+          a.status = 1;
+        } else a.status = 0;
       });
     //선택한 내원정보가 있는 처방정보의 상태값을 전부 바꿔야함
   };
@@ -328,16 +349,17 @@ export default function ReceptCollectionPage() {
       //선택한 그리드의정보를 rows4로 저장한다
       grid2buttonclick();
       // //선택한 처방의 오더가 이미 채혈접수가 되어있는지 확인
+      if (checker.current == 0) {
+        createspecimen();
+        console.log(rows4);
+      }
 
-      createspecimen();
-      console.log(rows4);
       //다이얼로그 오픈
       //rows4에 검체 번호 들어가 있음
 
-      makebarcord();
+      // makebarcord();
     }
   };
-
   const handleClose = (value) => {
     setOpen(false);
   };
@@ -856,7 +878,7 @@ export default function ReceptCollectionPage() {
                   selectedValue={rows5}
                   open={open}
                   onClose={handleClose}
-                  img={imageUrl1}
+                  img={imageUrl}
                 />
                 <Button
                   sx={{ width: '100%' }}

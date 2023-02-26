@@ -2,7 +2,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 // Import Swiper React components
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -41,7 +41,7 @@ import { useAppSelector } from '../hooks';
 
 export default function BloodCollectionPage() {
   const [open, setOpen] = React.useState(false);
-  const [collect, setCollect] = useState([]);
+  const [selectedcollect, setSelectedcollect] = useState([]);
 
   const [inputlist, setInputlist] = useState([]);
   const [list, setList] = useState([]); //get
@@ -68,7 +68,11 @@ export default function BloodCollectionPage() {
     });
   }, []);
 
+  const asd = [];
+
+  const flag1 = useRef(1);
   const onSearch = (event) => {
+    flag1.current = 2;
     setFlag(2);
     let count = 2; //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
     axios({
@@ -76,28 +80,32 @@ export default function BloodCollectionPage() {
       url: `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
     }).then(function (response) {
       if (response.data != '') {
-        response.data.id = response.data.specimenNo;
+        response.data.map((collect) => {
+          collect.id = collect.specimenNo + collect.orderNo;
+        });
 
         list.map((list) => {
-          if (list.id == search) {
+          if (list.specimenNo == search) {
             count = 3;
             setFlag(3);
+            flag1.current = 3;
             console.log('아래 리스트와 겹침');
           }
         });
 
         inputlist.map((input) => {
-          if (input.id == search) {
+          if (input == search) {
+            flag1.current = 3;
             count = 3;
             setFlag(3);
             console.log('겹침22');
           }
         });
 
-        if (count == 2) {
+        if (flag1.current == 2) {
           setFlag(4);
           inputlist.push(search);
-          setList([response.data, ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
+          setList([response.data[0], ...list]); //데이터가 삽입은 되는데 배열 마지막줄에 삽입이 이루어짐
           console.log(inputlist);
           console.log('flag: ' + flag);
         }
@@ -129,7 +137,13 @@ export default function BloodCollectionPage() {
       method: 'get',
       url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${input}`,
     }).then(function (response) {
-      collect.push(response.data);
+      if (response.data != '') {
+        response.data.map((a) => {
+          a.id = a.specimenNo + a.orderNo;
+          selectedcollect.push(a);
+        });
+      }
+
       collectlist().then((res) => setList(res));
     });
   }
@@ -149,13 +163,14 @@ export default function BloodCollectionPage() {
     if (error == 1) {
       if (inputlist.length >= 1) {
         postdata();
-        console.log(collect);
+        console.log(selectedcollect);
         setOpen(true);
       }
     }
   };
 
   const handleClose = (value) => {
+    setInputlist(asd);
     setOpen(false);
   };
 
@@ -472,7 +487,7 @@ export default function BloodCollectionPage() {
           }}
         >
           <BloodcollectionsDialog
-            selectedValue={collect}
+            selectedValue={selectedcollect}
             open={open}
             onClose={handleClose}
           />

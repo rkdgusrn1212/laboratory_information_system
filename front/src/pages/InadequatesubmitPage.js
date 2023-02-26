@@ -73,11 +73,12 @@ export default function InadequatePage() {
     }).then(function (response) {
       if (response.data != '') {
         setFlag(3); //검색 결과가 있음
+
         submitInadequateList.map((a) => {
           if (a.specimenNo == search) setFlag(4);
         });
-        setFind(response.data);
-        console.log(response.data);
+        setFind(response.data[0]);
+        console.log(response.data[0]);
       } else {
         setFlag(2);
       }
@@ -114,18 +115,6 @@ export default function InadequatePage() {
       width: 80,
     },
     {
-      field: 'specimenContainerCode',
-      headerName: '용기코드',
-      headerAlign: 'center',
-      width: 80,
-    },
-    {
-      headerName: '용기타입코드',
-      field: 'specimenTypeCode',
-      headerAlign: 'center',
-      width: 100,
-    },
-    {
       headerName: '채혈자',
       field: 'bloodCollectStaffNo',
       headerAlign: 'center',
@@ -137,12 +126,6 @@ export default function InadequatePage() {
       headerAlign: 'center',
       type: 'dateTime',
       width: 180,
-    },
-    {
-      headerName: '환자번호',
-      field: 'patientNo',
-      headerAlign: 'center',
-      width: 80,
     },
   ];
 

@@ -63,6 +63,16 @@ public class CollectController {
 		       CollectService.createSpecimenRCgetno2(list);
 	}
 	
+	@PostMapping("/inserttest2")
+	public List<SpecimenDto> test2(@Valid @RequestBody List<SpecimenDto> list) {
+		    return CollectService.createSpecimenRCgetno3(list);
+	}
+	
+	
+	
+	
+	
+	
 	//검체입력받고 오더입력 받아서 삽입
 	@PostMapping("/createReceptCollection")
 	public void createReceptCollection(@Valid @RequestBody SpecimenDto SpecimenDTO) {
@@ -70,15 +80,6 @@ public class CollectController {
 	
 	}
 
-	
-	@GetMapping("/createspecimenmulti")
-	public List<CollectSpecimenVo> createspecimenmulti(@Valid @Param("staffNo") String staffNo,
-			@Param("count") int count) {
-		SpecimenDto SpecimenDto = new SpecimenDto();
-		SpecimenDto.setStaffNo(staffNo);
-		List<CollectSpecimenVo> createspecimenmulti = CollectService.createSpecimenmulti(SpecimenDto, count);
-		return createspecimenmulti;
-	}
 
 	@GetMapping("/specimenlist")
 	public List<CollectSpecimenVo> specimenlist() {
@@ -88,8 +89,8 @@ public class CollectController {
 
 	//채혈페이지 검색값
 	@GetMapping("/specimenbyno")
-	public CollectSpecimenVo specimenbyno(@Valid @Param("specimenNo") String specimenNo) {
-		CollectSpecimenVo specimen = CollectService.getSpecimenbyno(specimenNo);
+	public List<CollectSpecimenVo> specimenbyno(@Valid @Param("specimenNo") String specimenNo) {
+		List<CollectSpecimenVo> specimen = CollectService.getSpecimenbyno(specimenNo);
 		return specimen;
 	}
 
@@ -101,13 +102,13 @@ public class CollectController {
 	}
 
 	@GetMapping("/insertcollect")
-	public BloodCollectVo insertcollect(@Valid @Param("specimenNo") String specimenNo,
+	public List<BloodCollectVo> insertcollect(@Valid @Param("specimenNo") String specimenNo,
 			@Param("staffNo") String staffNo) {
 		BloodCollectDto CollectDto = new BloodCollectDto();
 		CollectDto.setStaffNo(staffNo);
 		CollectDto.setSpecimenNo(specimenNo);
 
-		BloodCollectVo createspecimen = CollectService.createCollect(CollectDto);
+		List<BloodCollectVo> createspecimen = CollectService.createCollect(CollectDto);
 		return createspecimen;
 	}
 
@@ -126,8 +127,8 @@ public class CollectController {
 
 	//채혈 다이얼로그
 	@GetMapping("/collectlistbyno")
-	public BloodCollectVo collectlistbyno(@Valid @Param("specimenNo") String specimenNo) {
-		BloodCollectVo specimen = CollectService.getCollectbyno(specimenNo);
+	public List<BloodCollectVo> collectlistbyno(@Valid @Param("specimenNo") String specimenNo) {
+		List<BloodCollectVo> specimen = CollectService.getCollectbyno(specimenNo);
 		return specimen;
 	}
 

@@ -106,7 +106,6 @@ export default function ReceptCollectionDialog(props) {
                         sx={{ fontSize: 14, my: 3 }}
                         color="text.secondary"
                       >
-                        {' '}
                         {pre.specimenContainerCode}
                       </Typography>
                     </Grid>

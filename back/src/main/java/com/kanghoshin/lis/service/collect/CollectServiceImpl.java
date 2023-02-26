@@ -107,25 +107,43 @@ public class CollectServiceImpl implements CollectService {
 		}
 	}
 
+	
 	@Override
-	public List<CollectSpecimenVo> createSpecimenmulti(@Valid SpecimenDto specimenDto, @Valid int count) {
-		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-		List<CollectSpecimenVo> specimeninsertlist = new ArrayList<CollectSpecimenVo>();
-		CollectSpecimenVo findbyspecimenno;
-		try {
-			for (int i = 0; i < count; i++) {
-				collectMapper.specimeninsertbsystaffno(specimenDto);
-				findbyspecimenno = collectMapper.findByspecimenno(specimenDto.getSpecimenNo());
-				collectMapper.insertReceptCollection(specimenDto);
-				specimeninsertlist.add(findbyspecimenno);
+	public List<SpecimenDto> createSpecimenRCgetno3(List<SpecimenDto> list){
+		System.out.println(list.toString());
+		boolean flag;
+		List<String> specimenlist = null;
+		for (int a = 0; a < list.size(); a++) {
+			flag = true;
+			for (int b = 0; b <= a; b++) {
+				if (flag && list.get(b).getSpecimenContainerCode().equals(list.get(a).getSpecimenContainerCode())
+						&& a != b) {
+					SpecimenDto rc = new SpecimenDto();
+					rc.setOrderNo(list.get(a).getOrderNo());
+					rc.setSpecimenNo(list.get(b).getSpecimenNo());
+					list.get(a).setSpecimenNo(list.get(b).getSpecimenNo());
+					collectMapper.insertReceptCollection(rc);
+					flag = false;
+				}
 			}
-		} catch (Exception e) {
-			transactionManager.rollback(txStatus);
-			System.out.println(e);
+			if (flag) {
+				SpecimenDto is = new SpecimenDto();
+				is.setOrderNo(list.get(a).getOrderNo());
+				is.setStaffNo(list.get(a).getStaffNo());
+				collectMapper.specimeninsertbsystaffno(is);
+				collectMapper.insertReceptCollection(is);
+				list.get(a).setSpecimenNo(is.getSpecimenNo());
+				flag = false;
+			}
 		}
-		transactionManager.commit(txStatus);
-		return specimeninsertlist;
+		
+		System.out.println(list);
+		
+		return list;
+		
 	}
+	
+
 
 	@Override
 	public List<CollectSpecimenVo> getSpecimenall() {
@@ -134,8 +152,8 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public CollectSpecimenVo getSpecimenbyno(String specimenNo) {
-		CollectSpecimenVo Specimenbyno = collectMapper.findByspecimenno(specimenNo);
+	public List<CollectSpecimenVo> getSpecimenbyno(String specimenNo) {
+		List<CollectSpecimenVo> Specimenbyno = collectMapper.findByspecimenno(specimenNo);
 		return Specimenbyno;
 	}
 
@@ -149,13 +167,14 @@ public class CollectServiceImpl implements CollectService {
 	public List<BloodCollectVo> createCollectmulti(@Valid List<BloodCollectDto> collectDtolist) {
 		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
 		List<BloodCollectVo> specimeninsertlist = new ArrayList<BloodCollectVo>();
-		BloodCollectVo findbyspecimenno = null;
+		List<BloodCollectVo> findbyspecimenno = null;
 		try {
 			for (int i = 0; i < collectDtolist.size(); i++) {
 
 				collectMapper.collectinsertbydto(collectDtolist.get(i));
 				findbyspecimenno = collectMapper.findcollectByspecimenno(collectDtolist.get(i).getSpecimenNo());
-				specimeninsertlist.add(findbyspecimenno);
+				for (int a=0;a<findbyspecimenno.size();a++)	
+					specimeninsertlist.add(findbyspecimenno.get(a));
 			}
 		} catch (Exception e) {
 			transactionManager.rollback(txStatus);
@@ -166,9 +185,9 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public BloodCollectVo createCollect(@Valid BloodCollectDto collectDto) {
+	public List<BloodCollectVo> createCollect(@Valid BloodCollectDto collectDto) {
 		TransactionStatus txStatus = transactionManager.getTransaction(new DefaultTransactionDefinition());
-		BloodCollectVo findbyspecimenno = null;
+		List<BloodCollectVo> findbyspecimenno = null;
 		try {
 			collectMapper.collectinsertbydto(collectDto);
 			findbyspecimenno = collectMapper.findcollectByspecimenno(collectDto.getSpecimenNo());
@@ -203,8 +222,8 @@ public class CollectServiceImpl implements CollectService {
 	}
 
 	@Override
-	public BloodCollectVo getCollectbyno(String specimenNo) {
-		BloodCollectVo getCollectbyno = collectMapper.findcollectByspecimenno(specimenNo);
+	public List<BloodCollectVo> getCollectbyno(String specimenNo) {
+		List<BloodCollectVo> getCollectbyno = collectMapper.findcollectByspecimenno(specimenNo);
 		return getCollectbyno;
 	}
 
