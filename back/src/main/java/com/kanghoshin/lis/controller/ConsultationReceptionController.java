@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kanghoshin.lis.dto.consultationreception.CreateConsultationAppointmentDto;
 import com.kanghoshin.lis.dto.consultationreception.CreateConsultationWalkInDto;
+import com.kanghoshin.lis.dto.consultationreception.ReadConsultationAppointmentListDto;
 import com.kanghoshin.lis.dto.consultationreception.ReadConsultationWalkInListDto;
 import com.kanghoshin.lis.service.ConsultationReceptionService;
+import com.kanghoshin.lis.vo.consultationreception.ConsultationAppointmentVo;
 import com.kanghoshin.lis.vo.consultationreception.ConsultationWalkInVo;
 
 import lombok.RequiredArgsConstructor;
@@ -28,13 +30,19 @@ public class ConsultationReceptionController {
 	public void createConsultationAppointment(@Valid @RequestBody CreateConsultationAppointmentDto createConsultationAppointmentDto) {
 		consultationReceptionService.createConsultationAppointment(createConsultationAppointmentDto);
 	}
+
+	
+	@GetMapping("appointment/list")
+	public ConsultationAppointmentVo[] readConsultationAppointmentList(@Valid ReadConsultationAppointmentListDto readConsultationAppointmentListDto) {
+		return consultationReceptionService.readConsultationAppointmentList(readConsultationAppointmentListDto);
+	}
 	
 	@PostMapping("walk-in")
 	public void createConsultationWalkIn(@Valid @RequestBody CreateConsultationWalkInDto createConsultationWalkInDto) {
 		consultationReceptionService.createConsultationWalkIn(createConsultationWalkInDto);
 	}
 	
-	@GetMapping("list")
+	@GetMapping("walk-in/list")
 	public ConsultationWalkInVo[] readConsultationWalkInList(@Valid ReadConsultationWalkInListDto readConsultationWalkInListDto) {
 		return consultationReceptionService.readConsultationWalkInList(readConsultationWalkInListDto);
 	}

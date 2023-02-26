@@ -204,6 +204,7 @@ export const isConsultationWalkIn = (
   data: unknown,
 ): data is ConsultationWalkIn =>
   isConsultationReception(data) &&
+  data.consultationReceptionAppointment == null &&
   'consultationWalkInOrder' in data &&
   typeof data.consultationWalkInOrder === 'number';
 

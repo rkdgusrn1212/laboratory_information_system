@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Select;
 
 import com.kanghoshin.lis.dto.consultationreception.CreateConsultationAppointmentDto;
 import com.kanghoshin.lis.dto.consultationreception.CreateConsultationWalkInDto;
+import com.kanghoshin.lis.dto.consultationreception.ReadConsultationAppointmentListDto;
 import com.kanghoshin.lis.dto.consultationreception.ReadConsultationWalkInListDto;
+import com.kanghoshin.lis.vo.consultationreception.ConsultationAppointmentVo;
 import com.kanghoshin.lis.vo.consultationreception.ConsultationWalkInVo;
 
 @Mapper
@@ -48,4 +50,30 @@ public interface ConsultationReceptionMapper {
 			+ "( staff_no, patient_no, consultation_reception_appointment )"
 			+ "VALUES (#{createConsultationAppointmentDto.staffNo}, #{createConsultationAppointmentDto.patientNo}, #{createConsultationAppointmentDto.consultationReceptionAppointment})")
 	int insertAppointment(@Param("createConsultationAppointmentDto") CreateConsultationAppointmentDto createConsultationAppointmentDto);
+
+	@Select("<script>"
+			+ "SELECT * FROM consultation_reception "
+			+ "WHERE "
+			+ "consultation_reception_appointment IS NOT NULL "
+			+ "<if test='readConsultationAppointmentDto.staffNo > 0'> "
+			+ "AND staff_no = #{readConsultationAppointmentDto.staffNo} "
+			+ "</if> "
+			+ "<if test='readConsultationAppointmentDto.consultationReceptionAppointmentStart &gt; 0'> "
+			+ "AND consultation_reception_appointment &gt;= FROM_UNIXTIME(#{readConsultationAppointmentDto.consultationReceptionAppointmentStart}) "
+			+ "</if> "
+			+ "<if test='readConsultationAppointmentDto.consultationReceptionAppointmentEnd &gt; 0'> "
+			+ "AND consultation_reception_appointment &lt;= FROM_UNIXTIME(#{readConsultationAppointmentDto.consultationReceptionAppointmentEnd}) "
+			+ "</if> "
+			+ "<trim prefix='ORDER BY' prefixOverrides=','> "
+			+ "<if test='readConsultationAppointmentDto.staffNoOrder != null'> "
+			+ "staff_no ${readConsultationAppointmentDto.staffNoOrder} "
+			+ "</if> "
+			+ "<if test='readConsultationAppointmentDto.consultationReceptionAppointmentOrder != null'> "
+			+ ", consultation_reception_appointment ${readConsultationAppointmentDto.consultationReceptionAppointmentOrder} "
+			+ "</if> "
+			+ "</trim> "
+			+ "limit #{readConsultationAppointmentDto.pageStart}, #{readConsultationAppointmentDto.pageSize} "
+			+ "</script>")
+	ConsultationAppointmentVo[] selectAppoint(
+			@Param("readConsultationAppointmentDto") ReadConsultationAppointmentListDto readConsultationAppointmentDto);
 }

@@ -27,6 +27,16 @@ export interface ReadConsultationWalkInRequest extends ListRequest {
 
 export type ReadConsultationWalkInResponse = ConsultationReception[];
 
+export interface ReadConsultationAppointmentRequest extends ListRequest {
+  staffNo?: number;
+  staffNoOrder?: ListOrder;
+  consultationReceptionAppointmentStart?: number;
+  consultationReceptionAppointmentEnd?: number;
+  consultationReceptionAppointmentOrder?: ListOrder;
+}
+
+export type ReadConsultationAppointmentResponse = ConsultationReception[];
+
 const consultationReceptionApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${server.host}/api/consultation-reception`,
@@ -70,6 +80,16 @@ const consultationReceptionApi = createApi({
         url: 'walk-in/list',
       }),
     }),
+    readConsultationAppointmentList: builder.query<
+      ReadConsultationAppointmentResponse,
+      ReadConsultationAppointmentRequest
+    >({
+      query: (data) => ({
+        params: data,
+        method: 'GET',
+        url: 'appointment/list',
+      }),
+    }),
   }),
 });
 
@@ -79,4 +99,6 @@ export const {
   useReadConsultationWalkInListQuery,
   useLazyReadConsultationWalkInListQuery,
   useCreateConsultationAppointmentMutation,
+  useLazyReadConsultationAppointmentListQuery,
+  useReadConsultationAppointmentListQuery,
 } = consultationReceptionApi;
