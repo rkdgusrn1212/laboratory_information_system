@@ -2,6 +2,8 @@ package com.kanghoshin.lis.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,14 +26,13 @@ public class TestReceptController {
 	private final TestReceptService testReceptService;
 
 	@GetMapping("findspecimen")
-	public ReceptTestSearchVo findBySpecimenNo(@RequestParam("specimenNo") int specimenNo) {
-		System.out.println(specimenNo);
+	public List<ReceptTestSearchVo> findBySpecimenNo(@RequestParam("specimenNo") int specimenNo) {
 		return testReceptService.findBySpecimenNo(specimenNo);
 	}
 
 	@PostMapping("recepttest")
-	public void insert(@RequestBody TestReceptDto receptTestDto) {
-		testReceptService.insert(receptTestDto);
+	public void insert(@Valid @RequestBody TestReceptDto testReceptDto) {
+		testReceptService.insert(testReceptDto);
 	}
 
 	@GetMapping("selectspecimen")

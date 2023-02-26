@@ -89,9 +89,9 @@ export default function ProgressChart(props) {
     return (
         <>
             <AppCurrentVisits
-                title="진행상황"
+                
                 chartData={[
-                    { label: '검사중', value: props.value.length },
+                    { label: '검사중', value: props.value.length - props.value2.length },
                     { label: '검사완료', value: props.value2.length },
                 ]}
                 chartColors={[

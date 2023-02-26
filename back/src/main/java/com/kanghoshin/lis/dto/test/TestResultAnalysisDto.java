@@ -1,7 +1,5 @@
 package com.kanghoshin.lis.dto.test;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,15 +9,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TestReceptDto {
+public class TestResultAnalysisDto {
 	
-	private int specimenNo;
+	private String patientName;
 	
 	private String prescriptionCode;
 	
-	private int staffNo;
-	
-	private Date receptionDate;
-	
-	
+	private String startDate;
+
+	private String endDate;
 }

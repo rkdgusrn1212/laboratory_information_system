@@ -8,7 +8,7 @@ import com.kanghoshin.lis.vo.testrecept.ReceptTestSearchVo;
 
 public interface TestReceptService {
 
-	ReceptTestSearchVo findBySpecimenNo(int specimenNo);
+	List<ReceptTestSearchVo> findBySpecimenNo(int specimenNo);
 
 	void insert(TestReceptDto testReceptDto);
 

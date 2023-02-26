@@ -1,7 +1,5 @@
 package com.kanghoshin.lis.vo.testrecept;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +23,7 @@ public class ReceptTestSearchVo {
 	
 	private boolean patientMale;
 	
-	private String PatientRrn;
+	private String patientRrn;
 	
 	private String prescriptionCode;
 	
@@ -33,10 +31,10 @@ public class ReceptTestSearchVo {
 	
 	private String nurseName;
 	
-	private Date collectDate;
+	private String collectDate;
 
 	private String doctorName;
 	
-	private Date prescriptionOrderTime;
+	private String prescriptionOrderTime;
 	
 }

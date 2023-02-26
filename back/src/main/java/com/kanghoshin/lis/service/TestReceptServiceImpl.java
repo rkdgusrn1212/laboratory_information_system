@@ -18,13 +18,14 @@ public class TestReceptServiceImpl implements TestReceptService {
 	private final ReceptMapper receptMapper;
 
 	@Override
-	public ReceptTestSearchVo findBySpecimenNo(int specimenNo) {
+	public List<ReceptTestSearchVo> findBySpecimenNo(int specimenNo) {
 		return receptMapper.findBySpecimenNo(specimenNo);
 	}
 
 	@Override
 	public void insert(TestReceptDto testReceptDto) {
-
+		System.out.println("hello");
+		receptMapper.insert(testReceptDto);
 	}
 
 	@Override

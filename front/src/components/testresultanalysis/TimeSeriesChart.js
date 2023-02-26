@@ -2,23 +2,41 @@ import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
+import axios from 'axios';
 
-// Generate Sales Data
-function createData(time, amount) {
-  return { time, amount };
-}
+export default function TimeSeriesChart(props) {
+  const [selectedpatientlist, setSelectedPatientList] = React.useState([]);
 
-const data = [
+  React.useEffect(() => {
+    getReceptlist();
+  }, []);
 
-  createData('2022/03/09', 10),
-  createData('2022/03/10', 11),
-  createData('2022/03/11', 3),
-  createData('2022/03/12', 13),
-  createData('2022/03/13', 12),
+  async function getReceptlist() {
 
-];
+    try {
+      const searchpatientInfo = await axios.get(
+        'http://localhost:8080/api/analysis/analysisgraph',
+        {
+          params: {
+            patientName: props.c,
+            prescriptionCode: props.d,
+            startDate: props.e,
+            endDate: props.f
+          }
+        }
+      );
 
-export default function TimeSeriesChart() {
+      searchpatientInfo.data.map((selectedpatientlist, i) => {
+        selectedpatientlist.id = i;
+      });
+
+      setSelectedPatientList(searchpatientInfo.data)
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const theme = useTheme();
 
@@ -26,9 +44,9 @@ export default function TimeSeriesChart() {
     <React.Fragment>
       <Title>검사결과</Title>
       <ResponsiveContainer>
-        <LineChart data={data} margin={{ top: 16, right: 16, bottom: 0, left: 24, }}>
+        <LineChart data={selectedpatientlist} margin={{ top: 16, right: 16, bottom: 0, left: 24, }}>
           <XAxis
-            dataKey="time"
+            dataKey="receptionDate"
             stroke={theme.palette.text.secondary}
             style={theme.typography.body2}
           />
@@ -43,7 +61,7 @@ export default function TimeSeriesChart() {
           <Line
             isAnimationActive={false}
             type="monotone"
-            dataKey="amount"
+            dataKey="resultObserved"
             stroke={theme.palette.primary.main}
             dot={false}
           />
