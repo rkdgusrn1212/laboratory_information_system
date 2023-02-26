@@ -1,4 +1,5 @@
-import { forwardRef, useCallback, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider, createTheme, Container } from '@mui/material';
@@ -18,6 +19,8 @@ import PrescriptionPicker from '../components/consultation/PrescriptionPicker';
 import ConsultationReceptionPicker from '../components/consultation/ConsultationRecptionPicker';
 import { ConsultationReception, Prescription } from '../services/types';
 import SimplePrescriptionForm from '../components/consultation/SimplePrescriptionForm';
+import { useAppSelector } from '../hooks';
+import { selectAccount } from '../services/accountSlice';
 
 const theme = createTheme({
   palette: {
@@ -61,6 +64,13 @@ const ConsultationPage: React.FC = () => {
     data: undefined,
   });
   const [prescriptionList, setPrescriptionList] = useState<Prescription[]>([]);
+  const account = useAppSelector(selectAccount);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (account?.principal.authorities[0] !== 'ROLE_DOCTOR')
+      navigate('/', { replace: true });
+  }, [account?.principal.authorities, navigate]);
 
   const handlePrescriptionPick = (prescription: Prescription) => {
     for (const elem of prescriptionList) {

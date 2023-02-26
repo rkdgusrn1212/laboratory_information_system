@@ -53,7 +53,9 @@ const MyInfoPage = () => {
         }}
       >
         <Container component="main" maxWidth="md">
-          <MyInfoForm staff={account?.principal.staffVo as Staff} />
+          {account?.principal.staffVo && (
+            <MyInfoForm staff={account.principal.staffVo} />
+          )}
         </Container>
       </Box>
     </ThemeProvider>
