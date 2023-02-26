@@ -170,6 +170,7 @@ export default function BloodCollectionPage() {
   };
 
   const handleClose = (value) => {
+    setSelectedcollect([]);
     setInputlist(asd);
     setOpen(false);
   };
