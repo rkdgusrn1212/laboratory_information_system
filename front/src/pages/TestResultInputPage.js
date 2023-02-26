@@ -1,14 +1,13 @@
-import React from 'react';
-import { Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useState } from 'react';
+import Title from '../components/testresultanalysis/Title';
+import InputDialog from '../components/testresultinput/InputDialog';
 import ProgressChart from '../components/testresultinput/ProgressChart';
 import ResultList from '../components/testresultinput/ResultList';
-import InputDialog from '../components/testresultinput/InputDialog';
-import { useState } from 'react';
 
 const lightTheme = createTheme({ palette: { mode: 'light' } });
 
@@ -16,8 +15,7 @@ export default function TestResultInputPage() {
 
   const [completetest, setCompletTest] = useState('');
 
-  const [incompletetest, setInCompletTest] = useState('');
-
+  const [incompletetest, setInCompleteTest] = useState('');
 
   return (
     <ThemeProvider theme={lightTheme}>
@@ -35,7 +33,9 @@ export default function TestResultInputPage() {
           >
             <Paper elevation={6}>
               <Grid sx={{ mx: 2, my: 1 }}>
-                <Typography>바코드 수기 입력</Typography>
+                <Title >
+                  검체 정보
+                </Title>
               </Grid>
               <Grid >
                 <InputDialog></InputDialog>
@@ -52,9 +52,19 @@ export default function TestResultInputPage() {
             }}
           >
             <Paper elevation={6}>
-              <ResultList setCompletTest={setCompletTest} setInCompletTest={setInCompletTest}></ResultList>
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  검사 접수 리스트
+                </Title>
+              </Grid>
+              <ResultList setCompletTest={setCompletTest} setInCompletTest={setInCompleteTest}></ResultList>
             </Paper>
             <Paper elevation={6}>
+              <Grid sx={{ mx: 2, my: 1 }}>
+                <Title >
+                  진행 상황
+                </Title>
+              </Grid>
               <ProgressChart value={completetest} value2={incompletetest}></ProgressChart >
             </Paper>
           </Box>

@@ -1,25 +1,21 @@
-package com.kanghoshin.lis.dto.test;
-
-import java.util.Date;
+package com.kanghoshin.lis.vo.testresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class TestReceptDto {
-	
+public class TestResultVo {
+
 	private int specimenNo;
-	
+
 	private String prescriptionCode;
-	
+
 	private int staffNo;
-	
-	private Date receptionDate;
-	
-	
+
+	private float resultObserved;
+
+	private String resultDate;
 }

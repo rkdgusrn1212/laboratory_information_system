@@ -1,5 +1,9 @@
 package com.kanghoshin.lis.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kanghoshin.lis.dto.test.TestResultInputDto;
 import com.kanghoshin.lis.service.TestResultInputService;
 import com.kanghoshin.lis.vo.testresult.TestResultInputVo;
+import com.kanghoshin.lis.vo.testresult.TestResultVo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,13 +27,19 @@ public class TestResultInputController {
 
 	@GetMapping("findspecimen")
 	public TestResultInputVo findBySpecimenNo(@RequestParam("specimenNo") int specimenNo) {
-		System.out.println(specimenNo);
 		return testResultInputService.findBySpecimenNo(specimenNo);
 	}
 
 	@PostMapping("testresultinput")
-	public void insert(@RequestBody TestResultInputDto testResultInputDto) {
+	public void insert(@Valid @RequestBody TestResultInputDto testResultInputDto) {
+		System.out.println("hi");
 		testResultInputService.insert(testResultInputDto);
+		System.out.println("hizzzzzz");
+	}
+	
+	@GetMapping("selectresult")
+	public List<TestResultVo> selectResult() {
+		return testResultInputService.selectResult();
 	}
 	
 }
