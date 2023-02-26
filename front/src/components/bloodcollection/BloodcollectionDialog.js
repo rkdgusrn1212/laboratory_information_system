@@ -9,15 +9,12 @@ import * as React from 'react';
 // Import Swiper React components
 import { useEffect, useState } from 'react';
 import { Navigation, Pagination } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+
 import { Swiper, SwiperSlide } from 'swiper/react';
 //datagrid
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 //그리드
-import axios from 'axios';
 
 export default function BloodcollectionsDialog(props) {
   const { onClose, selectedValue, open } = props;
