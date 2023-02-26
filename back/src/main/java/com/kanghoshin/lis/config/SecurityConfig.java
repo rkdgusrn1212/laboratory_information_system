@@ -65,7 +65,7 @@ public class SecurityConfig{
 				.antMatchers("/api/patient/register")
 				.access("hasRole('"+PrincipalAuthority.ROLE_NANTYPE.getAuthority()+"')")
 				.antMatchers("/api/prescription")
-				.access("hasRole('"+PrincipalAuthority.ROLE_NANTYPE.getAuthority()+"')")
+				.access("hasRole('"+PrincipalAuthority.ROLE_DOCTOR.getAuthority()+"')")
 				.antMatchers("/api/prescription/list")
 				.access("hasRole('"+PrincipalAuthority.ROLE_DOCTOR.getAuthority()+"') OR hasRole('"+PrincipalAuthority.ROLE_NURSE.getAuthority()+"')")
 				.antMatchers("/api/prescription/list/count")
