@@ -5,7 +5,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Alert, Snackbar, Typography } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 import { PhonePattern, RrnPattern } from '../../utils/patterns';
 import RrnMaskedInput from '../common/RrnMaskedInput';
