@@ -26,23 +26,23 @@ public class ConsultationReceptionController {
 	private final ConsultationReceptionService consultationReceptionService;
 	
 
-	@PostMapping("appointment")
+	@PostMapping("appointment")//예약은 환자도 가능
 	public void createConsultationAppointment(@Valid @RequestBody CreateConsultationAppointmentDto createConsultationAppointmentDto) {
 		consultationReceptionService.createConsultationAppointment(createConsultationAppointmentDto);
 	}
 
 	
-	@GetMapping("appointment/list")
+	@GetMapping("appointment/list")//예약 목록 조회는 직원만 가능
 	public ConsultationAppointmentVo[] readConsultationAppointmentList(@Valid ReadConsultationAppointmentListDto readConsultationAppointmentListDto) {
 		return consultationReceptionService.readConsultationAppointmentList(readConsultationAppointmentListDto);
 	}
 	
-	@PostMapping("walk-in")
+	@PostMapping("walk-in")//접수는 환자도 가능
 	public void createConsultationWalkIn(@Valid @RequestBody CreateConsultationWalkInDto createConsultationWalkInDto) {
 		consultationReceptionService.createConsultationWalkIn(createConsultationWalkInDto);
 	}
 	
-	@GetMapping("walk-in/list")
+	@GetMapping("walk-in/list")//접수목록 조회는 직원만 가능
 	public ConsultationWalkInVo[] readConsultationWalkInList(@Valid ReadConsultationWalkInListDto readConsultationWalkInListDto) {
 		return consultationReceptionService.readConsultationWalkInList(readConsultationWalkInListDto);
 	}

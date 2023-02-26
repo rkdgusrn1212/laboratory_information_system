@@ -8,7 +8,6 @@ import {
   ExclusiveDoctor,
   ListOrder,
   ListRequest,
-  Staff,
 } from './types';
 
 export type RegisterDoctorRequest = Pick<

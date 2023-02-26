@@ -23,18 +23,18 @@ public class PrescriptionController {
 
 	private final PrescriptionService prescriptionService;
 	
-	@PostMapping
+	@PostMapping//의사만 사용 가능
 	public void createPrescription(@Valid @RequestBody CreatePrescriptionDto createPrescriptionDto) throws GeneralErrorWithMessageException {
 		prescriptionService.createPrescription(createPrescriptionDto);
 	}
 	
-	@GetMapping("list")
+	@GetMapping("list")//직원사용가능
 	public PrescriptionVo[] readPrescriptionList(@Valid ReadPrescriptionListDto readPrescriptionListDto) {
 		
 		return prescriptionService.readPrescriptionList(readPrescriptionListDto);
 	}
 	
-	@GetMapping("list/count")
+	@GetMapping("list/count")//직원사용가능
 	public int countPrescription() {
 		return prescriptionService.count();
 	}

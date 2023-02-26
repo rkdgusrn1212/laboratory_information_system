@@ -41,7 +41,7 @@ public class AuthController {
 
 	private final AuthService authService;
 
-	@PostMapping("issue-validation-code")
+	@PostMapping("issue-validation-code")//환자도 사용가능
 	public void issueValidationCode(@Valid @RequestBody issueValidationCodeDto issueValidationCodeDto) throws IssueVallidationCodeFailedException {
 		authService.issueValidationCode(issueValidationCodeDto);
 	}	
@@ -51,7 +51,7 @@ public class AuthController {
 		return new ResponseEntity<IssueValidationCodeErrorVo>(exception.getIssueValidationCodeErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 
-	@PostMapping("create-auth")
+	@PostMapping("create-auth")//모두가 사용가능
 	public void createAuth(@Valid @RequestBody CreateAuthDto createAuthDto) throws CreateAuthFailedException {
 		authService.createAuth(createAuthDto);
 	}
@@ -61,20 +61,20 @@ public class AuthController {
 		return new ResponseEntity<CreateAuthErrorVo>(exception.getCreateAuthErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 
-	@PostMapping("refresh-validation-code")
+	@PostMapping("refresh-validation-code")//모두가 사용가능
 	public void refreshValidationCode(@Valid @RequestBody RefreshValidaitonCodeDto sendCodeDto) {
 		authService.refreshValidationCode(sendCodeDto);
 	}
 	
 
-	@PostMapping("write-details")
+	@PostMapping("write-details")//AUTHONLY
 	public Map<String, Object> writeDetails(@AuthenticationPrincipal PrincipalDetails principalDetasils,
 			@Valid @RequestBody DetailsDto detailsDto) throws WriteDetailsFailedException, GeneralErrorWithMessageException {
 		return authService.writeDetails(principalDetasils, detailsDto);
 	}
 	
 
-	@PostMapping("update-details")
+	@PostMapping("update-details")//직원만 사용
 	public Map<String, Object> updateDetails(@AuthenticationPrincipal PrincipalDetails principalDetasils,
 			@Valid @RequestBody UpdateDetailsDto detailsDto) throws  GeneralErrorWithMessageException, UpdateDetailsFailedException {
 		return authService.updateDetails(principalDetasils, detailsDto);
@@ -86,7 +86,7 @@ public class AuthController {
 		return new ResponseEntity<WriteDetailsErrorVo>(exception.getWriteDetailErrorVo(),HttpStatus.BAD_REQUEST);
 	}
 	
-	@GetMapping("is-exist")
+	@GetMapping("is-exist")//모두가
 	public boolean isExist(@RequestParam("authId") String authId) {
 		return authService.isExist(authId);
 	}

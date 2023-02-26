@@ -22,12 +22,12 @@ public class DepartmentController {
 	
 	private final DepartmentService departmentService;
 	
-	@GetMapping("list")
+	@GetMapping("list")//부서목록은 환자도 열람 가능해야함
 	public DepartmentVo[] readDepartmentList(@NotNull @Valid ReadDepartmentListDto readDepartmentDto) {
 		return departmentService.readDepartmentList(readDepartmentDto);
 	}
 	
-	@GetMapping("{departmentCode}")
+	@GetMapping("{departmentCode}")//부서정보는 환자도 열람 가능해야함
 	public DepartmentVo readDepartment(@DepartmentCodeConstraints @PathVariable("departmentCode") String departmentCode) {
 		return departmentService.readDepartment(departmentCode);
 	}
