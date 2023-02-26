@@ -32,7 +32,7 @@ export default function BloodcollectionsDialog(props) {
 
   return (
     <Dialog maxWidth="md" onClose={handleClose} open={open}>
-      <DialogTitle>검체 정보</DialogTitle>
+      <DialogTitle>채혈한 검체와 관련된 검사정보</DialogTitle>
       <List sx={{ pt: 0 }}>
         <Swiper
           pagination={{
@@ -45,7 +45,7 @@ export default function BloodcollectionsDialog(props) {
           {selectedValue.map((list) => {
             return (
               <SwiperSlide>
-                <Typography sx={{ fontSize: 14, mx: 9 }}>검체정보</Typography>
+                <Typography sx={{ fontSize: 14, mx: 9 }}>검체 정보</Typography>
                 <Grid sx={{ justifyContent: 'center', display: 'flex', mx: 9 }}>
                   <Grid item xs={4} sx={{ mx: 3 }}>
                     <TextField

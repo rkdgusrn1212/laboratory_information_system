@@ -245,16 +245,13 @@ export default function BloodCollectionPage() {
                 <Box
                   xs={12}
                   sx={{
-                    p: 2,
                     bgcolor: 'background.default',
                     display: 'grid',
-                    gridTemplateColumns: { md: '1fr 1fr' },
-                    gap: 2,
                   }}
                 >
                   <Paper
                     xs={12}
-                    sx={{ minWidth: '500px', m: 1, width: '140vh' }}
+                    sx={{ minWidth: '400px', m: 2, width: '192%' }}
                     elevation={4}
                   >
                     <Grid item xs={4} sx={{ mx: 7 }}>
@@ -436,7 +433,7 @@ export default function BloodCollectionPage() {
           ))}
         </Grid>
       </Grid>
-      <Paper sx={{ minWidth: '500px', mx: 3, width: '140vh' }} elevation={4}>
+      <Paper sx={{ minWidth: '800px', m: 2, width: '95%' }} elevation={4}>
         <Grid sx={{ height: '500px', width: '100%' }}>
           {pagestarter.starter &&
             pagestarter.starter.map(() => {

@@ -216,11 +216,9 @@ export default function ReceptCollectionPage() {
           imageUrl1.push('검체가 통합되었습니다.');
         }
       });
-      console.log(imageUrl1);
-      console.log('imageUrl1: ');
-      console.log(imageUrl1);
+
       setImageUrl(imageUrl1);
-      console.log(imageUrl);
+
       setOpen(true);
     });
 
@@ -228,31 +226,6 @@ export default function ReceptCollectionPage() {
   }
   //검체번호로 바코드 만들기
   //수정해야함
-  function makebarcord() {
-    rows6.map((a, i) => {
-      axios({
-        method: 'get',
-        url: `http://localhost:8080/api/collect/getrecobyorderno?orderNo=${a.orderNo}`,
-      }).then(function (response) {
-        console.log('바코드가 생성되었습니다.');
-        console.log('오더번호' + a.orderNo);
-        console.log(response.data);
-        console.log(response.data[0].specimenNo);
-        const canvas = document.createElement('canvas');
-        JsBarcode(canvas, response.data[0].specimenNo, {
-          height: 50,
-          displayValue: true,
-        });
-        imageUrl1.push(canvas.toDataURL('image/png'));
-      });
-    });
-
-    console.log('imageUrl1: ');
-    console.log(imageUrl1);
-    setImageUrl(imageUrl1);
-    console.log(imageUrl);
-    setOpen(true);
-  }
 
   //환자 검색 파트
   const onSearchHandler = (event) => {
