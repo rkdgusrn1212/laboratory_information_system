@@ -55,6 +55,7 @@ public interface ConsultationReceptionMapper {
 			+ "SELECT * FROM consultation_reception "
 			+ "WHERE "
 			+ "consultation_reception_appointment IS NOT NULL "
+			+ "AND consultation_reception_no NOT IN (select consultation.consultation_reception_no from consultation) "
 			+ "<if test='readConsultationAppointmentDto.staffNo > 0'> "
 			+ "AND staff_no = #{readConsultationAppointmentDto.staffNo} "
 			+ "</if> "
