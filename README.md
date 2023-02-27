@@ -2,6 +2,11 @@
 
 KOSA 더존 3기, Final 프로젝트
 
+## 배포
+
+- AWS EC2에 배포
+- [강호신 LIS(배포버전)](http://13.209.219.162)
+
 ## 프로젝트 주제
 
 진단검사시스템 (LIS, Laboratory Information System)
