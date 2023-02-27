@@ -3,7 +3,7 @@ import axios from 'axios';
 export const staffList = async () => {
   try {
     const response = await axios.get(
-      'http://localhost:8080/api/collect/staffall',
+      'http://kosa701.iptime.org:50051/api/collect/staffall',
     );
 
     //전처리
