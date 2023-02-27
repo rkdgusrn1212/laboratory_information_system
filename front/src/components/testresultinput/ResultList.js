@@ -36,7 +36,7 @@ export default function ResultList(props) {
   async function getReceptlist() {
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/test/selectspecimen'
+        'http://kosa701.iptime.org:50051/api/test/selectspecimen'
       );
 
       response.data.map((specimenlist, i) => {
@@ -53,7 +53,7 @@ export default function ResultList(props) {
   async function getResultlist() {
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/testresult/selectresult'
+        'http://kosa701.iptime.org:50051/api/testresult/selectresult'
       );
 
       setResultList(response.data)

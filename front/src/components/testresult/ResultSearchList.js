@@ -72,7 +72,7 @@ export default function ResultSearchList(props) {
   async function getTestResultList() {
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/result/findresultlist'
+        'http://kosa701.iptime.org:50051/api/result/findresultlist'
       );
 
       response.data.map((testresultlist, i) => {

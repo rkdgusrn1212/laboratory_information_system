@@ -52,7 +52,7 @@ export default function TestReceptPage() {
 
     try {
       const searchSpecimenInfo = await axios.get(
-        'http://localhost:8080/api/test/findspecimen',
+        'http://kosa701.iptime.org:50051/api/test/findspecimen',
         {
           params: {
             specimenNo: barcode
@@ -85,25 +85,6 @@ export default function TestReceptPage() {
     }
   };
 
-  // const insertspecimen = async () => {
-  //   try {
-  //     await axios.post(
-  //       'http://localhost:8080/api/test/recepttest',
-  //       {
-  //         body: {
-  //           specimenNo: barcode,
-  //           prescriptionCode: prescriptioncode,
-  //           staffNo: account.principal.staffVo.staffNo,
-  //           receptionDate: date
-  //         }
-  //       }
-  //     );
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const handleOnKeyPress = (e) => {
     if (e.key === 'Enter') {
       searchbarcode(e.target.value)
@@ -116,7 +97,7 @@ export default function TestReceptPage() {
         'Content-Type': 'application/json'
       },
       method: 'post',
-      url: 'http://localhost:8080/api/test/recepttest',
+      url: 'http://kosa701.iptime.org:50051/api/test/recepttest',
       data: JSON.stringify({
         specimenNo: barcode,
         prescriptionCode: prescriptioncode,

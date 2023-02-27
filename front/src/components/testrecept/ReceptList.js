@@ -23,7 +23,7 @@ export default function ReceptList() {
   async function getReceptlist() {
     try {
       const response = await axios.get(
-        'http://localhost:8080/api/test/selectspecimen'
+        'http://kosa701.iptime.org:50051/api/test/selectspecimen'
       );
 
       response.data.map((specimenlist, i) => {

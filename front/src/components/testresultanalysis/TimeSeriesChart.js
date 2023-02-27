@@ -15,7 +15,7 @@ export default function TimeSeriesChart(props) {
 
     try {
       const searchpatientInfo = await axios.get(
-        'http://localhost:8080/api/analysis/analysisgraph',
+        'http://kosa701.iptime.org:50051/api/analysis/analysisgraph',
         {
           params: {
             patientName: props.c,
