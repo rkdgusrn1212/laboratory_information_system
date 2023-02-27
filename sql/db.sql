@@ -17311,7 +17311,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
   CONSTRAINT `FK_consultation_consultation_reception` FOREIGN KEY (`consultation_reception_no`) REFERENCES `consultation_reception` (`consultation_reception_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation:~1 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation:~0 rows (대략적) 내보내기
 DELETE FROM `consultation`;
 /*!40000 ALTER TABLE `consultation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation` ENABLE KEYS */;
@@ -17330,7 +17330,7 @@ CREATE TABLE IF NOT EXISTS `consultation_reception` (
   CONSTRAINT `FK__patient` FOREIGN KEY (`patient_no`) REFERENCES `patient` (`patient_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation_reception:~1 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation_reception:~0 rows (대략적) 내보내기
 DELETE FROM `consultation_reception`;
 /*!40000 ALTER TABLE `consultation_reception` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation_reception` ENABLE KEYS */;
@@ -17517,7 +17517,7 @@ INSERT INTO `patient` (`patient_no`, `patient_name`, `patient_male`, `patient_rr
 	(3, '김재민', b'1', '020808-3314343', '2002-08-08', '010-5738-7782'),
 	(4, '김민석', b'1', '880217-1328738', '1988-02-17', '010-9473-0283'),
 	(5, '서민지', b'0', '870415-2716361', '1987-04-15', '010-9823-9832'),
-	(6, '구한강', b'1', '560823-1213123', '1956-08-23', '010-3241-2341'),
+	(6, '장만식', b'1', '560823-1213123', '1956-08-23', '010-3241-2341'),
 	(7, '구현강', b'1', '871123-1322342', '1987-11-23', '010-2221-1231'),
 	(8, '김민창', b'1', '760901-1323423', '1976-09-01', '010-2342-1231');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
@@ -17606,7 +17606,7 @@ CREATE TABLE IF NOT EXISTS `prescription_order` (
   CONSTRAINT `FK_prescription_order_prescription` FOREIGN KEY (`prescription_code`) REFERENCES `prescription` (`prescription_code`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.prescription_order:~2 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.prescription_order:~0 rows (대략적) 내보내기
 DELETE FROM `prescription_order`;
 /*!40000 ALTER TABLE `prescription_order` DISABLE KEYS */;
 /*!40000 ALTER TABLE `prescription_order` ENABLE KEYS */;
@@ -17671,7 +17671,7 @@ CREATE TABLE `secure_patient` (
 	`patient_no` INT(11) NOT NULL,
 	`patient_name` VARCHAR(40) NOT NULL COLLATE 'utf8_general_ci',
 	`patient_male` BIT(1) NOT NULL,
-	`patient_rrn` VARCHAR(14) NULL COLLATE 'utf8_general_ci',
+	`patient_rrn` VARCHAR(14) NOT NULL COLLATE 'utf8_general_ci',
 	`patient_birth` DATE NOT NULL,
 	`patient_phone` VARCHAR(13) NOT NULL COLLATE 'utf8_general_ci'
 ) ENGINE=MyISAM;
@@ -17844,7 +17844,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
 DELETE FROM `staff`;
 /*!40000 ALTER TABLE `staff` DISABLE KEYS */;
 INSERT INTO `staff` (`staff_no`, `staff_name`, `staff_birth`, `staff_male`, `staff_phone`, `staff_image`, `staff_rrn`, `staff_admitted`, `staff_type`) VALUES
-	(1, '구한강', '1982-03-27', b'1', '010-3805-7373', NULL, '820327-1193283', b'1', 'DOC'),
+	(1, '이익준', '1982-03-27', b'1', '010-3805-7373', NULL, '820327-1193283', b'1', 'DOC'),
 	(2, '김기남', '1968-09-02', b'1', '010-7767-3823', NULL, '680902-1134562', b'1', 'DOC'),
 	(3, '김동신', '1988-02-03', b'1', '010-2347-4638', NULL, '880203-1836381', b'1', 'DOC'),
 	(4, '김미도', '1991-07-28', b'0', '010-4432-1381', NULL, '910728-2113113', b'1', 'DOC'),
@@ -18110,7 +18110,7 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 -- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `consultation_walk_in`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select `consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment`,row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `consultation_walk_in_order` from `consultation_reception` where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and !(`consultation_reception`.`consultation_reception_no` in (select `consultation`.`consultation_reception_no` from `consultation`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select `consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment`,row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `consultation_walk_in_order` from `consultation_reception` where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and `consultation_reception`.`consultation_reception_appointment` is null and !(`consultation_reception`.`consultation_reception_no` in (select `consultation`.`consultation_reception_no` from `consultation`));
 
 -- 뷰 kanghoshin_lis.full_consultation 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
