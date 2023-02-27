@@ -112,6 +112,10 @@ const ConsultationPage: React.FC = () => {
   const handleClose = () => {
     setDialog({ open: false, data: undefined });
   };
+
+  const handleSubmitSuccess = () => {
+    setSelected(undefined);
+  };
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -139,6 +143,7 @@ const ConsultationPage: React.FC = () => {
             }}
           >
             <ConsultationForm
+              onSubmitSuccess={handleSubmitSuccess}
               consultationReception={selected}
               prescriptionList={prescriptionList}
               onPrescriptionListChanged={handlePrescriptionListChanged}
