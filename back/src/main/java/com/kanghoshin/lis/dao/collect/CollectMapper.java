@@ -70,7 +70,7 @@ public interface CollectMapper {
 	
 	
 	//채혈만생성
-	@Insert("INSERT INTO blood_Collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
+	@Insert("INSERT INTO blood_collect(specimen_no, staff_no,collect_date) VALUES (#{BloodCollectDto.specimenNo} ,#{BloodCollectDto.staffNo} , DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d-%H:%i:%s'))")
 	void collectinsertbydto(@Param("BloodCollectDto") BloodCollectDto BloodCollectDto);
 
 	

@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `behavior` (
   PRIMARY KEY (`behavior_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.behavior:~17,142 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.behavior:~16,715 rows (대략적) 내보내기
 DELETE FROM `behavior`;
 /*!40000 ALTER TABLE `behavior` DISABLE KEYS */;
 INSERT INTO `behavior` (`behavior_code`, `behavior_classification`, `behavior_name_kr`, `behavior_name_en`) VALUES
@@ -17311,7 +17311,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
   CONSTRAINT `FK_consultation_consultation_reception` FOREIGN KEY (`consultation_reception_no`) REFERENCES `consultation_reception` (`consultation_reception_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation:~1 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation:~0 rows (대략적) 내보내기
 DELETE FROM `consultation`;
 /*!40000 ALTER TABLE `consultation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation` ENABLE KEYS */;
@@ -17330,7 +17330,7 @@ CREATE TABLE IF NOT EXISTS `consultation_reception` (
   CONSTRAINT `FK__patient` FOREIGN KEY (`patient_no`) REFERENCES `patient` (`patient_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation_reception:~1 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation_reception:~2 rows (대략적) 내보내기
 DELETE FROM `consultation_reception`;
 /*!40000 ALTER TABLE `consultation_reception` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation_reception` ENABLE KEYS */;
@@ -17343,7 +17343,8 @@ CREATE TABLE `consultation_walk_in` (
 	`staff_no` INT(11) NOT NULL,
 	`patient_no` INT(11) NOT NULL,
 	`consultation_reception_appointment` DATETIME NULL,
-	`consultation_walk_in_order` BIGINT(21) NOT NULL
+	`consultation_walk_in_order` BIGINT(21) NOT NULL,
+	`consultation_time` DATETIME NULL
 ) ENGINE=MyISAM;
 
 -- 테이블 kanghoshin_lis.department 구조 내보내기
@@ -18114,22 +18115,22 @@ SET SQL_MODE=@OLDTMP_SQL_MODE;
 -- 뷰 kanghoshin_lis.consultation_walk_in 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `consultation_walk_in`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select `consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment`,row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `consultation_walk_in_order` from `consultation_reception` where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and `consultation_reception`.`consultation_reception_appointment` is null and !(`consultation_reception`.`consultation_reception_no` in (select `consultation`.`consultation_reception_no` from `consultation`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `consultation_walk_in` AS select `consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment`,row_number() over ( partition by `consultation_reception`.`staff_no` order by `consultation_reception`.`consultation_reception_time`) AS `consultation_walk_in_order`, consultation.consultation_time AS consultation_time from `consultation_reception` LEFT JOIN consultation ON consultation_reception.consultation_reception_no = consultation.consultation_reception_no where cast(`consultation_reception`.`consultation_reception_time` as date) = curdate() and `consultation_reception`.`consultation_reception_appointment` is null ;
 
 -- 뷰 kanghoshin_lis.full_consultation 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `full_consultation`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_consultation` AS select `consultation`.`consultation_no` AS `consultation_no`,`consultation`.`consultation_time` AS `consultation_time`,`consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (`consultation` join `consultation_reception` on(`consultation`.`consultation_reception_no` = `consultation_reception`.`consultation_reception_no`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_consultation` AS select `consultation`.`consultation_no` AS `consultation_no`,`consultation`.`consultation_time` AS `consultation_time`,`consultation_reception`.`consultation_reception_no` AS `consultation_reception_no`,`consultation_reception`.`consultation_reception_time` AS `consultation_reception_time`,`consultation_reception`.`staff_no` AS `staff_no`,`consultation_reception`.`patient_no` AS `patient_no`,`consultation_reception`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (`consultation` join `consultation_reception` on(`consultation`.`consultation_reception_no` = `consultation_reception`.`consultation_reception_no`)) ;
 
 -- 뷰 kanghoshin_lis.full_test_prescription_order 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `full_test_prescription_order`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_test_prescription_order` AS select `prescription_order`.`prescription_order_no` AS `prescription_order_no`,`prescription_order`.`prescription_code` AS `prescription_code`,`prescription_order`.`prescription_order_time` AS `prescription_order_time`,`test_prescription`.`specimen_type_code` AS `specimen_type_code`,`test_prescription`.`specimen_container_code` AS `specimen_container_code`,`test_prescription`.`test_prescription_amount` AS `test_prescription_amount`,`test_prescription`.`test_prescription_unit` AS `test_prescription_unit`,`test_prescription`.`test_prescription_reference` AS `test_prescription_reference`,`test_prescription`.`test_field_code` AS `test_field_code`,`prescription`.`prescription_name` AS `prescription_name`,`prescription`.`prescription_classification_code` AS `prescription_classification_code`,`prescription`.`prescription_slip_code` AS `prescription_slip_code`,`prescription`.`prescription_comment` AS `prescription_comment`,`full_consultation`.`consultation_no` AS `consultation_no`,`full_consultation`.`consultation_time` AS `consultation_time`,`full_consultation`.`consultation_reception_no` AS `consultation_reception_no`,`full_consultation`.`consultation_reception_time` AS `consultation_reception_time`,`full_consultation`.`staff_no` AS `staff_no`,`full_consultation`.`patient_no` AS `patient_no`,`full_consultation`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (((`prescription_order` join `test_prescription` on(`prescription_order`.`prescription_code` = `test_prescription`.`prescription_code`)) join `prescription` on(`test_prescription`.`prescription_code` = `prescription`.`prescription_code`)) join `full_consultation` on(`prescription_order`.`consultation_no` = `full_consultation`.`consultation_no`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_test_prescription_order` AS select `prescription_order`.`prescription_order_no` AS `prescription_order_no`,`prescription_order`.`prescription_code` AS `prescription_code`,`prescription_order`.`prescription_order_time` AS `prescription_order_time`,`test_prescription`.`specimen_type_code` AS `specimen_type_code`,`test_prescription`.`specimen_container_code` AS `specimen_container_code`,`test_prescription`.`test_prescription_amount` AS `test_prescription_amount`,`test_prescription`.`test_prescription_unit` AS `test_prescription_unit`,`test_prescription`.`test_prescription_reference` AS `test_prescription_reference`,`test_prescription`.`test_field_code` AS `test_field_code`,`prescription`.`prescription_name` AS `prescription_name`,`prescription`.`prescription_classification_code` AS `prescription_classification_code`,`prescription`.`prescription_slip_code` AS `prescription_slip_code`,`prescription`.`prescription_comment` AS `prescription_comment`,`full_consultation`.`consultation_no` AS `consultation_no`,`full_consultation`.`consultation_time` AS `consultation_time`,`full_consultation`.`consultation_reception_no` AS `consultation_reception_no`,`full_consultation`.`consultation_reception_time` AS `consultation_reception_time`,`full_consultation`.`staff_no` AS `staff_no`,`full_consultation`.`patient_no` AS `patient_no`,`full_consultation`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (((`prescription_order` join `test_prescription` on(`prescription_order`.`prescription_code` = `test_prescription`.`prescription_code`)) join `prescription` on(`test_prescription`.`prescription_code` = `prescription`.`prescription_code`)) join `full_consultation` on(`prescription_order`.`consultation_no` = `full_consultation`.`consultation_no`)) ;
 
 -- 뷰 kanghoshin_lis.secure_patient 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `secure_patient`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `secure_patient` AS select `patient`.`patient_no` AS `patient_no`,`patient`.`patient_name` AS `patient_name`,`patient`.`patient_male` AS `patient_male`,concat(substr(`patient`.`patient_rrn`,1,8),'●●●●●●') AS `patient_rrn`,`patient`.`patient_birth` AS `patient_birth`,`patient`.`patient_phone` AS `patient_phone` from `patient`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `secure_patient` AS select `patient`.`patient_no` AS `patient_no`,`patient`.`patient_name` AS `patient_name`,`patient`.`patient_male` AS `patient_male`,concat(substr(`patient`.`patient_rrn`,1,8),'●●●●●●') AS `patient_rrn`,`patient`.`patient_birth` AS `patient_birth`,`patient`.`patient_phone` AS `patient_phone` from `patient` ;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

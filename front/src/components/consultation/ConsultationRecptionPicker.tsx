@@ -7,14 +7,17 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Stack from '@mui/material/Stack';
 
-import { ConsultationReception } from '../../services/types';
+import {
+  ConsultationReception,
+  ConsultationWalkIn,
+} from '../../services/types';
 import {
   useLazyReadConsultationAppointmentListQuery,
   useLazyReadConsultationWalkInListQuery,
 } from '../../services/consultationReceptionApi';
 import { useAppSelector } from '../../hooks';
 import { selectAccount } from '../../services/accountSlice';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 const ConsultationReceptionPicker: React.FC<{
   onSelected: (

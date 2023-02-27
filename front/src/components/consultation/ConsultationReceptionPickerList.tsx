@@ -19,7 +19,7 @@ import dayjs from 'dayjs';
 import { useReadPatientByPatientNoQuery } from '../../services/patientApi';
 
 const ConsultationReceptionCard: React.FC<{
-  consultationReception?: ConsultationReception;
+  consultationReception?: ConsultationAppointment | ConsultationWalkIn;
   selected?: boolean;
   onClick?: () => void;
 }> = ({ consultationReception, selected, onClick }) => {
@@ -28,8 +28,7 @@ const ConsultationReceptionCard: React.FC<{
     { pollingInterval: 20000, skip: consultationReception === undefined },
   );
   const isAppointment = useMemo(
-    () =>
-      !isArray<ConsultationWalkIn>(consultationReception, isConsultationWalkIn),
+    () => !isConsultationWalkIn(consultationReception),
     [consultationReception],
   );
 
@@ -39,11 +38,17 @@ const ConsultationReceptionCard: React.FC<{
       sx={{
         background: selected
           ? 'linear-gradient(to right, #69dbff, #9198e5)'
+          : consultationReception?.consultationTime
+          ? '#c0c0c0'
           : 'white',
         height: 100,
       }}
     >
-      <CardActionArea onClick={onClick} sx={{ px: 2, py: 1, height: '100%' }}>
+      <CardActionArea
+        disabled={consultationReception?.consultationTime != null}
+        onClick={onClick}
+        sx={{ px: 2, py: 1, height: '100%' }}
+      >
         <Box display="flex" justifyContent="space-between">
           <Typography fontSize={12} width={100}>
             {consultationReception ? (
@@ -61,9 +66,14 @@ const ConsultationReceptionCard: React.FC<{
           </Typography>
           <Typography fontSize={12} width={140} textAlign="end">
             {consultationReception ? (
-              '접수 : ' +
-              dayjs(consultationReception.consultationReceptionTime).format(
-                'HH:mm:ss',
+              consultationReception.consultationTime ? (
+                '진료 : ' +
+                dayjs(consultationReception.consultationTime).format('HH:mm:ss')
+              ) : (
+                '접수 : ' +
+                dayjs(consultationReception.consultationReceptionTime).format(
+                  'HH:mm:ss',
+                )
               )
             ) : (
               <Skeleton variant="text" />
@@ -141,7 +151,7 @@ export type ConsultationReceptionPickerListProps = {
     consultationReception: ConsultationReception | undefined,
   ) => void;
   selected: ConsultationReception | undefined;
-  data: ConsultationReception[] | undefined;
+  data: ConsultationAppointment[] | ConsultationWalkIn[] | undefined;
 };
 
 const ConsultationReceptionPickerList: React.FC<
@@ -154,7 +164,7 @@ const ConsultationReceptionPickerList: React.FC<
     ) {
       onSelected(undefined);
     } else {
-      onSelected(consultationReception);
+      onSelected(consultationReception as ConsultationReception);
     }
   };
   return (

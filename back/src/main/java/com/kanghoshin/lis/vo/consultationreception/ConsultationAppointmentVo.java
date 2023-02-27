@@ -11,8 +11,10 @@ import lombok.Getter;
 @Getter
 public class ConsultationAppointmentVo extends ConsultationReceptionVo{
 	public ConsultationAppointmentVo(int consultationReceptionNo, @NotNull Date consultationReceptionTime, int StaffNo,
-			int patientNo, @NotNull Date consultationReceptionAppointment) {
+			int patientNo, @NotNull Date consultationReceptionAppointment, Date consultationTime) {
 		super(consultationReceptionNo, consultationReceptionTime, StaffNo, patientNo,
 				consultationReceptionAppointment);
+		this.consultationTime = consultationTime;
 	}
+	private final Date consultationTime;
 }
