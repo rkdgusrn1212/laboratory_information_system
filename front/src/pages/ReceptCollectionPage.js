@@ -25,16 +25,14 @@ import Grid from '@mui/material/Grid';
 //다잉얼로그
 import ReceptCollectionDialog from '../components/receptcollection/ReceptCollectionDialog';
 //검색셜과 미리보기
-import { Autocomplete } from '@mui/material';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 //그리드에 색깔 넣기
-import { PatientList } from '../components/receptcollection/PatientList';
 import axios from 'axios';
-import ScaleLoader from 'react-spinners/ScaleLoader';
-import { selectAccount } from '../services/accountSlice';
-import { useAppSelector } from '../hooks';
 import JsBarcode from 'jsbarcode';
-import { type } from 'os';
+import ScaleLoader from 'react-spinners/ScaleLoader';
+import { PatientList } from '../components/receptcollection/PatientList';
+import { useAppSelector } from '../hooks';
+import { selectAccount } from '../services/accountSlice';
 
 //만약 선택한 처방의 오더에 해당하는 검체 가 이미 있을때 알람만 준다.
 
@@ -97,9 +95,6 @@ export default function ReceptCollectionPage() {
   function onP() {
     //이름으로 환자 볼러오기
     axios({
-      // headers: {
-      //   'Content-Type': 'application/json',
-      // },
       method: 'get',
       url: `http://kosa701.iptime.org:50051/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
     }).then(function (response) {
