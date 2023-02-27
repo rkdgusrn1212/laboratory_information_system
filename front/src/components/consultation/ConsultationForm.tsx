@@ -69,7 +69,8 @@ const ConsultationForm: React.FC<{
     } else {
       setStatus('NONE');
     }
-  }, [createConsultation, readPatientById, consultationReception]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [consultationReception]);
 
   useEffect(() => {
     if (createConsultationResult.data) {
@@ -93,7 +94,8 @@ const ConsultationForm: React.FC<{
         clearInterval(interval);
       };
     }
-  }, [createConsultationResult.data, onResetPrescription]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createConsultationResult.data]);
 
   const handleSubmitClick = () => {
     if (status === 'WRITING') {

@@ -52,10 +52,14 @@ public interface ConsultationReceptionMapper {
 	int insertAppointment(@Param("createConsultationAppointmentDto") CreateConsultationAppointmentDto createConsultationAppointmentDto);
 
 	@Select("<script>"
-			+ "SELECT * FROM consultation_reception "
+			+ "SELECT consultation_reception.consultation_reception_no as consultation_reception_no ,"
+			+ "consultation_reception.consultation_reception_time as consultation_reception_time, "
+			+ "consultation_reception.staff_no as staff_no, "
+			+ "consultation_reception.patient_no as patient_no, "
+			+ "consultation_reception.consultation_reception_appointment as consultation_reception_appointment, "
+			+ "consultation.consultation_time as consultation_time  FROM consultation_reception LEFT JOIN consultation ON consultation.consultation_reception_no = consultation_reception.consultation_reception_no "
 			+ "WHERE "
 			+ "consultation_reception_appointment IS NOT NULL "
-			+ "AND consultation_reception_no NOT IN (select consultation.consultation_reception_no from consultation) "
 			+ "<if test='readConsultationAppointmentDto.staffNo > 0'> "
 			+ "AND staff_no = #{readConsultationAppointmentDto.staffNo} "
 			+ "</if> "

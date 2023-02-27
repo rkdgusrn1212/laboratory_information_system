@@ -7,6 +7,8 @@ import {
   Patient,
   ListRequest,
   ConsultationReception,
+  ConsultationWalkIn,
+  ConsultationAppointment,
 } from './types';
 
 export type CreateConsultationAppointmentRequest = Omit<
@@ -25,7 +27,7 @@ export interface ReadConsultationWalkInRequest extends ListRequest {
   consultationWalkInOrderOrder?: ListOrder;
 }
 
-export type ReadConsultationWalkInResponse = ConsultationReception[];
+export type ReadConsultationWalkInResponse = ConsultationWalkIn[];
 
 export interface ReadConsultationAppointmentRequest extends ListRequest {
   staffNo?: number;
@@ -35,7 +37,7 @@ export interface ReadConsultationAppointmentRequest extends ListRequest {
   consultationReceptionAppointmentOrder?: ListOrder;
 }
 
-export type ReadConsultationAppointmentResponse = ConsultationReception[];
+export type ReadConsultationAppointmentResponse = ConsultationAppointment[];
 
 const consultationReceptionApi = createApi({
   baseQuery: fetchBaseQuery({

@@ -196,9 +196,10 @@ export const isConsultationReception = (
   (typeof data.consultationReceptionAppointment === 'string' ||
     data.consultationReceptionAppointment == null);
 
-export interface ConsultationWalkIn extends ConsultationReception {
-  consultationWalkInOrder: number;
-}
+export type ConsultationWalkIn = ConsultationReception &
+  Pick<Consultation, 'consultationTime'> & {
+    consultationWalkInOrder: number;
+  };
 
 export const isConsultationWalkIn = (
   data: unknown,
@@ -208,9 +209,10 @@ export const isConsultationWalkIn = (
   'consultationWalkInOrder' in data &&
   typeof data.consultationWalkInOrder === 'number';
 
-export interface ConsultationAppointment extends ConsultationReception {
-  consultationReceptionAppointment: string;
-}
+export type ConsultationAppointment = ConsultationReception &
+  Pick<Consultation, 'consultationTime'> & {
+    consultationReceptionAppointment: string;
+  };
 
 export const isConsultationAppointment = (
   data: unknown,
