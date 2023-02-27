@@ -71,7 +71,7 @@ export default function InputDialog() {
 
         try {
             const searchSpecimenInfo = await axios.get(
-                'http://localhost:8080/api/testresult/findspecimen',
+                'http://kosa701.iptime.org:50051/api/testresult/findspecimen',
                 {
                     params: {
                         specimenNo: barcode
@@ -110,7 +110,7 @@ export default function InputDialog() {
                 'Content-Type': 'application/json'
             },
             method: 'post',
-            url: 'http://localhost:8080/api/testresult/testresultinput',
+            url: 'http://kosa701.iptime.org:50051/api/testresult/testresultinput',
             data: JSON.stringify({
                 specimenNo: barcode,
                 prescriptionCode: prescriptioncode,

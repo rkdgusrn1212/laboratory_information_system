@@ -36,7 +36,7 @@ export default function SelectedTestResult(props) {
 
     try {
       const searchpatientInfo = await axios.get(
-        'http://localhost:8080/api/analysis/analysischart',
+        'http://kosa701.iptime.org:50051/api/analysis/analysischart',
         {
           params: {
             patientName: props.c,

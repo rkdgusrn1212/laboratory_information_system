@@ -36,7 +36,7 @@ export default function TestResultPage() {
 
     try {
       const searchpatientInfo = await axios.get(
-        'http://localhost:8080/api/result/findresultlistbypatient',
+        'http://kosa701.iptime.org:50051/api/result/findresultlistbypatient',
         {
           params: {
             patientName: patientname,
