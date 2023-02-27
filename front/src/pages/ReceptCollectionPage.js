@@ -96,7 +96,7 @@ export default function ReceptCollectionPage() {
     //이름으로 환자 볼러오기
     axios({
       method: 'get',
-      url: `http://kosa701.iptime.org:50051/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
+      url: `http://13.209.219.162/api/patient/list?pageSize=1000&pageStart=0&patientNameKey=${search}`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
@@ -118,7 +118,7 @@ export default function ReceptCollectionPage() {
       } else {
         axios({
           method: 'get',
-          url: `http://kosa701.iptime.org:50051/api/patient/list?pageSize=1000&pageStart=0&patientNoKey=${search}`,
+          url: `http://13.209.219.162/api/patient/list?pageSize=1000&pageStart=0&patientNoKey=${search}`,
         }).then(function (response) {
           if (response.data != '') {
             console.log(response.data);
@@ -147,7 +147,7 @@ export default function ReceptCollectionPage() {
     //환자no로  내원 볼러오기
     axios({
       method: 'get',
-      url: `http://kosa701.iptime.org:50051/api/collect/getconsultationPatientNo?PatientNo=${patientNo}`,
+      url: `http://13.209.219.162/api/collect/getconsultationPatientNo?PatientNo=${patientNo}`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
@@ -167,7 +167,7 @@ export default function ReceptCollectionPage() {
     //환자no로  처방 볼러오기
     axios({
       method: 'get',
-      url: `http://kosa701.iptime.org:50051/api/prescription-order/full-test-prescription-order/list?pageSize=1000&pageStart=0&PatientNoKey=${patientNo}&consultationTimeOrder=DESC`,
+      url: `http://13.209.219.162/api/prescription-order/full-test-prescription-order/list?pageSize=1000&pageStart=0&PatientNoKey=${patientNo}&consultationTimeOrder=DESC`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
@@ -200,7 +200,7 @@ export default function ReceptCollectionPage() {
 
     axios({
       method: 'post',
-      url: `http://kosa701.iptime.org:50051/api/collect/inserttest2`,
+      url: `http://13.209.219.162/api/collect/inserttest2`,
       data: rows6,
     }).then(function (response) {
       response.data.map((a) => {

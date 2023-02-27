@@ -69,7 +69,7 @@ export default function InadequatePage() {
 
     axios({
       method: 'get',
-      url: `http://kosa701.iptime.org:50051/api/collect/collectlistbyno?specimenNo=${search}`,
+      url: `http://13.209.219.162/api/collect/collectlistbyno?specimenNo=${search}`,
     }).then(function (response) {
       if (response.data != '') {
         setFlag(3); //검색 결과가 있음
@@ -144,7 +144,7 @@ export default function InadequatePage() {
   function postdata() {
     axios({
       method: 'post',
-      url: `http://kosa701.iptime.org:50051/api/collect/insertsubmitinadequate`,
+      url: `http://13.209.219.162/api/collect/insertsubmitinadequate`,
       data: {
         specimenNo: find.specimenNo,
         inadequateTypeCode: reason,
