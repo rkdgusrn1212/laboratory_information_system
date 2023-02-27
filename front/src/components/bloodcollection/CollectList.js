@@ -3,7 +3,7 @@ import axios from 'axios';
 export const collectlist = async () => {
   try {
     const response = await axios.get(
-      'http://kosa701.iptime.org:50051/api/collect/collectlist',
+      'http://13.209.219.162/api/collect/collectlist',
     );
 
     //전처리

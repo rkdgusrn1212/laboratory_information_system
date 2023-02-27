@@ -10,11 +10,10 @@ const columns = [
   { flex: 1, headerName: '검사코드', field: 'prescriptionCode' },
   { flex: 1, headerName: '오더일자', field: 'prescriptionOrderTime' },
   { flex: 1, headerName: '채혈일자', field: 'collectDate' },
-  { flex: 1, headerName: '검사접수일자', field: 'receptionDate' }
+  { flex: 1, headerName: '검사접수일자', field: 'receptionDate' },
 ];
 
 export default function ResultList(props) {
-
   const [specimenlist, setSpecimenList] = useState('');
   const [resultlist, setResultList] = useState('');
 
@@ -25,26 +24,24 @@ export default function ResultList(props) {
 
   function sendSpecimenList() {
     props.setCompletTest(specimenlist);
-    props.setInCompletTest(resultlist)
+    props.setInCompletTest(resultlist);
   }
 
   useEffect(() => {
     sendSpecimenList();
   });
 
-
   async function getReceptlist() {
     try {
       const response = await axios.get(
-        'http://kosa701.iptime.org:50051/api/test/selectspecimen'
+        'http://13.209.219.162/api/test/selectspecimen',
       );
 
       response.data.map((specimenlist, i) => {
         specimenlist.id = i;
       });
 
-      setSpecimenList(response.data)
-
+      setSpecimenList(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -53,11 +50,10 @@ export default function ResultList(props) {
   async function getResultlist() {
     try {
       const response = await axios.get(
-        'http://kosa701.iptime.org:50051/api/testresult/selectresult'
+        'http://13.209.219.162/api/testresult/selectresult',
       );
 
-      setResultList(response.data)
-
+      setResultList(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -74,6 +70,5 @@ export default function ResultList(props) {
         experimentalFeatures={{ newEditingApi: true }}
       />
     </Paper>
-
   );
 }

@@ -51,7 +51,7 @@ export default function TestReceptPage() {
   const searchbarcode = async () => {
     try {
       const searchSpecimenInfo = await axios.get(
-        'http://kosa701.iptime.org:50051/api/test/findspecimen',
+        'http://13.209.219.162/api/test/findspecimen',
         {
           params: {
             specimenNo: barcode,
@@ -144,7 +144,7 @@ export default function TestReceptPage() {
         'Content-Type': 'application/json',
       },
       method: 'post',
-      url: 'http://kosa701.iptime.org:50051/api/test/recepttest',
+      url: 'http://13.209.219.162/api/test/recepttest',
       data: JSON.stringify({
         specimenNo: data.barcode,
         prescriptionCode: data.prescriptioncode,

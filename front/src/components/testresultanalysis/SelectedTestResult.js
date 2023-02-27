@@ -5,59 +5,52 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import Title from './Title';
 import axios from 'axios';
 import * as React from 'react';
 
-
 export default function SelectedTestResult(props) {
-  
   const navigate = useNavigate();
 
   const navigateToPurchase = () => {
-    navigate("/test/result");
+    navigate('/test/result');
   };
 
-  const [selectedpatientlist,setSelectedPatientList] = React.useState([]);
-  
+  const [selectedpatientlist, setSelectedPatientList] = React.useState([]);
+
   React.useEffect(() => {
     getReceptlist();
   }, []);
-  
 
   console.log(props.c);
   console.log(props.d);
   console.log(props.e);
   console.log(props.f);
-  
-  
-  async function getReceptlist() {
 
+  async function getReceptlist() {
     try {
       const searchpatientInfo = await axios.get(
-        'http://kosa701.iptime.org:50051/api/analysis/analysischart',
+        'http://13.209.219.162/api/analysis/analysischart',
         {
           params: {
             patientName: props.c,
-            prescriptionCode : props.d,
+            prescriptionCode: props.d,
             startDate: props.e,
-            endDate: props.f
-          }
-        }
+            endDate: props.f,
+          },
+        },
       );
 
       searchpatientInfo.data.map((selectedpatientlist, i) => {
         selectedpatientlist.id = i;
       });
 
-      setSelectedPatientList(searchpatientInfo.data)
-
+      setSelectedPatientList(searchpatientInfo.data);
     } catch (error) {
       console.log(error);
     }
-  };
-
+  }
 
   return (
     <React.Fragment>
@@ -85,9 +78,14 @@ export default function SelectedTestResult(props) {
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href='#' onClick={navigateToPurchase} sx={{ mt: 3 }}>
+      <Link
+        color="primary"
+        href="#"
+        onClick={navigateToPurchase}
+        sx={{ mt: 3 }}
+      >
         Orders
       </Link>
-    </React.Fragment >
+    </React.Fragment>
   );
 }
