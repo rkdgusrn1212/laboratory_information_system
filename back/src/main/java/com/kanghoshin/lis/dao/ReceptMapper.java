@@ -41,7 +41,7 @@ public interface ReceptMapper {
 	List<ReceptTestSearchVo> findBySpecimenNo(@Param("specimenNo") int specimenNo);
 
 	@Insert("INSERT INTO recept_test(specimen_no, prescription_code,staff_no,reception_date) "
-			+ "VALUES(#{testReceptDto.specimenNo}, #{testReceptDto.prescriptionCode}, #{testReceptDto.staffNo}, #{testReceptDto.receptionDate})")
+			+ "VALUES(#{testReceptDto.specimenNo}, #{testReceptDto.prescriptionCode}, #{testReceptDto.staffNo}, DATE_FORMAT(CURRENT_TIMESTAMP(),'%Y-%m-%d')")
 	void insert(@Param("testReceptDto") TestReceptDto testReceptDto);
 
 	@Select("SELECT recept_test.specimen_no as specimenNo, patient.patient_name as patientName,"
