@@ -20,8 +20,11 @@ import lombok.Getter;
 @Getter
 public class FullTestPrescriptionOrderVo extends FullConsultationVo{
 
-	public FullTestPrescriptionOrderVo(int prescriptionOrderNo,  String prescriptionCode,Date prescriptionOrderTime, String specimenContainerCode,
-			String prescriptionTypeCode,String prescriptionName, String prescriptionClassificationCode,String prescriptionSlipCode, 
+	public FullTestPrescriptionOrderVo(int prescriptionOrderNo, String prescriptionCode,Date prescriptionOrderTime, 
+			String specimenTypeCode, String specimenContainerCode, 
+			int testPrescriptionAmount, String testPrescriptionUnit, String testPrescriptionReference, String testFieldCode, 
+			String prescriptionName,
+			String prescriptionClassificationCode,String prescriptionSlipCode, 
 			String prescriptionComment, int consultationNo, @NotNull Date consultationTime, int consultationReceptionNo,
 			@NotNull Date consultationReceptionTime, int staffNo, int patientNo,
 			Date consultationReceptionAppointment) {
@@ -30,8 +33,12 @@ public class FullTestPrescriptionOrderVo extends FullConsultationVo{
 		this.prescriptionOrderNo = prescriptionOrderNo;
 		this.prescriptionCode = prescriptionCode;
 		this.prescriptionOrderTime = prescriptionOrderTime;
+		this.specimenTypeCode = specimenTypeCode;
 		this.specimenContainerCode = specimenContainerCode;
-		this.prescriptionTypeCode = prescriptionTypeCode;
+		this.testPrescriptionAmount = testPrescriptionAmount;
+		this.testPrescriptionUnit = testPrescriptionUnit;
+		this.testPrescriptionReference = testPrescriptionReference;
+		this.testFieldCode = testFieldCode;
 		this.prescriptionName = prescriptionName;
 		this.prescriptionClassificationCode = prescriptionClassificationCode;
 		this.prescriptionSlipCode = prescriptionSlipCode;
@@ -49,12 +56,17 @@ public class FullTestPrescriptionOrderVo extends FullConsultationVo{
 	private final Date prescriptionOrderTime;
 
 	@NotBlank
+	@SpecimenTypeCodeConstraints
+	private final String specimenTypeCode;
+	
+	@NotBlank
 	@SpecimenContainerCodeConstraints
 	private final String specimenContainerCode;
 
-	@NotBlank
-	@SpecimenTypeCodeConstraints
-	private final String prescriptionTypeCode;
+	private final int testPrescriptionAmount;
+	private final String testPrescriptionUnit;
+	private final String testPrescriptionReference;
+	private final String testFieldCode;
 
 	@NotBlank
 	@PrescriptionNameConstraints
