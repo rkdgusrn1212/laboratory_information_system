@@ -17,7 +17,7 @@ public interface ResultAnalysisMapper {
 	@Select("SELECT recept_test.reception_date as receptionDate, result_test.result_observed as resultObserved "
 			+ "FROM result_test, recept_test, test_prescription, "
 			+ "	prescription, patient, consultation_reception, "
-			+ "	consultation, prescription_order "
+			+ "	consultation, prescription_order, recept_collection, specimen, blood_collect "
 			+ "WHERE patient.patient_no = consultation_reception.patient_no "
 			+ "	AND consultation_reception.consultation_reception_no = consultation.consultation_reception_no "
 			+ "	AND consultation.consultation_no = prescription_order.consultation_no "
