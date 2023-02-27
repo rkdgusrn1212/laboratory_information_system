@@ -17311,7 +17311,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
   CONSTRAINT `FK_consultation_consultation_reception` FOREIGN KEY (`consultation_reception_no`) REFERENCES `consultation_reception` (`consultation_reception_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation:~0 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation:~1 rows (대략적) 내보내기
 DELETE FROM `consultation`;
 /*!40000 ALTER TABLE `consultation` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation` ENABLE KEYS */;
@@ -17330,7 +17330,7 @@ CREATE TABLE IF NOT EXISTS `consultation_reception` (
   CONSTRAINT `FK__patient` FOREIGN KEY (`patient_no`) REFERENCES `patient` (`patient_no`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- 테이블 데이터 kanghoshin_lis.consultation_reception:~0 rows (대략적) 내보내기
+-- 테이블 데이터 kanghoshin_lis.consultation_reception:~1 rows (대략적) 내보내기
 DELETE FROM `consultation_reception`;
 /*!40000 ALTER TABLE `consultation_reception` DISABLE KEYS */;
 /*!40000 ALTER TABLE `consultation_reception` ENABLE KEYS */;
@@ -17459,8 +17459,12 @@ CREATE TABLE `full_test_prescription_order` (
 	`prescription_order_no` INT(11) NOT NULL,
 	`prescription_code` VARCHAR(10) NOT NULL COLLATE 'utf8_general_ci',
 	`prescription_order_time` DATETIME NOT NULL,
-	`specimen_container_code` CHAR(2) NULL COLLATE 'utf8_general_ci',
 	`specimen_type_code` CHAR(2) NULL COLLATE 'utf8_general_ci',
+	`specimen_container_code` CHAR(2) NULL COLLATE 'utf8_general_ci',
+	`test_prescription_amount` INT(11) NULL,
+	`test_prescription_unit` VARCHAR(10) NULL COLLATE 'utf8_general_ci',
+	`test_prescription_reference` VARCHAR(200) NULL COLLATE 'utf8_general_ci',
+	`test_field_code` CHAR(4) NULL COLLATE 'utf8_general_ci',
 	`prescription_name` VARCHAR(200) NOT NULL COLLATE 'utf8_general_ci',
 	`prescription_classification_code` VARCHAR(10) NULL COLLATE 'utf8_general_ci',
 	`prescription_slip_code` VARCHAR(10) NULL COLLATE 'utf8_general_ci',
@@ -18120,7 +18124,7 @@ CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_consultation` AS sele
 -- 뷰 kanghoshin_lis.full_test_prescription_order 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성
 DROP TABLE IF EXISTS `full_test_prescription_order`;
-CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_test_prescription_order` AS select `prescription_order`.`prescription_order_no` AS `prescription_order_no`,`prescription_order`.`prescription_code` AS `prescription_code`,`prescription_order`.`prescription_order_time` AS `prescription_order_time`,`test_prescription`.`specimen_container_code` AS `specimen_container_code`,`test_prescription`.`specimen_type_code` AS `specimen_type_code`,`prescription`.`prescription_name` AS `prescription_name`,`prescription`.`prescription_classification_code` AS `prescription_classification_code`,`prescription`.`prescription_slip_code` AS `prescription_slip_code`,`prescription`.`prescription_comment` AS `prescription_comment`,`full_consultation`.`consultation_no` AS `consultation_no`,`full_consultation`.`consultation_time` AS `consultation_time`,`full_consultation`.`consultation_reception_no` AS `consultation_reception_no`,`full_consultation`.`consultation_reception_time` AS `consultation_reception_time`,`full_consultation`.`staff_no` AS `staff_no`,`full_consultation`.`patient_no` AS `patient_no`,`full_consultation`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (((`prescription_order` join `test_prescription` on(`prescription_order`.`prescription_code` = `test_prescription`.`prescription_code`)) join `prescription` on(`test_prescription`.`prescription_code` = `prescription`.`prescription_code`)) join `full_consultation` on(`prescription_order`.`consultation_no` = `full_consultation`.`consultation_no`));
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `full_test_prescription_order` AS select `prescription_order`.`prescription_order_no` AS `prescription_order_no`,`prescription_order`.`prescription_code` AS `prescription_code`,`prescription_order`.`prescription_order_time` AS `prescription_order_time`,`test_prescription`.`specimen_type_code` AS `specimen_type_code`,`test_prescription`.`specimen_container_code` AS `specimen_container_code`,`test_prescription`.`test_prescription_amount` AS `test_prescription_amount`,`test_prescription`.`test_prescription_unit` AS `test_prescription_unit`,`test_prescription`.`test_prescription_reference` AS `test_prescription_reference`,`test_prescription`.`test_field_code` AS `test_field_code`,`prescription`.`prescription_name` AS `prescription_name`,`prescription`.`prescription_classification_code` AS `prescription_classification_code`,`prescription`.`prescription_slip_code` AS `prescription_slip_code`,`prescription`.`prescription_comment` AS `prescription_comment`,`full_consultation`.`consultation_no` AS `consultation_no`,`full_consultation`.`consultation_time` AS `consultation_time`,`full_consultation`.`consultation_reception_no` AS `consultation_reception_no`,`full_consultation`.`consultation_reception_time` AS `consultation_reception_time`,`full_consultation`.`staff_no` AS `staff_no`,`full_consultation`.`patient_no` AS `patient_no`,`full_consultation`.`consultation_reception_appointment` AS `consultation_reception_appointment` from (((`prescription_order` join `test_prescription` on(`prescription_order`.`prescription_code` = `test_prescription`.`prescription_code`)) join `prescription` on(`test_prescription`.`prescription_code` = `prescription`.`prescription_code`)) join `full_consultation` on(`prescription_order`.`consultation_no` = `full_consultation`.`consultation_no`));
 
 -- 뷰 kanghoshin_lis.secure_patient 구조 내보내기
 -- 임시 테이블을 제거하고 최종 VIEW 구조를 생성

@@ -14,7 +14,8 @@ public class CorsConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.addAllowedOrigin("http://kosa701.iptime.org:50051/");
+		config.addAllowedOrigin("http://localhost:3000/");
+		config.addAllowedOrigin("chrome-extension://aejoelaoggembcahagimdiliamlcdmfm/");
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("*");
 		source.registerCorsConfiguration("/**", config);
