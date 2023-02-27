@@ -31,11 +31,13 @@ const ConsultationForm: React.FC<{
   // eslint-disable-next-line no-unused-vars
   onPrescriptionListChanged: (prescriptionList: Prescription[]) => void;
   onResetPrescription: () => void;
+  onSubmitSuccess: () => void;
 }> = ({
   consultationReception,
   prescriptionList,
   onPrescriptionListChanged,
   onResetPrescription,
+  onSubmitSuccess,
 }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const [during, setDuring] = useState<string>('00:00');
@@ -109,6 +111,7 @@ const ConsultationForm: React.FC<{
       )
         .then(() => {
           setStatus('NONE');
+          onSubmitSuccess();
           setOpen({ status: true, isSuccess: true });
         })
         .catch(() => {
