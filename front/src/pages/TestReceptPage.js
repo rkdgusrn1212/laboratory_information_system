@@ -58,44 +58,73 @@ export default function TestReceptPage() {
           },
         },
       );
-      if (data.length > 0) {
-        setSpecimenNo(searchSpecimenInfo.data[data.length - 1].specimenNo);
+      if (searchSpecimenInfo.data.length > 0) {
+        setSpecimenNo(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .specimenNo,
+        );
         setSpecimenTypeName(
-          searchSpecimenInfo.data[data.length - 1].specimenTypeName,
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .specimenTypeName,
         );
         setTestPrescriptionAmount(
-          searchSpecimenInfo.data[data.length - 1].testPrescriptionAmount,
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .testPrescriptionAmount,
         );
         setSpecimenContainerName(
-          searchSpecimenInfo.data[data.length - 1].specimenContainerName,
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .specimenContainerName,
         );
-        setPatientNo(searchSpecimenInfo.data[data.length - 1].patientNo);
-        setPatientName(searchSpecimenInfo.data[data.length - 1].patientName);
-        if (searchSpecimenInfo.data[data.length - 1].patientMale === true) {
+        setPatientNo(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1].patientNo,
+        );
+        setPatientName(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .patientName,
+        );
+        if (
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .patientMale === true
+        ) {
           setPatientMale('남자');
         } else if (
-          searchSpecimenInfo.data[data.length - 1].patientMale === false
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .patientMale === false
         ) {
           setPatientMale('여자');
         }
-        setPatientRrn(searchSpecimenInfo.data[data.length - 1].patientRrn);
+        setPatientRrn(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .patientRrn,
+        );
         setPrescriptionCode(
-          searchSpecimenInfo.data[data.length - 1].prescriptionCode,
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .prescriptionCode,
         );
         setPrescriptionName(
-          searchSpecimenInfo.data[data.length - 1].prescriptionName,
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .prescriptionName,
         );
-        setNurseName(searchSpecimenInfo.data[data.length - 1].nurseName);
-        setCollectDate(searchSpecimenInfo.data[data.length - 1].collectDate);
-        setDoctorName(searchSpecimenInfo.data[data.length - 1].doctorName);
+        setNurseName(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1].nurseName,
+        );
+        setCollectDate(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .collectDate,
+        );
+        setDoctorName(
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .doctorName,
+        );
         setPrescriptionOrderTime(
-          searchSpecimenInfo.data[data.length - 1].prescriptionOrderTime,
+          searchSpecimenInfo.data[searchSpecimenInfo.data.length - 1]
+            .prescriptionOrderTime,
         );
       }
-      for (let data of searchSpecimenInfo) {
+      for (const elem of searchSpecimenInfo.data) {
         insertspecimen({
           barcode: barcode,
-          prescriptioncode: data.prescriptionCode,
+          prescriptioncode: elem.prescriptionCode,
         });
       }
     } catch (error) {
