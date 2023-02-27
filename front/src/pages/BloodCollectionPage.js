@@ -77,7 +77,7 @@ export default function BloodCollectionPage() {
     let count = 2; //뭔가 입력함 그러나 3번 또는 4번 플래그로 가지않음. 없는 검체번호임
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/collect/specimenbyno?specimenNo=${search}`,
+      url: `http://kosa701.iptime.org:50051/api/collect/specimenbyno?specimenNo=${search}`,
     }).then(function (response) {
       if (response.data != '') {
         response.data.map((collect) => {
@@ -117,7 +117,7 @@ export default function BloodCollectionPage() {
       // POST 요청 전송
       axios({
         method: 'post',
-        url: `http://localhost:8080/api/collect/insertcollectbypost`,
+        url: `http://kosa701.iptime.org:50051/api/collect/insertcollectbypost`,
         data: {
           specimenNo: input,
           staffNo: loginstaffno, //로그인 정보로 받아오기
@@ -135,7 +135,7 @@ export default function BloodCollectionPage() {
   function getCollect(input) {
     axios({
       method: 'get',
-      url: `http://localhost:8080/api/collect/collectlistbyno?specimenNo=${input}`,
+      url: `http://kosa701.iptime.org:50051/api/collect/collectlistbyno?specimenNo=${input}`,
     }).then(function (response) {
       if (response.data != '') {
         response.data.map((a) => {
