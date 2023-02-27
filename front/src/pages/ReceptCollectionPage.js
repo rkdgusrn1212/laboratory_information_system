@@ -297,7 +297,7 @@ export default function ReceptCollectionPage() {
               prescriptionCode: row.prescriptionCode,
               prescriptionOrderTime: row.prescriptionOrderTime,
               specimenContainerCode: row.specimenContainerCode,
-              prescriptionTypeCode: row.prescriptionTypeCode,
+              specimenTypeCode: row.specimenTypeCode,
               prescriptionName: row.prescriptionName,
               prescriptionClassificationCode:
                 row.prescriptionClassificationCode,
@@ -359,7 +359,7 @@ export default function ReceptCollectionPage() {
             prescriptionCode: row.prescriptionCode,
             prescriptionOrderTime: row.prescriptionOrderTime,
             specimenContainerCode: row.specimenContainerCode,
-            prescriptionTypeCode: row.prescriptionTypeCode,
+            specimenTypeCode: row.specimenTypeCode,
             prescriptionName: row.prescriptionName,
             prescriptionClassificationCode: row.prescriptionClassificationCode,
             prescriptionCode: row.prescriptionCode,
@@ -399,7 +399,7 @@ export default function ReceptCollectionPage() {
       headerAlign: 'center',
     },
     {
-      field: 'prescriptionTypeCode',
+      field: 'specimenTypeCode',
       headerName: '처방타입코드',
       headerAlign: 'center',
     },
