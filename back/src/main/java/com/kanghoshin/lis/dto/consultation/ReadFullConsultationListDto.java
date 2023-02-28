@@ -36,7 +36,9 @@ public class ReadFullConsultationListDto extends ReadListDto{
 	private String staffNoKey;
 	@OrderConstraints
 	private String staffNoOrder;
-
+	
+	private int patientNo;
+	
 	private String patientNoKey;
 	@OrderConstraints
 	private String patientNoOrder;
