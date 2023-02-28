@@ -167,7 +167,7 @@ export default function ReceptCollectionPage() {
     //환자no로  처방 볼러오기
     axios({
       method: 'get',
-      url: `http://13.209.219.162/api/prescription-order/full-test-prescription-order/list?pageSize=1000&pageStart=0&PatientNoKey=${patientNo}&consultationTimeOrder=DESC`,
+      url: `http://13.209.219.162/api/prescription-order/full-test-prescription-order/list?pageSize=1000&pageStart=0&PatientNo=${patientNo}&consultationTimeOrder=DESC`,
     }).then(function (response) {
       if (response.data != '') {
         console.log(response.data);
